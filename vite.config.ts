@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import compression from 'vite-plugin-compression'
+import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
 // Vite configuration - https://vite.dev/config/
@@ -12,6 +13,9 @@ export default defineConfig({
     // Using SWC instead of Babel for 3-10x faster compilation
     // SWC is written in Rust and provides much better performance
     react(),
+    
+    // TailwindCSS v4 plugin
+    tailwindcss(),
     
     // Compression plugins for production builds
     // Generates .gz files alongside original assets

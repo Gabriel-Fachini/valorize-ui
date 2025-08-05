@@ -12,7 +12,14 @@
     "moduleResolution": "Bundler", // Specify how TypeScript looks up a file from a given module specifier (for bundlers like Vite)
     "baseUrl": ".", // Specify the base directory to resolve non-relative module names
     "paths": {
-      "@/*": ["./src/*"] // Specify a set of entries that re-map imports to additional lookup locations
+      "@/*": ["./src/*"], // Specify a set of entries that re-map imports to additional lookup locations
+      "@components/*": ["./src/components/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@services/*": ["./src/services/*"],
+      "@helpers/*": ["./src/helpers/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@translations/*": ["./src/translations/*"]
     },
     "resolveJsonModule": true, // Enable importing .json files
     "allowImportingTsExtensions": true, // Allow imports to include TypeScript file extensions (.ts, .tsx)
