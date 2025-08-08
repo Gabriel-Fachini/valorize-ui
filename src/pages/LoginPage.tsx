@@ -1,14 +1,10 @@
-import { useState, useEffect, type FormEvent } from 'react'
+import { useEffect } from 'react'
 import { useAuth } from '@hooks/useAuth'
 import { useNavigate } from '@tanstack/react-router'
 
 const LoginPage = () => {
   const { login, user, isLoading } = useAuth()
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Redirecionar se já estiver logado
   useEffect(() => {
@@ -17,24 +13,8 @@ const LoginPage = () => {
     }
   }, [user, navigate])
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError('')
-    setIsSubmitting(true)
-
-    if (!email || !password) {
-      setError('Por favor, preencha todos os campos')
-      setIsSubmitting(false)
-      return
-    }
-
-    const success = await login(email, password)
-    
-    if (!success) {
-      setError('Credenciais inválidas')
-    }
-    
-    setIsSubmitting(false)
+  const handleLogin = async () => {
+    await login()
   }
 
   if (isLoading) {
@@ -71,66 +51,15 @@ const LoginPage = () => {
             </p>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-lg"
-                placeholder="seuemail@email.com"
-                disabled={isSubmitting}
-              />
-            </div>
-
-            <div>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-lg"
-                placeholder="••••••••••••"
-                disabled={isSubmitting}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-                />
-                <span className="ml-2 text-gray-700 dark:text-gray-300 text-sm">Lembrar de mim</span>
-              </label>
-              <a href="#" className="text-sm text-purple-600 hover:text-purple-500 font-medium">
-                Esqueceu a senha?
-              </a>
-            </div>
-
-            {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-xl text-sm">
-                {error}
-              </div>
-            )}
-
+          {/* Auth0 CTA */}
+          <div className="space-y-6">
             <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+              onClick={handleLogin}
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              {isSubmitting ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-3"></div>
-                  Entrando...
-                </div>
-              ) : (
-                'Entrar'
-              )}
+              Entrar com Auth0
             </button>
-          </form>
+          </div>
 
           {/* Footer */}
           <div className="text-center">

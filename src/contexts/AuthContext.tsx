@@ -1,4 +1,5 @@
-import { useState, useEffect, type ReactNode } from 'react'
+import { useEffect, useMemo, type ReactNode } from 'react'
+import { useAuth0 } from '@auth0/auth0-react'
 import { User, AuthContext } from './auth'
 
 interface AuthProviderProps {
@@ -6,48 +7,34 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { isAuthenticated, isLoading, user: auth0User, loginWithRedirect, logout: auth0Logout, getAccessTokenSilently } = useAuth0()
 
   useEffect(() => {
-    // Simular verificação de token armazenado
-    const storedUser = localStorage.getItem('valorize_user')
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    // Opcional: prefetch token para APIs protegidas, remove se não precisar
+    if (isAuthenticated) {
+      void getAccessTokenSilently().catch(() => {})
     }
-    setIsLoading(false)
-  }, [])
+  }, [isAuthenticated, getAccessTokenSilently])
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    setIsLoading(true)
-    
-    // Simular autenticação (em um app real, seria uma chamada para API)
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    if (email && password) {
-      const mockUser: User = {
-        id: '1',
-        email,
-        name: email.split('@')[0],
-      }
-      
-      setUser(mockUser)
-      localStorage.setItem('valorize_user', JSON.stringify(mockUser))
-      setIsLoading(false)
-      return true
+  const mappedUser: User | null = useMemo(() => {
+    if (!auth0User) return null
+    return {
+      id: (auth0User.sub as string) ?? 'unknown',
+      email: (auth0User.email as string) ?? '',
+      name: (auth0User.name as string) ?? (auth0User.nickname as string) ?? '',
     }
-    
-    setIsLoading(false)
-    return false
+  }, [auth0User])
+
+  const login = async (): Promise<void> => {
+    await loginWithRedirect()
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem('valorize_user')
+  const logout = async (): Promise<void> => {
+    await auth0Logout({ logoutParams: { returnTo: window.location.origin } })
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user: mappedUser, login, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   )

@@ -59,7 +59,7 @@ const HomePage = () => {
                 )}
               </button>
               <button
-                onClick={logout}
+                onClick={() => void logout()}
                 className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
               >
                 Sair
