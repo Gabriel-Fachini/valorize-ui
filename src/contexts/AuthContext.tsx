@@ -1,40 +1,79 @@
-import { useEffect, useMemo, type ReactNode } from 'react'
-import { useAuth0 } from '@auth0/auth0-react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { User, AuthContext } from './auth'
+import { TokenManager, checkAndRefreshToken, loginWithEmailPassword, verifyToken, type VerifyFullData, type VerifyMinimalData, type UserInfo } from '@/services/auth'
 
 interface AuthProviderProps {
   children: ReactNode
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const { isAuthenticated, isLoading, user: auth0User, loginWithRedirect, logout: auth0Logout, getAccessTokenSilently } = useAuth0()
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
+  // Initialize from localStorage and verify session
   useEffect(() => {
-    // Opcional: prefetch token para APIs protegidas, remove se não precisar
-    if (isAuthenticated) {
-      void getAccessTokenSilently().catch(() => {})
+    const init = async () => {
+      const stored = TokenManager.getUserInfo()
+      if (stored) {
+        setUser({ id: stored.sub, email: stored.email, name: stored.name ?? '' })
+      }
+
+      const valid = await checkAndRefreshToken()
+      if (!valid) {
+        TokenManager.clearTokens()
+        TokenManager.clearUserInfo()
+        setUser(null)
+      } else {
+        const verify = await verifyToken(false)
+        if (verify.success) {
+          const data = verify.data as VerifyFullData
+          const u: UserInfo | null = (data as VerifyFullData).user ?? stored
+          if (u) {
+            TokenManager.setUserInfo(u)
+            setUser({ id: u.sub, email: u.email, name: u.name ?? '' })
+          }
+        }
+      }
+      setIsLoading(false)
     }
-  }, [isAuthenticated, getAccessTokenSilently])
+    void init()
+  }, [])
 
-  const mappedUser: User | null = useMemo(() => {
-    if (!auth0User) return null
-    return {
-      id: (auth0User.sub as string) ?? 'unknown',
-      email: (auth0User.email as string) ?? '',
-      name: (auth0User.name as string) ?? (auth0User.nickname as string) ?? '',
+  const login = useCallback(async (email: string, password: string) => {
+    try {
+      setIsLoading(true)
+      const res = await loginWithEmailPassword(email, password)
+      if (res.success) {
+        TokenManager.setTokens(res.data.access_token, res.data.refresh_token)
+        TokenManager.setUserInfo(res.data.user_info)
+        setUser({ id: res.data.user_info.sub, email: res.data.user_info.email, name: res.data.user_info.name ?? '' })
+        return { success: true as const }
+      }
+      return { success: false as const, message: res.message }
+    } catch {
+      return { success: false as const, message: 'Erro ao fazer login' }
+    } finally {
+      setIsLoading(false)
     }
-  }, [auth0User])
+  }, [])
 
-  const login = async (): Promise<void> => {
-    await loginWithRedirect()
-  }
+  const logout = useCallback(() => {
+    TokenManager.clearTokens()
+    TokenManager.clearUserInfo()
+    setUser(null)
+  }, [])
 
-  const logout = async (): Promise<void> => {
-    await auth0Logout({ logoutParams: { returnTo: window.location.origin } })
-  }
+  const checkAuth = useCallback(async () => {
+    const res = await verifyToken(true)
+    if (!res.success) return false
+    const data = res.data as VerifyMinimalData
+    return data.isValid === true
+  }, [])
+
+  const value = useMemo(() => ({ user, isLoading, login, logout, checkAuth }), [user, isLoading, login, logout, checkAuth])
 
   return (
-    <AuthContext.Provider value={{ user: mappedUser, login, logout, isLoading }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,10 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '@hooks/useAuth'
 import { useNavigate } from '@tanstack/react-router'
 
 const LoginPage = () => {
   const { login, user, isLoading } = useAuth()
   const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string>('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Redirecionar se já estiver logado
   useEffect(() => {
@@ -13,8 +17,17 @@ const LoginPage = () => {
     }
   }, [user, navigate])
 
-  const handleLogin = async () => {
-    await login()
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setIsSubmitting(true)
+    const res = await login(email, password)
+    setIsSubmitting(false)
+    if (res.success) {
+      navigate({ to: '/home' })
+    } else {
+      setError(res.message ?? 'Email ou senha inválidos')
+    }
   }
 
   if (isLoading) {
@@ -51,15 +64,45 @@ const LoginPage = () => {
             </p>
           </div>
 
-          {/* Auth0 CTA */}
-          <div className="space-y-6">
+          {/* Login Form */}
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="seu@email.com"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Senha</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="••••••••"
+              />
+            </div>
+
+            {error && (
+              <div className="rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-200 px-4 py-3">
+                {error}
+              </div>
+            )}
+
             <button
-              onClick={handleLogin}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl"
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-60"
             >
-              Entrar com Auth0
+              {isSubmitting ? 'Entrando...' : 'Entrar'}
             </button>
-          </div>
+          </form>
 
           {/* Footer */}
           <div className="text-center">
@@ -72,7 +115,7 @@ const LoginPage = () => {
           </div>
 
           <div className="text-center text-sm text-gray-400 dark:text-gray-500 mt-8">
-            <p>💡 Use qualquer e-mail e senha para testar a demo</p>
+            <p>💡 Digite seu e-mail e senha para entrar</p>
           </div>
         </div>
       </div>
