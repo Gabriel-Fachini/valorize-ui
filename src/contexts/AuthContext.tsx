@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const verify = await verifyToken(false)
         if (verify.success) {
           const data = verify.data as VerifyFullData
-          const u: UserInfo | null = (data as VerifyFullData).user ?? stored
+          const u: UserInfo | null = data.user ?? stored
           if (u) {
             TokenManager.setUserInfo(u)
             setUser({ id: u.sub, email: u.email, name: u.name ?? '' })
@@ -50,8 +50,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return { success: true as const }
       }
       return { success: false as const, message: res.message }
-    } catch {
-      return { success: false as const, message: 'Erro ao fazer login' }
+    } catch (error) {
+      // Propaga o erro específico se for uma instância de Error
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao fazer login'
+      return { success: false as const, message: errorMessage }
     } finally {
       setIsLoading(false)
     }

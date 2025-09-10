@@ -1,3 +1,5 @@
+import { api } from './api'
+
 export interface ApiSuccess<T> {
   success: true
   data: T
@@ -50,8 +52,6 @@ export interface VerifyFullData extends VerifyMinimalData {
   user: UserInfo
 }
 
-const baseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? ''
-
 export const TokenManager = {
   setTokens(accessToken: string, refreshToken: string) {
     localStorage.setItem('access_token', accessToken)
@@ -84,46 +84,68 @@ export const TokenManager = {
 }
 
 export async function loginWithEmailPassword(email: string, password: string): Promise<ApiResponse<LoginData>> {
-  const response = await fetch(`${baseUrl}/session/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  })
-  const json = (await response.json()) as ApiResponse<LoginData>
-  return json
+  try {
+    const response = await api.post<ApiResponse<LoginData>>('/auth/login', { email, password })
+    return response.data
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Login Error',
+      message: error instanceof Error ? error.message : 'Failed to login',
+      statusCode: 0,
+    }
+  }
 }
 
 export async function refreshToken(refreshToken: string): Promise<ApiResponse<RefreshData>> {
-  const response = await fetch(`${baseUrl}/session/refresh`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refresh_token: refreshToken }),
-  })
-  const json = (await response.json()) as ApiResponse<RefreshData>
-  return json
+  try {
+    const response = await api.post<ApiResponse<RefreshData>>('/session/refresh', { refresh_token: refreshToken })
+    return response.data
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Refresh Error',
+      message: error instanceof Error ? error.message : 'Failed to refresh token',
+      statusCode: 0,
+    }
+  }
 }
 
 export async function verifyToken(minimal = true, accessToken?: string): Promise<ApiResponse<VerifyMinimalData | VerifyFullData>> {
-  const token = accessToken ?? TokenManager.getAccessToken()
-  const response = await fetch(`${baseUrl}/session/verify${minimal ? '?minimal=true' : ''}`, {
-    method: 'GET',
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-  })
-  const json = (await response.json()) as ApiResponse<VerifyMinimalData | VerifyFullData>
-  return json
+  try {
+    const token = accessToken ?? TokenManager.getAccessToken()
+    const headers = token ? { Authorization: `Bearer ${token}` } : {}
+
+    const response = await api.get<ApiResponse<VerifyMinimalData | VerifyFullData>>(
+      `/session/verify${minimal ? '?minimal=true' : ''}`,
+      { headers },
+    )
+    return response.data
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Verify Error',
+      message: error instanceof Error ? error.message : 'Failed to verify token',
+      statusCode: 0,
+    }
+  }
 }
 
 export async function checkAndRefreshToken(): Promise<boolean> {
   const access = TokenManager.getAccessToken()
   if (!access) return false
+
   try {
-    const verifyRes = await fetch(`${baseUrl}/session/verify?minimal=true`, {
-      headers: { Authorization: `Bearer ${access}` },
-    })
-    if (verifyRes.status !== 401) {
-      return verifyRes.ok
+    // First, try to verify the current token
+    const verifyRes = await verifyToken(true, access)
+    
+    // If verification is successful and token is valid, return true
+    if (verifyRes.success) {
+      const data = verifyRes.data as VerifyMinimalData
+      return data.isValid
     }
 
+    // If token is invalid or expired, try to refresh
     const rt = TokenManager.getRefreshToken()
     if (!rt) return false
 
@@ -132,8 +154,14 @@ export async function checkAndRefreshToken(): Promise<boolean> {
       TokenManager.setTokens(refreshRes.data.access_token, refreshRes.data.refresh_token)
       return true
     }
+    
     return false
-  } catch {
+  } catch (error) {
+    // Log error for debugging but don't throw
+    if (error instanceof Error) {
+      // eslint-disable-next-line no-console
+      console.warn('Token check/refresh failed:', error.message)
+    }
     return false
   }
 }
