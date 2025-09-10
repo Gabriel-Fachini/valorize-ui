@@ -1,12 +1,9 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { User, AuthContext } from './auth'
-import { TokenManager, checkAndRefreshToken, loginWithEmailPassword, verifyToken, type VerifyFullData, type VerifyMinimalData, type UserInfo } from '@/services/auth'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { AuthContext } from './auth'
+import { TokenManager, checkAndRefreshToken, loginWithEmailPassword, verifyToken } from '@/services/auth'
+import type { User, VerifyFullData, VerifyMinimalData, UserInfo, ProviderProps } from '@types'
 
-interface AuthProviderProps {
-  children: ReactNode
-}
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const AuthProvider = ({ children }: ProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 

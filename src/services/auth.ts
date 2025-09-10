@@ -1,56 +1,12 @@
 import { api } from './api'
-
-export interface ApiSuccess<T> {
-  success: true
-  data: T
-}
-
-export interface ApiError {
-  success: false
-  error: string
-  message: string
-  statusCode: number
-}
-
-export type ApiResponse<T> = ApiSuccess<T> | ApiError
-
-export interface UserInfo {
-  sub: string
-  email: string
-  email_verified?: boolean
-  name?: string
-  picture?: string
-}
-
-export interface LoginData {
-  access_token: string
-  token_type: string
-  expires_in: number
-  refresh_token: string
-  scope: string
-  user_info: UserInfo
-}
-
-export interface RefreshData {
-  access_token: string
-  token_type: string
-  expires_in: number
-  refresh_token: string
-  scope: string
-}
-
-export interface VerifyMinimalData {
-  isValid: boolean
-  timeRemaining: number
-  message: string
-}
-
-export interface VerifyFullData extends VerifyMinimalData {
-  expiresAt: string
-  timeRemainingFormatted: string
-  needsRefresh: boolean
-  user: UserInfo
-}
+import type {
+  ApiResponse,
+  UserInfo,
+  LoginData,
+  RefreshData,
+  VerifyMinimalData,
+  VerifyFullData,
+} from '@types'
 
 export const TokenManager = {
   setTokens(accessToken: string, refreshToken: string) {
@@ -167,5 +123,3 @@ export async function checkAndRefreshToken(): Promise<boolean> {
     return false
   }
 }
-
-

@@ -19,7 +19,8 @@
       "@services/*": ["./src/services/*"],
       "@helpers/*": ["./src/helpers/*"],
       "@assets/*": ["./src/assets/*"],
-      "@translations/*": ["./src/translations/*"]
+      "@translations/*": ["./src/translations/*"],
+      "@types": ["./src/types"]
     },
     "resolveJsonModule": true, // Enable importing .json files
     "allowImportingTsExtensions": true, // Allow imports to include TypeScript file extensions (.ts, .tsx)
