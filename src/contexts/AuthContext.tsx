@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
       return { success: false as const, message: res.message }
     } catch (error) {
-      // Propaga o erro específico se for uma instância de Error
+      // Propagate the specific error if it's an instance of Error
       const errorMessage = error instanceof Error ? error.message : 'Erro ao fazer login'
       return { success: false as const, message: errorMessage }
     } finally {
