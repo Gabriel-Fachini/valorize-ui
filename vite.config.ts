@@ -73,6 +73,7 @@ export default defineConfig({
       "@helpers": path.resolve(__dirname, "./src/helpers"),        // Utility functions
       "@assets": path.resolve(__dirname, "./src/assets"),          // Static assets
       "@translations": path.resolve(__dirname, "./src/translations"), // i18n files
+      "@types": path.resolve(__dirname, "./src/types"),            // TypeScript types
     },
   },
 
