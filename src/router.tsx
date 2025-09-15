@@ -1,13 +1,31 @@
-import { createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router'
-import LoginPage from '@pages/LoginPage'
-import HomePage from '@pages/HomePage'
+import {
+  createRouter,
+  createRoute,
+  createRootRoute,
+  Outlet,
+  AnyRoute,
+} from '@tanstack/react-router'
+import { LoginPage } from '@/pages/LoginPage'
+import { HomePage } from '@/pages/HomePage'
+import PlaygroundPage from '@pages/PlaygroundPage'
+import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { useTheme } from '@hooks/useTheme'
 
-const rootRoute = createRootRoute({
-  component: () => (
-    <div id="app">
+function RootComponent() {
+  const { isDark } = useTheme()
+
+  return (
+    <div
+      id="app"
+      className={`min-h-screen ${isDark ? 'dark' : ''} bg-white dark:bg-gray-900`}
+    >
       <Outlet />
     </div>
-  ),
+  )
+}
+
+const rootRoute = createRootRoute({
+  component: RootComponent,
 })
 
 const indexRoute = createRoute({
@@ -25,9 +43,28 @@ const loginRoute = createRoute({
 const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/home',
-  component: HomePage,
+  component: () => (
+    <ProtectedRoute>
+      <HomePage />
+    </ProtectedRoute>
+  ),
 })
 
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute, homeRoute])
+// Playground route - only available in development
+const playgroundRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/playground',
+  component: PlaygroundPage,
+})
+
+// Create route tree based on environment
+const routes: AnyRoute[] = [indexRoute, loginRoute, homeRoute]
+
+// Add playground route only in development
+if (import.meta.env.DEV) {
+  routes.push(playgroundRoute)
+}
+
+const routeTree = rootRoute.addChildren(routes)
 
 export const router = createRouter({ routeTree })
