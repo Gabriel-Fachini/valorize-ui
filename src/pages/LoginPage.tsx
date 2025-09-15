@@ -79,7 +79,7 @@ export const LoginPage = () => {
       {/* Left Panel - Login Form */}
       <animated.div 
         style={leftPanelSpring}
-        className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 transition-colors duration-300 relative"
+        className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 relative"
       >
         {/* Loader Overlay - apenas no painel esquerdo */}
         {loaderTransition((style, item) =>
@@ -161,7 +161,7 @@ export const LoginPage = () => {
             <button
               type="submit"
               disabled={isSubmitting || isLoading}
-              className="w-full flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-60"
+              className="w-full flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 shadow-lg hover:shadow-xl disabled:opacity-60"
             >
               {isSubmitting || isLoading ? 'Entrando...' : 'Entrar'}
             </button>
@@ -201,7 +201,7 @@ export const LoginPage = () => {
           <div className="text-center text-white">
             {/* Phone Mockup */}
             <div className="relative mx-auto mb-8">
-              <div className="w-64 h-96 bg-gradient-to-br from-pink-400 to-purple-500 rounded-3xl shadow-2xl transform rotate-12 hover:rotate-6 transition-transform duration-300">
+              <div className="w-64 h-96 bg-gradient-to-br from-pink-400 to-purple-500 rounded-3xl shadow-2xl transform rotate-12 hover:rotate-6">
                 <div className="p-6 h-full flex flex-col justify-center items-center">
                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-lg">
                     <span className="text-2xl">👋</span>
@@ -219,10 +219,10 @@ export const LoginPage = () => {
               </div>
               
               {/* Floating Elements */}
-              <div className="absolute -top-4 -left-4 w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg animate-bounce">
+              <div className="absolute -top-4 -left-4 w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold">🎯</span>
               </div>
-              <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-green-400 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+              <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-green-400 rounded-full flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold">✅</span>
               </div>
             </div>

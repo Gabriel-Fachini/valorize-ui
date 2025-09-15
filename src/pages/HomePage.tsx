@@ -27,8 +27,8 @@ export const HomePage = () => {
   const headerAnimation = useSpring({
     from: { transform: 'translateY(-100%)', opacity: 0 },
     to: { transform: 'translateY(0%)', opacity: 1 },
-    delay: 200,
-    config: { tension: 200, friction: 25 },
+    delay: 600,                    // ← Reduzido de 200ms para 100ms
+    config: { tension: 200, friction: 15 },  // ← Mais rápido
   })
 
   // Animação para os cards de estatísticas
@@ -40,25 +40,31 @@ export const HomePage = () => {
   ]
 
   const statsTrail = useTrail(statsCards.length, {
-    from: { opacity: 0, transform: 'scale(0.8) translateY(20px)' },
-    to: { opacity: 1, transform: 'scale(1) translateY(0px)' },
-    delay: 200,
-    config: { tension: 100, friction: 20 },
-    reset: true,
+    from: {
+      scale: 0.1,
+    },
+    to: {
+      scale: 1,
+    },
+    delay: 400,                     // ← Sem delay inicial
+    config: {
+      tension: 280,
+      friction: 10,
+    },
   })
 
   // Animação para as features principais
   const featuresAnimation = useSpring({
     from: { opacity: 0, transform: 'translateY(50px)' },
     to: { opacity: 1, transform: 'translateY(0px)' },
-    delay: 600,
-    config: { tension: 180, friction: 25 },
+    delay: 250,                   // ← Reduzido drasticamente (600ms → 250ms)
+    config: { tension: 280, friction: 18 },  // ← Mais rápido
   })
 
   return (
-    <animated.div style={pageAnimation} className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
+    <animated.div style={pageAnimation} className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
-      <animated.div style={headerAnimation} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-40 transition-colors duration-300">
+      <animated.div style={headerAnimation} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center">
@@ -85,7 +91,7 @@ export const HomePage = () => {
               </div>
               <button
                 onClick={toggleTheme}
-                className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 shadow-sm hover:shadow-md"
+                className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 shadow-sm hover:shadow-md"
                 title={isDark ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
               >
                 {isDark ? (
@@ -100,7 +106,7 @@ export const HomePage = () => {
               </button>
               <button
                 onClick={() => void logout()}
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl"
               >
                 Sair
               </button>
@@ -116,8 +122,8 @@ export const HomePage = () => {
             style={useSpring({
               from: { opacity: 0, transform: 'scale(0.9)' },
               to: { opacity: 1, transform: 'scale(1)' },
-              delay: 300,
-              config: { tension: 200, friction: 25 },
+              delay: 150,                // ← Reduzido (300ms → 150ms)
+              config: { tension: 280, friction: 20 },  // ← Mais rápido
             })}
             className="text-center relative"
           >
@@ -150,7 +156,7 @@ export const HomePage = () => {
               <animated.div 
                 key={index}
                 style={style}
-                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl"
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -170,9 +176,9 @@ export const HomePage = () => {
       {/* Main Features */}
       <animated.div style={featuresAnimation} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-3xl p-8 border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl transition-all duration-300 group">
+          <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-3xl p-8 border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl group">
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-transform duration-300">
+              <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110">
                 <span className="text-4xl">🏆</span>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Conquistas</h3>
@@ -181,16 +187,16 @@ export const HomePage = () => {
                 Cada meta atingida é uma vitória celebrada.
               </p>
               <div className="flex justify-center">
-                <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 shadow-lg hover:shadow-xl">
                   Ver Conquistas
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-3xl p-8 border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl transition-all duration-300 group">
+          <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-3xl p-8 border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl group">
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-transform duration-300">
+              <div className="w-20 h-20 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110">
                 <span className="text-4xl">🎁</span>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Recompensas</h3>
@@ -199,16 +205,16 @@ export const HomePage = () => {
                 De vales-presente a experiências únicas.
               </p>
               <div className="flex justify-center">
-                <button className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                <button className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl">
                   Explorar Loja
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-3xl p-8 border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl transition-all duration-300 group">
+          <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-3xl p-8 border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl group">
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-transform duration-300">
+              <div className="w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110">
                 <span className="text-4xl">📊</span>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Analytics</h3>
@@ -217,7 +223,7 @@ export const HomePage = () => {
                 Dados que mostram seu crescimento profissional.
               </p>
               <div className="flex justify-center">
-                <button className="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                <button className="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-700 shadow-lg hover:shadow-xl">
                   Ver Relatórios  
                 </button>
               </div>
@@ -231,8 +237,8 @@ export const HomePage = () => {
         style={useSpring({
           from: { opacity: 0, transform: 'translateY(30px)' },
           to: { opacity: 1, transform: 'translateY(0px)' },
-          delay: 800,
-          config: { tension: 180, friction: 25 },
+          delay: 350,                // ← Reduzido drasticamente (800ms → 350ms)
+          config: { tension: 260, friction: 20 },  // ← Mais rápido
         })}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12"
       >
