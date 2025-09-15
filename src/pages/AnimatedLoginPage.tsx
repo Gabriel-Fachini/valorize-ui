@@ -1,14 +1,17 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuth } from '@hooks/useAuth'
 import { useNavigate } from '@tanstack/react-router'
 import { EmailInput, PasswordInput } from '@components/ui'
 import { LoginFormData, loginFormSchema } from '@types'
+import { useSpring, animated, useTransition } from '@react-spring/web'
 
-const LoginPage = () => {
+const AnimatedLoginPage = () => {
   const { login, user } = useAuth()
   const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isExiting, setIsExiting] = useState(false)
 
   // React Hook Form setup with Zod validation
   const {
@@ -19,7 +22,7 @@ const LoginPage = () => {
     clearErrors,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
-    mode: 'onBlur', // Validate on blur for better UX
+    mode: 'onBlur',
   })
 
   // Redirecionar se já estiver logado
@@ -29,13 +32,46 @@ const LoginPage = () => {
     }
   }, [user, navigate])
 
+  // Animação do painel esquerdo
+  const leftPanelSpring = useSpring({
+    transform: isExiting ? 'translateX(-100%)' : 'translateX(0%)',
+    opacity: isExiting ? 0 : 1,
+    config: { tension: 200, friction: 30 },
+  })
+
+  // Animação do painel direito (ilustração)
+  const rightPanelSpring = useSpring({
+    transform: isExiting ? 'translateX(-50%)' : 'translateX(0%)',
+    opacity: isExiting ? 0.5 : 1,
+    config: { tension: 200, friction: 30 },
+  })
+
+  // Animação do loader
+  const loaderTransition = useTransition(isLoading, {
+    from: { opacity: 0, transform: 'scale(0.8)' },
+    enter: { opacity: 1, transform: 'scale(1)' },
+    leave: { opacity: 0, transform: 'scale(0.8)' },
+    config: { tension: 260, friction: 20 },
+  })
+
   // Handle form submission
   const onSubmit = async (data: LoginFormData) => {
     clearErrors()
+    setIsLoading(true)
+    
+    // Simular delay para mostrar o loader
+    await new Promise(resolve => setTimeout(resolve, 800))
+    
     const res = await login(data.email, data.password)
+    
     if (res.success) {
-      navigate({ to: '/home' })
+      setIsExiting(true)
+      // Aguardar a animação de saída antes de navegar
+      setTimeout(() => {
+        navigate({ to: '/home' })
+      }, 600)
     } else {
+      setIsLoading(false)
       setError('root', {
         type: 'manual',
         message: res.message ?? 'Email ou senha inválidos',
@@ -44,9 +80,38 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex relative overflow-hidden">
+
       {/* Left Panel - Login Form */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 transition-colors duration-300">
+      <animated.div 
+        style={leftPanelSpring}
+        className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 transition-colors duration-300 relative"
+      >
+        {/* Loader Overlay - apenas no painel esquerdo */}
+        {loaderTransition((style, item) =>
+          item ? (
+            <animated.div
+              style={style}
+              className="absolute inset-0 z-50 flex items-center justify-center bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm"
+            >
+              <div className="flex flex-col items-center space-y-4">
+                <div className="relative">
+                  <div className="w-20 h-20 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full animate-pulse"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-white font-bold text-3xl">V</span>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-3 h-3 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                </div>
+                <p className="text-gray-700 dark:text-gray-200 font-medium">Autenticando...</p>
+              </div>
+            </animated.div>
+          ) : null
+        )}
+
         <div className="max-w-md w-full space-y-8">
           {/* Logo */}
           <div className="flex items-center">
@@ -79,6 +144,7 @@ const LoginPage = () => {
               error={errors.email?.message}
               showDomainSuggestions={true}
               autoFocus
+              disabled={isLoading}
             />
 
             <PasswordInput
@@ -89,6 +155,7 @@ const LoginPage = () => {
               error={errors.password?.message}
               showToggleVisibility={true}
               showCapsLockWarning={true}
+              disabled={isLoading}
             />
 
             {errors.root && (
@@ -99,32 +166,10 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isLoading}
               className="w-full flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-60"
             >
-              {isSubmitting && (
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              )}
-              {isSubmitting ? 'Entrando...' : 'Entrar'}
+              {isSubmitting || isLoading ? 'Entrando...' : 'Entrar'}
             </button>
           </form>
 
@@ -142,10 +187,13 @@ const LoginPage = () => {
             <p>💡 Digite seu e-mail e senha para entrar</p>
           </div>
         </div>
-      </div>
+      </animated.div>
 
       {/* Right Panel - Illustration */}
-      <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-500 relative overflow-hidden">
+      <animated.div 
+        style={rightPanelSpring}
+        className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-500 relative overflow-hidden"
+      >
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full"></div>
@@ -219,9 +267,9 @@ const LoginPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </animated.div>
     </div>
   )
 }
 
-export default LoginPage
+export default AnimatedLoginPage
