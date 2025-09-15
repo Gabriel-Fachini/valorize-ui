@@ -1,6 +1,7 @@
 import axios from 'axios'
 import type { ApiResponse, RefreshData } from '@types'
 import { router } from '@/router'
+import { TokenManager } from '@/lib'
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined
 
@@ -16,30 +17,11 @@ export const api = axios.create({
   },
 })
 
-// Token manager functions (moved here to avoid circular dependency)
-const getAccessToken = (): string | null => {
-  return localStorage.getItem('access_token')
-}
-
-const getRefreshToken = (): string | null => {
-  return localStorage.getItem('refresh_token')
-}
-
-const setTokens = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem('access_token', accessToken)
-  localStorage.setItem('refresh_token', refreshToken)
-}
-
-const clearTokens = () => {
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-  localStorage.removeItem('user_info')
-}
 
 // Request interceptor para incluir automaticamente o token
 api.interceptors.request.use(
   (config) => {
-    const token = getAccessToken()
+    const token = TokenManager.getAccessToken()
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -67,7 +49,7 @@ api.interceptors.response.use(
 
       originalRequest._retry = true
 
-      const refreshToken = getRefreshToken()
+      const refreshToken = TokenManager.getRefreshToken()
       if (refreshToken) {
         try {
           const response = await axios.post<ApiResponse<RefreshData>>(
@@ -79,13 +61,14 @@ api.interceptors.response.use(
           )
 
           if (response.data.success) {
-            setTokens(response.data.data.access_token, response.data.data.refresh_token)
+            TokenManager.setTokens(response.data.data.access_token, response.data.data.refresh_token)
             originalRequest.headers.Authorization = `Bearer ${response.data.data.access_token}`
             return api(originalRequest)
           }
         } catch (refreshError) {
           // Se o refresh falhar, limpar tokens e redirecionar para login apenas se não estiver já na tela de login
-          clearTokens()
+          TokenManager.clearTokens()
+          TokenManager.clearUserInfo()
           if (!router.state.location.pathname.includes('/login')) {
             router.navigate({ to: '/login' })
           }
@@ -94,7 +77,8 @@ api.interceptors.response.use(
       }
 
       // Se não tem refresh token, limpar tudo e redirecionar apenas se não estiver já na tela de login
-      clearTokens()
+      TokenManager.clearTokens()
+      TokenManager.clearUserInfo()
       if (!router.state.location.pathname.includes('/login')) {
         router.navigate({ to: '/login' })
       }

@@ -36,6 +36,4 @@ export {
   loginFormSchema,
   emailSchema,
   passwordSchema,
-  suggestEmailDomain,
-  COMMON_EMAIL_DOMAINS,
 } from './forms'

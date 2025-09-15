@@ -17,6 +17,7 @@
       "@pages/*": ["./src/pages/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@services/*": ["./src/services/*"],
+      "@lib/*": ["./src/lib/*"],
       "@helpers/*": ["./src/helpers/*"],
       "@assets/*": ["./src/assets/*"],
       "@translations/*": ["./src/translations/*"],

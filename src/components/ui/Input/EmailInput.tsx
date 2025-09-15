@@ -5,7 +5,8 @@
 
 import { useState, useCallback } from 'react'
 import { Input } from './Input'
-import { EmailInputProps, COMMON_EMAIL_DOMAINS, suggestEmailDomain } from '@types'
+import { EmailInputProps } from '@types'
+import { COMMON_EMAIL_DOMAINS, suggestEmailDomain } from '@/lib'
 
 export const EmailInput = ({
   showDomainSuggestions = true,

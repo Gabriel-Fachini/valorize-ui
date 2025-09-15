@@ -73,7 +73,7 @@ export const PasswordInput = ({
   showToggleVisibility = true,
   showCapsLockWarning = true,
   className = '',
-  ref, // React 19: ref como prop
+  ref,
   ...props
 }: PasswordInputProps & { ref?: React.Ref<HTMLInputElement> }) => {
   const [isVisible, setIsVisible] = useState(false)
