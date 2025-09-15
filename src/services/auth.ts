@@ -57,7 +57,7 @@ export async function loginWithEmailPassword(email: string, password: string): P
 
 export async function refreshToken(refreshToken: string): Promise<ApiResponse<RefreshData>> {
   try {
-    const response = await api.post<ApiResponse<RefreshData>>('/session/refresh', { refresh_token: refreshToken })
+    const response = await api.post<ApiResponse<RefreshData>>('/auth/refresh', { refresh_token: refreshToken })
     return response.data
   } catch (error) {
     return {
@@ -69,14 +69,10 @@ export async function refreshToken(refreshToken: string): Promise<ApiResponse<Re
   }
 }
 
-export async function verifyToken(minimal = true, accessToken?: string): Promise<ApiResponse<VerifyMinimalData | VerifyFullData>> {
+export async function verifyToken(minimal = true): Promise<ApiResponse<VerifyMinimalData | VerifyFullData>> {
   try {
-    const token = accessToken ?? TokenManager.getAccessToken()
-    const headers = token ? { Authorization: `Bearer ${token}` } : {}
-
     const response = await api.get<ApiResponse<VerifyMinimalData | VerifyFullData>>(
-      `/session/verify${minimal ? '?minimal=true' : ''}`,
-      { headers },
+      `/auth/verify${minimal ? '?minimal=true' : ''}`,
     )
     return response.data
   } catch (error) {
@@ -94,23 +90,12 @@ export async function checkAndRefreshToken(): Promise<boolean> {
   if (!access) return false
 
   try {
-    // First, try to verify the current token
-    const verifyRes = await verifyToken(true, access)
+    // Simplesmente verificar o token - o interceptador cuidará do refresh se necessário
+    const verifyRes = await verifyToken(true)
     
-    // If verification is successful and token is valid, return true
     if (verifyRes.success) {
       const data = verifyRes.data as VerifyMinimalData
       return data.isValid
-    }
-
-    // If token is invalid or expired, try to refresh
-    const rt = TokenManager.getRefreshToken()
-    if (!rt) return false
-
-    const refreshRes = await refreshToken(rt)
-    if (refreshRes.success) {
-      TokenManager.setTokens(refreshRes.data.access_token, refreshRes.data.refresh_token)
-      return true
     }
     
     return false
@@ -118,7 +103,7 @@ export async function checkAndRefreshToken(): Promise<boolean> {
     // Log error for debugging but don't throw
     if (error instanceof Error) {
       // eslint-disable-next-line no-console
-      console.warn('Token check/refresh failed:', error.message)
+      console.warn('Token verification failed:', error.message)
     }
     return false
   }

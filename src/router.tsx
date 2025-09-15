@@ -5,9 +5,10 @@ import {
   Outlet,
   AnyRoute,
 } from '@tanstack/react-router'
-import AnimatedLoginPage from '@pages/AnimatedLoginPage'
-import AnimatedHomePage from '@pages/AnimatedHomePage'
+import { LoginPage } from '@/pages/LoginPage'
+import { HomePage } from '@/pages/HomePage'
 import PlaygroundPage from '@pages/PlaygroundPage'
+import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useTheme } from '@hooks/useTheme'
 
 function RootComponent() {
@@ -30,19 +31,23 @@ const rootRoute = createRootRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: AnimatedLoginPage,
+  component: LoginPage,
 })
 
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
-  component: AnimatedLoginPage,
+  component: LoginPage,
 })
 
 const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/home',
-  component: AnimatedHomePage,
+  component: () => (
+    <ProtectedRoute>
+      <HomePage />
+    </ProtectedRoute>
+  ),
 })
 
 // Playground route - only available in development

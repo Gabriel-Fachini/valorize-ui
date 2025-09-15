@@ -25,10 +25,6 @@ Esta implementação cria um sistema completo de animações de transição entr
 
 ```
 src/
-├── components/
-│   └── PageTransition.tsx          # Componente base para transições
-├── contexts/
-│   └── TransitionContext.tsx       # Contexto global de transições
 ├── pages/
 │   ├── AnimatedLoginPage.tsx       # Página de login com animações
 │   └── AnimatedHomePage.tsx        # Dashboard com animações
@@ -42,113 +38,15 @@ src/
 
 ## 📦 Componentes Implementados
 
-### 1. PageTransition.tsx
-**Propósito**: Componente reutilizável para animações de transição básicas.
-
-### 2. TransitionContext.tsx
-**Propósito**: Contexto React para gerenciar estado global de transições.
-
-### 3. AnimatedLoginPage.tsx
+### 1. AnimatedLoginPage.tsx
 **Propósito**: Página de login com loader localizado e animação de saída.
 
-### 4. AnimatedHomePage.tsx
+### 2. AnimatedHomePage.tsx
 **Propósito**: Dashboard com animações de entrada em cascata.
 
 ## 🔍 Análise Detalhada do Código
 
-### PageTransition.tsx
-
-```typescript
-import { ReactNode } from 'react'
-import { useSpring, animated } from '@react-spring/web'
-
-interface PageTransitionProps {
-  children: ReactNode
-  direction?: 'left' | 'right' | 'fade'
-  show: boolean
-  delay?: number
-}
-```
-
-**Explicação das Props:**
-- `children`: Conteúdo a ser animado
-- `direction`: Direção da animação (esquerda, direita ou fade)
-- `show`: Controla se o elemento deve estar visível
-- `delay`: Atraso antes da animação iniciar
-
-```typescript
-const springConfig = {
-  tension: 220,    // Velocidade da animação (maior = mais rápido)
-  friction: 120,   // Resistência (maior = mais suave)
-  clamp: true,     // Previne overshooting (ultrapassar o destino)
-}
-```
-
-**Configuração do Spring:**
-- `tension`: Controla a "força" da mola - valores altos = animação rápida
-- `friction`: Controla o "atrito" - valores altos = menos oscilação
-- `clamp`: Impede que a animação ultrapasse os valores finais
-
-```typescript
-const styles = useSpring({
-  from: {
-    opacity: direction === 'fade' ? 0 : 1,
-    transform: 
-      direction === 'left' ? 'translateX(0%)' :
-      direction === 'right' ? 'translateX(100%)' :
-      'translateX(0%)',
-  },
-  to: {
-    opacity: show ? 1 : 0,
-    transform: 
-      direction === 'left' && !show ? 'translateX(-100%)' :
-      direction === 'right' && show ? 'translateX(0%)' :
-      direction === 'right' && !show ? 'translateX(100%)' :
-      'translateX(0%)',
-  },
-  config: springConfig,
-  delay,
-})
-```
-
-**Lógica de Animação:**
-- **Estado Inicial (`from`)**: Define posição/opacidade inicial
-- **Estado Final (`to`)**: Define posição/opacidade final baseado em `show`
-- **Transformações**: Usa `translateX` para movimento horizontal (GPU-accelerated)
-
-### TransitionContext.tsx
-
-```typescript
-interface TransitionContextProps {
-  isTransitioning: boolean
-  startTransition: (callback: () => void) => void
-}
-```
-
-**Interface do Contexto:**
-- `isTransitioning`: Flag global indicando se há transição ativa
-- `startTransition`: Função para iniciar transição com callback
-
-```typescript
-const startTransition = (callback: () => void) => {
-  setIsTransitioning(true)
-  // Tempo para a animação de saída
-  setTimeout(() => {
-    callback()
-    // Tempo para a animação de entrada
-    setTimeout(() => {
-      setIsTransitioning(false)
-    }, 300)
-  }, 500)
-}
-```
-
-**Fluxo de Transição:**
-1. Marca `isTransitioning = true`
-2. Aguarda 500ms (tempo da animação de saída)
-3. Executa callback (mudança de página)
-4. Aguarda 300ms (tempo da animação de entrada)
-5. Marca `isTransitioning = false`
+A implementação utiliza diretamente os hooks do **react-spring** nas páginas, sem componentes intermediários. Esta abordagem oferece maior flexibilidade e controle granular sobre cada animação.
 
 ### AnimatedLoginPage.tsx
 
@@ -479,9 +377,9 @@ const AnimatedHomePage = lazy(() => import('./AnimatedHomePage'))
 ## 🎯 Melhores Práticas Implementadas
 
 ### 1. Separação de Responsabilidades
-- **PageTransition**: Animações genéricas reutilizáveis
-- **TransitionContext**: Estado global de transições
-- **Páginas Animadas**: Lógica específica de cada página
+- **AnimatedLoginPage**: Animações específicas da página de login
+- **AnimatedHomePage**: Animações específicas do dashboard
+- **Router**: Integração das páginas animadas
 
 ### 2. Configuração Centralized
 ```typescript

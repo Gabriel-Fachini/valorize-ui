@@ -5,3 +5,4 @@
 
 // Input components
 export * from './Input'
+export { ProtectedRoute } from '../ProtectedRoute'

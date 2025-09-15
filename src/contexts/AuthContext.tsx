@@ -10,28 +10,57 @@ export const AuthProvider = ({ children }: ProviderProps) => {
   // Initialize from localStorage and verify session
   useEffect(() => {
     const init = async () => {
-      const stored = TokenManager.getUserInfo()
-      if (stored) {
-        setUser({ id: stored.sub, email: stored.email, name: stored.name ?? '' })
-      }
+      try {
+        // Primeiro, verificar se há tokens salvos
+        const accessToken = TokenManager.getAccessToken()
+        const refreshToken = TokenManager.getRefreshToken()
+        const stored = TokenManager.getUserInfo()
 
-      const valid = await checkAndRefreshToken()
-      if (!valid) {
+        // Se não há tokens, limpar tudo
+        if (!accessToken && !refreshToken) {
+          TokenManager.clearTokens()
+          TokenManager.clearUserInfo()
+          setUser(null)
+          setIsLoading(false)
+          return
+        }
+
+        // Se há informações do usuário salvas, definir temporariamente
+        if (stored) {
+          setUser({ id: stored.sub, email: stored.email, name: stored.name ?? '' })
+        }
+
+        // Verificar se os tokens são válidos
+        const valid = await checkAndRefreshToken()
+        if (!valid) {
+          TokenManager.clearTokens()
+          TokenManager.clearUserInfo()
+          setUser(null)
+        } else {
+          // Se tokens são válidos, obter informações atualizadas do usuário
+          try {
+            const verify = await verifyToken(false)
+            if (verify.success) {
+              const data = verify.data as VerifyFullData
+              const u: UserInfo | null = data.user ?? stored
+              if (u) {
+                TokenManager.setUserInfo(u)
+                setUser({ id: u.sub, email: u.email, name: u.name ?? '' })
+              }
+            }
+          } catch (verifyError) {
+            // Se falhar ao verificar informações completas, manter as informações básicas
+            console.warn('Failed to get full user info, keeping basic info:', verifyError)
+          }
+        }
+      } catch (error) {
+        console.error('Auth initialization failed:', error)
         TokenManager.clearTokens()
         TokenManager.clearUserInfo()
         setUser(null)
-      } else {
-        const verify = await verifyToken(false)
-        if (verify.success) {
-          const data = verify.data as VerifyFullData
-          const u: UserInfo | null = data.user ?? stored
-          if (u) {
-            TokenManager.setUserInfo(u)
-            setUser({ id: u.sub, email: u.email, name: u.name ?? '' })
-          }
-        }
+      } finally {
+        setIsLoading(false)
       }
-      setIsLoading(false)
     }
     void init()
   }, [])
