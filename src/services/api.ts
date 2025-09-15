@@ -1,5 +1,6 @@
 import axios from 'axios'
 import type { ApiResponse, RefreshData } from '@types'
+import { router } from '@/router'
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined
 
@@ -85,8 +86,8 @@ api.interceptors.response.use(
         } catch (refreshError) {
           // Se o refresh falhar, limpar tokens e redirecionar para login apenas se não estiver já na tela de login
           clearTokens()
-          if (!window.location.pathname.includes('/login')) {
-            window.location.href = '/login'
+          if (!router.state.location.pathname.includes('/login')) {
+            router.navigate({ to: '/login' })
           }
           return Promise.reject(refreshError)
         }
@@ -94,8 +95,8 @@ api.interceptors.response.use(
 
       // Se não tem refresh token, limpar tudo e redirecionar apenas se não estiver já na tela de login
       clearTokens()
-      if (!window.location.pathname.includes('/login')) {
-        window.location.href = '/login'
+      if (!router.state.location.pathname.includes('/login')) {
+        router.navigate({ to: '/login' })
       }
     }
 

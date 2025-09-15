@@ -6,33 +6,9 @@
 import { useSpring, animated, config } from '@react-spring/web'
 import { BaseInputProps } from '@types'
 
-// Design tokens com contraste otimizado para acessibilidade (WCAG AA)
-const inputStyles = {
-  base: [
-    'absolute w-full px-4 py-3 rounded-lg border relative z-10',
-    'bg-gray-800 text-gray-50',
-    'placeholder-gray-400',
-    'focus:outline-none focus:ring-2 focus:ring-offset-2',
-    'disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-gray-700',
-  ].join(' '),
-  
-  variants: {
-    default: [
-      'border-gray-600',
-      'focus:ring-blue-500 focus:border-blue-500',
-    ].join(' '),
-    
-    error: [
-      'border-red-500 bg-red-900/20',
-      'focus:ring-red-500 focus:border-red-500',
-    ].join(' '),
-    
-    success: [
-      'border-green-500 bg-green-900/20',
-      'focus:ring-green-500 focus:border-green-500',
-    ].join(' '),
-  },
-}
+const labelHeight = 28
+const inputHeight = 48
+const errorHeight = 40
 
 const labelStyles = {
   base: 'block text-sm font-semibold mb-2',
@@ -49,7 +25,11 @@ const helperStyles = {
   success: 'text-green-200',
 }
 
-const inputDiv = 'absolute bg-gray-800 w-full px-4 py-3 rounded-lg border relative z-10 text-white'
+const inputDiv = [
+  'absolute bg-gray-800',
+  'w-full px-4 py-3 rounded-lg border',
+  'relative z-10 text-white',
+].join(' ')
 
 const errorDiv = 'absolute text-white z-0 w-full h-14 text-sm bg-red-900 px-3 pb-1 box-content rounded-lg overflow-hidden flex items-center font-medium'
 
@@ -78,7 +58,8 @@ export const Input = ({
   disabled = false,
   error,
   helperText,
-  className = '',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  className = '', // Por alguma razão tem que deixar isso aqui
   autoComplete,
   autoFocus = false,
   id,
@@ -97,9 +78,9 @@ export const Input = ({
   const helperId = `${inputId}-helper`
   
   const heights = {
-    label: 28, // Height of the label (approx)
-    input: 48, // Height of the input field
-    error: 40, // Extra space for the error message
+    label: labelHeight,
+    input: inputHeight,
+    error: errorHeight,
   }
 
   // Animate the container height
@@ -127,13 +108,6 @@ export const Input = ({
     opacity: 1,
     config: hasError ? config.gentle : config.default,
   })
-  
-  // Combine class names
-  const inputClassName = [
-    inputStyles.base,
-    inputStyles.variants[variant],
-    className,
-  ].join(' ')
   
   const labelClassName = [
     labelStyles.base,
