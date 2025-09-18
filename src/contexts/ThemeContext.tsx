@@ -3,9 +3,7 @@ import { ThemeContext } from './theme'
 import type { Theme, ProviderProps } from '@types'
 
 export const ThemeProvider = ({ children }: ProviderProps) => {
-  const [theme, setTheme] = useState<Theme>('light')
-
-  useEffect(() => {
+  const [theme, setTheme] = useState<Theme>(() => {
     // Verificar se há um tema armazenado no localStorage
     const storedTheme = localStorage.getItem('valorize_theme') as Theme
     
@@ -13,12 +11,11 @@ export const ThemeProvider = ({ children }: ProviderProps) => {
     if (!storedTheme) {
       const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
       const initialTheme = systemPrefersDark ? 'dark' : 'light'
-      setTheme(initialTheme)
       localStorage.setItem('valorize_theme', initialTheme)
-    } else {
-      setTheme(storedTheme)
+      return initialTheme
     }
-  }, [])
+    return storedTheme
+  })
 
   useEffect(() => {
     // Aplicar ou remover a classe 'dark' no elemento html
@@ -33,6 +30,13 @@ export const ThemeProvider = ({ children }: ProviderProps) => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
     setTheme(newTheme)
     localStorage.setItem('valorize_theme', newTheme)
+    
+    // Aplicar o tema imediatamente
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
   }
 
   return (

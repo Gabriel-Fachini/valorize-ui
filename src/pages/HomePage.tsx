@@ -5,8 +5,7 @@ import { useSpring, animated, useTrail } from '@react-spring/web'
 export const HomePage = () => {
   const { user, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
-  
-  console.log('🔍 HomePage: Rendering with user:', user)
+
 
   // Animação principal da página - entrada pela direita
   const pageAnimation = useSpring({
