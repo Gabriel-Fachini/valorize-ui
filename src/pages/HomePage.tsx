@@ -1,20 +1,12 @@
-import { useEffect } from 'react'
 import { useAuth } from '@hooks/useAuth'
 import { useTheme } from '@hooks/useTheme'
-import { useNavigate } from '@tanstack/react-router'
 import { useSpring, animated, useTrail } from '@react-spring/web'
 
 export const HomePage = () => {
   const { user, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
-  const navigate = useNavigate()
-
-  // Redirecionar para login se não estiver autenticado
-  useEffect(() => {
-    if (!user) {
-      navigate({ to: '/login' })
-    }
-  }, [user, navigate])
+  
+  console.log('🔍 HomePage: Rendering with user:', user)
 
   // Animação principal da página - entrada pela direita
   const pageAnimation = useSpring({
@@ -59,6 +51,22 @@ export const HomePage = () => {
     to: { opacity: 1, transform: 'translateY(0px)' },
     delay: 250,                   // ← Reduzido drasticamente (600ms → 250ms)
     config: { tension: 280, friction: 18 },  // ← Mais rápido
+  })
+
+  // Animação para a seção Hero
+  const heroAnimation = useSpring({
+    from: { opacity: 0, transform: 'scale(0.9)' },
+    to: { opacity: 1, transform: 'scale(1)' },
+    delay: 150,                // ← Reduzido (300ms → 150ms)
+    config: { tension: 280, friction: 20 },  // ← Mais rápido
+  })
+
+  // Animação para a mensagem de sucesso
+  const successMessageAnimation = useSpring({
+    from: { opacity: 0, transform: 'translateY(30px)' },
+    to: { opacity: 1, transform: 'translateY(0px)' },
+    delay: 350,                // ← Reduzido drasticamente (800ms → 350ms)
+    config: { tension: 260, friction: 20 },  // ← Mais rápido
   })
 
   return (
@@ -118,13 +126,8 @@ export const HomePage = () => {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
-          <animated.div 
-            style={useSpring({
-              from: { opacity: 0, transform: 'scale(0.9)' },
-              to: { opacity: 1, transform: 'scale(1)' },
-              delay: 150,                // ← Reduzido (300ms → 150ms)
-              config: { tension: 280, friction: 20 },  // ← Mais rápido
-            })}
+          <animated.div
+            style={heroAnimation}
             className="text-center relative"
           >
             <div className="absolute inset-0 flex items-center justify-center opacity-5">
@@ -233,13 +236,8 @@ export const HomePage = () => {
       </animated.div>
 
       {/* Success Message */}
-      <animated.div 
-        style={useSpring({
-          from: { opacity: 0, transform: 'translateY(30px)' },
-          to: { opacity: 1, transform: 'translateY(0px)' },
-          delay: 350,                // ← Reduzido drasticamente (800ms → 350ms)
-          config: { tension: 260, friction: 20 },  // ← Mais rápido
-        })}
+      <animated.div
+        style={successMessageAnimation}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12"
       >
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200/50 dark:border-green-700/50 rounded-2xl p-6 shadow-lg">
