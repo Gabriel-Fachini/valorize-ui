@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-router'
 import { LoginPage } from '@/pages/LoginPage'
 import { HomePage } from '@/pages/HomePage'
+import { PraisesPage } from '@/pages/PraisesPage'
 import PlaygroundPage from '@pages/PlaygroundPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useTheme } from '@hooks/useTheme'
@@ -50,6 +51,16 @@ const homeRoute = createRoute({
   ),
 })
 
+const praisesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/elogios',
+  component: () => (
+    <ProtectedRoute>
+      <PraisesPage />
+    </ProtectedRoute>
+  ),
+})
+
 // Playground route - only available in development
 const playgroundRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -58,7 +69,7 @@ const playgroundRoute = createRoute({
 })
 
 // Create route tree based on environment
-const routes: AnyRoute[] = [indexRoute, loginRoute, homeRoute]
+const routes: AnyRoute[] = [indexRoute, loginRoute, homeRoute, praisesRoute]
 
 // Add playground route only in development
 if (import.meta.env.DEV) {

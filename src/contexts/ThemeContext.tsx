@@ -18,11 +18,13 @@ export const ThemeProvider = ({ children }: ProviderProps) => {
   })
 
   useEffect(() => {
-    // Aplicar ou remover a classe 'dark' no elemento html
+    // Aplicar ou remover a classe 'dark' no elemento html e body
     if (theme === 'dark') {
       document.documentElement.classList.add('dark')
+      document.body.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
+      document.body.classList.remove('dark')
     }
   }, [theme])
 
@@ -34,8 +36,10 @@ export const ThemeProvider = ({ children }: ProviderProps) => {
     // Aplicar o tema imediatamente
     if (newTheme === 'dark') {
       document.documentElement.classList.add('dark')
+      document.body.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
+      document.body.classList.remove('dark')
     }
   }
 

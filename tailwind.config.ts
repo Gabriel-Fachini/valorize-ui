@@ -7,7 +7,11 @@ const config: Config = {
   ],
   darkMode: 'selector', // Updated for Tailwind CSS v4
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        'xs': '475px',
+      },
+    },
   },
   plugins: [],
 }
