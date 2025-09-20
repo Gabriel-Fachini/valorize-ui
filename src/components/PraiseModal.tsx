@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { animated, useTransition } from '@react-spring/web'
+import { sendCompliment } from '@/services/compliments'
+import type { SendComplimentData } from '@/types'
 
 interface User {
   id: string
@@ -33,6 +35,7 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
   const [coinAmount, setCoinAmount] = useState(25)
   const [message, setMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const steps = ['Usuário', 'Valor', 'Moedas', 'Mensagem', 'Confirmar']
   
@@ -59,6 +62,7 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
     setCoinAmount(25)
     setMessage('')
     setIsSubmitting(false)
+    setError(null)
   }
 
   const closeModal = () => {
@@ -69,12 +73,14 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
   const nextStep = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
+      setError(null) // Clear error when moving to next step
     }
   }
 
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
+      setError(null) // Clear error when moving to previous step
     }
   }
 
@@ -94,18 +100,32 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
     
     setIsSubmitting(true)
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    setIsSubmitting(false)
-    onSuccess({
-      user: selectedUser,
-      value: selectedValue,
-      coins: coinAmount,
-      message,
-    })
-    
-    closeModal()
+    try {
+      // Convert UI types to API types
+      const complimentData: SendComplimentData = {
+        receiverId: selectedUser.id,
+        valueId: Number(selectedValue.id), // Convert string ID to number for API
+        message,
+        coins: coinAmount,
+      }
+
+      // Send compliment via API
+      await sendCompliment(complimentData)
+      
+      setIsSubmitting(false)
+      onSuccess({
+        user: selectedUser,
+        value: selectedValue,
+        coins: coinAmount,
+        message,
+      })
+      
+      closeModal()
+    } catch (error) {
+      setIsSubmitting(false)
+      const errorMessage = error instanceof Error ? error.message : 'Erro inesperado ao enviar elogio'
+      setError(errorMessage)
+    }
   }
 
   return modalTransition((style, item) =>
@@ -228,7 +248,7 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
                   {companyValues.map((value) => (
                     <button
-                      key={value.id}
+                      key={value.name}
                       onClick={() => setSelectedValue(value)}
                       className={`p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 ${
                         selectedValue?.id === value.id
@@ -388,6 +408,13 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
 
           {/* Modal Footer */}
           <div className="p-6 border-t border-gray-200/50 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/50">
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50 rounded-lg">
+                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+              </div>
+            )}
+            
             <div className="flex justify-between">
               <button
                 onClick={currentStep === 0 ? closeModal : prevStep}

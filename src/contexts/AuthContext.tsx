@@ -27,7 +27,12 @@ export const AuthProvider = ({ children }: ProviderProps) => {
 
         // Se há informações do usuário salvas, definir temporariamente
         if (stored) {
-          setUser({ id: stored.sub, email: stored.email, name: stored.name ?? '' })
+          setUser({ 
+            id: stored.sub, 
+            email: stored.email, 
+            name: stored.name ?? '',
+            companyId: stored.companyId,
+          })
         }
 
         // Verificar se os tokens são válidos
@@ -45,16 +50,19 @@ export const AuthProvider = ({ children }: ProviderProps) => {
               const u: UserInfo | null = data.user ?? stored
               if (u) {
                 TokenManager.setUserInfo(u)
-                setUser({ id: u.sub, email: u.email, name: u.name ?? '' })
+                setUser({ 
+                  id: u.sub, 
+                  email: u.email, 
+                  name: u.name ?? '',
+                  companyId: u.companyId,
+                })
               }
             }
-          } catch (verifyError) {
+          } catch {
             // Se falhar ao verificar informações completas, manter as informações básicas
-            console.warn('Failed to get full user info, keeping basic info:', verifyError)
           }
         }
-      } catch (error) {
-        console.error('Auth initialization failed:', error)
+      } catch {
         TokenManager.clearTokens()
         TokenManager.clearUserInfo()
         setUser(null)
@@ -72,7 +80,12 @@ export const AuthProvider = ({ children }: ProviderProps) => {
       if (res.success) {
         TokenManager.setTokens(res.data.access_token, res.data.refresh_token)
         TokenManager.setUserInfo(res.data.user_info)
-        setUser({ id: res.data.user_info.sub, email: res.data.user_info.email, name: res.data.user_info.name ?? '' })
+        setUser({ 
+          id: res.data.user_info.sub, 
+          email: res.data.user_info.email, 
+          name: res.data.user_info.name ?? '',
+          companyId: res.data.user_info.companyId,
+        })
         return { success: true as const }
       }
       return { success: false as const, message: res.message }

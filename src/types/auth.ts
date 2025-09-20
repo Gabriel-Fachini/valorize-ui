@@ -7,6 +7,7 @@ export interface User {
   id: string
   email: string
   name: string
+  companyId?: string
 }
 
 export interface UserInfo {
@@ -15,6 +16,8 @@ export interface UserInfo {
   email_verified?: boolean
   name?: string
   picture?: string
+  companyId?: string
+  isActive?: boolean
 }
 
 export interface LoginData {
