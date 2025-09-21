@@ -3,12 +3,10 @@ import {
   createRoute,
   createRootRoute,
   Outlet,
-  AnyRoute,
 } from '@tanstack/react-router'
 import { LoginPage } from '@/pages/LoginPage'
 import { HomePage } from '@/pages/HomePage'
 import { PraisesPage } from '@/pages/PraisesPage'
-import PlaygroundPage from '@pages/PlaygroundPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useTheme } from '@hooks/useTheme'
 
@@ -61,21 +59,7 @@ const praisesRoute = createRoute({
   ),
 })
 
-// Playground route - only available in development
-const playgroundRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/playground',
-  component: PlaygroundPage,
-})
-
-// Create route tree based on environment
-const routes: AnyRoute[] = [indexRoute, loginRoute, homeRoute, praisesRoute]
-
-// Add playground route only in development
-if (import.meta.env.DEV) {
-  routes.push(playgroundRoute)
-}
-
-const routeTree = rootRoute.addChildren(routes)
+// Create route tree
+const routeTree = rootRoute.addChildren([indexRoute, loginRoute, homeRoute, praisesRoute])
 
 export const router = createRouter({ routeTree })

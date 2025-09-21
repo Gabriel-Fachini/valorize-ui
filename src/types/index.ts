@@ -37,3 +37,19 @@ export {
   emailSchema,
   passwordSchema,
 } from './forms'
+
+// Compliments Types
+export type {
+  ComplimentUser,
+  ComplimentUserWithDepartment,
+  CompanyValue,
+  Compliment,
+  SendComplimentData,
+  SendComplimentResponse,
+  ListReceivableUsersResponse,
+  UserBalance,
+  ComplimentsHistoryResponse,
+  PraiseUser,
+  PraiseValue,
+  PraiseData,
+} from './compliments'

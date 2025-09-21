@@ -1,38 +1,26 @@
 import { useState } from 'react'
 import { animated, useTransition } from '@react-spring/web'
-
-interface User {
-  id: string
-  name: string
-  email: string
-  avatar?: string
-  department: string
-}
-
-interface CompanyValue {
-  id: string
-  name: string
-  description: string
-  color: string
-  icon: string
-}
+import { sendCompliment } from '@/services/compliments'
+import type { SendComplimentData } from '@/types'
+import type { PraiseUser, PraiseCompanyValue } from '@/hooks/usePraisesData'
 
 interface PraiseModalProps {
   isOpen: boolean
   onClose: () => void
-  onSuccess: (data: { user: User; value: CompanyValue; coins: number; message: string }) => void
-  users: User[]
-  companyValues: CompanyValue[]
+  onSuccess: (data: { user: PraiseUser; value: PraiseCompanyValue; coins: number; message: string }) => void
+  users: PraiseUser[]
+  companyValues: PraiseCompanyValue[]
 }
 
 export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }: PraiseModalProps) => {
   const [currentStep, setCurrentStep] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [selectedValue, setSelectedValue] = useState<CompanyValue | null>(null)
+  const [selectedUser, setSelectedUser] = useState<PraiseUser | null>(null)
+  const [selectedValue, setSelectedValue] = useState<PraiseCompanyValue | null>(null)
   const [coinAmount, setCoinAmount] = useState(25)
   const [message, setMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const steps = ['Usuário', 'Valor', 'Moedas', 'Mensagem', 'Confirmar']
   
@@ -59,6 +47,7 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
     setCoinAmount(25)
     setMessage('')
     setIsSubmitting(false)
+    setError(null)
   }
 
   const closeModal = () => {
@@ -69,12 +58,14 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
   const nextStep = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
+      setError(null) // Clear error when moving to next step
     }
   }
 
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
+      setError(null) // Clear error when moving to previous step
     }
   }
 
@@ -94,18 +85,32 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
     
     setIsSubmitting(true)
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    setIsSubmitting(false)
-    onSuccess({
-      user: selectedUser,
-      value: selectedValue,
-      coins: coinAmount,
-      message,
-    })
-    
-    closeModal()
+    try {
+      // Convert UI types to API types
+      const complimentData: SendComplimentData = {
+        receiverId: selectedUser.id,
+        valueId: parseInt(selectedValue.id),
+        message,
+        coins: coinAmount,
+      }
+
+      // Send compliment via API
+      await sendCompliment(complimentData)
+      
+      setIsSubmitting(false)
+      onSuccess({
+        user: selectedUser,
+        value: selectedValue,
+        coins: coinAmount,
+        message,
+      })
+      
+      closeModal()
+    } catch (error) {
+      setIsSubmitting(false)
+      const errorMessage = error instanceof Error ? error.message : 'Erro inesperado ao enviar elogio'
+      setError(errorMessage)
+    }
   }
 
   return modalTransition((style, item) =>
@@ -388,6 +393,13 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
 
           {/* Modal Footer */}
           <div className="p-6 border-t border-gray-200/50 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/50">
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50 rounded-lg">
+                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+              </div>
+            )}
+            
             <div className="flex justify-between">
               <button
                 onClick={currentStep === 0 ? closeModal : prevStep}
