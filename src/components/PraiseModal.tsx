@@ -2,36 +2,21 @@ import { useState } from 'react'
 import { animated, useTransition } from '@react-spring/web'
 import { sendCompliment } from '@/services/compliments'
 import type { SendComplimentData } from '@/types'
-
-interface User {
-  id: string
-  name: string
-  email: string
-  avatar?: string
-  department: string
-}
-
-interface CompanyValue {
-  id: string
-  name: string
-  description: string
-  color: string
-  icon: string
-}
+import type { PraiseUser, PraiseCompanyValue } from '@/hooks/usePraisesData'
 
 interface PraiseModalProps {
   isOpen: boolean
   onClose: () => void
-  onSuccess: (data: { user: User; value: CompanyValue; coins: number; message: string }) => void
-  users: User[]
-  companyValues: CompanyValue[]
+  onSuccess: (data: { user: PraiseUser; value: PraiseCompanyValue; coins: number; message: string }) => void
+  users: PraiseUser[]
+  companyValues: PraiseCompanyValue[]
 }
 
 export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }: PraiseModalProps) => {
   const [currentStep, setCurrentStep] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [selectedValue, setSelectedValue] = useState<CompanyValue | null>(null)
+  const [selectedUser, setSelectedUser] = useState<PraiseUser | null>(null)
+  const [selectedValue, setSelectedValue] = useState<PraiseCompanyValue | null>(null)
   const [coinAmount, setCoinAmount] = useState(25)
   const [message, setMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -104,7 +89,7 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
       // Convert UI types to API types
       const complimentData: SendComplimentData = {
         receiverId: selectedUser.id,
-        valueId: Number(selectedValue.id), // Convert string ID to number for API
+        valueId: parseInt(selectedValue.id),
         message,
         coins: coinAmount,
       }
@@ -248,7 +233,7 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
                   {companyValues.map((value) => (
                     <button
-                      key={value.name}
+                      key={value.id}
                       onClick={() => setSelectedValue(value)}
                       className={`p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 ${
                         selectedValue?.id === value.id

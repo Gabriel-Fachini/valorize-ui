@@ -25,6 +25,7 @@ export const PraisesPage = () => {
     companyValues,
     userBalance,
     praises,
+    currentFilter,
     loading,
     actions,
     computed,
@@ -52,6 +53,10 @@ export const PraisesPage = () => {
     setTimeout(() => setShowSuccess(false), 3000)
     // Refresh balance after successful compliment
     actions.refreshBalance()
+    // Invalidate cache to force refresh of praises
+    actions.invalidateCache()
+    // Refresh praises to show the new one
+    actions.refreshPraises()
   }
 
   const handleNewPraise = () => {
@@ -101,11 +106,13 @@ export const PraisesPage = () => {
         {/* Praise Feed */}
         <PraiseFeed
           praises={praises}
+          currentFilter={currentFilter}
           trail={praisesTrail}
           filterAnimation={filterAnimation}
           feedSectionAnimation={feedSectionAnimation}
           onNewPraise={handleNewPraise}
           onLikePraise={handleLikePraise}
+          onFilterChange={actions.setFilter}
         />
       </div>
 

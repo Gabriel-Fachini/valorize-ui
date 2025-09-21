@@ -1,12 +1,13 @@
 /**
  * Praises Data Hook
- * Manages all data loading and state for the Praises page using useReducer for optimal state management
+ * Manages all data loading and state for the Praises page using React Query for optimal caching
  */
 
-import { useReducer, useEffect, useCallback } from 'react'
-import { listReceivableUsers, getCompanyValues, getUserBalance } from '@/services/compliments'
+import { useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { listReceivableUsers, getCompanyValues, getUserBalance, getComplimentsHistory } from '@/services/compliments'
 import { useAuth } from '@/hooks/useAuth'
-import type { ComplimentUser, CompanyValue as APICompanyValue } from '@/types'
+import type { ComplimentUser, CompanyValue as APICompanyValue, Compliment } from '@/types'
 
 // Types for UI components
 export interface PraiseUser {
@@ -50,7 +51,8 @@ export interface PraisesDataState {
   users: PraiseUser[]
   companyValues: PraiseCompanyValue[]
   userBalance: UserBalance
-  praises: PraiseData[] // TODO: Implement real praises loading
+  praises: PraiseData[]
+  currentFilter: 'all' | 'sent' | 'received'
   loading: {
     users: boolean
     values: boolean
@@ -66,151 +68,17 @@ export interface PraisesDataState {
 }
 
 export interface PraisesDataActions {
-  refreshBalance: () => Promise<void>
-  refreshUsers: () => Promise<void>
-  refreshValues: () => Promise<void>
-  refreshPraises: () => Promise<void>
+  refreshBalance: () => void
+  refreshUsers: () => void
+  refreshValues: () => void
+  refreshPraises: () => void
+  setFilter: (filter: 'all' | 'sent' | 'received') => void
+  invalidateCache: () => void
   clearError: (type: keyof PraisesDataState['errors']) => void
 }
 
-// Action types for the reducer
-type PraisesDataAction =
-  | { type: 'SET_USERS_LOADING'; payload: boolean }
-  | { type: 'SET_VALUES_LOADING'; payload: boolean }
-  | { type: 'SET_BALANCE_LOADING'; payload: boolean }
-  | { type: 'SET_PRAISES_LOADING'; payload: boolean }
-  | { type: 'SET_USERS_SUCCESS'; payload: PraiseUser[] }
-  | { type: 'SET_VALUES_SUCCESS'; payload: PraiseCompanyValue[] }
-  | { type: 'SET_BALANCE_SUCCESS'; payload: UserBalance }
-  | { type: 'SET_PRAISES_SUCCESS'; payload: PraiseData[] }
-  | { type: 'SET_USERS_ERROR'; payload: string }
-  | { type: 'SET_VALUES_ERROR'; payload: string }
-  | { type: 'SET_BALANCE_ERROR'; payload: string }
-  | { type: 'SET_PRAISES_ERROR'; payload: string }
-  | { type: 'CLEAR_ERROR'; payload: keyof PraisesDataState['errors'] }
-
-// Initial state
-const initialState: PraisesDataState = {
-  users: [],
-  companyValues: [],
-  userBalance: { complimentBalance: 0, redeemableBalance: 0 },
-  praises: [], // Empty array - will show empty state
-  loading: {
-    users: true,
-    values: true,
-    balance: true,
-    praises: false, // Not loading praises yet
-  },
-  errors: {},
-}
-
-// Reducer function following React 19 best practices
-const praisesDataReducer = (state: PraisesDataState, action: PraisesDataAction): PraisesDataState => {
-  switch (action.type) {
-    case 'SET_USERS_LOADING':
-      return {
-        ...state,
-        loading: { ...state.loading, users: action.payload },
-        errors: { ...state.errors, users: undefined },
-      }
-    
-    case 'SET_VALUES_LOADING':
-      return {
-        ...state,
-        loading: { ...state.loading, values: action.payload },
-        errors: { ...state.errors, values: undefined },
-      }
-    
-    case 'SET_BALANCE_LOADING':
-      return {
-        ...state,
-        loading: { ...state.loading, balance: action.payload },
-        errors: { ...state.errors, balance: undefined },
-      }
-    
-    case 'SET_PRAISES_LOADING':
-      return {
-        ...state,
-        loading: { ...state.loading, praises: action.payload },
-        errors: { ...state.errors, praises: undefined },
-      }
-    
-    case 'SET_USERS_SUCCESS':
-      return {
-        ...state,
-        users: action.payload,
-        loading: { ...state.loading, users: false },
-        errors: { ...state.errors, users: undefined },
-      }
-    
-    case 'SET_VALUES_SUCCESS':
-      return {
-        ...state,
-        companyValues: action.payload,
-        loading: { ...state.loading, values: false },
-        errors: { ...state.errors, values: undefined },
-      }
-    
-    case 'SET_BALANCE_SUCCESS':
-      return {
-        ...state,
-        userBalance: action.payload,
-        loading: { ...state.loading, balance: false },
-        errors: { ...state.errors, balance: undefined },
-      }
-    
-    case 'SET_PRAISES_SUCCESS':
-      return {
-        ...state,
-        praises: action.payload,
-        loading: { ...state.loading, praises: false },
-        errors: { ...state.errors, praises: undefined },
-      }
-    
-    case 'SET_USERS_ERROR':
-      return {
-        ...state,
-        users: [],
-        loading: { ...state.loading, users: false },
-        errors: { ...state.errors, users: action.payload },
-      }
-    
-    case 'SET_VALUES_ERROR':
-      return {
-        ...state,
-        companyValues: [],
-        loading: { ...state.loading, values: false },
-        errors: { ...state.errors, values: action.payload },
-      }
-    
-    case 'SET_BALANCE_ERROR':
-      return {
-        ...state,
-        userBalance: { complimentBalance: 0, redeemableBalance: 0 },
-        loading: { ...state.loading, balance: false },
-        errors: { ...state.errors, balance: action.payload },
-      }
-    
-    case 'SET_PRAISES_ERROR':
-      return {
-        ...state,
-        praises: [],
-        loading: { ...state.loading, praises: false },
-        errors: { ...state.errors, praises: action.payload },
-      }
-    
-    case 'CLEAR_ERROR':
-      return {
-        ...state,
-        errors: { ...state.errors, [action.payload]: undefined },
-      }
-    
-    default: {
-      const exhaustiveCheck: never = action
-      throw new Error(`Unknown action type: ${action.type}`)
-    }
-  }
-}
+// Action types for the reducer - Not used with React Query
+// Keeping for reference if needed later
 
 // Default company value colors for fallback
 const defaultColors = [
@@ -232,25 +100,15 @@ const mockDepartments = [
 
 export const usePraisesData = () => {
   const { user: currentUser } = useAuth()
-  
-  const [state, dispatch] = useReducer(praisesDataReducer, initialState)
+  const queryClient = useQueryClient()
+  const [currentFilter, setCurrentFilter] = useState<'all' | 'sent' | 'received'>('all')
 
-  // Load receivable users
-  const loadUsers = useCallback(async () => {
-    // Wait for user authentication to be loaded
-    if (currentUser === undefined) {
-      return // Still loading user, wait
-    }
-    
-    dispatch({ type: 'SET_USERS_LOADING', payload: true })
-    
-    if (currentUser === null) {
-      // User is not authenticated, show empty state
-      dispatch({ type: 'SET_USERS_SUCCESS', payload: [] })
-      return
-    }
-    
-    try {
+  // Users query
+  const usersQuery = useQuery({
+    queryKey: ['praises', 'users'],
+    queryFn: async () => {
+      if (!currentUser) return []
+      
       const response = await listReceivableUsers()
       
       // Convert API users to UI format
@@ -259,123 +117,159 @@ export const usePraisesData = () => {
         name: apiUser.name,
         email: apiUser.email,
         avatar: apiUser.avatar ?? undefined,
-        department: mockDepartments[index % mockDepartments.length], // Fallback to mock departments
+        department: mockDepartments[index % mockDepartments.length],
       }))
       
-      dispatch({ type: 'SET_USERS_SUCCESS', payload: uiUsers })
-    } catch {
-      dispatch({ type: 'SET_USERS_ERROR', payload: 'Erro ao carregar usuários disponíveis' })
-    }
-  }, [currentUser])
+      return uiUsers
+    },
+    enabled: !!currentUser,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
 
-  // Load company values
-  const loadCompanyValues = useCallback(async () => {
-    // Wait for user to be loaded before making decisions
-    if (currentUser === undefined) {
-      return // Still loading user, wait
-    }
-    
-    dispatch({ type: 'SET_VALUES_LOADING', payload: true })
-    
-    if (!currentUser?.companyId) {
-      // User is not authenticated or no company ID, show empty state
-      dispatch({ type: 'SET_VALUES_SUCCESS', payload: [] })
-      return
-    }
-
-    try {
+  // Company values query
+  const companyValuesQuery = useQuery({
+    queryKey: ['praises', 'values', currentUser?.companyId],
+    queryFn: async () => {
+      if (!currentUser?.companyId) return []
+      
       const response = await getCompanyValues(currentUser.companyId)
       
       // Convert API values to UI format
       const uiValues: PraiseCompanyValue[] = response.map((apiValue: APICompanyValue, index: number) => ({
-        id: apiValue.companyId,
+        id: apiValue.id.toString(),
         name: apiValue.title,
         description: apiValue.description,
-        color: defaultColors[index % defaultColors.length], // Cycling through default colors
+        color: defaultColors[index % defaultColors.length],
         icon: apiValue.icon,
       }))
       
-      dispatch({ type: 'SET_VALUES_SUCCESS', payload: uiValues })
-    } catch {
-      dispatch({ type: 'SET_VALUES_ERROR', payload: 'Erro ao carregar valores da empresa' })
-    }
-  }, [currentUser])
+      return uiValues
+    },
+    enabled: !!currentUser?.companyId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
 
-  // Load user balance
-  const loadUserBalance = useCallback(async () => {
-    // Wait for user authentication to be loaded
-    if (currentUser === undefined) {
-      return // Still loading user, wait
-    }
-    
-    dispatch({ type: 'SET_BALANCE_LOADING', payload: true })
-    
-    if (currentUser === null) {
-      // User is not authenticated, show default empty balance
-      dispatch({ type: 'SET_BALANCE_SUCCESS', payload: { complimentBalance: 0, redeemableBalance: 0 } })
-      return
-    }
-    
-    try {
-      const balance = await getUserBalance()
-      dispatch({ type: 'SET_BALANCE_SUCCESS', payload: balance })
-    } catch {
-      dispatch({ type: 'SET_BALANCE_ERROR', payload: 'Erro ao carregar saldo' })
-    }
-  }, [currentUser])
+  // User balance query
+  const balanceQuery = useQuery({
+    queryKey: ['praises', 'balance'],
+    queryFn: async () => {
+      if (!currentUser) return { complimentBalance: 0, redeemableBalance: 0 }
+      
+      return await getUserBalance()
+    },
+    enabled: !!currentUser,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
 
-  // Load praises (placeholder for future implementation)
-  const loadPraises = useCallback(async () => {
-    // TODO: Implement real praises loading when API is available
-    dispatch({ type: 'SET_PRAISES_SUCCESS', payload: [] })
-  }, [])
+  // Praises query
+  const praisesQuery = useQuery({
+    queryKey: ['praises', 'history', currentFilter],
+    queryFn: async () => {
+      if (!currentUser) return []
+      
+      let allPraises: Compliment[] = []
+      
+      if (currentFilter === 'all') {
+        // Load both sent and received
+        const [sentPraises, receivedPraises] = await Promise.all([
+          getComplimentsHistory('sent'),
+          getComplimentsHistory('received'),
+        ])
+        allPraises = [...sentPraises, ...receivedPraises]
+      } else {
+        // Load only the specific type
+        allPraises = await getComplimentsHistory(currentFilter)
+      }
+      
+      // Convert API compliments to UI format
+      const uiPraises: PraiseData[] = allPraises.map((compliment: Compliment) => ({
+        id: compliment.id,
+        from: {
+          name: compliment.sender?.name ?? 'Usuário desconhecido',
+          avatar: compliment.sender?.avatar ?? undefined,
+        },
+        to: {
+          name: compliment.receiver?.name ?? 'Usuário desconhecido',
+          avatar: compliment.receiver?.avatar ?? undefined,
+        },
+        message: compliment.message,
+        value: compliment.value?.title ?? 'Valor não informado',
+        coins: compliment.coins,
+        createdAt: compliment.createdAt,
+      }))
+      
+      // Sort by creation date (newest first)
+      uiPraises.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      
+      return uiPraises
+    },
+    enabled: !!currentUser,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
 
   // Actions
   const actions: PraisesDataActions = {
-    refreshBalance: loadUserBalance,
-    refreshUsers: loadUsers,
-    refreshValues: loadCompanyValues,
-    refreshPraises: loadPraises,
-    clearError: (type) => {
-      dispatch({ type: 'CLEAR_ERROR', payload: type })
+    refreshBalance: () => {
+      queryClient.invalidateQueries({ queryKey: ['praises', 'balance'] })
+    },
+    refreshUsers: () => {
+      queryClient.invalidateQueries({ queryKey: ['praises', 'users'] })
+    },
+    refreshValues: () => {
+      queryClient.invalidateQueries({ queryKey: ['praises', 'values'] })
+    },
+    refreshPraises: () => {
+      queryClient.invalidateQueries({ queryKey: ['praises', 'history'] })
+    },
+    setFilter: (filter) => {
+      setCurrentFilter(filter)
+    },
+    invalidateCache: () => {
+      queryClient.invalidateQueries({ queryKey: ['praises'] })
+    },
+    clearError: () => {
+      // Errors are automatically handled by React Query
+      // This is kept for compatibility
     },
   }
 
-  // Load data on mount and user change
-  useEffect(() => {
-    loadUsers()
-  }, [loadUsers])
-
-  useEffect(() => {
-    loadCompanyValues()
-  }, [loadCompanyValues])
-
-  useEffect(() => {
-    loadUserBalance()
-  }, [loadUserBalance])
-
-  useEffect(() => {
-    loadPraises()
-  }, [loadPraises])
-
   // Computed properties
-  const hasAnyError = Object.values(state.errors).some(error => error !== undefined)
-  const isAnyLoading = Object.values(state.loading).some(loading => loading)
-  const combinedErrorMessage = Object.values(state.errors)
-    .filter(error => error !== undefined && error !== null && error !== '')
-    .join('; ') || null
+  const hasAnyError = !!(usersQuery.error ?? companyValuesQuery.error ?? balanceQuery.error ?? praisesQuery.error)
+  const isAnyLoading = usersQuery.isLoading || companyValuesQuery.isLoading || balanceQuery.isLoading || praisesQuery.isLoading
+  const combinedErrorMessage = [
+    usersQuery.error?.message,
+    companyValuesQuery.error?.message,
+    balanceQuery.error?.message,
+    praisesQuery.error?.message,
+  ].filter(Boolean).join('; ') || null
 
   return {
-    ...state,
+    users: usersQuery.data ?? [],
+    companyValues: companyValuesQuery.data ?? [],
+    userBalance: balanceQuery.data ?? { complimentBalance: 0, redeemableBalance: 0 },
+    praises: praisesQuery.data ?? [],
+    currentFilter,
+    loading: {
+      users: usersQuery.isLoading,
+      values: companyValuesQuery.isLoading,
+      balance: balanceQuery.isLoading,
+      praises: praisesQuery.isLoading,
+    },
+    errors: {
+      users: usersQuery.error?.message,
+      values: companyValuesQuery.error?.message,
+      balance: balanceQuery.error?.message,
+      praises: praisesQuery.error?.message,
+    },
     actions,
     computed: {
       hasAnyError,
       isAnyLoading,
       combinedErrorMessage,
-      hasUsers: state.users.length > 0,
-      hasCompanyValues: state.companyValues.length > 0,
-      hasPraises: state.praises.length > 0,
-      canSendPraise: state.users.length > 0 && state.companyValues.length > 0 && !isAnyLoading,
+      hasUsers: (usersQuery.data?.length ?? 0) > 0,
+      hasCompanyValues: (companyValuesQuery.data?.length ?? 0) > 0,
+      hasPraises: (praisesQuery.data?.length ?? 0) > 0,
+      canSendPraise: (usersQuery.data?.length ?? 0) > 0 && (companyValuesQuery.data?.length ?? 0) > 0 && !isAnyLoading,
     },
   }
 }

@@ -10,6 +10,8 @@ import type {
   ListReceivableUsersResponse,
   UserBalance,
   CompanyValue,
+  Compliment,
+  ComplimentsHistoryResponse,
 } from '@/types'
 
 /**
@@ -62,4 +64,17 @@ export const getUserBalance = async (): Promise<UserBalance> => {
 export const getMyBalance = async (): Promise<UserBalance> => {
   const response = await api.get<UserBalance>('/users/me/get-my-balance')
   return response.data
+}
+
+/**
+ * Get compliments history
+ * @param type - Filter type: 'sent' or 'received'
+ */
+export const getComplimentsHistory = async (type: 'sent' | 'received'): Promise<Compliment[]> => {
+  const response = await api.get<ComplimentsHistoryResponse>('/compliments/history', {
+    params: { type },
+  })
+  
+  // Extract the compliments array from the response
+  return response.data.compliments
 }

@@ -10,20 +10,24 @@ import type { PraiseData } from '@/hooks/usePraisesData'
 
 interface PraiseFeedProps {
   praises: PraiseData[]
+  currentFilter: 'all' | 'sent' | 'received'
   trail: Array<Record<string, unknown>>
   filterAnimation: Record<string, unknown>
   feedSectionAnimation: Record<string, unknown>
   onNewPraise?: () => void
   onLikePraise?: (praiseId: string) => void
+  onFilterChange?: (filter: 'all' | 'sent' | 'received') => void
 }
 
 export const PraiseFeed = ({ 
   praises, 
+  currentFilter,
   trail, 
   filterAnimation, 
   feedSectionAnimation,
   onNewPraise,
   onLikePraise,
+  onFilterChange,
 }: PraiseFeedProps) => {
   return (
     <animated.div style={feedSectionAnimation} className="space-y-6">
@@ -32,13 +36,34 @@ export const PraiseFeed = ({
           Feed de Reconhecimentos
         </h2>
         <animated.div style={filterAnimation} className="flex flex-wrap gap-2 sm:space-x-2">
-          <button className="px-3 py-2 sm:px-4 sm:py-2 bg-white/60 dark:bg-gray-700/60 backdrop-blur-sm border border-white/30 dark:border-gray-600/30 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80 hover:scale-105 duration-200">
+          <button 
+            onClick={() => onFilterChange?.('all')}
+            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 duration-200 ${
+              currentFilter === 'all'
+                ? 'bg-purple-100 dark:bg-purple-900/40 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
+                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
+            }`}
+          >
             Todos
           </button>
-          <button className="px-3 py-2 sm:px-4 sm:py-2 bg-white/60 dark:bg-gray-700/60 backdrop-blur-sm border border-white/30 dark:border-gray-600/30 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80 hover:scale-105 duration-200">
+          <button 
+            onClick={() => onFilterChange?.('received')}
+            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 duration-200 ${
+              currentFilter === 'received'
+                ? 'bg-green-100 dark:bg-green-900/40 border-green-300 dark:border-green-700 text-green-700 dark:text-green-300'
+                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
+            }`}
+          >
             Recebidos
           </button>
-          <button className="px-3 py-2 sm:px-4 sm:py-2 bg-white/60 dark:bg-gray-700/60 backdrop-blur-sm border border-white/30 dark:border-gray-600/30 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80 hover:scale-105 duration-200">
+          <button 
+            onClick={() => onFilterChange?.('sent')}
+            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 duration-200 ${
+              currentFilter === 'sent'
+                ? 'bg-blue-100 dark:bg-blue-900/40 border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300'
+                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
+            }`}
+          >
             Enviados
           </button>
         </animated.div>

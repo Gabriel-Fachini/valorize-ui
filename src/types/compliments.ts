@@ -15,6 +15,7 @@ export interface ComplimentUserWithDepartment extends ComplimentUser {
 }
 
 export interface CompanyValue {
+  id: number
   companyId: string
   title: string
   description: string
@@ -56,6 +57,16 @@ export interface ListReceivableUsersResponse {
 export interface UserBalance {
   complimentBalance: number
   redeemableBalance: number
+}
+
+export interface ComplimentsHistoryResponse {
+  metainfo: {
+    total: number
+    page?: number
+    limit?: number
+    [key: string]: unknown
+  }
+  compliments: Compliment[]
 }
 
 // UI specific types (for backward compatibility with existing components)

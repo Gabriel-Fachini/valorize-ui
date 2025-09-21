@@ -48,6 +48,7 @@ export type {
   SendComplimentResponse,
   ListReceivableUsersResponse,
   UserBalance,
+  ComplimentsHistoryResponse,
   PraiseUser,
   PraiseValue,
   PraiseData,
