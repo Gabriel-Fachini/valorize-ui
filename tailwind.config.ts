@@ -5,7 +5,6 @@ const config: Config = {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'selector', // Updated for Tailwind CSS v4
   theme: {
     extend: {
       screens: {
