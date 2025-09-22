@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { prizeService } from '@/services/prize.service'
-import { Prize, PrizeFilters } from '@/types/prize.types'
+import { PrizeFilters } from '@/types/prize.types'
 
 export const usePrizes = (filters?: PrizeFilters, page = 1, pageSize = 12) => {
   return useQuery({

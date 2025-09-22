@@ -28,7 +28,8 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title }) =
   useChain([slideRef, scaleRef], [0, 0.1])
 
   const bind = useDrag(({ direction: [xDir], distance, cancel }) => {
-    if (distance > 50) {
+    const dist = Math.sqrt(distance[0] ** 2 + distance[1] ** 2)
+    if (dist > 50) {
       cancel()
       if (xDir > 0 && currentIndex > 0) {
         setCurrentIndex(prev => prev - 1)
