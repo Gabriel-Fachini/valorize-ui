@@ -1,27 +1,14 @@
-import { useAuth } from '@hooks/useAuth'
-import { useTheme } from '@hooks/useTheme'
 import { useNavigate } from '@tanstack/react-router'
 import { useSpring, animated, useTrail } from '@react-spring/web'
 
 export const HomePage = () => {
-  const { user, logout } = useAuth()
-  const { isDark, toggleTheme } = useTheme()
   const navigate = useNavigate()
-
 
   // Animação principal da página - entrada pela direita
   const pageAnimation = useSpring({
     from: { transform: 'translateX(100%)', opacity: 0 },
     to: { transform: 'translateX(0%)', opacity: 1 },
     config: { tension: 180, friction: 25 },
-  })
-
-  // Animação do header
-  const headerAnimation = useSpring({
-    from: { transform: 'translateY(-100%)', opacity: 0 },
-    to: { transform: 'translateY(0%)', opacity: 1 },
-    delay: 600,                    // ← Reduzido de 200ms para 100ms
-    config: { tension: 200, friction: 15 },  // ← Mais rápido
   })
 
   // Animação para os cards de estatísticas
@@ -72,63 +59,6 @@ export const HomePage = () => {
 
   return (
     <animated.div style={pageAnimation} className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Header */}
-      <animated.div style={headerAnimation} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
-          <div className="flex justify-between items-center h-16 sm:h-20">
-            {/* Logo Section */}
-            <div className="flex items-center">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center mr-2 sm:mr-3 shadow-lg">
-                <span className="text-white font-bold text-lg sm:text-xl">V</span>
-              </div>
-              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                Valorize
-              </span>
-            </div>
-
-            {/* User Info & Actions */}
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* User Info - Hidden on very small screens */}
-              <div className="hidden xs:flex items-center space-x-2 sm:space-x-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
-                  <span className="text-white font-semibold text-xs sm:text-sm">
-                    {user?.name?.charAt(0)?.toUpperCase() ?? 'U'}
-                  </span>
-                </div>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Olá, {user?.name}!</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-32">{user?.email}</p>
-                </div>
-              </div>
-
-              {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 sm:p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 shadow-sm hover:shadow-md"
-                title={isDark ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
-              >
-                {isDark ? (
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg>
-                )}
-              </button>
-
-              {/* Logout Button */}
-              <button
-                onClick={() => void logout()}
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-3 py-2 sm:px-6 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl"
-              >
-                Sair
-              </button>
-            </div>
-          </div>
-        </div>
-      </animated.div>
 
       {/* Hero Section */}
       <div className="relative overflow-hidden">
@@ -247,7 +177,9 @@ export const HomePage = () => {
                 De vales-presente a experiências únicas.
               </p>
               <div className="flex justify-center">
-                <button className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl">
+                <button
+                  onClick={() => navigate({ to: '/prizes' })}
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl">
                   Explorar Loja
                 </button>
               </div>

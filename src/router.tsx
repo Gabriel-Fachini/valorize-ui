@@ -7,6 +7,8 @@ import {
 import { LoginPage } from '@/pages/LoginPage'
 import { HomePage } from '@/pages/HomePage'
 import { PraisesPage } from '@/pages/PraisesPage'
+import { PrizesPage } from '@/pages/PrizesPage'
+import { PrizeDetailsPage } from '@/pages/PrizeDetailsPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useTheme } from '@hooks/useTheme'
 
@@ -59,7 +61,27 @@ const praisesRoute = createRoute({
   ),
 })
 
+const prizesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/prizes',
+  component: () => (
+    <ProtectedRoute>
+      <PrizesPage />
+    </ProtectedRoute>
+  ),
+})
+
+const prizeDetailsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/prizes/$prizeId',
+  component: () => (
+    <ProtectedRoute>
+      <PrizeDetailsPage />
+    </ProtectedRoute>
+  ),
+})
+
 // Create route tree
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute, homeRoute, praisesRoute])
+const routeTree = rootRoute.addChildren([indexRoute, loginRoute, homeRoute, praisesRoute, prizesRoute, prizeDetailsRoute])
 
 export const router = createRouter({ routeTree })

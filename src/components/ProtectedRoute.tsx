@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useAuth } from '@hooks/useAuth'
 import { useNavigate } from '@tanstack/react-router'
+import { Navbar } from '@/components/layout/Navbar'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -38,6 +39,11 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return null
   }
 
-  // Se há usuário, renderiza o conteúdo
-  return <>{children}</>
+  // Se há usuário, renderiza o conteúdo com a Navbar
+  return (
+    <>
+      <Navbar />
+      {children}
+    </>
+  )
 }
