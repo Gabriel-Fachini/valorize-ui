@@ -247,7 +247,9 @@ export const HomePage = () => {
                 De vales-presente a experiências únicas.
               </p>
               <div className="flex justify-center">
-                <button className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl">
+                <button
+                  onClick={() => navigate({ to: '/prizes' })}
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl">
                   Explorar Loja
                 </button>
               </div>
