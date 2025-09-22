@@ -32,7 +32,7 @@ export const PrizeDetailsPage: React.FC = () => {
   const handleRedeem = async () => {
     if (!prize) return
 
-    const requiredPrefs = prize.preferences?.filter(p => p.required) || []
+    const requiredPrefs = prize.preferences?.filter(p => p.required) ?? []
     const missingPrefs = requiredPrefs.filter(p => !preferences[p.label])
 
     if (missingPrefs.length > 0) {

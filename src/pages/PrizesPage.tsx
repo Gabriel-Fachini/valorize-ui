@@ -4,7 +4,6 @@ import { PrizeFilters } from '@/components/prizes/PrizeFilters'
 import { usePrizes } from '@/hooks/usePrizes'
 import { PrizeFilters as Filters } from '@/types/prize.types'
 import { useSpring, animated } from '@react-spring/web'
-import { Navbar } from '@/components/layout/Navbar'
 
 export const PrizesPage: React.FC = () => {
   const [filters, setFilters] = React.useState<Filters>({})
@@ -55,7 +54,6 @@ export const PrizesPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">
-      <Navbar />
 
       <div className="relative">
         <div className="absolute inset-0 opacity-20 dark:opacity-30" style={{
