@@ -1,15 +1,13 @@
 import { useState } from 'react'
-import { animated, useTrail, config } from '@react-spring/web'
+import { animated, useSpring } from '@react-spring/web'
 import { PraiseModal } from '@/components/PraiseModal'
-import { 
-  PraiseHeader, 
+import {
   StatsCards, 
   PraiseFeed, 
   SuccessModal, 
 } from '@/components/praises'
 import { 
   usePageEntrance,
-  usePageHeaderEntrance,
   useFabEntrance,
   useListTrail,
   useStatsTrail,
@@ -31,7 +29,6 @@ export const PraisesPage = () => {
   const {
     users,
     companyValues,
-    userBalance,
     praises,
     currentFilter,
     loading,
@@ -41,7 +38,6 @@ export const PraisesPage = () => {
 
   // Animations (hooks diretos evitando função que invoca hooks internamente)
   const pageAnimation = usePageEntrance()
-  const headerAnimation = usePageHeaderEntrance()
   const fabAnimation = useFabEntrance()
   const statsTrail = useStatsTrail(3)
   const praisesTrail = useListTrail(praises)
@@ -75,6 +71,12 @@ export const PraisesPage = () => {
     void praiseId // Placeholder to avoid unused parameter warning
   }
 
+  const headerSpring = useSpring({
+    from: { opacity: 0, transform: 'translateY(-20px)' },
+    to: { opacity: 1, transform: 'translateY(0px)' },
+    config: { tension: 280, friction: 60 },
+  })
+
   return (
     <animated.div 
       style={pageAnimation}
@@ -87,15 +89,18 @@ export const PraisesPage = () => {
         <div className="absolute -bottom-40 right-1/3 w-72 h-72 bg-gradient-to-br from-pink-400/20 to-rose-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
       </div>
 
-      {/* Header */}
-      <PraiseHeader
-        userBalance={userBalance}
-        isLoadingBalance={loading.balance}
-        style={headerAnimation}
-      />
-
       {/* Main Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+
+        {/* Header */}
+        <animated.div style={headerSpring} className="mb-8">
+        <h1 className="mb-2 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
+          Elogios
+        </h1>
+        <p className="text-lg text-gray-600 dark:text-gray-400">
+          Elogie seus colegas e fortaleça a cultura positiva da empresa!
+        </p>
+      </animated.div>
         
         {/* Error Message */}
         {computed.combinedErrorMessage && (

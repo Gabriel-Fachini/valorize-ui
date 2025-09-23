@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import { useAuth } from '@hooks/useAuth'
 import { useNavigate } from '@tanstack/react-router'
-import { Navbar } from '@/components/layout/Navbar'
+import { Sidebar } from '@/components/layout/Sidebar'
+import { useSidebar } from '@/hooks/useSidebar'
+import { useSpring, animated } from '@react-spring/web'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -9,7 +11,14 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, isLoading } = useAuth()
+  const { desktopSidebarCollapsed } = useSidebar()
   const navigate = useNavigate()
+
+  // Animação para o conteúdo principal
+  const mainContentAnimation = useSpring({
+    marginLeft: desktopSidebarCollapsed ? '80px' : '320px',
+    config: { tension: 280, friction: 30 },
+  })
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -39,11 +48,21 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return null
   }
 
-  // Se há usuário, renderiza o conteúdo com a Navbar
+  // Se há usuário, renderiza o conteúdo com a Sidebar
   return (
     <>
-      <Navbar />
-      {children}
+      <Sidebar />
+      <animated.div style={mainContentAnimation} className="lg:block hidden">
+        <main className="min-h-screen bg-gray-50 dark:bg-gray-800">
+          {children}
+        </main>
+      </animated.div>
+      {/* Mobile version (no margin) */}
+      <div className="lg:hidden">
+        <main className="min-h-screen bg-gray-50 dark:bg-gray-800">
+          {children}
+        </main>
+      </div>
     </>
   )
 }

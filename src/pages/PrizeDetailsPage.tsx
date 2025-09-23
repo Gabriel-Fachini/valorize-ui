@@ -1,6 +1,7 @@
 import { type FC, useState } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePrizeById, useRedeemPrize } from '@/hooks/usePrizes'
+import { useUser } from '@/hooks/useUser'
 import { ImageCarousel } from '@/components/prizes/ImageCarousel'
 import { useSpring, animated, useTrail } from '@react-spring/web'
 
@@ -9,6 +10,7 @@ export const PrizeDetailsPage: FC = () => {
   const navigate = useNavigate()
   const { data: prize, isLoading, error } = usePrizeById(prizeId)
   const redeemMutation = useRedeemPrize()
+  const { onBalanceMovement } = useUser()
 
   const [preferences, setPreferences] = useState<Record<string, string>>({})
   const [showRedeemModal, setShowRedeemModal] = useState(false)
@@ -53,6 +55,9 @@ export const PrizeDetailsPage: FC = () => {
         prizeId: prize.id,
         preferences,
       })
+      
+      // Invalidar saldo após resgate de prêmio
+      onBalanceMovement()
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Erro ao resgatar prêmio:', error)

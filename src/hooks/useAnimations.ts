@@ -31,8 +31,8 @@ export const usePageHeaderEntrance = (delay = ANIMATION_DELAYS.pageHeader) => {
 
 export const useStatsTrail = (count: number) =>
   useTrail(count, {
-    from: { opacity: 0, scale: 0.4, y: 20 },
-    to: { opacity: 1, scale: 1, y: 0 },
+    from: { opacity: 0, scale: 0.7 },
+    to: { opacity: 1, scale: 1 },
     config: config.gentle,
   })
 
