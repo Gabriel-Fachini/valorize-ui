@@ -78,7 +78,7 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
     onFiltersChange({})
   }
 
-  const hasActiveFilters = !!(filters.category || filters.priceRange || filters.search)
+  const hasActiveFilters = !!(filters.category ?? filters.priceRange ?? filters.search)
 
   return (
     <div className="mb-8">
@@ -129,7 +129,7 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
           <input
             type="text"
             placeholder="Buscar prêmios..."
-            value={filters.search || ''}
+            value={filters.search ?? ''}
             onChange={handleSearchChange}
             className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 pl-10 text-sm text-gray-700 dark:text-white placeholder-gray-400 backdrop-blur-xl transition-all focus:border-purple-500 dark:focus:border-purple-500/50 focus:outline-none focus:ring-2 focus:ring-purple-500/20 sm:w-64"
           />

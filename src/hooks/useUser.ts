@@ -56,6 +56,11 @@ export const useUser = () => {
       queryKey: ['transactions'],
       exact: false, 
     })
+    // Invalida histórico de resgates
+    queryClient.invalidateQueries({ 
+      queryKey: ['redemptions'],
+      exact: false,
+    })
   }
 
   // Função para invalidar todos os dados do usuário

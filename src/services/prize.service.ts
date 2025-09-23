@@ -319,7 +319,7 @@ export const prizeService = {
     await new Promise(resolve => setTimeout(resolve, 300))
 
     const prize = mockPrizes.find(p => p.id === id)
-    return prize || null
+    return prize ?? null
   },
 
   async redeemPrize(prizeId: string, preferences: Record<string, string>): Promise<boolean> {
