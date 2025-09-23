@@ -62,7 +62,7 @@ export const PrizesPage: React.FC = () => {
 
         <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <animated.div style={headerSpring} className="mb-8">
-            <h1 className="mb-4 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
+            <h1 className="mb-2 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
               Loja de Prêmios
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-400">

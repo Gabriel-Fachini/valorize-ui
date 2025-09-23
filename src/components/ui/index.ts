@@ -5,4 +5,8 @@
 
 // Input components
 export * from './Input'
+
+// Skeleton components
+export * from './Skeleton'
+
 export { ProtectedRoute } from '../ProtectedRoute'

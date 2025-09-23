@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { animated, useTransition } from '@react-spring/web'
 import { sendCompliment } from '@/services/compliments'
+import { useUser } from '@/hooks/useUser'
 import type { SendComplimentData } from '@/types'
 import type { PraiseUser, PraiseCompanyValue } from '@/hooks/usePraisesData'
 
@@ -21,6 +22,9 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
   const [message, setMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  
+  // Hook para gerenciar dados do usuário e invalidar saldo após movimentação
+  const { onBalanceMovement } = useUser()
 
   const steps = ['Usuário', 'Valor', 'Moedas', 'Mensagem', 'Confirmar']
   
@@ -96,6 +100,9 @@ export const PraiseModal = ({ isOpen, onClose, onSuccess, users, companyValues }
 
       // Send compliment via API
       await sendCompliment(complimentData)
+      
+      // Invalidar saldo após movimentação
+      onBalanceMovement()
       
       setIsSubmitting(false)
       onSuccess({

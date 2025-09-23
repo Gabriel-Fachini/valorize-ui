@@ -1,6 +1,6 @@
 import React from 'react'
 import { Prize } from '@/types/prize.types'
-import { useSpring, animated } from '@react-spring/web'
+import { useSpring, animated, config } from '@react-spring/web'
 import { useNavigate } from '@tanstack/react-router'
 
 interface PrizeCardProps {
@@ -24,7 +24,8 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
     boxShadow: isHovered
       ? '0 20px 25px -5px rgb(0 0 0 / 0.3), 0 10px 10px -5px rgb(0 0 0 / 0.2)'
       : '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05)',
-    config: { tension: 300, friction: 10 },
+    // config: { tension: 300, friction: 10 },
+    config: config.gentle,
   })
 
   const categoryColors = {

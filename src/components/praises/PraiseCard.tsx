@@ -52,7 +52,7 @@ export const PraiseCard = ({
   return (
     <animated.div
       style={style}
-      className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl hover:shadow-2xl duration-300 group"
+      className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl hover:shadow-2xl group"
     >
       <div className="flex items-start space-x-3 sm:space-x-4">
         {/* Avatar From */}
@@ -105,7 +105,7 @@ export const PraiseCard = ({
               {onLike && (
                 <button 
                   onClick={handleLike}
-                  className="p-1.5 sm:p-2 rounded-full bg-gray-100/80 dark:bg-gray-700/80 hover:bg-gray-200/80 dark:hover:bg-gray-600/80 transition-colors"
+                  className="p-1.5 sm:p-2 rounded-full bg-gray-100/80 dark:bg-gray-700/80 hover:bg-gray-200/80 dark:hover:bg-gray-600/80"
                 >
                   <span className="text-red-500 text-sm sm:text-base">❤️</span>
                 </button>

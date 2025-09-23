@@ -25,9 +25,10 @@ const defaultStats: StatCard[] = [
 ]
 
 export const StatsCards = ({ stats = defaultStats, trail }: StatsCardsProps) => {
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
-      {trail.map((style, index) => {
+      {trail.reverse().map((style, index) => {
         const stat = stats[index]
         if (!stat) return null
         
@@ -35,7 +36,7 @@ export const StatsCards = ({ stats = defaultStats, trail }: StatsCardsProps) => 
           <animated.div 
             key={index}
             style={style}
-            className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl hover:shadow-2xl hover:scale-105 duration-300"
+            className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl hover:shadow-2xl hover:scale-105"
           >
             <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 sm:gap-0">
               <div className="text-center sm:text-left">
