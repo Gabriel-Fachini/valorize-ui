@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { animated } from '@react-spring/web'
+import { animated, useTrail, config } from '@react-spring/web'
 import { PraiseModal } from '@/components/PraiseModal'
 import { 
   PraiseHeader, 
@@ -7,7 +7,15 @@ import {
   PraiseFeed, 
   SuccessModal, 
 } from '@/components/praises'
-import { useAnimations } from '@/hooks/useAnimations'
+import { 
+  usePageEntrance,
+  usePageHeaderEntrance,
+  useFabEntrance,
+  useListTrail,
+  useStatsTrail,
+  useCardEntrance,
+  useSuccessTransition,
+} from '@/hooks/useAnimations'
 import { usePraisesData, type PraiseUser, type PraiseCompanyValue } from '@/hooks/usePraisesData'
 
 export const PraisesPage = () => {
@@ -31,16 +39,15 @@ export const PraisesPage = () => {
     computed,
   } = usePraisesData()
 
-  // Animations
-  const animations = useAnimations()
-  const pageAnimation = animations.pageEntrance()
-  const headerAnimation = animations.pageHeaderEntrance()
-  const fabAnimation = animations.fabEntrance()
-  const statsTrail = animations.statsTrail(3)
-  const praisesTrail = animations.listTrail(praises)
-  const feedSectionAnimation = animations.cardEntrance()
-  const filterAnimation = animations.cardEntrance()
-  const successTransition = animations.successTransition(showSuccess)
+  // Animations (hooks diretos evitando função que invoca hooks internamente)
+  const pageAnimation = usePageEntrance()
+  const headerAnimation = usePageHeaderEntrance()
+  const fabAnimation = useFabEntrance()
+  const statsTrail = useStatsTrail(3)
+  const praisesTrail = useListTrail(praises)
+  const feedSectionAnimation = useCardEntrance()
+  const filterAnimation = useCardEntrance()
+  const successTransition = useSuccessTransition(showSuccess)
 
   const handlePraiseSuccess = (data: { 
     user: PraiseUser
