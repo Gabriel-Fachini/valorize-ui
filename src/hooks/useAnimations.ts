@@ -3,7 +3,7 @@
  * Provides reusable animation utilities for the entire application
  */
 
-import { useSpring, useTrail, useTransition } from '@react-spring/web'
+import { useSpring, useTrail, useTransition, config } from '@react-spring/web'
 import { 
   ANIMATION_DELAYS,
   getAnimationConfig,
@@ -86,12 +86,14 @@ export const useAnimations = () => {
     })
   }
   
-  const listTrail = <T>(items: T[], delay = ANIMATION_DELAYS.medium) => {
+  const listTrail = <T>(items: T[]) => {
     return useTrail(items.length, {
-      from: { opacity: 0, y: 50, scale: 0.9 },
-      to: { opacity: 1, y: 0, scale: 1 },
-      delay,
-      config: getAnimationConfig('trail'),
+      from: { opacity: 0, scale: 0.7 },
+      to: { opacity: 1, scale: 1 },
+      delay: 0,
+      // config: getAnimationConfig('trail'),
+      config: config.gentle,
+      // loop: true
     })
   }
   

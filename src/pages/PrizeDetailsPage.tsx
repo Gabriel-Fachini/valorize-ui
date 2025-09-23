@@ -1,17 +1,17 @@
-import React from 'react'
+import { type FC, useState } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePrizeById, useRedeemPrize } from '@/hooks/usePrizes'
 import { ImageCarousel } from '@/components/prizes/ImageCarousel'
 import { useSpring, animated, useTrail } from '@react-spring/web'
 
-export const PrizeDetailsPage: React.FC = () => {
+export const PrizeDetailsPage: FC = () => {
   const { prizeId } = useParams({ from: '/prizes/$prizeId' })
   const navigate = useNavigate()
   const { data: prize, isLoading, error } = usePrizeById(prizeId)
   const redeemMutation = useRedeemPrize()
 
-  const [preferences, setPreferences] = React.useState<Record<string, string>>({})
-  const [showRedeemModal, setShowRedeemModal] = React.useState(false)
+  const [preferences, setPreferences] = useState<Record<string, string>>({})
+  const [showRedeemModal, setShowRedeemModal] = useState(false)
 
   const fadeIn = useSpring({
     from: { opacity: 0, transform: 'translateY(20px)' },

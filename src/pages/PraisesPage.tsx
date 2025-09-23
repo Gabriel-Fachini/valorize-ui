@@ -113,6 +113,7 @@ export const PraisesPage = () => {
           onNewPraise={handleNewPraise}
           onLikePraise={handleLikePraise}
           onFilterChange={actions.setFilter}
+          loading={loading.praises}
         />
       </div>
 
