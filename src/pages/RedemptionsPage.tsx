@@ -297,7 +297,7 @@ export const RedemptionsPage: React.FC = () => {
                   className="rounded-3xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-br from-white/80 via-white/70 to-purple-50/80 dark:from-white/10 dark:via-white/5 dark:to-purple-500/10 p-12 text-center backdrop-blur-2xl shadow-xl shadow-purple-500/5 dark:shadow-purple-500/10"
                 >
                   <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-500/20 dark:to-indigo-500/20 shadow-lg">
-                    <span className="text-3xl animate-bounce" style={{ animationDelay: '1s' }}>🎁</span>
+                    <span className="text-3xl" style={{ animationDelay: '1s' }}>🎁</span>
                   </div>
                   <h3 className="mb-3 text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
                     Nenhum resgate encontrado
