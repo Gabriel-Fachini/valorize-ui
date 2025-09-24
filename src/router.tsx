@@ -13,6 +13,7 @@ import { PrizeDetailsPage } from '@/pages/PrizeDetailsPage'
 import { RedemptionsPage } from '@/pages/RedemptionsPage'
 import { RedemptionDetailsPage } from '@/pages/RedemptionDetailsPage'
 import { SettingsPage } from '@/pages/SettingsPage'
+import { TransactionsPage } from '@/pages/TransactionsPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useTheme } from '@hooks/useTheme'
 
@@ -115,6 +116,16 @@ const settingsRoute = createRoute({
   ),
 })
 
+const transactionsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/transacoes',
+  component: () => (
+    <ProtectedRoute>
+      <TransactionsPage />
+    </ProtectedRoute>
+  ),
+})
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -126,6 +137,7 @@ const routeTree = rootRoute.addChildren([
   redemptionsRoute,
   redemptionDetailsRoute,
   settingsRoute,
+  transactionsRoute,
 ])
 
 export const router = createRouter({ routeTree })

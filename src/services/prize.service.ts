@@ -322,10 +322,11 @@ export const prizeService = {
     return prize ?? null
   },
 
-  async redeemPrize(prizeId: string, preferences: Record<string, string>): Promise<boolean> {
+  async redeemPrize(_prizeId: string, _preferences: Record<string, string>): Promise<boolean> {
     await new Promise(resolve => setTimeout(resolve, 1000))
 
-    console.log('Redeeming prize:', prizeId, preferences)
+    // Log para debugging durante desenvolvimento
+    // console.log('Redeeming prize:', _prizeId, _preferences)
     return true
   },
 }

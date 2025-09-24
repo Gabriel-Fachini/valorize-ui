@@ -39,7 +39,20 @@
 - **Seções**: Perfil (edição de nome e imagem) e Preferências (tema, fonte, contraste, animações)
 - **Mock de Perfil**: `user.service.ts` com localStorage
 - **Acessibilidade**: `AccessibilityProvider` com persistência e aplicação imediata
-- **Folder Structure**: Organização clara por domínio [[memory:8683315]]
+
+#### 7. Sistema de Transações (100%) ✅ NOVO
+- **Página Completa**: `/transacoes` totalmente funcional
+- **Componentes**: 6 componentes especializados criados
+- **API Integration**: Serviço completo com `/wallets/transactions`
+- **Hook Customizado**: `useTransactions` com TanStack Query
+- **Paginação Infinita**: Sistema "carregar mais" implementado
+- **Filtros Avançados**: Por tipo de moeda, transação e período
+- **Responsividade**: Mobile-first design
+- **Dark Mode**: Suporte completo
+- **Performance**: Otimizado com cache e skeleton loading
+
+#### 8. Folder Structure (100%)
+- **Organização clara**: Por domínio [[memory:8683315]]
 - **Path Aliases**: @ imports configurados
 - **Contexts**: Auth e Theme providers [[memory:8683315]]
 - **Services**: Camada de serviços estruturada
