@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   createRouter,
   createRoute,
@@ -9,6 +10,8 @@ import { HomePage } from '@/pages/HomePage'
 import { PraisesPage } from '@/pages/PraisesPage'
 import { PrizesPage } from '@/pages/PrizesPage'
 import { PrizeDetailsPage } from '@/pages/PrizeDetailsPage'
+import { RedemptionsPage } from '@/pages/RedemptionsPage'
+import { RedemptionDetailsPage } from '@/pages/RedemptionDetailsPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useTheme } from '@hooks/useTheme'
 
@@ -81,7 +84,36 @@ const prizeDetailsRoute = createRoute({
   ),
 })
 
+const redemptionsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/resgates',
+  component: () => (
+    <ProtectedRoute>
+      <RedemptionsPage />
+    </ProtectedRoute>
+  ),
+})
+
+const redemptionDetailsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/resgates/$redemptionId',
+  component: () => (
+    <ProtectedRoute>
+      <RedemptionDetailsPage />
+    </ProtectedRoute>
+  ),
+})
+
 // Create route tree
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute, homeRoute, praisesRoute, prizesRoute, prizeDetailsRoute])
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  loginRoute,
+  homeRoute,
+  praisesRoute,
+  prizesRoute,
+  prizeDetailsRoute,
+  redemptionsRoute,
+  redemptionDetailsRoute,
+])
 
 export const router = createRouter({ routeTree })
