@@ -1,8 +1,9 @@
 import React from 'react'
 import { ProfileForm } from '@/components/settings/ProfileForm'
 import { PreferencesForm } from '@/components/settings/PreferencesForm'
+import { AddressTab } from '@/components/settings/AddressTab'
 
-type TabKey = 'profile' | 'preferences'
+type TabKey = 'profile' | 'preferences' | 'addresses'
 
 export const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = React.useState<TabKey>('profile')
@@ -43,6 +44,17 @@ export const SettingsPage: React.FC = () => {
           >
             Preferências
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('addresses')}
+            className={`px-4 py-2 rounded-xl transition-all duration-200 border ${
+              activeTab === 'addresses'
+                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-transparent shadow-lg shadow-purple-500/20'
+                : 'bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 border-white/20 dark:border-gray-700/40 hover:bg-white/70 dark:hover:bg-gray-800/70'
+            }`}
+          >
+            Endereços
+          </button>
         </div>
 
         {/* Tab content */}
@@ -55,13 +67,21 @@ export const SettingsPage: React.FC = () => {
               </p>
               <ProfileForm />
             </div>
-          ) : (
+          ) : activeTab === 'preferences' ? (
             <div>
               <h2 className="text-lg font-semibold mb-4">Preferências</h2>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Personalize tema, tamanho da fonte e opções de acessibilidade.
               </p>
               <PreferencesForm />
+            </div>
+          ) : (
+            <div>
+              <h2 className="text-lg font-semibold mb-4">Endereços de entrega</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Cadastre endereços para receber seus prêmios. Defina um como padrão para facilitar futuros resgates.
+              </p>
+              <AddressTab />
             </div>
           )}
         </section>
