@@ -148,6 +148,7 @@ export const Sidebar: React.FC = React.memo(() => {
     { path: '/elogios', label: 'Elogios', icon: '✨' },
     { path: '/prizes', label: 'Prêmios', icon: '🎁' },
     { path: '/resgates', label: 'Resgates', icon: '📦' },
+    { path: '/settings', label: 'Configurações', icon: '⚙️' },
   ], [])
 
   const isActive = React.useCallback((path: string) => location.pathname === path, [location.pathname])

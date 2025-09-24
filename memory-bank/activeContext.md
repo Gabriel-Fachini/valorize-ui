@@ -239,14 +239,15 @@ export const useFeature = (options?: Options) => {
 ### Esta Semana
 1. ✅ Finalizar estrutura do Dashboard
 2. 🔄 Implementar widgets básicos
-3. 📋 Criar componente PraiseModal
-4. 📋 Integrar com endpoint de usuários
+3. ✅ Página de Configurações (Perfil + Preferências)
+4. ✅ Contexto de Acessibilidade (fonte/contraste/animações)
 
 ### Próximas 2 Semanas
 1. 📋 Sistema completo de elogios
 2. 📋 Feed de reconhecimentos
 3. 📋 Sistema de notificações
 4. 📋 Perfil de usuário
+5. 📋 Sincronizar preferências com backend (quando disponível)
 
 ### Próximo Mês
 1. 📋 Loja de prêmios
@@ -267,6 +268,11 @@ export const useFeature = (options?: Options) => {
 - **Cursor**: AI pair programming
 - **React DevTools**: Debug de componentes
 - **Network Tab**: Análise de requests
+
+### Novas Decisões
+- **Página de Configurações**: Adicionada rota protegida `/settings` com duas abas (Perfil e Preferências).
+- **Mock de Usuário**: Serviço `user.service.ts` usa localStorage para get/update perfil quando backend indisponível e sincroniza `TokenManager.user_info`.
+- **Acessibilidade**: `AccessibilityProvider` aplica preferências no `documentElement` (data-font, classes `hc` e `reduce-motion`) com persistência em localStorage.
 
 ### Recursos Úteis
 - [TailwindCSS v4 Docs](https://tailwindcss.com)
