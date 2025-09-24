@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { SidebarProvider } from '@/contexts/SidebarContext'
+import { AccessibilityProvider } from '@/contexts/AccessibilityContext'
 import { router } from '@/router'
 
 // Create a client with cache configuration
@@ -21,11 +22,13 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <SidebarProvider>
-          <AuthProvider>
-            <RouterProvider router={router} />
-          </AuthProvider>
-        </SidebarProvider>
+        <AccessibilityProvider>
+          <SidebarProvider>
+            <AuthProvider>
+              <RouterProvider router={router} />
+            </AuthProvider>
+          </SidebarProvider>
+        </AccessibilityProvider>
       </ThemeProvider>
     </QueryClientProvider>
   )

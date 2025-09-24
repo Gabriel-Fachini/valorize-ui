@@ -33,6 +33,12 @@
 - **Animations**: Transições CSS configuradas
 
 #### 5. Estrutura de Projeto (100%)
+-
+#### 6. Página de Configurações (100%)
+- **Rota Protegida**: `/settings`
+- **Seções**: Perfil (edição de nome e imagem) e Preferências (tema, fonte, contraste, animações)
+- **Mock de Perfil**: `user.service.ts` com localStorage
+- **Acessibilidade**: `AccessibilityProvider` com persistência e aplicação imediata
 - **Folder Structure**: Organização clara por domínio [[memory:8683315]]
 - **Path Aliases**: @ imports configurados
 - **Contexts**: Auth e Theme providers [[memory:8683315]]
