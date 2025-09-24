@@ -146,6 +146,7 @@ export const Sidebar: React.FC = React.memo(() => {
   const navLinks = React.useMemo(() => [
     { path: '/home', label: 'Início', icon: '🏠' },
     { path: '/elogios', label: 'Elogios', icon: '✨' },
+    { path: '/transacoes', label: 'Transações', icon: '📊' },
     { path: '/prizes', label: 'Prêmios', icon: '🎁' },
     { path: '/resgates', label: 'Resgates', icon: '📦' },
     { path: '/settings', label: 'Configurações', icon: '⚙️' },

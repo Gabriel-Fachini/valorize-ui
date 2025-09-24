@@ -26,6 +26,11 @@ O frontend do Valorize está com a estrutura base implementada e pronta para rec
   - `/` - Redirect para login
   - `/login` - Página de autenticação
   - `/home` - Dashboard (protegida)
+  - `/elogios` - Sistema de elogios (protegida)
+  - `/transacoes` - Histórico de transações (protegida) ✅ NOVA
+  - `/prizes` - Loja de prêmios (protegida)
+  - `/resgates` - Resgates (protegida)  
+  - `/settings` - Configurações (protegida)
 - **Layout System**: Root layout com Outlet
 
 #### 4. Contextos Globais
@@ -37,6 +42,7 @@ O frontend do Valorize está com a estrutura base implementada e pronta para rec
 - **Axios Instance**: Configurado com interceptors
 - **API Service**: Camada de serviços estruturada
 - **Auth Service**: Login, logout, refresh token
+- **Wallets Service**: Transações e saldo de carteiras ✅ NOVO
 - **Error Handling**: Tratamento consistente de erros
 
 #### 6. Design System Base
@@ -45,16 +51,51 @@ O frontend do Valorize está com a estrutura base implementada e pronta para rec
 - **Typography**: Sistema tipográfico consistente
 - **Components Base**: Button, Card, Loading states
 
+#### 7. Sistema de Transações ✅ IMPLEMENTADO
+**Status**: Funcionalidade completa integrada ao projeto
+
+**Componentes Criados**:
+- `TransactionsPage`: Página principal com layout responsivo
+- `TransactionCard`: Card individual mostrando detalhes da transação
+- `SkeletonTransactionCard`: Estado de carregamento 
+- `TransactionFilters`: Filtros avançados por tipo e período
+- `TransactionFeed`: Lista com paginação infinita
+- `BalanceHeader`: Header com saldo atual em cards visuais
+- `EmptyState`: Estado vazio específico para transações
+
+**Features Implementadas**:
+- **Histórico completo**: Todas as movimentações de moedas
+- **Saldo anterior**: Mostra o saldo antes de cada transação
+- **Paginação infinita**: Sistema "carregar mais" otimizado
+- **Filtros avançados**: Por tipo de moeda, tipo de transação, período
+- **Design responsivo**: Mobile-first com animações suaves
+- **Loading states**: Skeleton cards durante carregamento
+- **Dark mode**: Suporte nativo completo
+
+**Integração API**:
+- Hook `useTransactions` com TanStack Query
+- Serviço `wallets.service.ts` com endpoint `/wallets/transactions`
+- Tipos TypeScript completos em `transaction.types.ts`
+- Cache inteligente com invalidação automática
+
+**Navegação**:
+- Rota protegida `/transacoes` 
+- Link no sidebar com ícone 📊
+- Integração completa com sistema de roteamento
+
 ### 🔄 Em Desenvolvimento Ativo
 
 #### Dashboard Principal (Próxima Prioridade)
-**Objetivo**: Criar a página home com widgets informativos e ações rápidas.
+**Status**: Estrutura criada, faltam widgets dinâmicos
+
+**Objetivo**: Criar a página home com widgets informativos e ações rápidas integradas ao sistema de transações.
 
 **Componentes Planejados**:
 ```typescript
 // Estrutura do Dashboard
 <DashboardLayout>
-  <StatsWidget>           // Saldo de moedas
+  <BalanceWidget>         // Saldo de moedas (integrado com transações)
+  <RecentTransactionsWidget> // Últimas movimentações
   <RecentPraisesWidget>   // Últimos elogios
   <QuickActionsWidget>    // Ações rápidas
   <TeamActivityWidget>    // Atividade da equipe
@@ -63,6 +104,8 @@ O frontend do Valorize está com a estrutura base implementada e pronta para rec
 
 **Features do Dashboard**:
 - Grid responsivo com widgets
+- Widget de saldo integrado com dados de transações
+- Quick access para página de transações
 - Cards com gradientes e sombras
 - Animações de entrada suaves
 - Skeleton loading para dados

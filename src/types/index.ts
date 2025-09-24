@@ -53,3 +53,20 @@ export type {
   PraiseValue,
   PraiseData,
 } from './compliments'
+
+// Transaction Types
+export type {
+  Transaction,
+  TransactionType,
+  BalanceType,
+  TransactionFilters,
+  TransactionPagination,
+  TransactionsResponse,
+  TransactionQueryParams,
+  TransactionCardProps,
+  TransactionFiltersProps,
+  TransactionFeedProps,
+  UseTransactionsReturn,
+  TransactionDisplayInfo,
+  TransactionGroup,
+} from './transaction.types'
