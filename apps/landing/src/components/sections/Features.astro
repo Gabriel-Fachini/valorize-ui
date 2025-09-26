@@ -1,0 +1,77 @@
+---
+import Container from '../ui/Container.astro'
+import Card from '../ui/Card.astro'
+import CheckIcon from '../icons/CheckIcon.astro'
+import { content } from '../../constants/content'
+---
+
+<section id="features" class="py-20 bg-white">
+  <Container>
+    <!-- Section Header -->
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+        Tudo que você precisa para 
+        <span class="text-gradient">transformar sua cultura</span>
+      </h2>
+      <p class="text-xl text-gray-600 leading-relaxed">
+        Recursos completos para criar uma cultura de reconhecimento e engajamento autêntica na sua empresa.
+      </p>
+    </div>
+    
+    <!-- Features Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {content.features.map((feature) => (
+        <Card variant="feature" className="p-8 h-full">
+          <!-- Feature Icon -->
+          <div class="flex items-center justify-center w-16 h-16 bg-gradient-brand rounded-2xl mb-6 text-2xl">
+            {feature.icon}
+          </div>
+          
+          <!-- Feature Content -->
+          <div class="space-y-4">
+            <h3 class="text-2xl font-semibold text-gray-900">
+              {feature.title}
+            </h3>
+            
+            <p class="text-gray-600 leading-relaxed">
+              {feature.description}
+            </p>
+            
+            <!-- Benefits List -->
+            <ul class="space-y-3 pt-4">
+              {feature.benefits.map((benefit) => (
+                <li class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <CheckIcon className="text-green-500" size={16} />
+                  </div>
+                  <span class="text-sm font-medium text-gray-700">{benefit}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Card>
+      ))}
+    </div>
+    
+    <!-- Bottom CTA -->
+    <div class="text-center mt-16">
+      <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8">
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">
+          Pronto para começar?
+        </h3>
+        <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
+          Teste gratuitamente por 14 dias e veja como a Valorize pode transformar o engajamento da sua equipe.
+        </p>
+        <button 
+          id="features-trial-button"
+          class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl text-white bg-gradient-brand hover:bg-gradient-brand-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary-500 transition-all duration-200 shadow-lg hover:shadow-xl"
+        >
+          Começar Teste Gratuito
+          <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </Container>
+</section>

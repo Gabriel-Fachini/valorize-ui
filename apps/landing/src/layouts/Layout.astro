@@ -1,0 +1,125 @@
+---
+import '../styles/global.css'
+
+const { 
+  title, 
+  description = 'Plataforma completa de engajamento que conecta valores, reconhecimento e desenvolvimento profissional. Transforme a cultura da sua empresa.',
+  keywords = 'engajamento, cultura empresarial, reconhecimento, gamificação, RH, recursos humanos',
+  image = '/images/og-image.jpg',
+  type = 'website',
+  noindex = false
+} = Astro.props
+
+// Fallback para Astro.site quando undefined (durante build)
+const site = Astro.site?.toString() || 'https://valorize.com'
+const canonicalURL = new URL(Astro.url.pathname, site)
+const imageURL = new URL(image, site)
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Robots -->
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imageURL} />
+    <meta property="og:site_name" content="Valorize" />
+    <meta property="og:locale" content="pt_BR" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageURL} />
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="msapplication-TileColor" content="#3b82f6" />
+  </head>
+  <body class="antialiased">
+    <div id="app">
+      <slot />
+    </div>
+    
+    <!-- Theme toggle script -->
+    <script is:inline>
+      // Check for saved theme preference or default to dark mode
+      const getThemePreference = () => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      };
+      
+      const isDark = getThemePreference() === 'dark';
+      document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+      
+      if (typeof localStorage !== 'undefined') {
+        // Watch the document element for changes and update localStorage
+        const observer = new MutationObserver(() => {
+          const hasClass = document.documentElement.classList.contains('dark');
+          localStorage.setItem('theme', hasClass ? 'dark' : 'light');
+        });
+        
+        observer.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['class'],
+        });
+      }
+      
+      // Global theme toggle function
+      window.toggleTheme = () => {
+        document.documentElement.classList.toggle('dark');
+      };
+    </script>
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Valorize",
+        "url": "https://valorize.com",
+        "logo": "https://valorize.com/images/logo.png",
+        "description": "Plataforma completa de engajamento que conecta valores, reconhecimento e desenvolvimento profissional",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+55-11-99999-9999",
+          "contactType": "customer service",
+          "availableLanguage": "Portuguese"
+        },
+        "sameAs": [
+          "https://linkedin.com/company/valorize",
+          "https://instagram.com/valorize"
+        ]
+      }
+    </script>
+  </body>
+</html>

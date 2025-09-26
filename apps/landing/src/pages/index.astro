@@ -1,0 +1,124 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Header from '../components/layout/Header.astro'
+import Footer from '../components/layout/Footer.astro'
+import Hero from '../components/sections/Hero.astro'
+import Features from '../components/sections/Features.astro'
+import HowItWorks from '../components/sections/HowItWorks.astro'
+import Pricing from '../components/sections/Pricing.astro'
+import FAQ from '../components/sections/FAQ.astro'
+import CTA from '../components/sections/CTA.astro'
+import "../styles/global.css"
+
+
+const title = 'Valorize - Transforme a cultura da sua empresa'
+const description = 'Plataforma completa de engajamento que conecta valores, reconhecimento e desenvolvimento profissional. Aumente a retenção e motivação dos seus colaboradores.'
+---
+
+<Layout title={title} description={description}>
+  <Header />
+  
+  <main>
+    <Hero />
+    <Features />
+    <HowItWorks />
+    <Pricing />
+    <FAQ />
+    <CTA />
+  </main>
+  
+  <Footer />
+</Layout>
+
+<script>
+  // Trial form modal functionality
+  
+  // Create modal and form instances
+  let trialModal: HTMLElement | null = null
+  
+  const createTrialModal = () => {
+    // Remove existing modal if any
+    if (trialModal) {
+      trialModal.remove()
+    }
+    
+    // Create modal HTML
+    trialModal = document.createElement('div')
+    trialModal.id = 'trial-modal'
+    trialModal.className = 'fixed inset-0 z-50 hidden'
+    
+    trialModal.innerHTML = `
+      <div class="fixed inset-0 bg-black/50 backdrop-blur-sm modal-backdrop"></div>
+      <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="relative w-full max-w-md bg-white rounded-xl shadow-2xl p-6 animate-fade-in modal-content">
+          <button class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 modal-close">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <div id="modal-form-container"></div>
+        </div>
+      </div>
+    `
+    
+    document.body.appendChild(trialModal)
+    
+    // Add event listeners
+    const backdrop = trialModal.querySelector('.modal-backdrop')
+    const closeButton = trialModal.querySelector('.modal-close')
+    
+    const closeModal = () => {
+      trialModal?.classList.add('hidden')
+      document.body.style.overflow = 'unset'
+    }
+    
+    backdrop?.addEventListener('click', closeModal)
+    closeButton?.addEventListener('click', closeModal)
+    
+    // ESC key listener
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeModal()
+      }
+    }
+    
+    document.addEventListener('keydown', handleEscape)
+    
+    return trialModal
+  }
+  
+  const showTrialModal = () => {
+    if (!trialModal) {
+      createTrialModal()
+    }
+    
+    trialModal?.classList.remove('hidden')
+    document.body.style.overflow = 'hidden'
+    
+    // Analytics tracking
+    if (typeof window !== 'undefined' && 'gtag' in window) {
+      const gtag = (window as unknown as { gtag: (event: string, action: string, params?: Record<string, string>) => void }).gtag
+      gtag('event', 'trial_modal_opened', {
+        event_category: 'engagement'
+      })
+    }
+  }
+  
+  // Add click listeners to all trial buttons
+  document.addEventListener('DOMContentLoaded', () => {
+    const trialButtons = document.querySelectorAll('[id*="trial-button"], [data-plan]')
+    
+    trialButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault()
+        showTrialModal()
+      })
+    })
+  })
+</script>Welcome from '../components/Welcome.astro';
+import Layout from '../layouts/Layout.astro';
+
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+---
+
