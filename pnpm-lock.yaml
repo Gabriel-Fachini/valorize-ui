@@ -48,6 +48,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.27.0
         version: 2.29.7(@types/node@24.5.2)
+      '@tailwindcss/postcss':
+        specifier: ^4.1.13
+        version: 4.1.13
       '@types/node':
         specifier: ^24.2.0
         version: 24.5.2
@@ -220,6 +223,10 @@ importers:
         version: 8.44.1(eslint@9.36.0(jiti@2.6.0))(typescript@5.8.3)
 
 packages:
+
+  '@alloc/quick-lru@5.2.0':
+    resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
+    engines: {node: '>=10'}
 
   '@astrojs/check@0.7.0':
     resolution: {integrity: sha512-UTqwOeKNu9IYZmJXEeWnQuTdSd/pX58Hl4TUARsMlT97SVDL//kLBE4T/ctxRz6J573N87oE5ddtW/uOOnQTug==}
@@ -1173,6 +1180,9 @@ packages:
   '@tailwindcss/oxide@4.1.13':
     resolution: {integrity: sha512-CPgsM1IpGRa880sMbYmG1s4xhAy3xEt1QULgTJGQmZUeNgXFR7s1YxYygmJyBGtou4SyEosGAGEeYqY7R53bIA==}
     engines: {node: '>= 10'}
+
+  '@tailwindcss/postcss@4.1.13':
+    resolution: {integrity: sha512-HLgx6YSFKJT7rJqh9oJs/TkBFhxuMOfUKSBEPYwV+t78POOBsdQ7crhZLzwcH3T0UyUuOzU/GK5pk5eKr3wCiQ==}
 
   '@tailwindcss/vite@4.0.0':
     resolution: {integrity: sha512-4uukMiU9gHui8KMPMdWic5SP1O/tmQ1NFSRNrQWmcop5evAVl/LZ6/LuWL3quEiecp2RBcRWwqJrG+mFXlRlew==}
@@ -3910,6 +3920,8 @@ packages:
 
 snapshots:
 
+  '@alloc/quick-lru@5.2.0': {}
+
   '@astrojs/check@0.7.0(prettier@3.6.2)(typescript@5.8.3)':
     dependencies:
       '@astrojs/language-server': 2.15.4(prettier@3.6.2)(typescript@5.8.3)
@@ -4876,6 +4888,14 @@ snapshots:
       '@tailwindcss/oxide-wasm32-wasi': 4.1.13
       '@tailwindcss/oxide-win32-arm64-msvc': 4.1.13
       '@tailwindcss/oxide-win32-x64-msvc': 4.1.13
+
+  '@tailwindcss/postcss@4.1.13':
+    dependencies:
+      '@alloc/quick-lru': 5.2.0
+      '@tailwindcss/node': 4.1.13
+      '@tailwindcss/oxide': 4.1.13
+      postcss: 8.5.6
+      tailwindcss: 4.1.13
 
   '@tailwindcss/vite@4.0.0(vite@7.1.7(@types/node@24.5.2)(jiti@2.6.0)(lightningcss@1.30.1)(yaml@2.8.1))':
     dependencies:

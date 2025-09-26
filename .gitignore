@@ -13,6 +13,10 @@ dist-ssr
 *.local
 .turbo
 
+# Lock files from other package managers (use pnpm-lock.yaml only)
+package-lock.json
+yarn.lock
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
