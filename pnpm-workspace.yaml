@@ -12,6 +12,7 @@ catalog:
   # Build tools
   typescript: ~5.8.3
   vite: ^7.0.4
+  '@types/node': ^24.2.0
   
   # Styling
   tailwindcss: ^4.1.11

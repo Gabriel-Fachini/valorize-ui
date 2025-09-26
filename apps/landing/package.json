@@ -1,0 +1,34 @@
+{
+  "name": "landing",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "eslint . && astro check",
+    "lint:fix": "eslint . --fix",
+    "type-check": "astro check",
+    "clean": "rm -rf dist .astro node_modules .turbo",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.0.0-alpha.3",
+    "astro": "^5.14.0",
+    "class-variance-authority": "catalog:",
+    "clsx": "catalog:",
+    "tailwind-merge": "catalog:",
+    "tailwindcss": "^4.0.0-alpha.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.7.0",
+    "@eslint/js": "^9.32.0",
+    "@types/node": "catalog:",
+    "eslint": "^9.32.0",
+    "eslint-plugin-astro": "^1.3.1",
+    "globals": "^16.3.0",
+    "typescript": "catalog:",
+    "typescript-eslint": "^8.39.0"
+  }
+}
