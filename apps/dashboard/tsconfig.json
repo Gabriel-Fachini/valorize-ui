@@ -1,0 +1,75 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2020", // Set the JavaScript language version for emitted JavaScript and include compatible library declarations
+    "lib": ["ES2020", "DOM", "DOM.Iterable"], // Specify a set of bundled library declaration files that describe the target runtime environment
+    "types": ["node"], // Include Node.js type definitions for config files
+    "module": "ESNext", // Specify what module code is generated
+    "jsx": "react-jsx", // Specify what JSX code is generated (React 17+ automatic runtime)
+    "useDefineForClassFields": true, // Emit ECMAScript-standard-compliant class fields
+
+    /* Module Resolution */
+    "moduleResolution": "Bundler", // Specify how TypeScript looks up a file from a given module specifier (for bundlers like Vite)
+    "baseUrl": ".", // Specify the base directory to resolve non-relative module names
+    "paths": {
+      "@/*": ["./src/*"], // Specify a set of entries that re-map imports to additional lookup locations
+      "@components/*": ["./src/components/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@services/*": ["./src/services/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@helpers/*": ["./src/helpers/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@translations/*": ["./src/translations/*"],
+      "@types": ["./src/types"]
+    },
+    "resolveJsonModule": true, // Enable importing .json files
+    "allowImportingTsExtensions": true, // Allow imports to include TypeScript file extensions (.ts, .tsx)
+    "moduleDetection": "force", // Control what method is used to detect module-format JS files
+
+    /* JavaScript Support */
+    "allowJs": false, // Allow JavaScript files to be a part of your program (disabled for TypeScript-only projects)
+    "checkJs": false, // Enable error reporting in type-checked JavaScript files
+
+    /* Emit */
+    "noEmit": true, // Disable emitting files from a compilation (handled by bundler like Vite)
+    "isolatedModules": true, // Ensure that each file can be safely transpiled without relying on other imports
+
+    /* Interop Constraints */
+    "esModuleInterop": true, // Emit additional JavaScript to ease support for importing CommonJS modules
+    "allowSyntheticDefaultImports": true, // Allow 'import x from y' when a module doesn't have a default export
+    "forceConsistentCasingInFileNames": true, // Ensure that casing is correct in imports
+
+    /* Type Checking */
+    "strict": true, // Enable all strict type-checking options
+    "noImplicitAny": true, // Enable error reporting for expressions and declarations with an implied 'any' type
+    "strictNullChecks": true, // When type checking, take into account 'null' and 'undefined'
+    "strictFunctionTypes": true, // When assigning functions, check to ensure parameters and the return values are subtype-compatible
+    "strictBindCallApply": true, // Check that the arguments for 'bind', 'call', and 'apply' methods match the original function
+    "strictPropertyInitialization": true, // Check for class properties that are declared but not set in the constructor
+    "noImplicitThis": true, // Enable error reporting when 'this' is given the type 'any'
+    "useUnknownInCatchVariables": true, // Default catch clause variables as 'unknown' instead of 'any'
+    "alwaysStrict": true, // Ensure 'use strict' is always emitted
+    "noUnusedLocals": true, // Enable error reporting when local variables aren't read
+    "noUnusedParameters": true, // Raise an error when a function parameter isn't read
+    "exactOptionalPropertyTypes": false, // Interpret optional property types as written, rather than adding 'undefined' (temporarily disabled)
+    "noImplicitReturns": true, // Enable error reporting for codepaths that do not explicitly return in a function
+    "noFallthroughCasesInSwitch": true, // Enable error reporting for fallthrough cases in switch statements
+    "noUncheckedIndexedAccess": false, // Add 'undefined' to a type when accessed using an index (temporarily disabled)
+    "noImplicitOverride": true, // Ensure overriding members in derived classes are marked with an override modifier
+    "noPropertyAccessFromIndexSignature": false, // Enforces using indexed accessors for keys declared using an indexed type
+    "noUncheckedSideEffectImports": true, // Check side effect imports
+
+    /* Completeness */
+    "skipLibCheck": true // Skip type checking all .d.ts files
+  },
+  "include": [
+    "src/**/*", // Include all files in src directory and subdirectories
+    "vite.config.ts" // Include Vite configuration file
+  ],
+  "exclude": [
+    "node_modules", // Exclude node_modules directory
+    "dist", // Exclude build output directory
+    "build" // Exclude alternative build output directory
+  ]
+}
