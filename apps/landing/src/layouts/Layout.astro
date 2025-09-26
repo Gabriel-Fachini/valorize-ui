@@ -68,6 +68,38 @@ const imageURL = new URL(image, site)
       <slot />
     </div>
     
+    <!-- Theme toggle script -->
+    <script is:inline>
+      // Check for saved theme preference or default to dark mode
+      const getThemePreference = () => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      };
+      
+      const isDark = getThemePreference() === 'dark';
+      document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+      
+      if (typeof localStorage !== 'undefined') {
+        // Watch the document element for changes and update localStorage
+        const observer = new MutationObserver(() => {
+          const hasClass = document.documentElement.classList.contains('dark');
+          localStorage.setItem('theme', hasClass ? 'dark' : 'light');
+        });
+        
+        observer.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['class'],
+        });
+      }
+      
+      // Global theme toggle function
+      window.toggleTheme = () => {
+        document.documentElement.classList.toggle('dark');
+      };
+    </script>
+    
     <!-- Schema.org structured data -->
     <script type="application/ld+json">
       {
