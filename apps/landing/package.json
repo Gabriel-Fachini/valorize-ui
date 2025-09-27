@@ -17,8 +17,6 @@
     "@astrojs/react": "^4.4.0",
     "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/vite": "^4.0.0",
-    "@types/react": "catalog:",
-    "@types/react-dom": "catalog:",
     "astro": "^5.14.0",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
@@ -41,6 +39,6 @@
   },
   "packageManager": "pnpm@10.17.1",
   "engines": {
-    "node": "20.0.0"
+    "node": ">=22.0.0"
   }
 }
