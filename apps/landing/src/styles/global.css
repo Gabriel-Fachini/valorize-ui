@@ -15,13 +15,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ensure dark mode works properly */
+/* Force dark mode */
 html {
   scroll-behavior: smooth;
-  color-scheme: light;
-}
-
-html.dark {
   color-scheme: dark;
 }
 
@@ -35,12 +31,8 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(to bottom right, rgb(243 244 246), rgb(229 231 235), rgb(243 244 246));
-  transition: background-color 0.3s ease;
-}
-
-html.dark body {
   background: linear-gradient(to bottom right, rgb(17 24 39), rgb(31 41 55), rgb(17 24 39));
+  transition: background-color 0.3s ease;
 }
 
 /* Custom animations */
@@ -188,4 +180,27 @@ html.dark body {
 .focus-visible:focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
+}
+
+/* Accessibility: Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Disable specific animations for motion-sensitive users */
+  .animate-spin,
+  .animate-pulse,
+  .animate-bounce {
+    animation-play-state: paused !important;
+  }
+  
+  /* Remove transforms that could cause motion sickness */
+  .hover\\:scale-105:hover,
+  .hover\\:scale-110:hover {
+    transform: none !important;
+  }
 }

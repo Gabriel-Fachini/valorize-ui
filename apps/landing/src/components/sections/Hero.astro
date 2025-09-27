@@ -3,7 +3,7 @@ import Container from '../ui/Container.astro'
 import { content } from '../../constants/content'
 ---
 
-<section class="relative min-h-screen flex items-center overflow-hidden">
+<section class="relative min-h-screen flex items-center overflow-hidden pt-16 md:pt-0">
   <!-- Background with animated gradients -->
   <div class="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-purple-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900/20"></div>
   
@@ -18,7 +18,7 @@ import { content } from '../../constants/content'
     <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <!-- Text Content -->
       <div class="space-y-8 animate-slide-up">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
           <span class="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent drop-shadow-sm">{content.hero.headline}</span>
         </h1>
         
@@ -27,18 +27,18 @@ import { content } from '../../constants/content'
         </p>
         
         <!-- Stats -->
-        <div class="flex flex-wrap gap-6 pt-4">
-          <div class="glass-card rounded-xl px-6 py-4 text-center hover:scale-105 transition-all duration-300">
-            <div class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">500+</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">Colaboradores</div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 justify-items-center">
+          <div class="glass-card rounded-xl px-4 py-3 sm:px-6 sm:py-4 text-center hover:scale-105 transition-all duration-300 w-full max-w-xs flex flex-col justify-center">
+            <div class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">500+</div>
+            <div class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Colaboradores</div>
           </div>
-          <div class="glass-card rounded-xl px-6 py-4 text-center hover:scale-105 transition-all duration-300">
-            <div class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">73%</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">Melhoria na Retenção</div>
+          <div class="glass-card rounded-xl px-4 py-3 sm:px-6 sm:py-4 text-center hover:scale-105 transition-all duration-300 w-full max-w-xs flex flex-col justify-center">
+            <div class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">73%</div>
+            <div class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Melhoria na Retenção</div>
           </div>
-          <div class="glass-card rounded-xl px-6 py-4 text-center hover:scale-105 transition-all duration-300">
-            <div class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">40%</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">Mais Engajamento</div>
+          <div class="glass-card rounded-xl px-4 py-3 sm:px-6 sm:py-4 text-center hover:scale-105 transition-all duration-300 w-full max-w-xs flex flex-col justify-center">
+            <div class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">40%</div>
+            <div class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Mais Engajamento</div>
           </div>
         </div>
         
@@ -46,22 +46,18 @@ import { content } from '../../constants/content'
         <div class="flex flex-col sm:flex-row gap-4 pt-6">
           <button 
             id="hero-trial-button"
-            class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-offset-gray-900 transition-all duration-300 shadow-xl shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-105 active:scale-95"
+            class="w-full sm:w-auto inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-offset-gray-900 transition-all duration-300 shadow-xl shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-105 active:scale-95"
           >
             {content.hero.ctaPrimary}
-            <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
+            <span class="ml-2">→</span>
           </button>
           
           <a 
             href="/demonstracao"
-            class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl text-gray-700 dark:text-gray-200 glass-card hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-offset-gray-900 transition-all duration-300 border border-white/20 dark:border-gray-600/30"
+            class="w-full sm:w-auto inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl text-gray-700 dark:text-gray-200 glass-card hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-offset-gray-900 transition-all duration-300 border border-white/20 dark:border-gray-600/30"
           >
             {content.hero.ctaSecondary}
-            <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <span class="ml-2">👁️</span>
           </a>
         </div>
       </div>

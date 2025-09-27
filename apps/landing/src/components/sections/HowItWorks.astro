@@ -4,14 +4,14 @@ import Card from '../ui/Card.astro'
 import { content } from '../../constants/content'
 ---
 
-<section class="py-20 bg-gray-50">
+<section class="py-20 bg-gray-50 dark:bg-gray-800">
   <Container>
     <!-- Section Header -->
     <div class="text-center max-w-3xl mx-auto mb-16">
-      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
-        Como a <span class="text-gradient">Valorize</span> funciona
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+        Como o <span class="text-gradient">Valorize</span> funciona
       </h2>
-      <p class="text-xl text-gray-600 leading-relaxed">
+      <p class="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
         Em apenas 4 passos simples, transforme a cultura da sua empresa.
       </p>
     </div>
@@ -27,16 +27,16 @@ import { content } from '../../constants/content'
           
           <Card className="relative z-10 p-6 text-center h-full bg-white">
             <!-- Step Number -->
-            <div class="flex items-center justify-center w-12 h-12 bg-gradient-brand rounded-full text-white font-bold text-lg mx-auto mb-4">
+            <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full text-white font-bold text-lg mx-auto mb-4">
               {step.step}
             </div>
             
             <!-- Step Content -->
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
               {step.title}
             </h3>
             
-            <p class="text-gray-600 leading-relaxed">
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
               {step.description}
             </p>
           </Card>
@@ -45,12 +45,12 @@ import { content } from '../../constants/content'
     </div>
     
     <!-- Process Visualization -->
-    <div class="mt-16 bg-white rounded-2xl p-8 shadow-lg">
+    <div class="mt-16 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
       <div class="text-center mb-8">
-        <h3 class="text-2xl font-bold text-gray-900 mb-4">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
           Veja o processo em ação
         </h3>
-        <p class="text-gray-600">
+        <p class="text-gray-600 dark:text-gray-300">
           Da configuração inicial aos resultados mensuráveis
         </p>
       </div>
@@ -59,41 +59,41 @@ import { content } from '../../constants/content'
       <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0 md:space-x-6">
         <!-- Setup -->
         <div class="flex-1 text-center">
-          <div class="bg-blue-100 rounded-full p-6 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+          <div class="bg-blue-100 dark:bg-blue-500/20 border-2 border-blue-200 dark:border-blue-500/30 rounded-full p-6 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
             <span class="text-2xl">⚙️</span>
           </div>
-          <h4 class="font-semibold text-gray-900">Setup Inicial</h4>
-          <p class="text-sm text-gray-600 mt-2">Configure em minutos</p>
+          <h4 class="font-semibold text-gray-900 dark:text-white">Setup Inicial</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-200 mt-2">Configure em minutos</p>
         </div>
         
         <div class="flex-shrink-0">
-          <svg class="w-8 h-8 text-gray-300 transform rotate-90 md:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-8 h-8 text-gray-400 dark:text-gray-500 transform rotate-90 md:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
         </div>
         
         <!-- Engagement -->
         <div class="flex-1 text-center">
-          <div class="bg-green-100 rounded-full p-6 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+          <div class="bg-green-100 dark:bg-green-500/20 border-2 border-green-200 dark:border-green-500/30 rounded-full p-6 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
             <span class="text-2xl">💬</span>
           </div>
-          <h4 class="font-semibold text-gray-900">Engajamento</h4>
-          <p class="text-sm text-gray-600 mt-2">Equipe participa ativamente</p>
+          <h4 class="font-semibold text-gray-900 dark:text-white">Engajamento</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-200 mt-2">Equipe participa ativamente</p>
         </div>
         
         <div class="flex-shrink-0">
-          <svg class="w-8 h-8 text-gray-300 transform rotate-90 md:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-8 h-8 text-gray-400 dark:text-gray-500 transform rotate-90 md:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
         </div>
         
         <!-- Results -->
         <div class="flex-1 text-center">
-          <div class="bg-purple-100 rounded-full p-6 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+          <div class="bg-purple-100 dark:bg-purple-500/20 border-2 border-purple-200 dark:border-purple-500/30 rounded-full p-6 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
             <span class="text-2xl">📊</span>
           </div>
-          <h4 class="font-semibold text-gray-900">Resultados</h4>
-          <p class="text-sm text-gray-600 mt-2">Métricas mensuráveis</p>
+          <h4 class="font-semibold text-gray-900 dark:text-white">Resultados</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-200 mt-2">Métricas mensuráveis</p>
         </div>
       </div>
     </div>

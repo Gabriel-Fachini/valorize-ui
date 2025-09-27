@@ -5,15 +5,15 @@ import CheckIcon from '../icons/CheckIcon.astro'
 import { content } from '../../constants/content'
 ---
 
-<section id="features" class="py-20 bg-white">
+<section id="features" class="py-20 bg-white dark:bg-gray-900">
   <Container>
     <!-- Section Header -->
     <div class="text-center max-w-3xl mx-auto mb-16">
-      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6">
         Tudo que você precisa para 
         <span class="text-gradient">transformar sua cultura</span>
       </h2>
-      <p class="text-xl text-gray-600 leading-relaxed">
+      <p class="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
         Recursos completos para criar uma cultura de reconhecimento e engajamento autêntica na sua empresa.
       </p>
     </div>
@@ -23,17 +23,17 @@ import { content } from '../../constants/content'
       {content.features.map((feature) => (
         <Card variant="feature" className="p-8 h-full">
           <!-- Feature Icon -->
-          <div class="flex items-center justify-center w-16 h-16 bg-gradient-brand rounded-2xl mb-6 text-2xl">
+          <div class="flex items-center justify-center w-20 h-20 bg-gradient-brand rounded-2xl mb-6 text-3xl">
             {feature.icon}
           </div>
           
           <!-- Feature Content -->
           <div class="space-y-4">
-            <h3 class="text-2xl font-semibold text-gray-900">
+            <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">
               {feature.title}
             </h3>
             
-            <p class="text-gray-600 leading-relaxed">
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
               {feature.description}
             </p>
             
@@ -42,9 +42,9 @@ import { content } from '../../constants/content'
               {feature.benefits.map((benefit) => (
                 <li class="flex items-center space-x-3">
                   <div class="flex-shrink-0">
-                    <CheckIcon className="text-green-500" size={16} />
+                    <CheckIcon className="text-green-500 dark:text-green-400" size={18} />
                   </div>
-                  <span class="text-sm font-medium text-gray-700">{benefit}</span>
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{benefit}</span>
                 </li>
               ))}
             </ul>
@@ -55,16 +55,16 @@ import { content } from '../../constants/content'
     
     <!-- Bottom CTA -->
     <div class="text-center mt-16">
-      <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8">
-        <h3 class="text-2xl font-bold text-gray-900 mb-4">
+      <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
           Pronto para começar?
         </h3>
-        <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
-          Teste gratuitamente por 14 dias e veja como a Valorize pode transformar o engajamento da sua equipe.
+        <p class="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+          Teste gratuitamente por 14 dias e veja como o Valorize pode transformar o engajamento da sua equipe.
         </p>
         <button 
           id="features-trial-button"
-          class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl text-white bg-gradient-brand hover:bg-gradient-brand-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary-500 transition-all duration-200 shadow-lg hover:shadow-xl"
+          class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-offset-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl"
         >
           Começar Teste Gratuito
           <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
