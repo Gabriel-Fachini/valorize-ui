@@ -10,6 +10,11 @@
       "cache": false,
       "persistent": true
     },
+    "preview": {
+      "cache": false,
+      "persistent": true,
+      "env": ["NODE_ENV", "VITE_*", "PUBLIC_*"]
+    },
     "lint": {
       "cache": false
     },

@@ -114,7 +114,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
           Entre em contato
         </h3>
         <p className="text-gray-600">
-          Fale conosco e descubra como a Valorize pode transformar sua empresa.
+          Fale conosco e descubra como o Valorize pode transformar sua empresa.
         </p>
       </div>
 
