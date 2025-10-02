@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .turbo
+**/.turbo
 
 # Lock files from other package managers (use pnpm-lock.yaml only)
 package-lock.json
