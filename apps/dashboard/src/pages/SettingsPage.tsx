@@ -2,11 +2,20 @@ import React from 'react'
 import { ProfileForm } from '@/components/settings/ProfileForm'
 import { PreferencesForm } from '@/components/settings/PreferencesForm'
 import { AddressTab } from '@/components/settings/AddressTab'
+import { useOnboarding } from '@/contexts/OnboardingContext'
 
 type TabKey = 'profile' | 'preferences' | 'addresses'
 
 export const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = React.useState<TabKey>('profile')
+  const { startTour, resetTour, hasCompletedOnboarding } = useOnboarding()
+
+  const handleStartTour = () => {
+    if (hasCompletedOnboarding) {
+      resetTour()
+    }
+    startTour()
+  }
 
   return (
     <main id="main-content" className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -74,6 +83,23 @@ export const SettingsPage: React.FC = () => {
                 Personalize tema, tamanho da fonte e opções de acessibilidade.
               </p>
               <PreferencesForm />
+              
+              {/* Onboarding Tour Control */}
+              <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h3 className="text-base font-semibold mb-2">Tour Interativo</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  {hasCompletedOnboarding 
+                    ? 'Quer fazer o tour novamente? Clique no botão abaixo para reiniciar.' 
+                    : 'Inicie o tour para conhecer melhor o Valorize.'}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleStartTour}
+                  className="rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2 text-sm font-medium text-white hover:from-purple-700 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all duration-200"
+                >
+                  {hasCompletedOnboarding ? '🔄 Reiniciar Tour' : '🎯 Iniciar Tour'}
+                </button>
+              </div>
             </div>
           ) : (
             <div>

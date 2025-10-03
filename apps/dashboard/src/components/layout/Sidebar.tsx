@@ -144,12 +144,12 @@ export const Sidebar: React.FC = React.memo(() => {
 
   // Memoizar os links de navegação
   const navLinks = React.useMemo(() => [
-    { path: '/home', label: 'Início', icon: '🏠' },
-    { path: '/elogios', label: 'Elogios', icon: '✨' },
-    { path: '/transacoes', label: 'Transações', icon: '📊' },
-    { path: '/prizes', label: 'Prêmios', icon: '🎁' },
-    { path: '/resgates', label: 'Resgates', icon: '📦' },
-    { path: '/settings', label: 'Configurações', icon: '⚙️' },
+    { path: '/home', label: 'Início', icon: '🏠', dataTour: 'home' },
+    { path: '/elogios', label: 'Elogios', icon: '✨', dataTour: 'praises' },
+    { path: '/transacoes', label: 'Transações', icon: '📊', dataTour: 'transactions' },
+    { path: '/prizes', label: 'Prêmios', icon: '🎁', dataTour: 'prizes' },
+    { path: '/resgates', label: 'Resgates', icon: '📦', dataTour: 'redemptions' },
+    { path: '/settings', label: 'Configurações', icon: '⚙️', dataTour: 'profile' },
   ], [])
 
   const isActive = React.useCallback((path: string) => location.pathname === path, [location.pathname])
@@ -269,6 +269,7 @@ export const Sidebar: React.FC = React.memo(() => {
 
       {/* Desktop Sidebar */}
       <aside 
+        data-tour="sidebar"
         className={`hidden lg:flex fixed left-0 top-0 z-40 h-screen flex-col bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl backdrop-saturate-150 border-r border-white/20 dark:border-gray-700/30 overflow-hidden shadow-2xl shadow-black/10 dark:shadow-black/30 transition-all duration-300 ${desktopSidebarCollapsed ? 'w-20' : 'w-72'}`}
         role="complementary"
         aria-label="Barra lateral de navegação"
@@ -369,6 +370,7 @@ export const Sidebar: React.FC = React.memo(() => {
                 key={link.path}
                 ref={el => { navButtonRefs.current[link.path] = el }}
                 onClick={() => handleNavigation(link.path)}
+                data-tour={link.dataTour}
                 className={`relative z-10 flex w-full items-center ${desktopSidebarCollapsed ? 'justify-center h-12 w-12 mx-auto' : 'gap-4 px-4'} py-3 rounded-xl text-left transition-all duration-300 hover:scale-105 active:scale-95 ${
                   isActive(link.path)
                     ? 'text-purple-600 dark:text-purple-400 font-medium drop-shadow-sm'
@@ -506,6 +508,7 @@ export const Sidebar: React.FC = React.memo(() => {
               <button
                 key={link.path}
                 onClick={() => handleNavigation(link.path)}
+                data-tour={link.dataTour}
                 className={`relative z-10 flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left transition-all duration-300 ${
                   isActive(link.path)
                     ? 'text-purple-600 dark:text-purple-400 font-medium drop-shadow-sm'

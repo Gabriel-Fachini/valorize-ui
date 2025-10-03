@@ -11,6 +11,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Tour/Onboarding colors */
+  --tour-bg-color: #ffffff;
+  --tour-text-color: #1f2937;
 }
 
 /* Ensure dark mode works properly with Tailwind CSS v4 */
@@ -20,6 +24,9 @@ html {
 
 html.dark {
   color-scheme: dark;
+  /* Tour/Onboarding colors for dark mode */
+  --tour-bg-color: #1f2937;
+  --tour-text-color: #f9fafb;
 }
 
 * {

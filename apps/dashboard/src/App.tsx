@@ -4,6 +4,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { SidebarProvider } from '@/contexts/SidebarContext'
 import { AccessibilityProvider } from '@/contexts/AccessibilityContext'
+import { OnboardingProvider } from '@/contexts/OnboardingContext'
 import { router } from '@/router'
 
 // Create a client with cache configuration
@@ -25,7 +26,9 @@ function App() {
         <AccessibilityProvider>
           <SidebarProvider>
             <AuthProvider>
-              <RouterProvider router={router} />
+              <OnboardingProvider>
+                <RouterProvider router={router} />
+              </OnboardingProvider>
             </AuthProvider>
           </SidebarProvider>
         </AccessibilityProvider>
