@@ -3,7 +3,7 @@ import { useAuth } from '@hooks/useAuth'
 import { useNavigate } from '@tanstack/react-router'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { useSidebar } from '@/hooks/useSidebar'
-import { useSpring, animated } from '@react-spring/web'
+import { useSpring, animated, config } from '@react-spring/web'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -16,8 +16,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   // Animação para o conteúdo principal
   const mainContentAnimation = useSpring({
-    marginLeft: desktopSidebarCollapsed ? '80px' : '320px',
-    config: { tension: 280, friction: 30 },
+    marginLeft: desktopSidebarCollapsed ? '80px' : '285px',
+    config: config.gentle,
   })
 
   useEffect(() => {

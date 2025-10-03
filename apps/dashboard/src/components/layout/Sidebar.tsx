@@ -346,7 +346,9 @@ export const Sidebar: React.FC = React.memo(() => {
               </div>
 
               {/* Balance Cards */}
-              <BalanceSection />
+              <div data-tour="balance-cards">
+                <BalanceSection />
+              </div>
             </>
           )}
         </div>

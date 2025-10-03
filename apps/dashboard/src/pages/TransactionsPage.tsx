@@ -69,24 +69,28 @@ export const TransactionsPage = () => {
         <div className="space-y-6 sm:space-y-8">
           
           {/* Balance Header */}
-          <BalanceHeader
-            balance={balance}
-            loading={loadingBalance}
-          />
+          <div data-tour="transactions-balance">
+            <BalanceHeader
+              balance={balance}
+              loading={loadingBalance}
+            />
+          </div>
 
           {/* Transaction Feed */}
-          <TransactionFeed
-            transactions={transactions}
-            filters={filters}
-            hasMore={hasMore}
-            loading={loading}
-            loadingMore={loadingMore}
-            trail={transactionsTrail}
-            filtersAnimation={filtersAnimation}
-            feedSectionAnimation={feedSectionAnimation}
-            onFiltersChange={setFilters}
-            onLoadMore={loadMore}
-          />
+          <div data-tour="transactions-feed">
+            <TransactionFeed
+              transactions={transactions}
+              filters={filters}
+              hasMore={hasMore}
+              loading={loading}
+              loadingMore={loadingMore}
+              trail={transactionsTrail}
+              filtersAnimation={filtersAnimation}
+              feedSectionAnimation={feedSectionAnimation}
+              onFiltersChange={setFilters}
+              onLoadMore={loadMore}
+            />
+          </div>
 
         </div>
       </div>

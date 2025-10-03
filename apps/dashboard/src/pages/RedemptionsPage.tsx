@@ -113,7 +113,7 @@ export const RedemptionsPage: React.FC = () => {
           </animated.div>
 
           {/* Filtros */}
-          <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div data-tour="redemptions-filters" className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {filtersTrail.map((style, index) => {
               const filterElements = [
                 // Search Input
@@ -254,7 +254,7 @@ export const RedemptionsPage: React.FC = () => {
           ) : (
             <>
               {data && data.redemptions.length > 0 ? (
-                <div className="space-y-6">
+                <div data-tour="redemptions-list" className="space-y-6">
                   {cardsTrail.map((style, index) => {
                     const redemption = data.redemptions[index]
                     if (!redemption) return null

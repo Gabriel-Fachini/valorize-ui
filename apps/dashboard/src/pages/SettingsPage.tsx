@@ -30,7 +30,7 @@ export const SettingsPage: React.FC = () => {
         </header>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div data-tour="settings-tabs" className="flex gap-2 mb-6">
           <button
             type="button"
             onClick={() => setActiveTab('profile')}
@@ -85,7 +85,7 @@ export const SettingsPage: React.FC = () => {
               <PreferencesForm />
               
               {/* Onboarding Tour Control */}
-              <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div data-tour="settings-tour-control" className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <h3 className="text-base font-semibold mb-2">Tour Interativo</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                   {hasCompletedOnboarding 

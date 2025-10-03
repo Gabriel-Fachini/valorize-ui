@@ -70,11 +70,13 @@ export const PrizesPage: React.FC = () => {
             </p>
           </animated.div>
 
-          <PrizeFilters
-            filters={filters}
-            onFiltersChange={handleFiltersChange}
-            totalResults={data?.total}
-          />
+          <div data-tour="prizes-filters">
+            <PrizeFilters
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              totalResults={data?.total}
+            />
+          </div>
 
           {isLoading ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -120,7 +122,7 @@ export const PrizesPage: React.FC = () => {
             </div>
           ) : (
             <>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div data-tour="prizes-grid" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {data?.prizes.map((prize, index) => (
                   <PrizeCard key={prize.id} prize={prize} index={index} />
                 ))}

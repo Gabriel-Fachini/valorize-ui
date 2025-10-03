@@ -6,12 +6,29 @@ export interface OnboardingContextType {
   completeTour: () => void
   resetTour: () => void
   hasCompletedOnboarding: boolean
+  handleRouteChange: (pathname: string) => void
 }
 
 export const OnboardingContext = createContext<OnboardingContextType | undefined>(undefined)
 
 const ONBOARDING_STORAGE_KEY = 'valorize_onboarding_completed'
 const FEEDBACK_FORM_URL = 'https://forms.google.com/your-feedback-form-url'
+
+// Mapeamento entre os steps do tour e as rotas esperadas
+export const STEP_TO_ROUTE_MAP: Record<number, string> = {
+  3: '/home',           // Step 3: clique em "home"
+  4: '/elogios',        // Step 4: clique em "praises"
+  // Steps 5, 6, 7 ficam na página de elogios
+  8: '/transacoes',     // Step 8: clique em "transactions"
+  // Steps 9, 10, 11 ficam na página de transações
+  12: '/prizes',        // Step 12: clique em "prizes"
+  // Steps 13, 14 ficam na página de prêmios
+  15: '/resgates',      // Step 15: clique em "redemptions"
+  // Steps 16, 17, 18 ficam na página de resgates
+  19: '/settings',      // Step 19: clique em "settings"
+  // Steps 20, 21 ficam na página de configurações
+  // Step 22: completion modal
+}
 
 // Initial tour steps configuration
 const tourSteps: StepType[] = [
@@ -22,48 +39,114 @@ const tourSteps: StepType[] = [
   },
   {
     selector: '[data-tour="sidebar"]',
-    content: 'Esta é a sua barra de navegação. Use-a para acessar diferentes seções do aplicativo.',
+    content: 'Esta é a sua barra de navegação. Use-a para acessar diferentes seções do aplicativo. Clique nos itens da barra para navegar durante o tour!',
     position: 'right',
+  },
+  {
+    selector: '[data-tour="balance-cards"]',
+    content: 'Aqui estão seus saldos! 🎁 Moedas para Elogiar (renovam toda semana) e ✨ Moedas Resgatáveis (acumuladas dos elogios recebidos).',
+    position: 'bottom',
   },
   {
     selector: '[data-tour="home"]',
-    content: 'Aqui você pode ver um resumo das suas atividades recentes e estatísticas importantes.',
+    content: '👆 Clique em "Início" para conhecer a página inicial',
     position: 'right',
+    stepInteraction: true,
   },
   {
     selector: '[data-tour="praises"]',
-    content: 'Aqui você pode visualizar e enviar elogios aos seus colegas de equipe.',
+    content: '👆 Clique em "Elogios" para conhecer o sistema de reconhecimento',
     position: 'right',
+    stepInteraction: true,
+  },
+  {
+    selector: '[data-tour="praises-stats"]',
+    content: 'Aqui você vê suas estatísticas: elogios enviados, recebidos e total de pontos acumulados! 📊',
+    position: 'bottom',
+  },
+  {
+    selector: '[data-tour="praises-feed"]',
+    content: 'Este é o feed de reconhecimentos. Você pode ver todos os elogios, filtrar por enviados ou recebidos, e interagir com as postagens. 💬',
+    position: 'top',
+  },
+  {
+    selector: '[data-tour="praises-fab"]',
+    content: 'Use este botão flutuante para enviar elogios rapidamente! Reconheça seus colegas em poucos cliques. ✨',
+    position: 'left',
   },
   {
     selector: '[data-tour="transactions"]',
-    content: 'Acompanhe todas as suas transações e movimentações de moedas no sistema.',
+    content: '👆 Clique em "Transações" para explorar seu histórico financeiro',
     position: 'right',
+    stepInteraction: true,
   },
   {
     selector: '[data-tour="transactions-page"]',
-    content: 'Aqui você pode ver o histórico detalhado de todas as suas transações, incluindo recebimentos e gastos de moedas.',
+    content: 'Esta é sua página de transações! Aqui você vê todas as movimentações de moedas: elogios enviados, recebidos e resgates de prêmios. 💰',
     position: 'bottom',
+  },
+  {
+    selector: '[data-tour="transactions-balance"]',
+    content: 'Resumo dos seus saldos atuais. As moedas para elogiar renovam semanalmente, enquanto as resgatáveis acumulam conforme você recebe reconhecimentos! 📊',
+    position: 'bottom',
+  },
+  {
+    selector: '[data-tour="transactions-feed"]',
+    content: 'Aqui está todo o histórico de transações! Você pode filtrar por tipo de moeda (elogios ou resgates) e por período. Use "Carregar mais" para ver transações antigas. 📋',
+    position: 'top',
   },
   {
     selector: '[data-tour="prizes"]',
-    content: 'Confira os prêmios disponíveis que você pode resgatar com seus pontos.',
+    content: '👆 Clique em "Prêmios" para ver o que você pode resgatar',
     position: 'right',
+    stepInteraction: true,
   },
   {
-    selector: '[data-tour="redemptions"]',
-    content: 'Veja o histórico dos prêmios que você já resgatou e o status das suas solicitações.',
-    position: 'right',
+    selector: '[data-tour="prizes-grid"]',
+    content: 'Navegue pelos prêmios disponíveis! Clique em um produto para ver detalhes completos e fazer o resgate. 🎁',
+    position: 'top',
   },
   {
-    selector: '[data-tour="redemptions-page"]',
-    content: 'Monitore o status dos seus resgates, filtre por período e status, e veja todos os prêmios que você já conquistou.',
+    selector: '[data-tour="prizes-filters"]',
+    content: 'Use os filtros para encontrar prêmios por categoria, faixa de preço ou busca por nome. Você pode ordenar por novidades, preço ou nome. 🔍',
     position: 'bottom',
   },
   {
-    selector: '[data-tour="profile"]',
-    content: 'Acesse seu perfil e suas preferências aqui.',
+    selector: '[data-tour="redemptions"]',
+    content: '👆 Clique em "Resgates" para acompanhar seus prêmios',
     position: 'right',
+    stepInteraction: true,
+  },
+  {
+    selector: '[data-tour="redemptions-page"]',
+    content: 'Esta é sua página de resgates! Aqui você acompanha todos os prêmios que resgatou e o status de processamento de cada um. 📦',
+    position: 'bottom',
+  },
+  {
+    selector: '[data-tour="redemptions-filters"]',
+    content: 'Use estes filtros para encontrar resgates específicos! Você pode buscar por nome do produto, filtrar por status (pendente, processando, concluído, cancelado) e por período. 🔍',
+    position: 'bottom',
+  },
+  {
+    selector: '[data-tour="redemptions-list"]',
+    content: 'Aqui está a lista dos seus resgates! Cada card mostra o produto, valor gasto, data e status atual. Clique em um resgate para ver detalhes completos e a timeline de rastreamento! 📋',
+    position: 'top',
+  },
+  {
+    selector: '[data-tour="profile"]',
+    content: '👆 Clique em "Configurações" para personalizar sua experiência',
+    position: 'right',
+    stepInteraction: true,
+  },
+  {
+    selector: '[data-tour="settings-tabs"]',
+    content: 'Aqui você pode editar seu perfil, ajustar preferências de tema e acessibilidade, e gerenciar endereços de entrega. ⚙️',
+    position: 'bottom',
+  },
+  {
+    selector: '[data-tour="settings-tour-control"]',
+    content: 'Sempre que quiser refazer este tour, volte aqui e clique em "Reiniciar Tour"! 🔄',
+    position: 'top',
   },
   {
     selector: '#tour-completion-modal', // Non-existent element to create modal effect
@@ -121,10 +204,38 @@ interface OnboardingProviderProps {
 
 // Inner component that uses useTour hook
 const OnboardingControllerContent = ({ children }: { children: React.ReactNode }) => {
-  const { setIsOpen } = useReactTour()
+  const { setIsOpen, currentStep, setCurrentStep, isOpen } = useReactTour()
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = React.useState(() => {
     return localStorage.getItem(ONBOARDING_STORAGE_KEY) === 'true'
   })
+  
+  // Rastreia a rota anterior para detectar mudanças
+  const previousRouteRef = React.useRef<string>('')
+
+  // Function to handle route changes from outside
+  const handleRouteChange = React.useCallback((pathname: string) => {
+    if (!isOpen) return
+
+    const expectedRoute = STEP_TO_ROUTE_MAP[currentStep]
+    
+    // Só avança se:
+    // 1. Existe uma rota esperada para o step atual
+    // 2. A rota atual corresponde à esperada
+    // 3. A rota MUDOU (não estava na rota esperada antes)
+    if (
+      expectedRoute && 
+      pathname === expectedRoute && 
+      previousRouteRef.current !== expectedRoute
+    ) {
+      // Aguarda um pouco para dar tempo do elemento aparecer na nova página
+      setTimeout(() => {
+        setCurrentStep(currentStep + 1)
+      }, 300)
+    }
+    
+    // Atualiza a rota anterior
+    previousRouteRef.current = pathname
+  }, [currentStep, isOpen, setCurrentStep])
 
   useEffect(() => {
     // Auto-start tour for first-time users after a short delay
@@ -160,6 +271,7 @@ const OnboardingControllerContent = ({ children }: { children: React.ReactNode }
     completeTour,
     resetTour,
     hasCompletedOnboarding,
+    handleRouteChange,
   }
 
   return (
@@ -170,6 +282,19 @@ const OnboardingControllerContent = ({ children }: { children: React.ReactNode }
 }
 
 export const OnboardingProvider = ({ children }: OnboardingProviderProps) => {
+  // Steps que NÃO requerem clique do usuário (mostram botões de navegação)
+  // Incluem: welcome, sidebar, balance-cards, e todos os steps informativos dentro das páginas
+  const stepsWithNavigation = [0, 1, 2, 5, 6, 7, 9, 10, 11, 13, 14, 16, 17, 18, 20, 21, 22] 
+  // 0: welcome
+  // 1: sidebar
+  // 2: balance-cards
+  // 5: praises-stats, 6: praises-feed, 7: praises-fab
+  // 9: transactions-page, 10: transactions-balance, 11: transactions-feed
+  // 13: prizes-filters, 14: prizes-grid
+  // 16: redemptions-page, 17: redemptions-filters, 18: redemptions-list
+  // 20: settings-tabs, 21: settings-tour-control
+  // 22: completion modal
+  
   return (
     <TourProvider
       steps={tourSteps}
@@ -197,10 +322,16 @@ export const OnboardingProvider = ({ children }: OnboardingProviderProps) => {
           backgroundColor: '#6366f1',
           color: 'white',
         }),
-        controls: (base) => ({
-          ...base,
-          marginTop: '24px',
-        }),
+        controls: (base, state) => {
+          // Esconde os controles nos steps que requerem clique
+          const currentStep = state?.currentStep ?? 0
+          const shouldHide = !stepsWithNavigation.includes(currentStep)
+          return {
+            ...base,
+            marginTop: '24px',
+            display: shouldHide ? 'none' : 'flex',
+          }
+        },
         close: (base) => ({
           ...base,
           right: '16px',

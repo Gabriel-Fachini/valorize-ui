@@ -15,6 +15,7 @@ import { RedemptionDetailsPage } from '@/pages/RedemptionDetailsPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { TransactionsPage } from '@/pages/TransactionsPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { OnboardingRouteListener } from '@/components/OnboardingRouteListener'
 import { useTheme } from '@hooks/useTheme'
 
 function RootComponent() {
@@ -25,6 +26,7 @@ function RootComponent() {
       id="app"
       className={`min-h-screen ${isDark ? 'dark' : ''} bg-white dark:bg-gray-900`}
     >
+      <OnboardingRouteListener />
       <Outlet />
     </div>
   )

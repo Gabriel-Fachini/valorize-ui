@@ -113,10 +113,13 @@ export const PraisesPage = () => {
         )}
         
         {/* Stats Cards */}
-        <StatsCards trail={statsTrail} />
+        <div data-tour="praises-stats">
+          <StatsCards trail={statsTrail} />
+        </div>
 
         {/* Praise Feed */}
-        <PraiseFeed
+        <div data-tour="praises-feed">
+          <PraiseFeed
           praises={praises}
           currentFilter={currentFilter}
           trail={praisesTrail}
@@ -126,11 +129,13 @@ export const PraisesPage = () => {
           onLikePraise={handleLikePraise}
           onFilterChange={actions.setFilter}
           loading={loading.praises}
-        />
+          />
+        </div>
       </div>
 
       {/* Floating Action Button */}
       <animated.button
+        data-tour="praises-fab"
         style={fabAnimation}
         onClick={() => setShowModal(true)}
         disabled={!computed.canSendPraise}
