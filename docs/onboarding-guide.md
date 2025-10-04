@@ -13,6 +13,7 @@ O Valorize possui um **sistema de onboarding guiado e interativo** que introduz 
 - **Persistência no localStorage** (não se repete)
 - **Reinício manual** disponível nas Configurações
 - **Modal de conclusão** com link para feedback
+- **Suporte completo para mobile** com gerenciamento automático da sidebar
 
 ---
 
@@ -176,6 +177,97 @@ O Valorize possui um **sistema de onboarding guiado e interativo** que introduz 
 │     (Marcado como completo no localStorage)                 │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## 📱 Suporte Mobile
+
+### Problema e Solução
+
+**Problema Original:**
+Em dispositivos mobile, a sidebar está oculta por padrão e precisa ser aberta manualmente clicando no ícone de menu. Isso criava um problema durante o onboarding, pois os steps que mostram elementos da sidebar não eram visíveis para usuários mobile.
+
+**Solução Implementada:**
+O sistema agora detecta automaticamente quando está em mobile (largura < 1024px) e gerencia a abertura/fechamento da sidebar durante o tour:
+
+### Funcionamento
+
+**1. Detecção de Mobile:**
+```typescript
+const isMobile = () => window.innerWidth < 1024 // lg breakpoint do Tailwind
+```
+
+**2. Abertura Automática:**
+- Quando o tour começa em mobile, a sidebar abre automaticamente
+- Durante os steps que precisam da sidebar (1, 2, 3, 4, 8, 12, 15, 19), ela permanece aberta
+- Nos demais steps, a sidebar fecha automaticamente para não atrapalhar a visualização
+
+**3. Steps que Mantêm Sidebar Aberta:**
+- Step 1: Introdução à sidebar
+- Step 2: Cards de saldo
+- Steps 3, 4, 8, 12, 15, 19: Cliques de navegação na sidebar
+
+**4. Fechamento Inteligente:**
+- Ao completar o tour, a sidebar fecha automaticamente
+- Ao cancelar/fechar o tour, a sidebar fecha
+- Ao navegar para steps que não precisam dela, fecha automaticamente
+
+### Implementação Técnica
+
+**SidebarContext:**
+```typescript
+interface SidebarContextType {
+  // ... existing
+  mobileSidebarOpen: boolean
+  setMobileSidebarOpen: (open: boolean) => void
+  toggleMobileSidebar: () => void
+}
+```
+
+**OnboardingContext:**
+```typescript
+// Gerenciar a sidebar mobile durante o tour
+useEffect(() => {
+  if (!isOpen) return
+
+  const stepsThatNeedSidebar = [1, 2, 3, 4, 8, 12, 15, 19]
+  
+  if (isMobile()) {
+    if (stepsThatNeedSidebar.includes(currentStep)) {
+      setMobileSidebarOpen(true)
+    } else if (currentStep > 4 && !stepsThatNeedSidebar.includes(currentStep)) {
+      setMobileSidebarOpen(false)
+    }
+  }
+}, [currentStep, isOpen, isMobile, setMobileSidebarOpen])
+```
+
+**Event Listener:**
+- Evento customizado `onboarding:close-mobile-sidebar` para sincronização
+- Listener na Sidebar para responder ao fechamento do tour
+
+### Experiência do Usuário
+
+**Desktop (≥1024px):**
+- Sidebar sempre visível (a menos que colapsada pelo usuário)
+- Comportamento padrão do onboarding
+- Sem interferência na navegação
+
+**Mobile (<1024px):**
+- ✅ Sidebar abre automaticamente ao iniciar o tour
+- ✅ Permanece aberta durante steps relevantes
+- ✅ Fecha nos steps de conteúdo das páginas
+- ✅ Reabre automaticamente nos steps de navegação
+- ✅ Fecha ao completar ou cancelar o tour
+- ✅ Transições suaves com animações CSS
+
+### Benefícios
+
+1. **Experiência Fluída:** Usuário não precisa abrir/fechar a sidebar manualmente
+2. **Contexto Visual:** Elementos sempre visíveis quando precisam ser destacados
+3. **Não Intrusivo:** Sidebar fecha quando não é necessária
+4. **Consistente:** Mesma experiência em todos os dispositivos
+5. **Automático:** Zero configuração ou intervenção do usuário
 
 ---
 
@@ -352,7 +444,31 @@ Animação para steps interativos:
 
 ## 📚 Histórico de Versões
 
-### ✨ Versão 2.0 - Steps Detalhados (Atual)
+### ✨ Versão 2.1 - Suporte Mobile (Atual)
+
+**Data:** Outubro 2025
+
+**Mudanças:**
+- ✅ Detecção automática de dispositivo mobile
+- ✅ Gerenciamento inteligente da sidebar mobile durante o tour
+- ✅ Abertura/fechamento automático baseado nos steps
+- ✅ Event listener para sincronização entre componentes
+- ✅ Estado compartilhado no SidebarContext para controle da sidebar mobile
+- ✅ Transições suaves e não intrusivas
+- ✅ data-tour="sidebar" adicionado à sidebar mobile
+
+**Arquivos Modificados:**
+1. `contexts/SidebarContext.tsx` - Adicionado estado `mobileSidebarOpen`
+2. `contexts/OnboardingContext.tsx` - Lógica de gerenciamento mobile
+3. `components/layout/Sidebar.tsx` - Integração com estado compartilhado
+4. `hooks/useSidebar.ts` - Sem mudanças (já retorna todo o contexto)
+
+**Impacto:**
+- Experiência mobile agora é tão boa quanto desktop
+- Zero configuração adicional necessária
+- Retrocompatível com implementação existente
+
+### ✨ Versão 2.0 - Steps Detalhados
 
 **Mudanças:** De 18 steps → 23 steps (+28%)
 
@@ -588,6 +704,19 @@ content: 'Use os filtros para encontrar produtos rapidamente! 🔍'
 - Verifique o código de `handleRouteChange` em `OnboardingContext.tsx`
 - Confirme que `previousRouteRef.current` está sendo atualizado após avançar
 
+### Sidebar não abre em mobile durante o tour
+
+**Possíveis causas:**
+- ❌ `mobileSidebarOpen` não está sincronizado no SidebarContext
+- ❌ Detecção de mobile não está funcionando
+- ❌ Event listener não está registrado
+
+**Solução:**
+1. Verifique se `setMobileSidebarOpen` está disponível no SidebarContext
+2. Teste a função `isMobile()` no console (deve retornar true para largura < 1024px)
+3. Confirme que o event listener está registrado na Sidebar
+4. Verifique se o array `stepsThatNeedSidebar` inclui o step atual
+
 ### Step não encontra o elemento
 
 **Possíveis causas:**
@@ -619,6 +748,9 @@ content: 'Use os filtros para encontrar produtos rapidamente! 🔍'
 - ✅ **Delay estratégico**: 300ms para renderização
 - ✅ **CSS modular**: Animações isoladas
 - ✅ **TypeScript strict**: Tipagem completa
+- ✅ **Estado compartilhado**: SidebarContext gerencia sidebar mobile
+- ✅ **Responsive design**: Detecção automática de dispositivo
+- ✅ **Event-driven**: Custom events para sincronização de componentes
 
 ---
 
@@ -632,11 +764,12 @@ content: 'Use os filtros para encontrar produtos rapidamente! 🔍'
 - [ ] Tour personalizado por role (user/admin)
 - [ ] Analytics de quais steps usuários pulam mais
 
-### v2.1 (Backlog)
+### v2.2 (Backlog)
 - [ ] Tour em vídeo opcional
 - [ ] Tooltips permanentes para novos recursos
 - [ ] Gamification (badge de "Explorador")
 - [ ] Compartilhar progresso do tour
+- [ ] Gestos de swipe em mobile para navegar entre steps
 
 ---
 
@@ -662,5 +795,5 @@ content: 'Use os filtros para encontrar produtos rapidamente! 🔍'
 
 ---
 
-**Última atualização:** Versão 2.0 - Outubro 2025
+**Última atualização:** Versão 2.1 - Outubro 2025 (Suporte Mobile)
 

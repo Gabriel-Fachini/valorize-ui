@@ -1,5 +1,6 @@
 import React, { createContext, useEffect } from 'react'
 import { TourProvider, type StepType, useTour as useReactTour } from '@reactour/tour'
+import { useSidebar } from '@/hooks/useSidebar'
 
 export interface OnboardingContextType {
   startTour: () => void
@@ -30,31 +31,69 @@ export const STEP_TO_ROUTE_MAP: Record<number, string> = {
   // Step 22: completion modal
 }
 
-// Initial tour steps configuration
-const tourSteps: StepType[] = [
+// Helper function to get selector based on screen size
+// Esta função verifica o tamanho da tela em tempo real para garantir o seletor correto
+const getSelectorForDevice = (tourAttr: string, isMobile?: boolean) => {
+  // Elementos que estão APENAS na sidebar (não nas páginas)
+  const sidebarElements = ['balance-cards', 'home', 'praises', 'transactions', 'prizes', 'redemptions', 'profile']
+  
+  if (sidebarElements.includes(tourAttr)) {
+    // Usa o parâmetro ou verifica o tamanho da tela em tempo real
+    const isMobileNow = isMobile ?? (typeof window !== 'undefined' && window.innerWidth < 1024)
+    
+    if (isMobileNow) {
+      // Em mobile (<1024px), usa a sidebar mobile
+      const selector = `#mobile-sidebar [data-tour="${tourAttr}"]`
+      // eslint-disable-next-line no-console
+      console.log(`🎯 [SIDEBAR-MOBILE] ${tourAttr} → ${selector}`)
+      return selector
+    } else {
+      // Em desktop (>=1024px), usa a sidebar desktop
+      const selector = `aside[role="complementary"] [data-tour="${tourAttr}"]`
+      // eslint-disable-next-line no-console
+      console.log(`🖥️ [SIDEBAR-DESKTOP] ${tourAttr} → ${selector}`)
+      return selector
+    }
+  }
+  
+  // Para outros elementos (páginas), usa seletor simples
+  const selector = `[data-tour="${tourAttr}"]`
+  // eslint-disable-next-line no-console
+  console.log(`📄 [PAGE] ${tourAttr} → ${selector}`)
+  return selector
+}
+
+// Function to generate tour steps based on current screen size
+const getTourSteps = (): StepType[] => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024
+  
+  // eslint-disable-next-line no-console
+  console.log(`🔧 Generating tour steps for ${isMobile ? 'MOBILE' : 'DESKTOP'} (width: ${window.innerWidth}px)`)
+  
+  return [
   {
     selector: '[data-tour="welcome"]',
     content: 'Bem vindo ao Valorize! Vamos fazer um tour rápido para ajudá-lo a começar.',
     position: 'center',
   },
   {
-    selector: '[data-tour="sidebar"]',
+    selector: isMobile ? '#mobile-sidebar' : 'aside[role="complementary"]',
     content: 'Esta é a sua barra de navegação. Use-a para acessar diferentes seções do aplicativo. Clique nos itens da barra para navegar durante o tour!',
     position: 'right',
   },
   {
-    selector: '[data-tour="balance-cards"]',
+    selector: getSelectorForDevice('balance-cards', isMobile),
     content: 'Aqui estão seus saldos! 🎁 Moedas para Elogiar (renovam toda semana) e ✨ Moedas Resgatáveis (acumuladas dos elogios recebidos).',
     position: 'bottom',
   },
   {
-    selector: '[data-tour="home"]',
+    selector: getSelectorForDevice('home', isMobile),
     content: '👆 Clique em "Início" para conhecer a página inicial',
     position: 'right',
     stepInteraction: true,
   },
   {
-    selector: '[data-tour="praises"]',
+    selector: getSelectorForDevice('praises', isMobile),
     content: '👆 Clique em "Elogios" para conhecer o sistema de reconhecimento',
     position: 'right',
     stepInteraction: true,
@@ -75,7 +114,7 @@ const tourSteps: StepType[] = [
     position: 'left',
   },
   {
-    selector: '[data-tour="transactions"]',
+    selector: getSelectorForDevice('transactions', isMobile),
     content: '👆 Clique em "Transações" para explorar seu histórico financeiro',
     position: 'right',
     stepInteraction: true,
@@ -96,7 +135,7 @@ const tourSteps: StepType[] = [
     position: 'top',
   },
   {
-    selector: '[data-tour="prizes"]',
+    selector: getSelectorForDevice('prizes', isMobile),
     content: '👆 Clique em "Prêmios" para ver o que você pode resgatar',
     position: 'right',
     stepInteraction: true,
@@ -112,7 +151,7 @@ const tourSteps: StepType[] = [
     position: 'bottom',
   },
   {
-    selector: '[data-tour="redemptions"]',
+    selector: getSelectorForDevice('redemptions', isMobile),
     content: '👆 Clique em "Resgates" para acompanhar seus prêmios',
     position: 'right',
     stepInteraction: true,
@@ -133,7 +172,7 @@ const tourSteps: StepType[] = [
     position: 'top',
   },
   {
-    selector: '[data-tour="profile"]',
+    selector: getSelectorForDevice('profile', isMobile),
     content: '👆 Clique em "Configurações" para personalizar sua experiência',
     position: 'right',
     stepInteraction: true,
@@ -186,17 +225,18 @@ const tourSteps: StepType[] = [
         padding: '32px',
         borderRadius: '16px',
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        zIndex: 100000,
+        zIndex: 100, // Modal de conclusão acima de tudo
       }),
       maskWrapper: (base: React.CSSProperties) => ({
         ...base,
         color: '#000',
         opacity: 0.7, // Fully opaque for modal effect
-        zIndex: 99999,
+        zIndex: 90, // Máscara do modal de conclusão
       }),
     },
   },
 ]
+}
 
 interface OnboardingProviderProps {
   children: React.ReactNode
@@ -204,19 +244,78 @@ interface OnboardingProviderProps {
 
 // Inner component that uses useTour hook
 const OnboardingControllerContent = ({ children }: { children: React.ReactNode }) => {
-  const { setIsOpen, currentStep, setCurrentStep, isOpen } = useReactTour()
+  const { setIsOpen, currentStep, setCurrentStep, isOpen, setSteps } = useReactTour()
+  const { setMobileSidebarOpen } = useSidebar()
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = React.useState(() => {
     return localStorage.getItem(ONBOARDING_STORAGE_KEY) === 'true'
   })
   
   // Rastreia a rota anterior para detectar mudanças
   const previousRouteRef = React.useRef<string>('')
+  
+  // Helper para detectar se está em mobile
+  const isMobile = React.useCallback(() => {
+    return window.innerWidth < 1024 // lg breakpoint do Tailwind
+  }, [])
+  
+  // Atualiza os steps sempre que o tour abre ou o tamanho da tela muda
+  React.useEffect(() => {
+    if (isOpen && setSteps) {
+      const updatedSteps = getTourSteps()
+      setSteps(updatedSteps)
+      // eslint-disable-next-line no-console
+      console.log('🎯 Tour steps updated for', window.innerWidth < 1024 ? 'MOBILE' : 'DESKTOP')
+      // eslint-disable-next-line no-console
+      console.log('📋 All selectors:', updatedSteps.map((s, i) => `${i}: ${typeof s.selector === 'string' ? s.selector : '[function]'}`))
+      
+      // Aguarda um pouco antes de verificar (para dar tempo de renderizar)
+      setTimeout(() => {
+        // Verificar se os elementos existem no DOM
+        // eslint-disable-next-line no-console
+        console.group('🔍 Checking if elements exist in DOM (after delay)')
+        updatedSteps.forEach((step, index) => {
+          if (typeof step.selector === 'string') {
+            const element = document.querySelector(step.selector)
+            // eslint-disable-next-line no-console
+            console.log(`Step ${index} (${step.selector}):`, element ? '✅ Found' : '❌ Not found')
+          }
+        })
+        // eslint-disable-next-line no-console
+        console.groupEnd()
+      }, 500)
+    }
+  }, [isOpen, setSteps])
+  
+  // Listener para atualizar steps quando a tela mudar de tamanho
+  React.useEffect(() => {
+    if (!isOpen || !setSteps) return
+    
+    const handleResize = () => {
+      const updatedSteps = getTourSteps()
+      setSteps(updatedSteps)
+      // eslint-disable-next-line no-console
+      console.log('📱 Screen resized - steps updated for', window.innerWidth < 1024 ? 'MOBILE' : 'DESKTOP')
+    }
+    
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [isOpen, setSteps])
 
   // Function to handle route changes from outside
   const handleRouteChange = React.useCallback((pathname: string) => {
     if (!isOpen) return
 
     const expectedRoute = STEP_TO_ROUTE_MAP[currentStep]
+    
+    // eslint-disable-next-line no-console
+    console.log('🚦 Route changed:', {
+      currentStep,
+      pathname,
+      expectedRoute,
+      previousRoute: previousRouteRef.current,
+      shouldAdvance: expectedRoute && pathname === expectedRoute && previousRouteRef.current !== expectedRoute,
+    
+    })
     
     // Só avança se:
     // 1. Existe uma rota esperada para o step atual
@@ -228,14 +327,44 @@ const OnboardingControllerContent = ({ children }: { children: React.ReactNode }
       previousRouteRef.current !== expectedRoute
     ) {
       // Aguarda um pouco para dar tempo do elemento aparecer na nova página
+      // Timeout maior em mobile para garantir renderização completa
+      const delay = window.innerWidth < 1024 ? 500 : 300
+      // eslint-disable-next-line no-console
+      console.log(`⏭️ Advancing to step ${currentStep + 1} after ${delay}ms delay`)
       setTimeout(() => {
         setCurrentStep(currentStep + 1)
-      }, 300)
+        
+        // Força atualização dos steps após navegar para nova página
+        // Isso garante que o Reactour reprocesse os seletores e encontre os elementos que agora existem
+        if (setSteps) {
+          // eslint-disable-next-line no-console
+          console.log('🔄 Refreshing tour steps after navigation...')
+          const refreshedSteps = getTourSteps()
+          setSteps(refreshedSteps)
+        }
+        
+        // Verificar se o próximo elemento existe após avançar
+        setTimeout(() => {
+          const nextStep = currentStep + 1
+          const steps = getTourSteps()
+          if (steps[nextStep] && typeof steps[nextStep].selector === 'string') {
+            const selector = steps[nextStep].selector as string
+            const element = document.querySelector(selector)
+            // eslint-disable-next-line no-console
+            console.log(`🔍 Step ${nextStep} element (${selector}):`, element ? '✅ Found after navigation' : '⚠️ Still not found')
+            
+            if (!element) {
+              // eslint-disable-next-line no-console
+              console.warn(`⚠️ Element not found for step ${nextStep}. The tour may be stuck. Try increasing delay or check if element exists.`)
+            }
+          }
+        }, 300)
+      }, delay)
     }
     
     // Atualiza a rota anterior
     previousRouteRef.current = pathname
-  }, [currentStep, isOpen, setCurrentStep])
+  }, [currentStep, isOpen, setCurrentStep, setSteps])
 
   useEffect(() => {
     // Auto-start tour for first-time users after a short delay
@@ -245,20 +374,50 @@ const OnboardingControllerContent = ({ children }: { children: React.ReactNode }
     if (!hasCompletedOnboarding && isAuthenticated) {
       const timer = setTimeout(() => {
         setIsOpen(true)
+        // Se estiver em mobile, abrir a sidebar automaticamente
+        if (isMobile()) {
+          setMobileSidebarOpen(true)
+        }
       }, 1500)
       return () => clearTimeout(timer)
     }
     return undefined
-  }, [hasCompletedOnboarding, setIsOpen])
+  }, [hasCompletedOnboarding, setIsOpen, isMobile, setMobileSidebarOpen])
+
+  // Gerenciar a sidebar mobile durante o tour
+  useEffect(() => {
+    if (!isOpen) return
+
+    // Steps que precisam da sidebar aberta (sidebar, balance-cards, e todos os steps de navegação)
+    const stepsThatNeedSidebar = [1, 2, 3, 4, 8, 12, 15, 19]
+    
+    if (isMobile()) {
+      if (stepsThatNeedSidebar.includes(currentStep)) {
+        // Abrir a sidebar se estiver em um step que precisa dela
+        setMobileSidebarOpen(true)
+      } else if (currentStep > 4 && !stepsThatNeedSidebar.includes(currentStep)) {
+        // Fechar a sidebar nos steps que não precisam dela (mas só depois do step 4)
+        setMobileSidebarOpen(false)
+      }
+    }
+  }, [currentStep, isOpen, isMobile, setMobileSidebarOpen])
 
   const startTour = () => {
     setIsOpen(true)
+    // Se estiver em mobile, abrir a sidebar automaticamente
+    if (isMobile()) {
+      setMobileSidebarOpen(true)
+    }
   }
 
   const completeTour = () => {
     localStorage.setItem(ONBOARDING_STORAGE_KEY, 'true')
     setHasCompletedOnboarding(true)
     setIsOpen(false)
+    // Fechar a sidebar mobile ao completar o tour
+    if (isMobile()) {
+      setMobileSidebarOpen(false)
+    }
   }
 
   const resetTour = () => {
@@ -294,10 +453,13 @@ export const OnboardingProvider = ({ children }: OnboardingProviderProps) => {
   // 16: redemptions-page, 17: redemptions-filters, 18: redemptions-list
   // 20: settings-tabs, 21: settings-tour-control
   // 22: completion modal
+
+  // Helper para detectar se está em mobile
+  const isMobileDevice = () => window.innerWidth < 1024
   
   return (
     <TourProvider
-      steps={tourSteps}
+      steps={getTourSteps()}
       styles={{
         popover: (base) => ({
           ...base,
@@ -307,15 +469,18 @@ export const OnboardingProvider = ({ children }: OnboardingProviderProps) => {
           backgroundColor: 'var(--tour-bg-color)',
           color: 'var(--tour-text-color)',
           boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
+          zIndex: 60, // Acima de tudo (maskArea: 56, maskWrapper: 55, sidebar: 50)
         }),
         maskArea: (base) => ({
           ...base,
           rx: 8,
+          zIndex: 56, // Acima da máscara e da sidebar - elemento destacado
         }),
         maskWrapper: (base) => ({
           ...base,
           color: '#000',
           opacity: 0.85,
+          zIndex: 55, // Acima da sidebar mobile (z-50) para cobri-la
         }),
         badge: (base) => ({
           ...base,
@@ -367,11 +532,18 @@ export const OnboardingProvider = ({ children }: OnboardingProviderProps) => {
         }
         setIsOpen(false)
       }}
+      beforeClose={(_target) => {
+        // Fechar a sidebar mobile quando o tour for fechado
+        if (isMobileDevice()) {
+          // Usar timeout para garantir que a ação seja executada após o tour fechar
+          setTimeout(() => {
+            const event = new CustomEvent('onboarding:close-mobile-sidebar')
+            window.dispatchEvent(event)
+          }, 100)
+        }
+      }}
       afterOpen={(_target) => {
         // Optional: Add any side effects after opening
-      }}
-      beforeClose={(_target) => {
-        // Optional: Add any side effects before closing
       }}
     >
       <OnboardingControllerContent>

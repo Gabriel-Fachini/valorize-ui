@@ -127,11 +127,11 @@ export const Sidebar: React.FC = React.memo(() => {
   const location = useLocation()
   const { user, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
-  const { desktopSidebarCollapsed, toggleDesktopSidebar } = useSidebar()
+  const { desktopSidebarCollapsed, toggleDesktopSidebar, mobileSidebarOpen, setMobileSidebarOpen } = useSidebar()
   
-  // Estado unificado com reducer
+  // Estado unificado com reducer (sem mobileOpen, que agora vem do contexto)
   const [sidebarState, dispatch] = React.useReducer(sidebarReducer, {
-    mobileOpen: false,
+    mobileOpen: false, // Mantido para compatibilidade com o reducer, mas não será usado
     indicatorPosition: 0,
     isInitialized: false,
   })
@@ -187,8 +187,8 @@ export const Sidebar: React.FC = React.memo(() => {
     // Atualizar a posição do indicador antes de navegar
     updateIndicatorPosition(path)
     navigate({ to: path })
-    dispatch({ type: 'SET_MOBILE_OPEN', payload: false })
-  }, [navigate, updateIndicatorPosition])
+    setMobileSidebarOpen(false)
+  }, [navigate, updateIndicatorPosition, setMobileSidebarOpen])
 
   // Inicializar a posição do indicador na primeira renderização
   React.useEffect(() => {
@@ -196,6 +196,19 @@ export const Sidebar: React.FC = React.memo(() => {
     const timeoutId = setTimeout(() => updateIndicatorPosition(currentPath), 100)
     return () => clearTimeout(timeoutId)
   }, [location.pathname, updateIndicatorPosition, desktopSidebarCollapsed])
+
+  // Listener para fechar a sidebar mobile quando o tour for fechado
+  React.useEffect(() => {
+    const handleCloseMobileSidebar = () => {
+      setMobileSidebarOpen(false)
+    }
+    
+    window.addEventListener('onboarding:close-mobile-sidebar', handleCloseMobileSidebar)
+    
+    return () => {
+      window.removeEventListener('onboarding:close-mobile-sidebar', handleCloseMobileSidebar)
+    }
+  }, [setMobileSidebarOpen])
 
   const handleLogout = React.useCallback(() => {
     logout()
@@ -219,10 +232,10 @@ export const Sidebar: React.FC = React.memo(() => {
       >
         <div className="flex items-center gap-3">
           <button
-            onClick={() => dispatch({ type: 'SET_MOBILE_OPEN', payload: true })}
+            onClick={() => setMobileSidebarOpen(true)}
             className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 dark:bg-gray-800/40 backdrop-blur-md text-gray-700 dark:text-gray-200 hover:bg-white/30 dark:hover:bg-gray-700/50 transition-all duration-300 border border-white/20 dark:border-gray-600/30 shadow-lg shadow-black/5 dark:shadow-black/20 hover:scale-105 active:scale-95"
             aria-label="Abrir menu de navegação"
-            aria-expanded={sidebarState.mobileOpen}
+            aria-expanded={mobileSidebarOpen}
             aria-controls="mobile-sidebar"
             type="button"
             onMouseDown={() => {
@@ -443,8 +456,9 @@ export const Sidebar: React.FC = React.memo(() => {
       {/* Mobile Sidebar */}
       <div
         id="mobile-sidebar"
+        data-tour="sidebar"
         className={`fixed inset-y-0 left-0 z-50 w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl backdrop-saturate-150 shadow-2xl shadow-black/20 dark:shadow-black/40 lg:hidden border-r border-white/20 dark:border-gray-700/30 transition-all duration-300 ${
-          sidebarState.mobileOpen ? 'translate-x-0 opacity-100 pointer-events-auto' : '-translate-x-full opacity-0 pointer-events-none'
+          mobileSidebarOpen ? 'translate-x-0 opacity-100 pointer-events-auto' : '-translate-x-full opacity-0 pointer-events-none'
         }`}
         role="dialog"
         aria-label="Menu de navegação móvel"
@@ -461,7 +475,7 @@ export const Sidebar: React.FC = React.memo(() => {
             </span>
           </div>
           <button
-            onClick={() => dispatch({ type: 'SET_MOBILE_OPEN', payload: false })}
+            onClick={() => setMobileSidebarOpen(false)}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-white/20 dark:hover:bg-gray-800/40 transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-white/20 dark:hover:border-gray-600/30"
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -489,7 +503,9 @@ export const Sidebar: React.FC = React.memo(() => {
           </div>
 
           {/* Mobile Balance Cards */}
-          <BalanceSection />
+          <div data-tour="balance-cards">
+            <BalanceSection />
+          </div>
         </div>
 
         {/* Mobile Navigation */}
@@ -571,10 +587,10 @@ export const Sidebar: React.FC = React.memo(() => {
       </div>
 
       {/* Mobile Sidebar Backdrop */}
-      {sidebarState.mobileOpen && (
+      {mobileSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm lg:hidden z-40"
-          onClick={() => dispatch({ type: 'SET_MOBILE_OPEN', payload: false })}
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm lg:hidden z-30"
+          onClick={() => setMobileSidebarOpen(false)}
         />
       )}
     </>
