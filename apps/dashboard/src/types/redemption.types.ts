@@ -1,33 +1,60 @@
-export type RedemptionStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED'
+export type RedemptionStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'COMPLETED' | 'CANCELLED'
 
 export interface Redemption {
   id: string
+  userId: string
   prizeId: string
-  prizeTitle: string
-  prizeImage?: string | null
-  category: 'eletronicos' | 'casa' | 'esporte' | 'livros' | 'vale-compras' | 'experiencias'
-  amount: number // moedas debitadas (exibir como débito)
-  quantity: number
+  prizeName?: string
+  variantId?: string
+  variantValue?: string
+  addressId: string
+  coinPrice: number
   status: RedemptionStatus
-  createdAt: string // ISO date
-  cancellableUntil?: string // ISO date
+  trackingInfo?: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface RedemptionDetails {
+  id: string
+  userId: string
+  prize: {
+    id: string
+    name: string
+    description: string
+    images: string[]
+  }
+  variant?: {
+    id: string
+    name: string
+    value: string
+  }
+  address: {
+    id: string
+    name: string
+    street: string
+    number: string
+    city: string
+    state: string
+    zipCode: string
+  }
+  coinPrice: number
+  status: RedemptionStatus
+  trackingInfo?: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 export interface RedemptionsQuery {
   limit?: number
   offset?: number
-  fromDate?: string
-  toDate?: string
-  status?: RedemptionStatus | 'ALL'
-  search?: string
 }
 
 export interface RedemptionsResponse {
   redemptions: Redemption[]
-  pagination: {
-    total: number
+  meta: {
     limit: number
     offset: number
-    hasMore: boolean
+    count: number
   }
 }

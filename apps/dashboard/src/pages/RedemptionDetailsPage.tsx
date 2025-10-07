@@ -43,7 +43,7 @@ const statusConfig: Record<Redemption['status'], {
 }
 
 export const RedemptionDetailsPage: React.FC = () => {
-  const { redemptionId } = useParams({ from: '/resgates/$redemptionId' })
+  const { redemptionId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { data: redemption, isLoading, error } = useRedemptionById(redemptionId)
   const cancelMutation = useCancelRedemption()

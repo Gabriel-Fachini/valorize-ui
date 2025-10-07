@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { prizeService } from '@/services/prize.service'
+import { redemptionsService } from '@/services/redemptions.service'
 import { PrizeFilters } from '@/types/prize.types'
 
 export const usePrizes = (filters?: PrizeFilters, page = 1, pageSize = 12) => {
@@ -25,10 +26,21 @@ export const useRedeemPrize = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ prizeId, preferences }: { prizeId: string, preferences: Record<string, string> }) =>
-      prizeService.redeemPrize(prizeId, preferences),
+    mutationFn: ({ prizeId, variantId, addressId }: { prizeId: string; variantId?: string; addressId: string }) =>
+      redemptionsService.redeemPrize({ prizeId, variantId, addressId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['prizes'] })
+      queryClient.invalidateQueries({ queryKey: ['redemptions'] })
+      queryClient.invalidateQueries({ queryKey: ['user-balance'] })
     },
+  })
+}
+
+export const useCategories = () => {
+  return useQuery({
+    queryKey: ['prize-categories'],
+    queryFn: () => prizeService.getCategories(),
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
   })
 }

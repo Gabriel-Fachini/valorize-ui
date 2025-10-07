@@ -28,22 +28,20 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
     config: config.gentle,
   })
 
-  const categoryColors = {
-    eletronicos: 'from-blue-500/20 to-cyan-500/20',
-    casa: 'from-amber-500/20 to-orange-500/20',
-    esporte: 'from-green-500/20 to-emerald-500/20',
-    livros: 'from-purple-500/20 to-pink-500/20',
-    'vale-compras': 'from-red-500/20 to-rose-500/20',
-    experiencias: 'from-indigo-500/20 to-purple-500/20',
-  }
-
-  const categoryLabels = {
-    eletronicos: 'Eletrônicos',
-    casa: 'Casa',
-    esporte: 'Esporte',
-    livros: 'Livros',
-    'vale-compras': 'Vale Compras',
-    experiencias: 'Experiências',
+  const getCategoryColor = (category: string) => {
+    const colors: Record<string, string> = {
+      eletronicos: 'from-blue-500/20 to-cyan-500/20',
+      electronics: 'from-blue-500/20 to-cyan-500/20',
+      casa: 'from-amber-500/20 to-orange-500/20',
+      'home-office': 'from-amber-500/20 to-orange-500/20',
+      esporte: 'from-green-500/20 to-emerald-500/20',
+      livros: 'from-purple-500/20 to-pink-500/20',
+      'vale-compras': 'from-red-500/20 to-rose-500/20',
+      'gift-cards': 'from-red-500/20 to-rose-500/20',
+      experiencias: 'from-indigo-500/20 to-purple-500/20',
+      experiences: 'from-indigo-500/20 to-purple-500/20',
+    }
+    return colors[category] || 'from-gray-500/20 to-gray-600/20'
   }
 
   const handleClick = () => {
@@ -67,24 +65,18 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
         <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900/50 dark:to-gray-800/50">
           <img
             src={prize.images[0]}
-            alt={prize.title}
+            alt={prize.name}
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             loading="lazy"
           />
 
-          {prize.featured && (
-            <div className="absolute right-2 top-2 rounded-full bg-gradient-to-r from-yellow-500 to-amber-500 px-3 py-1 text-xs font-semibold text-white shadow-lg">
-              Destaque
-            </div>
-          )}
-
-          <div className={`absolute inset-0 bg-gradient-to-t ${categoryColors[prize.category]} opacity-40`} />
+          <div className={`absolute inset-0 bg-gradient-to-t ${getCategoryColor(prize.category)} opacity-40`} />
         </div>
 
         <div className="relative p-5">
           <div className="mb-2 flex items-center justify-between">
             <span className="rounded-full bg-gray-100 dark:bg-white/10 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 backdrop-blur-md">
-              {categoryLabels[prize.category]}
+              {prize.category}
             </span>
             {prize.stock <= 5 && (
               <span className="text-xs text-orange-400">
@@ -94,7 +86,7 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
           </div>
 
           <h3 className="mb-2 line-clamp-2 text-lg font-semibold text-gray-900 dark:text-white transition-colors group-hover:text-purple-600 dark:group-hover:text-purple-400">
-            {prize.title}
+            {prize.name}
           </h3>
 
           <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
@@ -104,7 +96,7 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
               <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">
-                {prize.price.toLocaleString('pt-BR')}
+                {prize.coinPrice.toLocaleString('pt-BR')}
               </span>
               <span className="text-sm text-gray-600 dark:text-gray-400">moedas</span>
             </div>
