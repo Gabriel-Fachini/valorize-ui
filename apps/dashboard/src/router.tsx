@@ -14,6 +14,7 @@ import { RedemptionsPage } from '@/pages/RedemptionsPage'
 import { RedemptionDetailsPage } from '@/pages/RedemptionDetailsPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { TransactionsPage } from '@/pages/TransactionsPage'
+import { DemoPage } from '@/pages/DemoPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { OnboardingRouteListener } from '@/components/OnboardingRouteListener'
 import { useTheme } from '@hooks/useTheme'
@@ -36,6 +37,17 @@ const rootRoute = createRootRoute({
   component: RootComponent,
 })
 
+// Protected layout route that persists across protected pages
+const protectedLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: 'protected',
+  component: () => (
+    <ProtectedRoute>
+      <Outlet />
+    </ProtectedRoute>
+  ),
+})
+
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
@@ -49,97 +61,74 @@ const loginRoute = createRoute({
 })
 
 const homeRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => protectedLayoutRoute,
   path: '/home',
-  component: () => (
-    <ProtectedRoute>
-      <HomePage />
-    </ProtectedRoute>
-  ),
+  component: HomePage,
 })
 
 const praisesRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => protectedLayoutRoute,
   path: '/elogios',
-  component: () => (
-    <ProtectedRoute>
-      <PraisesPage />
-    </ProtectedRoute>
-  ),
+  component: PraisesPage,
 })
 
 const prizesRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => protectedLayoutRoute,
   path: '/prizes',
-  component: () => (
-    <ProtectedRoute>
-      <PrizesPage />
-    </ProtectedRoute>
-  ),
+  component: PrizesPage,
 })
 
 const prizeDetailsRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => protectedLayoutRoute,
   path: '/prizes/$prizeId',
-  component: () => (
-    <ProtectedRoute>
-      <PrizeDetailsPage />
-    </ProtectedRoute>
-  ),
+  component: PrizeDetailsPage,
 })
 
 const redemptionsRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => protectedLayoutRoute,
   path: '/resgates',
-  component: () => (
-    <ProtectedRoute>
-      <RedemptionsPage />
-    </ProtectedRoute>
-  ),
+  component: RedemptionsPage,
 })
 
 const redemptionDetailsRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => protectedLayoutRoute,
   path: '/resgates/$redemptionId',
-  component: () => (
-    <ProtectedRoute>
-      <RedemptionDetailsPage />
-    </ProtectedRoute>
-  ),
+  component: RedemptionDetailsPage,
 })
 
 const settingsRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => protectedLayoutRoute,
   path: '/settings',
-  component: () => (
-    <ProtectedRoute>
-      <SettingsPage />
-    </ProtectedRoute>
-  ),
+  component: SettingsPage,
 })
 
 const transactionsRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => protectedLayoutRoute,
   path: '/transacoes',
-  component: () => (
-    <ProtectedRoute>
-      <TransactionsPage />
-    </ProtectedRoute>
-  ),
+  component: TransactionsPage,
 })
 
-// Create route tree
+const demoRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/demo',
+  component: DemoPage,
+})
+
+// Create route tree with nested protected routes
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
-  homeRoute,
-  praisesRoute,
-  prizesRoute,
-  prizeDetailsRoute,
-  redemptionsRoute,
-  redemptionDetailsRoute,
-  settingsRoute,
-  transactionsRoute,
+  demoRoute,
+  protectedLayoutRoute.addChildren([
+    homeRoute,
+    praisesRoute,
+    prizesRoute,
+    prizeDetailsRoute,
+    redemptionsRoute,
+    redemptionDetailsRoute,
+    settingsRoute,
+    transactionsRoute,
+  ]),
 ])
 
 export const router = createRouter({ routeTree })
