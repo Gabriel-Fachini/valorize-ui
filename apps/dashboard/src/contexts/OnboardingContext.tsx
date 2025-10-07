@@ -45,13 +45,13 @@ const getSelectorForDevice = (tourAttr: string, isMobile?: boolean) => {
       // Em mobile (<1024px), usa a sidebar mobile
       const selector = `#mobile-sidebar [data-tour="${tourAttr}"]`
       // eslint-disable-next-line no-console
-      console.log(`🎯 [SIDEBAR-MOBILE] ${tourAttr} → ${selector}`)
+      // console.log(`🎯 [SIDEBAR-MOBILE] ${tourAttr} → ${selector}`)
       return selector
     } else {
       // Em desktop (>=1024px), usa a sidebar desktop
       const selector = `aside[role="complementary"] [data-tour="${tourAttr}"]`
       // eslint-disable-next-line no-console
-      console.log(`🖥️ [SIDEBAR-DESKTOP] ${tourAttr} → ${selector}`)
+      // console.log(`🖥️ [SIDEBAR-DESKTOP] ${tourAttr} → ${selector}`)
       return selector
     }
   }
@@ -59,7 +59,7 @@ const getSelectorForDevice = (tourAttr: string, isMobile?: boolean) => {
   // Para outros elementos (páginas), usa seletor simples
   const selector = `[data-tour="${tourAttr}"]`
   // eslint-disable-next-line no-console
-  console.log(`📄 [PAGE] ${tourAttr} → ${selector}`)
+  // console.log(`📄 [PAGE] ${tourAttr} → ${selector}`)
   return selector
 }
 
@@ -68,7 +68,7 @@ const getTourSteps = (): StepType[] => {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024
   
   // eslint-disable-next-line no-console
-  console.log(`🔧 Generating tour steps for ${isMobile ? 'MOBILE' : 'DESKTOP'} (width: ${window.innerWidth}px)`)
+  // console.log(`🔧 Generating tour steps for ${isMobile ? 'MOBILE' : 'DESKTOP'} (width: ${window.innerWidth}px)`)
   
   return [
   {
@@ -264,24 +264,24 @@ const OnboardingControllerContent = ({ children }: { children: React.ReactNode }
       const updatedSteps = getTourSteps()
       setSteps(updatedSteps)
       // eslint-disable-next-line no-console
-      console.log('🎯 Tour steps updated for', window.innerWidth < 1024 ? 'MOBILE' : 'DESKTOP')
+      // console.log('🎯 Tour steps updated for', window.innerWidth < 1024 ? 'MOBILE' : 'DESKTOP')
       // eslint-disable-next-line no-console
-      console.log('📋 All selectors:', updatedSteps.map((s, i) => `${i}: ${typeof s.selector === 'string' ? s.selector : '[function]'}`))
+      // console.log('📋 All selectors:', updatedSteps.map((s, i) => `${i}: ${typeof s.selector === 'string' ? s.selector : '[function]'}`))
       
       // Aguarda um pouco antes de verificar (para dar tempo de renderizar)
       setTimeout(() => {
         // Verificar se os elementos existem no DOM
         // eslint-disable-next-line no-console
-        console.group('🔍 Checking if elements exist in DOM (after delay)')
+        // console.group('🔍 Checking if elements exist in DOM (after delay)')
         updatedSteps.forEach((step, index) => {
           if (typeof step.selector === 'string') {
             const element = document.querySelector(step.selector)
             // eslint-disable-next-line no-console
-            console.log(`Step ${index} (${step.selector}):`, element ? '✅ Found' : '❌ Not found')
+            // console.log(`Step ${index} (${step.selector}):`, element ? '✅ Found' : '❌ Not found')
           }
         })
         // eslint-disable-next-line no-console
-        console.groupEnd()
+        // console.groupEnd()
       }, 500)
     }
   }, [isOpen, setSteps])
@@ -294,7 +294,7 @@ const OnboardingControllerContent = ({ children }: { children: React.ReactNode }
       const updatedSteps = getTourSteps()
       setSteps(updatedSteps)
       // eslint-disable-next-line no-console
-      console.log('📱 Screen resized - steps updated for', window.innerWidth < 1024 ? 'MOBILE' : 'DESKTOP')
+      // console.log('📱 Screen resized - steps updated for', window.innerWidth < 1024 ? 'MOBILE' : 'DESKTOP')
     }
     
     window.addEventListener('resize', handleResize)
@@ -308,14 +308,14 @@ const OnboardingControllerContent = ({ children }: { children: React.ReactNode }
     const expectedRoute = STEP_TO_ROUTE_MAP[currentStep]
     
     // eslint-disable-next-line no-console
-    console.log('🚦 Route changed:', {
-      currentStep,
-      pathname,
-      expectedRoute,
-      previousRoute: previousRouteRef.current,
-      shouldAdvance: expectedRoute && pathname === expectedRoute && previousRouteRef.current !== expectedRoute,
+    // console.log('🚦 Route changed:', {
+      // currentStep,
+      // pathname,
+      // expectedRoute,
+      // previousRoute: previousRouteRef.current,
+      // shouldAdvance: expectedRoute && pathname === expectedRoute && previousRouteRef.current !== expectedRoute,
     
-    })
+    // })
     
     // Só avança se:
     // 1. Existe uma rota esperada para o step atual
@@ -330,7 +330,7 @@ const OnboardingControllerContent = ({ children }: { children: React.ReactNode }
       // Timeout maior em mobile para garantir renderização completa
       const delay = window.innerWidth < 1024 ? 500 : 300
       // eslint-disable-next-line no-console
-      console.log(`⏭️ Advancing to step ${currentStep + 1} after ${delay}ms delay`)
+      // console.log(`⏭️ Advancing to step ${currentStep + 1} after ${delay}ms delay`)
       setTimeout(() => {
         setCurrentStep(currentStep + 1)
         
@@ -338,7 +338,7 @@ const OnboardingControllerContent = ({ children }: { children: React.ReactNode }
         // Isso garante que o Reactour reprocesse os seletores e encontre os elementos que agora existem
         if (setSteps) {
           // eslint-disable-next-line no-console
-          console.log('🔄 Refreshing tour steps after navigation...')
+          // console.log('🔄 Refreshing tour steps after navigation...')
           const refreshedSteps = getTourSteps()
           setSteps(refreshedSteps)
         }
@@ -351,11 +351,11 @@ const OnboardingControllerContent = ({ children }: { children: React.ReactNode }
             const selector = steps[nextStep].selector as string
             const element = document.querySelector(selector)
             // eslint-disable-next-line no-console
-            console.log(`🔍 Step ${nextStep} element (${selector}):`, element ? '✅ Found after navigation' : '⚠️ Still not found')
+            // console.log(`🔍 Step ${nextStep} element (${selector}):`, element ? '✅ Found after navigation' : '⚠️ Still not found')
             
             if (!element) {
               // eslint-disable-next-line no-console
-              console.warn(`⚠️ Element not found for step ${nextStep}. The tour may be stuck. Try increasing delay or check if element exists.`)
+              // console.warn(`⚠️ Element not found for step ${nextStep}. The tour may be stuck. Try increasing delay or check if element exists.`)
             }
           }
         }, 300)
