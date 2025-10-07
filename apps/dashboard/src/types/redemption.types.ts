@@ -4,50 +4,54 @@ export interface Redemption {
   id: string
   userId: string
   prizeId: string
-  prizeName?: string
   variantId?: string
-  variantValue?: string
+  companyId: string
   addressId: string
-  coinPrice: number
-  status: RedemptionStatus
-  trackingInfo?: string | null
-  createdAt: string
-  updatedAt: string
-}
-
-export interface RedemptionDetails {
-  id: string
-  userId: string
+  coinsSpent: number
+  status: string // API returns lowercase: "pending", "processing", etc.
+  trackingCode?: string | null
+  redeemedAt: string
   prize: {
     id: string
     name: string
-    description: string
     images: string[]
+    category: string
   }
   variant?: {
     id: string
     name: string
     value: string
   }
-  address: {
+  tracking?: Array<{
     id: string
-    name: string
-    street: string
-    number: string
-    city: string
-    state: string
-    zipCode: string
-  }
-  coinPrice: number
-  status: RedemptionStatus
-  trackingInfo?: string | null
-  createdAt: string
-  updatedAt: string
+    status: string
+    notes: string
+    createdAt: string
+  }>
+}
+
+export interface RedemptionDetails {
+  id: string
+  userId: string
+  prizeId: string
+  variantId?: string
+  companyId: string
+  addressId: string
+  coinsSpent: number
+  status: string
+  trackingCode?: string | null
+  redeemedAt: string
+  // Note: Details endpoint returns a simpler structure without nested objects
+  // The nested prize, variant, address data needs to be fetched separately if needed
 }
 
 export interface RedemptionsQuery {
   limit?: number
   offset?: number
+  status?: string | 'ALL'
+  fromDate?: string
+  toDate?: string
+  search?: string
 }
 
 export interface RedemptionsResponse {

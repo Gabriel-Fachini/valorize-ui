@@ -33,10 +33,25 @@ export const redemptionsService = {
   },
 
   async getRedemptions(params: RedemptionsQuery = {}): Promise<RedemptionsResponse> {
-    const { limit = 20, offset = 0 } = params
+    const { limit = 20, offset = 0, status, fromDate, toDate, search } = params
+    
+    const queryParams: Record<string, string | number> = { limit, offset }
+    
+    if (status && status !== 'ALL') {
+      queryParams.status = status
+    }
+    if (fromDate) {
+      queryParams.fromDate = fromDate
+    }
+    if (toDate) {
+      queryParams.toDate = toDate
+    }
+    if (search) {
+      queryParams.search = search
+    }
     
     const response = await api.get<RedemptionsResponse>('/redemptions/my-redemptions', {
-      params: { limit, offset },
+      params: queryParams,
     })
     
     return response.data
@@ -46,7 +61,7 @@ export const redemptionsService = {
     try {
       const response = await api.get<GetRedemptionDetailsResponse>(`/redemptions/my-redemptions/${id}`)
       return response.data.redemption
-    } catch (error) {
+    } catch {
       return null
     }
   },

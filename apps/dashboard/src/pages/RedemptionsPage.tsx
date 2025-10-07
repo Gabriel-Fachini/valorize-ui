@@ -1,16 +1,17 @@
 import React from 'react'
 import { useRedemptions } from '@/hooks/useRedemptions'
-import type { RedemptionsQuery, RedemptionStatus } from '@/types/redemption.types'
+import type { RedemptionsQuery } from '@/types/redemption.types'
 import { RedemptionCard } from '@/components/redemptions/RedemptionCard'
 import { SkeletonRedemptionCard } from '@/components/redemptions/SkeletonRedemptionCard'
 import { useSpring, useTrail, animated } from '@react-spring/web'
 
-const STATUS_OPTIONS: Array<{ label: string; value: RedemptionStatus | 'ALL' }> = [
+const STATUS_OPTIONS: Array<{ label: string; value: string }> = [
   { label: 'Todos', value: 'ALL' },
-  { label: 'Pendente', value: 'PENDING' },
-  { label: 'Processando', value: 'PROCESSING' },
-  { label: 'Concluído', value: 'COMPLETED' },
-  { label: 'Cancelado', value: 'CANCELLED' },
+  { label: 'Pendente', value: 'pending' },
+  { label: 'Processando', value: 'processing' },
+  { label: 'Enviado', value: 'shipped' },
+  { label: 'Concluído', value: 'completed' },
+  { label: 'Cancelado', value: 'cancelled' },
 ]
 
 const PERIOD_OPTIONS: Array<{ label: string; days?: number }> = [
@@ -20,7 +21,7 @@ const PERIOD_OPTIONS: Array<{ label: string; days?: number }> = [
 ]
 
 export const RedemptionsPage: React.FC = () => {
-  const [status, setStatus] = React.useState<RedemptionStatus | 'ALL'>('ALL')
+  const [status, setStatus] = React.useState<string>('ALL')
   const [period, setPeriod] = React.useState<typeof PERIOD_OPTIONS[number]>(PERIOD_OPTIONS[0])
   const [search, setSearch] = React.useState('')
   const [offset, setOffset] = React.useState(0)
@@ -43,7 +44,8 @@ export const RedemptionsPage: React.FC = () => {
   }), [limit, offset, status, fromDate, toDate, search])
 
   const { data, isLoading, error, refetch, isFetching } = useRedemptions(params)
-  const hasMore = data?.pagination.hasMore
+  // Calculate hasMore: if we got exactly 'limit' items, there might be more
+  const hasMore = data ? data.redemptions.length === limit : false
 
   // Animações
   const headerSpring = useSpring({
@@ -77,7 +79,7 @@ export const RedemptionsPage: React.FC = () => {
     setSearch(e.target.value)
     setOffset(0)
   }
-  const onStatusChange = (value: RedemptionStatus | 'ALL') => {
+  const onStatusChange = (value: string) => {
     setStatus(value)
     setOffset(0)
   }

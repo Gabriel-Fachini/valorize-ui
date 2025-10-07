@@ -2,13 +2,12 @@ import React from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useRedemptionById, useCancelRedemption } from '@/hooks/useRedemptions'
 import { useSpring, animated, useTrail } from '@react-spring/web'
-import type { Redemption } from '@/types/redemption.types'
 
-const statusConfig: Record<Redemption['status'], {
+const statusConfig: Record<string, {
   badge: string
   icon: React.ReactNode
 }> = {
-  PENDING: {
+  pending: {
     badge: 'bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-orange-500/10 text-amber-700 border border-amber-300/30 dark:from-amber-400/20 dark:via-yellow-400/20 dark:to-orange-400/20 dark:text-amber-300 dark:border-amber-400/40',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -16,7 +15,7 @@ const statusConfig: Record<Redemption['status'], {
       </svg>
     ),
   },
-  PROCESSING: {
+  processing: {
     badge: 'bg-gradient-to-r from-indigo-500/10 via-blue-500/10 to-cyan-500/10 text-indigo-700 border border-indigo-300/30 dark:from-indigo-400/20 dark:via-blue-400/20 dark:to-cyan-400/20 dark:text-indigo-300 dark:border-indigo-400/40',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -24,7 +23,15 @@ const statusConfig: Record<Redemption['status'], {
       </svg>
     ),
   },
-  COMPLETED: {
+  shipped: {
+    badge: 'bg-gradient-to-r from-purple-500/10 via-violet-500/10 to-fuchsia-500/10 text-purple-700 border border-purple-300/30 dark:from-purple-400/20 dark:via-violet-400/20 dark:to-fuchsia-400/20 dark:text-purple-300 dark:border-purple-400/40',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+      </svg>
+    ),
+  },
+  completed: {
     badge: 'bg-gradient-to-r from-emerald-500/10 via-green-500/10 to-teal-500/10 text-emerald-700 border border-emerald-300/30 dark:from-emerald-400/20 dark:via-green-400/20 dark:to-teal-400/20 dark:text-emerald-300 dark:border-emerald-400/40',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -32,7 +39,7 @@ const statusConfig: Record<Redemption['status'], {
       </svg>
     ),
   },
-  CANCELLED: {
+  cancelled: {
     badge: 'bg-gradient-to-r from-gray-500/10 via-slate-500/10 to-gray-600/10 text-gray-700 border border-gray-300/30 dark:from-white/10 dark:via-gray-400/10 dark:to-gray-500/10 dark:text-gray-300 dark:border-white/20',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,12 +59,13 @@ export const RedemptionDetailsPage: React.FC = () => {
 
   const tracking = React.useMemo(() => {
     // Mock de tracking; em produção, viria do backend do pedido
-    const base = redemption?.createdAt ? new Date(redemption.createdAt).getTime() : Date.now() - 1000 * 60 * 60 * 6
+    const base = redemption?.redeemedAt ? new Date(redemption.redeemedAt).getTime() : Date.now() - 1000 * 60 * 60 * 6
+    const status = redemption?.status?.toLowerCase()
     return [
       { title: 'Pedido recebido', time: new Date(base).toLocaleString('pt-BR'), done: true },
-      { title: 'Processando pedido', time: new Date(base + 1000 * 60 * 60 * 2).toLocaleString('pt-BR'), done: redemption?.status !== 'PENDING' },
-      { title: 'Despachado para entrega', time: new Date(base + 1000 * 60 * 60 * 4).toLocaleString('pt-BR'), done: redemption?.status === 'COMPLETED' },
-      { title: 'Entregue', time: redemption?.status === 'COMPLETED' ? new Date(base + 1000 * 60 * 60 * 6).toLocaleString('pt-BR') : '-', done: redemption?.status === 'COMPLETED' },
+      { title: 'Processando pedido', time: new Date(base + 1000 * 60 * 60 * 2).toLocaleString('pt-BR'), done: status !== 'pending' },
+      { title: 'Despachado para entrega', time: new Date(base + 1000 * 60 * 60 * 4).toLocaleString('pt-BR'), done: status === 'completed' || status === 'shipped' },
+      { title: 'Entregue', time: status === 'completed' ? new Date(base + 1000 * 60 * 60 * 6).toLocaleString('pt-BR') : '-', done: status === 'completed' },
     ]
   }, [redemption])
 
@@ -69,8 +77,9 @@ export const RedemptionDetailsPage: React.FC = () => {
 
   const canCancel = React.useMemo(() => {
     if (!redemption) return false
-    if (redemption.status === 'CANCELLED' || redemption.status === 'COMPLETED') return false
-    const created = new Date(redemption.createdAt).getTime()
+    const status = redemption.status?.toLowerCase()
+    if (status === 'cancelled' || status === 'completed') return false
+    const created = new Date(redemption.redeemedAt).getTime()
     const now = Date.now()
     return now - created <= 24 * 60 * 60 * 1000
   }, [redemption])
@@ -232,8 +241,8 @@ export const RedemptionDetailsPage: React.FC = () => {
               <div className="relative group">
                 <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <img
-                  src={redemption.prizeImage ?? '/valorize_logo.png'}
-                  alt={redemption.prizeTitle}
+                  src={'/valorize_logo.png'}
+                  alt="Prize"
                   className="h-24 w-24 sm:h-32 sm:w-32 rounded-3xl object-cover border-4 border-white/50 dark:border-white/20 shadow-2xl relative z-10 transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
@@ -241,7 +250,7 @@ export const RedemptionDetailsPage: React.FC = () => {
               <div className="flex-1 space-y-4">
                 <div>
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-2">
-                    {redemption.prizeTitle}
+                    Resgate #{redemption.id.slice(0, 8)}
                   </h1>
                   <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                     <div className="flex items-center gap-2">
@@ -254,21 +263,22 @@ export const RedemptionDetailsPage: React.FC = () => {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      {new Date(redemption.createdAt).toLocaleString('pt-BR')}
+                      {new Date(redemption.redeemedAt).toLocaleString('pt-BR')}
                     </div>
                   </div>
                 </div>
                 
                 {/* Status Badge */}
                 <div className="flex items-center justify-between">
-                  <div className={`inline-flex items-center gap-3 rounded-2xl px-5 py-3 text-sm font-semibold backdrop-blur-sm ${statusConfig[redemption.status].badge}`}>
+                  <div className={`inline-flex items-center gap-3 rounded-2xl px-5 py-3 text-sm font-semibold backdrop-blur-sm ${statusConfig[redemption.status.toLowerCase()] ? statusConfig[redemption.status.toLowerCase()].badge : statusConfig.pending.badge}`}>
                     <span className="flex items-center justify-center">
-                      {statusConfig[redemption.status].icon}
+                      {statusConfig[redemption.status.toLowerCase()]?.icon ?? statusConfig.pending.icon}
                     </span>
                     <span>
-                      {redemption.status === 'PENDING' && 'Pendente'}
-                      {redemption.status === 'PROCESSING' && 'Processando'}
-                      {redemption.status === 'COMPLETED' && 'Concluído'}
+                      {redemption.status.toLowerCase() === 'pending' && 'Pendente'}
+                      {redemption.status.toLowerCase() === 'processing' && 'Processando'}
+                      {redemption.status.toLowerCase() === 'shipped' && 'Enviado'}
+                      {redemption.status.toLowerCase() === 'completed' && 'Concluído'}
                       {redemption.status === 'CANCELLED' && 'Cancelado'}
                     </span>
                   </div>
@@ -368,15 +378,15 @@ export const RedemptionDetailsPage: React.FC = () => {
                 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between py-2 border-b border-gray-200/50 dark:border-white/10">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Quantidade</span>
-                    <span className="font-semibold text-gray-800 dark:text-gray-200">{redemption.quantity}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">ID do Prêmio</span>
+                    <span className="font-mono text-sm text-gray-800 dark:text-gray-200">{redemption.prizeId.slice(0, 12)}...</span>
                   </div>
                   
                   <div className="flex items-center justify-between py-2 border-b border-gray-200/50 dark:border-white/10">
                     <span className="text-sm text-gray-600 dark:text-gray-400">Valor Total</span>
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-rose-600 dark:text-rose-400">
-                        -{new Intl.NumberFormat('pt-BR').format(redemption.amount)}
+                        -{new Intl.NumberFormat('pt-BR').format(redemption.coinsSpent)}
                       </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400">moedas</span>
                     </div>
