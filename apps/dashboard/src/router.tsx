@@ -10,11 +10,11 @@ import { HomePage } from '@/pages/HomePage'
 import { PraisesPage } from '@/pages/PraisesPage'
 import { PrizesPage } from '@/pages/PrizesPage'
 import { PrizeDetailsPage } from '@/pages/PrizeDetailsPage'
+import { PrizeConfirmationPage } from '@/pages/PrizeConfirmationPage'
 import { RedemptionsPage } from '@/pages/RedemptionsPage'
 import { RedemptionDetailsPage } from '@/pages/RedemptionDetailsPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { TransactionsPage } from '@/pages/TransactionsPage'
-import { DemoPage } from '@/pages/DemoPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { OnboardingRouteListener } from '@/components/OnboardingRouteListener'
 import { useTheme } from '@hooks/useTheme'
@@ -84,6 +84,12 @@ const prizeDetailsRoute = createRoute({
   component: PrizeDetailsPage,
 })
 
+const prizeConfirmationRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/prizes/$prizeId/confirm',
+  component: PrizeConfirmationPage,
+})
+
 const redemptionsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/resgates',
@@ -108,22 +114,16 @@ const transactionsRoute = createRoute({
   component: TransactionsPage,
 })
 
-const demoRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/demo',
-  component: DemoPage,
-})
-
 // Create route tree with nested protected routes
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
-  demoRoute,
   protectedLayoutRoute.addChildren([
     homeRoute,
     praisesRoute,
     prizesRoute,
     prizeDetailsRoute,
+    prizeConfirmationRoute,
     redemptionsRoute,
     redemptionDetailsRoute,
     settingsRoute,

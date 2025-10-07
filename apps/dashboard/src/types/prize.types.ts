@@ -1,38 +1,37 @@
-export interface PrizePreference {
-  label: string
-  options: string[]
-  required: boolean
-  type: 'select' | 'color' | 'text'
+export interface PrizeVariant {
+  id: string
+  prizeId: string
+  name: string
+  value: string
+  stock: number
+  createdAt: string
+  updatedAt: string
 }
 
 export interface Prize {
   id: string
-  title: string
+  companyId: string
+  name: string
   description: string
-  category: 'eletronicos' | 'casa' | 'esporte' | 'livros' | 'vale-compras' | 'experiencias'
-  price: number
+  category: string
+  brand: string
+  coinPrice: number
   images: string[]
-  preferences?: PrizePreference[]
   stock: number
-  featured: boolean
-  brand?: string
-  specifications?: Record<string, string>
+  specifications: Record<string, string>
+  variants?: PrizeVariant[]
   createdAt: string
   updatedAt: string
 }
 
 export interface PrizeFilters {
-  category?: Prize['category']
-  priceRange?: {
-    min: number
-    max: number
-  }
-  search?: string
-  sortBy?: 'price_asc' | 'price_desc' | 'newest' | 'popular'
+  category?: string
+  minPrice?: number
+  maxPrice?: number
 }
 
 export interface PrizeRedemption {
   prizeId: string
-  preferences: Record<string, string>
-  quantity: number
+  variantId?: string
+  addressId: string
 }
