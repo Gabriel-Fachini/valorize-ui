@@ -2,10 +2,11 @@ import { type FC, useState, useEffect } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePrizeById } from '@/hooks/usePrizes'
 import { ImageCarousel } from '@/components/prizes/ImageCarousel'
+import { PageLayout } from '@/components/layout/PageLayout'
 import { useSpring, animated, useTrail } from '@react-spring/web'
 
 export const PrizeDetailsPage: FC = () => {
-  const { prizeId } = useParams({ from: '/prizes/$prizeId' })
+  const { prizeId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { data: prize, isLoading, error } = usePrizeById(prizeId)
 
@@ -43,9 +44,12 @@ export const PrizeDetailsPage: FC = () => {
       return
     }
 
-    // Navigate to confirmation page
-    const confirmPath = `/prizes/${prize.id}/confirm${selectedVariantId ? `?variantId=${selectedVariantId}` : ''}`
-    window.location.href = confirmPath
+    // Navigate to confirmation page using TanStack Router
+    navigate({ 
+      to: '/prizes/$prizeId/confirm',
+      params: { prizeId: prize.id },
+      search: selectedVariantId ? { variantId: selectedVariantId } : undefined,
+    })
   }
 
   if (isLoading) {
@@ -100,12 +104,9 @@ export const PrizeDetailsPage: FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">
+    <PageLayout maxWidth="6xl">
+    <div className="min-h-screen">
       <div className="relative">
-        <div className="absolute inset-0 opacity-30 dark:opacity-30" style={{
-          backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-        }} />
-
         <animated.div style={fadeIn} className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
           <button
             onClick={() => navigate({ to: '/prizes' })}
@@ -243,8 +244,9 @@ export const PrizeDetailsPage: FC = () => {
               </div>
             </div>
           </div>
-        </animated.div>
+          </animated.div>
+        </div>
       </div>
-    </PageLayout>
+      </PageLayout>
   )
 }

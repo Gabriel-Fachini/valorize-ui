@@ -1,4 +1,4 @@
-import { type FC, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearch } from '@tanstack/react-router'
 import { usePrizeById, useRedeemPrize } from '@/hooks/usePrizes'
 import { useAddresses, useCreateAddress, useUpdateAddress, useDeleteAddress } from '@/hooks/useAddresses'
@@ -7,9 +7,9 @@ import { useSpring, animated } from '@react-spring/web'
 import { PageLayout } from '@/components/layout/PageLayout'
 import type { AddressInput } from '@/types/address.types'
 
-export const PrizeConfirmationPage: FC = () => {
-  const { prizeId } = useParams({ from: '/prizes/$prizeId/confirm' })
-  const search = useSearch({ from: '/prizes/$prizeId/confirm' })
+export const PrizeConfirmationPage = () => {
+  const { prizeId } = useParams({ strict: false })
+  const search = useSearch({ strict: false })
   const variantId = (search as { variantId?: string }).variantId
   const navigate = useNavigate()
   
@@ -54,12 +54,12 @@ export const PrizeConfirmationPage: FC = () => {
   })
 
   // Auto-select default address
-  useState(() => {
+  useEffect(() => {
     if (addresses.length > 0 && !selectedAddressId) {
       const defaultAddress = addresses.find(addr => addr.isDefault)
       setSelectedAddressId(defaultAddress?.id ?? addresses[0].id)
     }
-  })
+  }, [addresses, selectedAddressId])
 
   const selectedVariant = prize?.variants?.find(v => v.id === variantId)
 
@@ -181,12 +181,42 @@ export const PrizeConfirmationPage: FC = () => {
   if (prizeLoading || addressesLoading) {
     return (
       <PageLayout maxWidth="4xl">
-        <div className="mx-auto max-w-4xl animate-pulse">
-          <div className="mb-8 h-8 w-48 rounded bg-gray-200 dark:bg-gray-800" />
-          <div className="space-y-6">
-            <div className="h-64 rounded-2xl bg-gray-200 dark:bg-gray-800" />
-            <div className="h-96 rounded-2xl bg-gray-200 dark:bg-gray-800" />
-          </div>
+        <div className="relative">
+          <animated.div style={fadeIn} className="space-y-6">
+            {/* Back button skeleton */}
+            <div className="h-10 w-24 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+
+            {/* Title skeleton */}
+            <div className="h-9 w-64 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+
+            {/* Prize Summary skeleton */}
+            <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 p-6 backdrop-blur-xl">
+              <div className="mb-4 h-7 w-48 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+              <div className="flex gap-4">
+                <div className="h-24 w-24 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+                <div className="flex-1 space-y-3">
+                  <div className="h-6 w-3/4 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+                  <div className="h-5 w-1/2 rounded-full bg-gray-200 dark:bg-gray-800 animate-pulse" />
+                  <div className="h-8 w-32 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+                </div>
+              </div>
+            </div>
+
+            {/* Address Selection skeleton */}
+            <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 p-6 backdrop-blur-xl">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="h-7 w-56 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+                <div className="h-10 w-40 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+              </div>
+              <div className="space-y-3">
+                <div className="h-32 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+                <div className="h-32 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+              </div>
+            </div>
+
+            {/* Confirmation Button skeleton */}
+            <div className="h-14 w-full rounded-xl bg-gray-200 dark:bg-gray-800 animate-pulse" />
+          </animated.div>
         </div>
       </PageLayout>
     )
@@ -642,7 +672,7 @@ export const PrizeConfirmationPage: FC = () => {
                 Voltar para a Loja
               </button>
               <button
-                onClick={() => navigate({ to: '/redemptions' })}
+                onClick={() => navigate({ to: '/resgates' })}
                 className="flex-1 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 py-3 font-semibold text-white transition-all hover:from-purple-700 hover:to-indigo-700"
               >
                 Ver Resgates
