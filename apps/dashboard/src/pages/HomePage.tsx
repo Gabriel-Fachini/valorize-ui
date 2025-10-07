@@ -1,5 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useSpring, animated, useTrail } from '@react-spring/web'
+import { PageLayout } from '@/components/layout/PageLayout'
 
 export const HomePage = () => {
   const navigate = useNavigate()
@@ -50,11 +51,12 @@ export const HomePage = () => {
   })
 
   return (
-    <animated.div style={pageAnimation} className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <PageLayout maxWidth="7xl">
+      <animated.div style={pageAnimation}>
 
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-6 sm:pt-8 lg:pt-12 pb-6 sm:pb-8">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden">
+          <div className="pt-6 sm:pt-8 lg:pt-12 pb-6 sm:pb-8">
           <animated.div
             style={heroAnimation}
             className="text-center relative"
@@ -79,8 +81,8 @@ export const HomePage = () => {
         </div>
       </div>
 
-      {/* Elogios CTA Section - Moved to top */}
-      <animated.div style={featuresAnimation} className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 mb-6 sm:mb-8 lg:mb-12">
+        {/* Elogios CTA Section - Moved to top */}
+        <animated.div style={featuresAnimation} className="mb-6 sm:mb-8 lg:mb-12">
         <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-center shadow-2xl">
           <div className="max-w-3xl mx-auto">
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
@@ -111,8 +113,8 @@ export const HomePage = () => {
         </div>
       </animated.div>
 
-      {/* Stats Cards */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 mb-6 sm:mb-8 lg:mb-12">
+        {/* Stats Cards */}
+        <div className="mb-6 sm:mb-8 lg:mb-12">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
           {statsTrail.map((style, index) => {
             const card = statsCards[index]
@@ -137,8 +139,8 @@ export const HomePage = () => {
         </div>
       </div>
 
-      {/* Main Features */}
-      <animated.div style={featuresAnimation} className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 mb-6 sm:mb-8 lg:mb-12">
+        {/* Main Features */}
+        <animated.div style={featuresAnimation} className="mb-6 sm:mb-8 lg:mb-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl group sm:col-span-2 lg:col-span-1">
             <div className="text-center">
@@ -196,7 +198,9 @@ export const HomePage = () => {
             </div>
           </div>
         </div>
+        </animated.div>
+
       </animated.div>
-    </animated.div>
+    </PageLayout>
   )
 }

@@ -2,6 +2,8 @@ import React from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useRedemptionById, useCancelRedemption } from '@/hooks/useRedemptions'
 import { useSpring, animated, useTrail } from '@react-spring/web'
+import type { Redemption } from '@/types/redemption.types'
+import { PageLayout } from '@/components/layout/PageLayout'
 
 const statusConfig: Record<string, {
   badge: string
@@ -104,14 +106,8 @@ export const RedemptionDetailsPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50/80 via-white/60 to-purple-50/80 dark:from-gray-900/95 dark:via-gray-800/90 dark:to-gray-900/95">
-        {/* Liquid Glass Background Effects */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-indigo-600/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute top-1/2 -left-40 w-96 h-96 bg-gradient-to-br from-blue-400/15 to-cyan-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        </div>
-
-        <div className="relative z-10 mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+      <PageLayout maxWidth="5xl">
+        <div className="relative z-10 space-y-8">
           {/* Back Button Skeleton */}
           <div className="h-12 w-48 rounded-2xl bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
           
@@ -166,20 +162,14 @@ export const RedemptionDetailsPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </PageLayout>
     )
   }
 
   if (error || !redemption) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50/80 via-white/60 to-purple-50/80 dark:from-gray-900/95 dark:via-gray-800/90 dark:to-gray-900/95">
-        {/* Liquid Glass Background Effects */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-red-400/20 to-orange-600/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute top-1/2 -left-40 w-96 h-96 bg-gradient-to-br from-rose-400/15 to-pink-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        </div>
-
-        <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-8">
+      <PageLayout maxWidth="6xl">
+        <div className="relative z-10 flex min-h-[60vh] items-center justify-center px-4 py-8">
           <div className="w-full max-w-lg">
             <div className="text-center">
               <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-red-500/20 to-orange-500/20 backdrop-blur-xl">
@@ -216,22 +206,14 @@ export const RedemptionDetailsPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50/80 via-white/60 to-purple-50/80 dark:from-gray-900/95 dark:via-gray-800/90 dark:to-gray-900/95">
-      {/* Liquid Glass Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-indigo-600/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-gradient-to-br from-blue-400/15 to-cyan-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute -bottom-40 right-1/3 w-72 h-72 bg-gradient-to-br from-emerald-400/20 to-teal-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
-      </div>
-
+    <PageLayout maxWidth="6xl">
       <div className="relative z-10">
-
-        <animated.div style={fadeIn} className="relative mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+        <animated.div style={fadeIn} className="relative space-y-6">
           <button
             onClick={() => navigate({ to: '/resgates' })}
             className="group mb-6 flex items-center gap-3 rounded-2xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-r from-white/80 to-gray-50/80 dark:from-white/10 dark:to-white/5 px-6 py-3 text-sm font-medium text-gray-700 dark:text-white backdrop-blur-2xl transition-all duration-300 hover:border-purple-300/50 dark:hover:border-purple-500/30 hover:from-purple-50/80 hover:to-indigo-50/80 dark:hover:from-purple-500/10 dark:hover:to-indigo-500/10 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/10"
@@ -457,6 +439,6 @@ export const RedemptionDetailsPage: React.FC = () => {
           </div>
         </animated.div>
       </div>
-    </div>
+    </PageLayout>
   )
 }

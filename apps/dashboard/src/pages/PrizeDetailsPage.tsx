@@ -54,7 +54,7 @@ export const PrizeDetailsPage: FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-purple-950 p-4">
+      <PageLayout maxWidth="6xl">
         <div className="mx-auto max-w-6xl animate-pulse">
           <div className="mb-8 h-8 w-32 rounded bg-gray-200 dark:bg-gray-800" />
           <div className="grid gap-8 lg:grid-cols-2">
@@ -67,13 +67,14 @@ export const PrizeDetailsPage: FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </PageLayout>
     )
   }
 
   if (error || !prize) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-purple-950 p-4">
+      <PageLayout maxWidth="6xl">
+        <div className="flex min-h-[60vh] items-center justify-center p-4">
         <div className="rounded-2xl border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 p-8 text-center backdrop-blur-xl">
           <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">Prêmio não encontrado</h2>
           <button
@@ -83,7 +84,8 @@ export const PrizeDetailsPage: FC = () => {
             Voltar para a loja
           </button>
         </div>
-      </div>
+        </div>
+      </PageLayout>
     )
   }
 
@@ -105,7 +107,6 @@ export const PrizeDetailsPage: FC = () => {
 
   return (
     <PageLayout maxWidth="6xl">
-    <div className="min-h-screen">
       <div className="relative">
         <animated.div style={fadeIn} className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
           <button
@@ -244,9 +245,8 @@ export const PrizeDetailsPage: FC = () => {
               </div>
             </div>
           </div>
-          </animated.div>
-        </div>
+        </animated.div>
       </div>
-      </PageLayout>
+    </PageLayout>
   )
 }

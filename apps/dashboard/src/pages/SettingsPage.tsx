@@ -3,6 +3,7 @@ import { ProfileForm } from '@/components/settings/ProfileForm'
 import { PreferencesForm } from '@/components/settings/PreferencesForm'
 import { AddressTab } from '@/components/settings/AddressTab'
 import { useOnboarding } from '@/contexts/OnboardingContext'
+import { PageLayout } from '@/components/layout/PageLayout'
 
 type TabKey = 'profile' | 'preferences' | 'addresses'
 

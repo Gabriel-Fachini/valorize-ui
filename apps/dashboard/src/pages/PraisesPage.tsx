@@ -15,6 +15,7 @@ import {
   useSuccessTransition,
 } from '@/hooks/useAnimations'
 import { usePraisesData, type PraiseUser, type PraiseCompanyValue } from '@/hooks/usePraisesData'
+import { PageLayout } from '@/components/layout/PageLayout'
 
 export const PraisesPage = () => {
   const [showModal, setShowModal] = useState(false)
@@ -78,19 +79,10 @@ export const PraisesPage = () => {
   })
 
   return (
-    <animated.div 
-      style={pageAnimation}
-      className="min-h-screen bg-gradient-to-br from-gray-50/80 via-white/60 to-purple-50/80 dark:from-gray-900/95 dark:via-gray-800/90 dark:to-gray-900/95"
-    >
-      {/* Liquid Glass Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-indigo-600/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-gradient-to-br from-blue-400/15 to-cyan-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute -bottom-40 right-1/3 w-72 h-72 bg-gradient-to-br from-pink-400/20 to-rose-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
-      </div>
-
-      {/* Main Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+    <PageLayout maxWidth="6xl">
+      <animated.div style={pageAnimation}>
+        {/* Main Content */}
+        <div className="relative z-10">
 
         {/* Header */}
         <animated.div style={headerSpring} className="mb-8">
@@ -164,6 +156,7 @@ export const PraisesPage = () => {
         coins={lastPraise?.coins}
         transition={successTransition}
       />
-    </animated.div>
+      </animated.div>
+    </PageLayout>
   )
 }

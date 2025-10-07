@@ -4,6 +4,7 @@ import { PrizeFilters } from '@/components/prizes/PrizeFilters'
 import { usePrizes } from '@/hooks/usePrizes'
 import { PrizeFilters as Filters } from '@/types/prize.types'
 import { useSpring, animated } from '@react-spring/web'
+import { PageLayout } from '@/components/layout/PageLayout'
 
 export const PrizesPage: React.FC = () => {
   const [filters, setFilters] = React.useState<Filters>({})
@@ -30,7 +31,8 @@ export const PrizesPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4 bg-gray-50 dark:bg-gray-900">
+      <PageLayout maxWidth="6xl">
+        <div className="flex min-h-[60vh] items-center justify-center p-4">
         <div className="rounded-2xl border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 p-8 text-center backdrop-blur-xl">
           <svg
             className="mx-auto mb-4 h-12 w-12 text-red-600 dark:text-red-400"
@@ -48,19 +50,19 @@ export const PrizesPage: React.FC = () => {
           <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">Erro ao carregar prêmios</h2>
           <p className="text-gray-600 dark:text-gray-400">Tente novamente mais tarde</p>
         </div>
-      </div>
+        </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">
-
+    <PageLayout maxWidth="6xl">
       <div className="relative">
         <div className="absolute inset-0 opacity-20 dark:opacity-30" style={{
           backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
         }} />
 
-        <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="relative">
           <animated.div style={headerSpring} className="mb-8">
             <h1 className="mb-2 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
               Loja de Prêmios
@@ -155,6 +157,6 @@ export const PrizesPage: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }

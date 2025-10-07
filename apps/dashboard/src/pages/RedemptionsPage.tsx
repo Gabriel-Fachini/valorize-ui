@@ -4,6 +4,7 @@ import type { RedemptionsQuery } from '@/types/redemption.types'
 import { RedemptionCard } from '@/components/redemptions/RedemptionCard'
 import { SkeletonRedemptionCard } from '@/components/redemptions/SkeletonRedemptionCard'
 import { useSpring, useTrail, animated } from '@react-spring/web'
+import { PageLayout } from '@/components/layout/PageLayout'
 
 const STATUS_OPTIONS: Array<{ label: string; value: string }> = [
   { label: 'Todos', value: 'ALL' },
@@ -93,18 +94,8 @@ export const RedemptionsPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50/80 via-white/60 to-purple-50/80 dark:from-gray-900/95 dark:via-gray-800/90 dark:to-gray-900/95">
-      {/* Liquid Glass Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-indigo-600/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-gradient-to-br from-blue-400/15 to-cyan-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute -bottom-40 right-1/3 w-72 h-72 bg-gradient-to-br from-emerald-400/20 to-teal-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-br from-rose-400/15 to-pink-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '6s' }}></div>
-      </div>
-
-      <div className="relative z-10">
-
-        <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <PageLayout maxWidth="6xl">
+        <div className="relative z-10">
           <animated.div style={headerSpring} className="mb-8">
             <h1 data-tour="redemptions-page" className="mb-2 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
               Meus Resgates
@@ -319,8 +310,7 @@ export const RedemptionsPage: React.FC = () => {
               )}
             </>
           )}
-        </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }
