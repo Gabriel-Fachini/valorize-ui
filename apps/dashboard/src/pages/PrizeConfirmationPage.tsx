@@ -73,12 +73,12 @@ export const PrizeConfirmationPage = () => {
           street: address.street,
           number: address.number,
           complement: address.complement ?? '',
-          neighborhood: address.neighborhood,
+          neighborhood: address.neighborhood ?? '',
           city: address.city,
           state: address.state,
           zipCode: address.zipCode,
           country: address.country,
-          phone: address.phone,
+          phone: address.phone ?? '',
         })
       }
     } else {

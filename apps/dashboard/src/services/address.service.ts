@@ -5,6 +5,10 @@ interface ListAddressesResponse {
   addresses: Address[]
 }
 
+interface GetAddressResponse {
+  address: Address
+}
+
 interface CreateAddressResponse {
   message: string
   address: Address
@@ -27,6 +31,11 @@ export const addressService = {
   async list(): Promise<Address[]> {
     const response = await api.get<ListAddressesResponse>('/addresses')
     return response.data.addresses
+  },
+
+  async getById(id: string): Promise<Address> {
+    const response = await api.get<GetAddressResponse>(`/addresses/${id}`)
+    return response.data.address
   },
 
   async create(input: AddressInput): Promise<Address> {

@@ -4,7 +4,8 @@ import { BalanceSection } from './BalanceSection'
 export const UserProfile = ({ 
   collapsed = false, 
   userName = 'Usuário', 
-  userEmail = 'email@exemplo.com', 
+  userEmail = 'email@exemplo.com',
+  avatarUrl,
 }: UserProfileProps) => {
   const initials = userName.charAt(0).toUpperCase()
 
@@ -18,12 +19,18 @@ export const UserProfile = ({
     )
   }
 
+  const avatar = avatarUrl
+    ? <img src={avatarUrl} alt="User Avatar" className="h-16 w-16 rounded-full" />
+    : (
+      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-purple-600 to-indigo-600">
+        <span className="text-xl font-bold text-white">{initials}</span>
+      </div>
+    )
+
   return (
     <div className="p-6 border-b border-white/10 dark:border-gray-700/30 bg-gradient-to-b from-white/5 to-transparent dark:from-gray-800/10">
       <div className="flex items-center gap-4 mb-6">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-purple-600 to-indigo-600">
-          <span className="text-xl font-bold text-white">{initials}</span>
-        </div>
+        {avatar}
         <div className="flex-1 min-w-0">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 truncate drop-shadow-sm">
             {userName}

@@ -9,6 +9,7 @@ export interface UserProfileProps {
   collapsed?: boolean
   userName?: string
   userEmail?: string
+  avatarUrl?: string
 }
 
 export interface NavigationProps {
