@@ -3,6 +3,9 @@ import { api } from './api'
 
 interface GetPrizesResponse {
   prizes: Prize[]
+  total: number
+  page: number
+  pageSize: number
 }
 
 interface GetPrizeResponse {
@@ -11,20 +14,6 @@ interface GetPrizeResponse {
 
 interface GetCategoriesResponse {
   categories: string[]
-}
-
-interface GetPrizesApiResponse {
-  prizes: Prize[]
-  total: number
-  page: number
-  pageSize: number
-}
-
-interface GetPrizesResponse {
-  prizes: Prize[]
-  total: number
-  page: number
-  pageSize: number
 }
 
 export const prizeService = {

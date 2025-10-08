@@ -34,7 +34,7 @@ export const useCancelRedemption = () => {
   const { onBalanceMovement } = useUser()
 
   return useMutation({
-    mutationFn: (id: string) => redemptionsService.cancelRedemption(id),
+    mutationFn: ({ id, reason }: { id: string; reason: string }) => redemptionsService.cancelRedemption(id, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['redemptions'] })
       queryClient.invalidateQueries({ queryKey: ['redemption'] })

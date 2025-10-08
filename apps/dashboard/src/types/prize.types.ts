@@ -28,6 +28,9 @@ export interface PrizeFilters {
   category?: string
   minPrice?: number
   maxPrice?: number
+  sortBy?: 'popular' | 'price_asc' | 'price_desc' | 'newest'
+  priceRange?: { min: number; max: number }
+  search?: string
 }
 
 export interface PrizeRedemption {

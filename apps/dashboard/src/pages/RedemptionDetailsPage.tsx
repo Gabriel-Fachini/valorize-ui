@@ -88,8 +88,15 @@ export const RedemptionDetailsPage: React.FC = () => {
     if (!redemption) return
     const ok = window.confirm('Deseja cancelar este resgate? O valor será estornado ao seu saldo.')
     if (!ok) return
+    
+    const reason = window.prompt('Por favor, informe o motivo do cancelamento:')
+    if (!reason || reason.trim() === '') {
+      alert('É necessário informar um motivo para o cancelamento.')
+      return
+    }
+    
     try {
-      await cancelMutation.mutateAsync(redemption.id)
+      await cancelMutation.mutateAsync({ id: redemption.id, reason: reason.trim() })
     } catch (e) {
       alert((e as Error).message)
     }
