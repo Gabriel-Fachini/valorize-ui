@@ -2,7 +2,6 @@ import React from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useRedemptionById, useCancelRedemption } from '@/hooks/useRedemptions'
 import { useSpring, animated, useTrail } from '@react-spring/web'
-import type { Redemption } from '@/types/redemption.types'
 import { PageLayout } from '@/components/layout/PageLayout'
 
 const statusConfig: Record<string, {
