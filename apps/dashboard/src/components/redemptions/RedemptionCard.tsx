@@ -4,20 +4,11 @@ import type { Redemption } from '@/types/redemption.types'
 import { useNavigate } from '@tanstack/react-router'
 import { useSpring, animated } from '@react-spring/web'
 
-const categoryLabels: Record<Redemption['category'], string> = {
-  eletronicos: 'Eletrônicos',
-  casa: 'Casa',
-  esporte: 'Esporte',
-  livros: 'Livros',
-  'vale-compras': 'Vale Compras',
-  experiencias: 'Experiências',
-}
-
-const statusConfig: Record<Redemption['status'], {
+const statusConfig: Record<string, {
   badge: string
   icon: React.ReactNode
 }> = {
-  PENDING: {
+  pending: {
     badge: 'bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-orange-500/10 text-amber-700 border border-amber-300/30 dark:from-amber-400/20 dark:via-yellow-400/20 dark:to-orange-400/20 dark:text-amber-300 dark:border-amber-400/40',
     icon: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -25,7 +16,7 @@ const statusConfig: Record<Redemption['status'], {
       </svg>
     ),
   },
-  PROCESSING: {
+  processing: {
     badge: 'bg-gradient-to-r from-indigo-500/10 via-blue-500/10 to-cyan-500/10 text-indigo-700 border border-indigo-300/30 dark:from-indigo-400/20 dark:via-blue-400/20 dark:to-cyan-400/20 dark:text-indigo-300 dark:border-indigo-400/40',
     icon: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -33,7 +24,15 @@ const statusConfig: Record<Redemption['status'], {
       </svg>
     ),
   },
-  COMPLETED: {
+  shipped: {
+    badge: 'bg-gradient-to-r from-purple-500/10 via-violet-500/10 to-fuchsia-500/10 text-purple-700 border border-purple-300/30 dark:from-purple-400/20 dark:via-violet-400/20 dark:to-fuchsia-400/20 dark:text-purple-300 dark:border-purple-400/40',
+    icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+      </svg>
+    ),
+  },
+  completed: {
     badge: 'bg-gradient-to-r from-emerald-500/10 via-green-500/10 to-teal-500/10 text-emerald-700 border border-emerald-300/30 dark:from-emerald-400/20 dark:via-green-400/20 dark:to-teal-400/20 dark:text-emerald-300 dark:border-emerald-400/40',
     icon: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,7 +40,7 @@ const statusConfig: Record<Redemption['status'], {
       </svg>
     ),
   },
-  CANCELLED: {
+  cancelled: {
     badge: 'bg-gradient-to-r from-gray-500/10 via-slate-500/10 to-gray-600/10 text-gray-700 border border-gray-300/30 dark:from-white/10 dark:via-gray-400/10 dark:to-gray-500/10 dark:text-gray-300 dark:border-white/20',
     icon: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,6 +59,10 @@ export const RedemptionCard: React.FC<Props> = ({ redemption }) => {
 
   const [isHovered, setIsHovered] = React.useState(false)
   const [isImageLoading, setIsImageLoading] = React.useState(true)
+
+  // Safety check for status - fallback to pending if status is invalid
+  const safeStatus = statusConfig[redemption.status.toLowerCase()] ? redemption.status.toLowerCase() : 'pending'
+  const statusInfo = statusConfig[safeStatus]
 
 
 
@@ -84,8 +87,8 @@ export const RedemptionCard: React.FC<Props> = ({ redemption }) => {
   const goToPrize = () => navigate({ to: `/prizes/${redemption.prizeId}` })
   const goToDetails = () => navigate({ to: `/resgates/${redemption.id}` })
 
-  const date = new Date(redemption.createdAt).toLocaleString('pt-BR')
-  const amountFormatted = new Intl.NumberFormat('pt-BR').format(redemption.amount)
+  const date = new Date(redemption.redeemedAt).toLocaleString('pt-BR')
+  const amountFormatted = new Intl.NumberFormat('pt-BR').format(redemption.coinsSpent)
 
   return (
     <animated.div 
@@ -98,8 +101,8 @@ export const RedemptionCard: React.FC<Props> = ({ redemption }) => {
         <button onClick={goToPrize} className="shrink-0 relative focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-900 rounded-2xl">
           <animated.img
             style={imageSpring}
-            src={redemption.prizeImage ?? '/valorize_logo.png'}
-            alt={redemption.prizeTitle}
+            src={redemption.prize.images[0] ?? '/valorize_logo.png'}
+            alt={redemption.prize.name}
             className="h-24 w-24 rounded-2xl object-cover border-2 border-white/50 dark:border-white/20 shadow-lg"
             loading="lazy"
             onLoad={() => setIsImageLoading(false)}
@@ -111,37 +114,41 @@ export const RedemptionCard: React.FC<Props> = ({ redemption }) => {
           <div className="mb-1 flex items-center gap-2">
             <button onClick={goToPrize} className="text-left">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-300">
-                {redemption.prizeTitle}
+                {redemption.prize.name}
               </h3>
             </button>
-            <div className={`ml-auto flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-semibold backdrop-blur-sm ${statusConfig[redemption.status].badge}`}>
-              <span className="flex items-center justify-center">{statusConfig[redemption.status].icon}</span>
+            <div className={`ml-auto flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-semibold backdrop-blur-sm ${statusInfo.badge}`}>
+              <span className="flex items-center justify-center">{statusInfo.icon}</span>
               <span>
-                {redemption.status === 'PENDING' && 'Pendente'}
-                {redemption.status === 'PROCESSING' && 'Processando'}
-                {redemption.status === 'COMPLETED' && 'Concluído'}
-                {redemption.status === 'CANCELLED' && 'Cancelado'}
+                {safeStatus === 'pending' && 'Pendente'}
+                {safeStatus === 'processing' && 'Processando'}
+                {safeStatus === 'shipped' && 'Enviado'}
+                {safeStatus === 'completed' && 'Concluído'}
+                {safeStatus === 'cancelled' && 'Cancelado'}
               </span>
             </div>
           </div>
 
           <div className="mb-4 space-y-3">
             <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-gray-100 to-gray-50 dark:from-white/15 dark:to-white/10 px-3 py-1.5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10">
-                <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {redemption.variant && (
+                <div className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-gray-100 to-gray-50 dark:from-white/15 dark:to-white/10 px-3 py-1.5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10">
+                  <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                  <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                    {redemption.variant.value}
+                  </span>
+                </div>
+              )}
+              
+              <div className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-100 to-indigo-50 dark:from-purple-500/15 dark:to-indigo-500/10 px-3 py-1.5 backdrop-blur-sm border border-purple-200/50 dark:border-purple-500/20">
+                <svg className="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h10l2 5-2 5H7l-2-5 2-5z" />
                 </svg>
-                <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-                  {categoryLabels[redemption.category]}
+                <span className="text-sm font-medium text-purple-800 dark:text-purple-200">
+                  {redemption.prize.category}
                 </span>
-              </div>
-              
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m3 0H4a1 1 0 00-1 1v16a1 1 0 001 1h16a1 1 0 001-1V5a1 1 0 00-1-1z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9h6M9 13h6" />
-                </svg>
-                <span>Qtd: <span className="font-semibold text-gray-800 dark:text-gray-200">{redemption.quantity}</span></span>
               </div>
             </div>
             

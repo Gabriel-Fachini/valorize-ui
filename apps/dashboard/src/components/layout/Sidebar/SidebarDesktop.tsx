@@ -36,6 +36,7 @@ export const SidebarDesktop = () => {
         collapsed={desktopSidebarCollapsed}
         userName={user?.name}
         userEmail={user?.email}
+        avatarUrl={user?.avatar}
       />
 
       {/* Navigation */}

@@ -29,7 +29,8 @@ export const AuthProvider = ({ children }: ProviderProps) => {
         if (stored) {
           setUser({ 
             id: stored.sub, 
-            email: stored.email, 
+            email: stored.email,
+            avatar: stored.avatar,
             name: stored.name ?? '',
             companyId: stored.companyId,
           })
@@ -52,7 +53,8 @@ export const AuthProvider = ({ children }: ProviderProps) => {
                 TokenManager.setUserInfo(u)
                 setUser({ 
                   id: u.sub, 
-                  email: u.email, 
+                  email: u.email,
+                  avatar: u.avatar,
                   name: u.name ?? '',
                   companyId: u.companyId,
                 })
@@ -81,7 +83,8 @@ export const AuthProvider = ({ children }: ProviderProps) => {
         TokenManager.setTokens(res.data.access_token, res.data.refresh_token)
         TokenManager.setUserInfo(res.data.user_info)
         setUser({ 
-          id: res.data.user_info.sub, 
+          id: res.data.user_info.sub,
+          avatar: res.data.user_info.avatar,
           email: res.data.user_info.email, 
           name: res.data.user_info.name ?? '',
           companyId: res.data.user_info.companyId,

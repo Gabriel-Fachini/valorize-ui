@@ -6,6 +6,7 @@
 export interface User {
   id: string
   email: string
+  avatar?: string
   name: string
   companyId?: string
 }
@@ -15,7 +16,7 @@ export interface UserInfo {
   email: string
   email_verified?: boolean
   name?: string
-  picture?: string
+  avatar?: string
   companyId?: string
   isActive?: boolean
 }
