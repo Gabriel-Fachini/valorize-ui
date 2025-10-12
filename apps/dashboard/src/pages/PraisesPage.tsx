@@ -1,32 +1,21 @@
-import { useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 import { animated, useSpring } from '@react-spring/web'
-import { PraiseModal } from '@/components/PraiseModal'
-import {
+import { 
   PraiseFeed, 
-  SuccessModal, 
 } from '@/components/praises'
 import { 
   usePageEntrance,
   useListTrail,
   useCardEntrance,
-  useSuccessTransition,
 } from '@/hooks/useAnimations'
-import { usePraisesData, type PraiseUser, type PraiseCompanyValue } from '@/hooks/usePraisesData'
+import { usePraisesData } from '@/hooks/usePraisesData'
 import { PageLayout } from '@/components/layout/PageLayout'
 
 export const PraisesPage = () => {
-  const [showModal, setShowModal] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [lastPraise, setLastPraise] = useState<{ 
-    user: PraiseUser
-    value: PraiseCompanyValue
-    coins: number 
-  } | null>(null)
+  const navigate = useNavigate()
 
   // Data management
   const {
-    users,
-    companyValues,
     praises,
     currentFilter,
     loading,
@@ -39,27 +28,9 @@ export const PraisesPage = () => {
   const praisesTrail = useListTrail(praises)
   const feedSectionAnimation = useCardEntrance()
   const filterAnimation = useCardEntrance()
-  const successTransition = useSuccessTransition(showSuccess)
-
-  const handlePraiseSuccess = (data: { 
-    user: PraiseUser
-    value: PraiseCompanyValue
-    coins: number
-    message: string 
-  }) => {
-    setLastPraise({ user: data.user, value: data.value, coins: data.coins })
-    setShowSuccess(true)
-    setTimeout(() => setShowSuccess(false), 3000)
-    // Refresh balance after successful compliment
-    actions.refreshBalance()
-    // Invalidate cache to force refresh of praises
-    actions.invalidateCache()
-    // Refresh praises to show the new one
-    actions.refreshPraises()
-  }
 
   const handleNewPraise = () => {
-    setShowModal(true)
+    navigate({ to: '/elogios/novo' })
   }
 
   const handleLikePraise = (praiseId: string) => {
@@ -128,23 +99,6 @@ export const PraisesPage = () => {
           />
         </div>
       </div>
-
-      {/* Praise Modal */}
-      <PraiseModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onSuccess={handlePraiseSuccess}
-        users={users}
-        companyValues={companyValues}
-      />
-
-      {/* Success Modal */}
-      <SuccessModal
-        user={lastPraise?.user}
-        value={lastPraise?.value}
-        coins={lastPraise?.coins}
-        transition={successTransition}
-      />
       </animated.div>
     </PageLayout>
   )

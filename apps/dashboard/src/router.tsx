@@ -8,6 +8,7 @@ import {
 import { LoginPage } from '@/pages/LoginPage'
 import { HomePage } from '@/pages/HomePage'
 import { PraisesPage } from '@/pages/PraisesPage'
+import { NewPraisePage } from '@/pages/NewPraisePage'
 import { PrizesPage } from '@/pages/PrizesPage'
 import { PrizeDetailsPage } from '@/pages/PrizeDetailsPage'
 import { PrizeConfirmationPage } from '@/pages/PrizeConfirmationPage'
@@ -72,6 +73,12 @@ const praisesRoute = createRoute({
   component: PraisesPage,
 })
 
+const newPraiseRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/elogios/novo',
+  component: NewPraisePage,
+})
+
 const prizesRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/prizes',
@@ -121,6 +128,7 @@ const routeTree = rootRoute.addChildren([
   protectedLayoutRoute.addChildren([
     homeRoute,
     praisesRoute,
+    newPraiseRoute,
     prizesRoute,
     prizeDetailsRoute,
     prizeConfirmationRoute,

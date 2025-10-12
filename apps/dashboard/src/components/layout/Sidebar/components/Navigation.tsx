@@ -14,7 +14,12 @@ export const Navigation = ({
 }: NavigationProps) => {
   const activeIndex = useMemo(
     () => {
-      const index = NAV_LINKS.findIndex(link => link.path === currentPath)
+      // Check for exact match or sub-routes (e.g., /elogios/novo should activate /elogios)
+      const index = NAV_LINKS.findIndex(link => {
+        if (link.path === currentPath) return true
+        // Check if current path is a sub-route of the nav link
+        return currentPath.startsWith(link.path + '/')
+      })
       return index >= 0 ? index : 0
     },
     [currentPath],
@@ -49,18 +54,23 @@ export const Navigation = ({
           aria-hidden="true"
         />
         
-        {NAV_LINKS.map((link) => (
-          <NavigationItem
-            key={link.path}
-            path={link.path}
-            label={link.label}
-            icon={link.icon}
-            dataTour={link.dataTour}
-            isActive={currentPath === link.path}
-            collapsed={collapsed}
-            onNavigate={onNavigate}
-          />
-        ))}
+        {NAV_LINKS.map((link) => {
+          // Check if current path is the link or a sub-route
+          const isActive = currentPath === link.path || currentPath.startsWith(link.path + '/')
+          
+          return (
+            <NavigationItem
+              key={link.path}
+              path={link.path}
+              label={link.label}
+              icon={link.icon}
+              dataTour={link.dataTour}
+              isActive={isActive}
+              collapsed={collapsed}
+              onNavigate={onNavigate}
+            />
+          )
+        })}
       </div>
     </nav>
   )
