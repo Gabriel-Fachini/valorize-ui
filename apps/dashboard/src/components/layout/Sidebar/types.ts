@@ -30,6 +30,8 @@ export interface NavigationItemProps {
 
 export interface BottomActionsProps {
   collapsed?: boolean
+  currentPath: string
+  onNavigate: (path: string) => void
   onLogout: () => void
 }
 

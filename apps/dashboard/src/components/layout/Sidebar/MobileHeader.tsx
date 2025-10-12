@@ -13,7 +13,7 @@ export const MobileHeader = () => {
       {/* Skip Link para acessibilidade */}
       <a 
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-purple-600 focus:text-white focus:rounded-lg focus:shadow-lg"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded-lg focus:shadow-lg"
       >
         Pular para o conteúdo principal
       </a>
@@ -32,16 +32,18 @@ export const MobileHeader = () => {
             aria-controls="mobile-sidebar"
             type="button"
           >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+            <i className="ph ph-list" style={{ fontSize: '1.5rem' }} aria-hidden="true" />
           </button>
           
           <div className="flex items-center gap-2" role="img" aria-label="Logo do Valorize">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 shadow-xl shadow-purple-500/25 backdrop-blur-sm border border-white/20">
-              <span className="text-sm font-bold text-white" aria-hidden="true">V</span>
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary shadow-xl shadow-primary/25 border border-white/20 p-1.5">
+              <img 
+                src="/logo4.svg" 
+                alt="Valorize Logo" 
+                className="w-full h-full object-contain"
+              />
             </div>
-            <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent drop-shadow-sm">
+            <span className="text-lg font-bold text-white">
               Valorize
             </span>
           </div>

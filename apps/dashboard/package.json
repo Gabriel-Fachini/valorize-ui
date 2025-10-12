@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
+    "@phosphor-icons/web": "^2.1.2",
     "@react-spring/web": "^10.0.2",
     "@reactour/tour": "^3.8.0",
     "@tailwindcss/vite": "^4.1.11",

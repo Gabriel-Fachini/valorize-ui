@@ -31,7 +31,7 @@ export const SidebarMobile = () => {
       <div
         id="mobile-sidebar"
         data-tour="sidebar"
-        className={`fixed inset-y-0 left-0 z-50 w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl backdrop-saturate-150 shadow-2xl shadow-black/20 dark:shadow-black/40 lg:hidden border-r border-white/20 dark:border-gray-700/30 transition-all duration-300 ${
+        className={`fixed inset-y-0 left-0 z-50 w-80 bg-[#1a1a1a] shadow-2xl shadow-black/40 lg:hidden border-r border-gray-800 transition-all duration-300 ${
           mobileSidebarOpen ? 'translate-x-0 opacity-100 pointer-events-auto' : '-translate-x-full opacity-0 pointer-events-none'
         }`}
         role="dialog"
@@ -39,22 +39,24 @@ export const SidebarMobile = () => {
         aria-modal="true"
       >
         {/* Mobile Header */}
-        <div className="flex h-16 items-center justify-between border-b border-white/10 dark:border-gray-700/30 px-6 bg-gradient-to-r from-white/10 to-white/5 dark:from-gray-800/20 dark:to-gray-800/10">
+        <div className="flex h-16 items-center justify-between border-b border-gray-800 px-6 bg-black/20">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 shadow-xl shadow-purple-500/25 backdrop-blur-sm border border-white/20">
-              <span className="text-sm font-bold text-white">V</span>
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary shadow-xl shadow-primary/25 backdrop-blur-sm border border-white/20 p-1.5">
+              <img 
+                src="/logo4.svg" 
+                alt="Valorize Logo" 
+                className="w-full h-full object-contain"
+              />
             </div>
-            <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent drop-shadow-sm">
+            <span className="text-lg font-bold text-white">
               Valorize
             </span>
           </div>
           <button
             onClick={() => setMobileSidebarOpen(false)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-white/20 dark:hover:bg-gray-800/40 transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-white/20 dark:hover:border-gray-600/30"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white/10 transition-all duration-300"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <i className="ph ph-x" style={{ fontSize: '1.25rem' }} aria-hidden="true" />
           </button>
         </div>
 
@@ -71,7 +73,11 @@ export const SidebarMobile = () => {
         />
 
         {/* Mobile Bottom Actions */}
-        <BottomActions onLogout={handleLogout} />
+        <BottomActions 
+          currentPath={currentPath}
+          onNavigate={handleNavigation}
+          onLogout={handleLogout}
+        />
       </div>
 
       {/* Mobile Sidebar Backdrop */}

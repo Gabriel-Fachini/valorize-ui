@@ -18,6 +18,9 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
     config: { tension: 300, friction: 20 },
   })
 
+  // Usar versão fill quando ativo, regular quando não ativo
+  const iconClass = isActive ? `ph-fill ph-${icon}` : `ph ph-${icon}`
+
   return (
     <animated.button
       onClick={() => onNavigate(path)}
@@ -29,17 +32,21 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
         collapsed 
           ? 'justify-center w-12 mx-auto' 
           : 'gap-4 px-4'
-      } rounded-xl text-left ${
+      } rounded-xl text-left transition-colors ${
         isActive
-          ? 'text-purple-600 dark:text-purple-400 font-medium'
-          : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/20 dark:hover:bg-white/10 hover:backdrop-blur-sm hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-black/20'
+          ? 'text-black font-semibold'
+          : 'text-gray-300 hover:text-white hover:bg-white/5'
       }`}
       aria-current={isActive ? 'page' : undefined}
       aria-label={collapsed ? `Ir para ${label}` : undefined}
       title={collapsed ? label : undefined}
       type="button"
     >
-      <span className="text-xl" aria-hidden="true">{icon}</span>
+      <i 
+        className={iconClass}
+        style={{ fontSize: '1.5rem' }}
+        aria-hidden="true"
+      />
       {!collapsed && <span className="font-medium">{label}</span>}
     </animated.button>
   )
