@@ -31,7 +31,7 @@ export const SidebarMobile = () => {
       <div
         id="mobile-sidebar"
         data-tour="sidebar"
-        className={`fixed inset-y-0 left-0 z-50 w-80 bg-[#1a1a1a] shadow-2xl shadow-black/40 lg:hidden border-r border-gray-800 transition-all duration-300 ${
+        className={`fixed inset-y-0 left-0 z-50 w-80 bg-[#1a1a1a] shadow-2xl shadow-black/40 lg:hidden border-r border-gray-900/50 transition-all duration-300 flex flex-col ${
           mobileSidebarOpen ? 'translate-x-0 opacity-100 pointer-events-auto' : '-translate-x-full opacity-0 pointer-events-none'
         }`}
         role="dialog"
@@ -41,13 +41,11 @@ export const SidebarMobile = () => {
         {/* Mobile Header */}
         <div className="flex h-16 items-center justify-between border-b border-gray-800 px-6 bg-black/20">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary shadow-xl shadow-primary/25 backdrop-blur-sm border border-white/20 p-1.5">
-              <img 
-                src="/logo4.svg" 
-                alt="Valorize Logo" 
-                className="w-full h-full object-contain"
-              />
-            </div>
+            <img 
+              src="/logo2.svg" 
+              alt="Valorize Logo" 
+              className="w-8 h-8 object-contain"
+            />
             <span className="text-lg font-bold text-white">
               Valorize
             </span>
@@ -64,6 +62,7 @@ export const SidebarMobile = () => {
         <UserProfile 
           userName={user?.name}
           userEmail={user?.email}
+          avatarUrl={user?.avatar}
         />
 
         {/* Mobile Navigation */}
@@ -72,12 +71,14 @@ export const SidebarMobile = () => {
           onNavigate={handleNavigation}
         />
 
-        {/* Mobile Bottom Actions */}
-        <BottomActions 
-          currentPath={currentPath}
-          onNavigate={handleNavigation}
-          onLogout={handleLogout}
-        />
+        {/* Mobile Bottom Actions - Fixed at bottom */}
+        <div className="mt-auto">
+          <BottomActions 
+            currentPath={currentPath}
+            onNavigate={handleNavigation}
+            onLogout={handleLogout}
+          />
+        </div>
       </div>
 
       {/* Mobile Sidebar Backdrop */}

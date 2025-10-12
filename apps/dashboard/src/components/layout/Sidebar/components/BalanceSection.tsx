@@ -1,24 +1,25 @@
 import { useUserBalance } from '@/hooks/useUser'
-import { SkeletonCard, SkeletonText } from '@/components/ui'
 
 const BalanceCardsSkeleton = () => {
   return (
     <div className="grid grid-cols-2 gap-3">
-      <SkeletonCard gradient="gray">
-        <div className="flex flex-col items-start gap-1">
-          <div className="w-6 h-6 bg-gray-700 rounded animate-pulse" />
-          <SkeletonText width="lg" height="lg" />
-          <SkeletonText width="sm" height="sm" />
+      {/* Skeleton Card 1 - Moedas */}
+      <div className="rounded-xl bg-gray-800/40 border border-gray-700/50 p-3">
+        <div className="flex flex-col gap-1 animate-pulse">
+          <div className="w-6 h-6 bg-gray-700/50 rounded" />
+          <div className="h-6 w-20 bg-gray-700/50 rounded" />
+          <div className="h-3 w-12 bg-gray-700/50 rounded" />
         </div>
-      </SkeletonCard>
+      </div>
 
-      <SkeletonCard gradient="gray">
-        <div className="flex flex-col items-start gap-1">
-          <div className="w-6 h-6 bg-gray-700 rounded animate-pulse" />
-          <SkeletonText width="lg" height="lg" />
-          <SkeletonText width="sm" height="sm" />
+      {/* Skeleton Card 2 - Elogios */}
+      <div className="rounded-xl bg-gray-800/40 border border-gray-700/50 p-3">
+        <div className="flex flex-col gap-1 animate-pulse">
+          <div className="w-6 h-6 bg-gray-700/50 rounded" />
+          <div className="h-6 w-20 bg-gray-700/50 rounded" />
+          <div className="h-3 w-12 bg-gray-700/50 rounded" />
         </div>
-      </SkeletonCard>
+      </div>
     </div>
   )
 }

@@ -26,7 +26,7 @@ export const PageLayout = ({
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-gray-50/80 via-white/60 to-purple-50/80 dark:from-gray-900/95 dark:via-gray-800/90 dark:to-gray-900/95 ${className}`}>
+    <div className={`min-h-screen bg-[#1a1a1a] ${className}`}>
       <div className={`${maxWidthClasses[maxWidth]} mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8`}>
         {children}
       </div>
