@@ -79,28 +79,28 @@ export const LoginPage = () => {
       {/* Left Panel - Login Form */}
       <animated.div 
         style={leftPanelSpring}
-        className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 relative"
+        className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-[#1a1a1a] relative"
       >
         {/* Loader Overlay - apenas no painel esquerdo */}
         {loaderTransition((style, item) =>
           item ? (
             <animated.div
               style={style}
-              className="absolute inset-0 z-50 flex items-center justify-center bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm"
+              className="absolute inset-0 z-50 flex items-center justify-center bg-[#1a1a1a]/95 backdrop-blur-sm"
             >
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative">
-                  <div className="w-20 h-20 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full"></div>
+                  <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-white font-bold text-3xl">V</span>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-purple-600 rounded-full" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-3 h-3 bg-indigo-600 rounded-full" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-3 h-3 bg-purple-600 rounded-full" style={{ animationDelay: '300ms' }}></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-3 h-3 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                 </div>
-                <p className="text-gray-700 dark:text-gray-200 font-medium">Autenticando...</p>
+                <p className="text-gray-300 font-medium">Autenticando...</p>
               </div>
             </animated.div>
           ) : null,
@@ -109,21 +109,20 @@ export const LoginPage = () => {
         <div className="max-w-md w-full space-y-8">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
-              <span className="text-white font-bold text-lg">V</span>
+            <div className="w-64 h-16 flex items-center justify-center mr-3">
+              <img src='/logo1.svg' />
             </div>
-            <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">Valorize</span>
           </div>
 
           {/* Header */}
           <div>
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
+            <h2 className="text-4xl font-bold text-white leading-tight">
               Olá,<br />
-              <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
                 Bem-vindo de volta
               </span>
             </h2>
-            <p className="mt-3 text-gray-600 dark:text-gray-300 text-lg">
+            <p className="mt-3 text-gray-400 text-lg">
               Ei, bem-vindo de volta ao seu lugar especial
             </p>
           </div>
@@ -153,7 +152,7 @@ export const LoginPage = () => {
             />
 
             {errors.root && (
-              <div className="rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-200 px-4 py-3">
+              <div className="rounded-xl bg-red-900/30 border border-red-700/50 text-red-300 px-4 py-3">
                 {errors.root.message}
               </div>
             )}
@@ -161,7 +160,7 @@ export const LoginPage = () => {
             <button
               type="submit"
               disabled={isSubmitting || isLoading}
-              className="w-full flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 shadow-lg hover:shadow-xl disabled:opacity-60"
+              className="w-full flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-[#1a1a1a] shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isSubmitting || isLoading ? 'Entrando...' : 'Entrar'}
             </button>
@@ -169,15 +168,15 @@ export const LoginPage = () => {
 
           {/* Footer */}
           <div className="text-center">
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-gray-400">
               Não tem uma conta?{' '}
-              <a href="#" className="text-purple-600 hover:text-purple-500 font-semibold">
+              <a href="#" className="text-green-400 hover:text-green-300 font-semibold transition-colors">
                 Cadastre-se
               </a>
             </p>
           </div>
 
-          <div className="text-center text-sm text-gray-400 dark:text-gray-500 mt-8">
+          <div className="text-center text-sm text-gray-500 mt-8">
             <p>💡 Digite seu e-mail e senha para entrar</p>
           </div>
         </div>
@@ -186,7 +185,7 @@ export const LoginPage = () => {
       {/* Right Panel - Illustration */}
       <animated.div 
         style={rightPanelSpring}
-        className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-500 relative overflow-hidden"
+        className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-green-600 via-emerald-600 to-teal-600 relative overflow-hidden"
       >
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
@@ -201,7 +200,7 @@ export const LoginPage = () => {
           <div className="text-center text-white">
             {/* Phone Mockup */}
             <div className="relative mx-auto mb-8">
-              <div className="w-64 h-96 bg-gradient-to-br from-pink-400 to-purple-500 rounded-3xl shadow-2xl transform rotate-12 hover:rotate-6">
+              <div className="w-64 h-96 bg-gradient-to-br from-green-400 via-emerald-500 to-teal-500 rounded-3xl shadow-2xl transform rotate-12 hover:rotate-6 transition-transform duration-300">
                 <div className="p-6 h-full flex flex-col justify-center items-center">
                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-lg">
                     <span className="text-2xl">👋</span>
@@ -219,11 +218,11 @@ export const LoginPage = () => {
               </div>
               
               {/* Floating Elements */}
-              <div className="absolute -top-4 -left-4 w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
+              <div className="absolute -top-4 -left-4 w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg animate-bounce">
                 <span className="text-white font-bold">🎯</span>
               </div>
-              <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-green-400 rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold">✅</span>
+              <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{ animationDelay: '150ms' }}>
+                <span className="font-bold">✅</span>
               </div>
             </div>
 
