@@ -64,7 +64,7 @@ export const EmptyState = ({
       style={style}
       className="flex flex-col items-center justify-center py-12 px-4 text-center"
     >
-      <div className="w-20 h-20 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full flex items-center justify-center mb-6 shadow-lg">
+      <div className="w-20 h-20 bg-[#3a3a3a] dark:bg-[#2a2a2a] rounded-full flex items-center justify-center mb-6 shadow-lg">
         <span className="text-3xl">{icon ?? content.icon}</span>
       </div>
       
@@ -79,7 +79,7 @@ export const EmptyState = ({
       {onAction && (
         <button
           onClick={onAction}
-          className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-medium hover:from-purple-600 hover:to-indigo-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+          className="px-6 py-3 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl hover:shadow-primary-500/20"
         >
           {actionText ?? content.actionText}
         </button>

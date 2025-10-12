@@ -37,7 +37,7 @@ export const MobileHeader = () => {
           
           <div className="flex items-center gap-2" role="img" aria-label="Logo do Valorize">
             <img 
-              src="/logo4.svg" 
+              src="/logo2.svg" 
               alt="Valorize Logo" 
               className="w-8 h-8 object-contain"
             />

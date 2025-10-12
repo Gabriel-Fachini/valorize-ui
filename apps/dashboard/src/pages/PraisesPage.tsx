@@ -2,15 +2,12 @@ import { useState } from 'react'
 import { animated, useSpring } from '@react-spring/web'
 import { PraiseModal } from '@/components/PraiseModal'
 import {
-  StatsCards, 
   PraiseFeed, 
   SuccessModal, 
 } from '@/components/praises'
 import { 
   usePageEntrance,
-  useFabEntrance,
   useListTrail,
-  useStatsTrail,
   useCardEntrance,
   useSuccessTransition,
 } from '@/hooks/useAnimations'
@@ -39,8 +36,6 @@ export const PraisesPage = () => {
 
   // Animations (hooks diretos evitando função que invoca hooks internamente)
   const pageAnimation = usePageEntrance()
-  const fabAnimation = useFabEntrance()
-  const statsTrail = useStatsTrail(3)
   const praisesTrail = useListTrail(praises)
   const feedSectionAnimation = useCardEntrance()
   const filterAnimation = useCardEntrance()
@@ -86,12 +81,26 @@ export const PraisesPage = () => {
 
         {/* Header */}
         <animated.div style={headerSpring} className="mb-8">
-        <h1 className="mb-2 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
-          Elogios
-        </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
-          Elogie seus colegas e fortaleça a cultura positiva da empresa!
-        </p>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <h1 className="mb-2 text-4xl font-bold text-gray-900 dark:text-gray-100">
+              Elogios
+            </h1>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Elogie seus colegas e fortaleça a cultura positiva da empresa!
+            </p>
+          </div>
+          
+          {/* Botão destacado de novo elogio */}
+          <button
+            onClick={handleNewPraise}
+            disabled={!computed.canSendPraise}
+            className={`flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-primary-600 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:shadow-primary-500/30 transition-all duration-200 ${!computed.canSendPraise ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary-700 hover:scale-105'}`}
+          >
+            <i className="ph-bold ph-plus-circle text-xl sm:text-2xl"></i>
+            <span className="whitespace-nowrap">Novo Elogio</span>
+          </button>
+        </div>
       </animated.div>
         
         {/* Error Message */}
@@ -103,11 +112,6 @@ export const PraisesPage = () => {
             </div>
           </div>
         )}
-        
-        {/* Stats Cards */}
-        <div data-tour="praises-stats">
-          <StatsCards trail={statsTrail} />
-        </div>
 
         {/* Praise Feed */}
         <div data-tour="praises-feed">
@@ -124,21 +128,6 @@ export const PraisesPage = () => {
           />
         </div>
       </div>
-
-      {/* Floating Action Button */}
-      <animated.button
-        data-tour="praises-fab"
-        style={fabAnimation}
-        onClick={() => setShowModal(true)}
-        disabled={!computed.canSendPraise}
-        className={`fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-40 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl sm:rounded-2xl shadow-2xl hover:shadow-3xl flex items-center justify-center text-white text-xl sm:text-2xl font-bold hover:scale-110 duration-300 backdrop-blur-xl border border-white/20 ${!computed.canSendPraise ? 'opacity-50 cursor-not-allowed hover:scale-100' : ''}`}
-      >
-        {computed.isAnyLoading ? (
-          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-        ) : (
-          <span>✨</span>
-        )}
-      </animated.button>
 
       {/* Praise Modal */}
       <PraiseModal

@@ -19,6 +19,19 @@
   --color-primary-900: #002b12;
   --color-primary: #00d959;
   
+  /* Secondary Color - Rosa/Pink #D9004F */
+  --color-secondary-50: #ffe5ef;
+  --color-secondary-100: #ffcce0;
+  --color-secondary-200: #ff99c1;
+  --color-secondary-300: #ff66a2;
+  --color-secondary-400: #ff3383;
+  --color-secondary-500: #d9004f;
+  --color-secondary-600: #ad003f;
+  --color-secondary-700: #82002f;
+  --color-secondary-800: #56001f;
+  --color-secondary-900: #2b0010;
+  --color-secondary: #d9004f;
+  
   /* Dark Background */
   --color-dark-bg: #1a1a1a;
 }

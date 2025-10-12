@@ -34,6 +34,7 @@ export const useStatsTrail = (count: number) =>
     from: { opacity: 0, scale: 0.7 },
     to: { opacity: 1, scale: 1 },
     config: config.gentle,
+    delay: 200,
   })
 
 export const useCardEntrance = (delay = ANIMATION_DELAYS.medium) => {

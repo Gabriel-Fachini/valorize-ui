@@ -4,7 +4,6 @@
  */
 
 export { EmptyState } from './EmptyState'
-export { StatsCards } from './StatsCards'
 export { PraiseCard } from './PraiseCard'
 export { PraiseFeed } from './PraiseFeed'
 export { SkeletonPraiseCard } from './SkeletonPraiseCard'

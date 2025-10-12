@@ -41,30 +41,30 @@ export const PraiseFeed = ({
         <animated.div style={filterAnimation} className="flex flex-wrap gap-2 sm:space-x-2">
           <button 
             onClick={() => onFilterChange?.('all')}
-            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 ${
+            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 transition-all duration-200 ${
               currentFilter === 'all'
-                ? 'bg-purple-100 dark:bg-purple-900/40 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
-                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
+                ? 'bg-primary-100 dark:bg-primary-900/40 border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300'
+                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-white/30 dark:border-neutral-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80'
             }`}
           >
             Todos
           </button>
           <button 
             onClick={() => onFilterChange?.('received')}
-            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 ${
+            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 transition-all duration-200 ${
               currentFilter === 'received'
-                ? 'bg-green-100 dark:bg-green-900/40 border-green-300 dark:border-green-700 text-green-700 dark:text-green-300'
-                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
+                ? 'bg-primary-100 dark:bg-primary-900/40 border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300'
+                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-white/30 dark:border-neutral-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80'
             }`}
           >
             Recebidos
           </button>
           <button 
             onClick={() => onFilterChange?.('sent')}
-            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 ${
+            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 transition-all duration-200 ${
               currentFilter === 'sent'
-                ? 'bg-blue-100 dark:bg-blue-900/40 border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300'
-                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
+                ? 'bg-primary-100 dark:bg-primary-900/40 border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300'
+                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-white/30 dark:border-neutral-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80'
             }`}
           >
             Enviados

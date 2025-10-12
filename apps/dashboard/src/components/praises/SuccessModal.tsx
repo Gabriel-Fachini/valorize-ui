@@ -27,9 +27,9 @@ export const SuccessModal = ({
             style={style}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
           >
-            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 rounded-3xl p-8 max-w-md w-full shadow-2xl text-center">
-              <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
-                <span className="text-white text-4xl">🎉</span>
+            <div className="bg-white/95 dark:bg-[#2a2a2a]/95 backdrop-blur-xl border border-white/30 dark:border-neutral-700/30 rounded-3xl p-8 max-w-md w-full shadow-2xl text-center">
+              <div className="w-20 h-20 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary-500/30">
+                <i className="ph-bold ph-confetti text-white text-4xl"></i>
               </div>
               
               <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
@@ -49,8 +49,8 @@ export const SuccessModal = ({
                 </div>
               )}
               
-              <div className="flex items-center justify-center space-x-2 text-yellow-600 dark:text-yellow-400">
-                <span className="text-2xl">💰</span>
+              <div className="flex items-center justify-center space-x-2 text-primary-600 dark:text-primary-400">
+                <i className="ph-bold ph-coins text-2xl"></i>
                 <span className="font-bold text-lg">+{coins} moedas enviadas</span>
               </div>
             </div>
