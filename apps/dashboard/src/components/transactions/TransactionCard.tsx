@@ -1,9 +1,9 @@
 /**
  * TransactionCard Component
- * Individual transaction card display
+ * Individual transaction card display with Phosphor icons
  */
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { animated } from '@react-spring/web'
 import type { Transaction, TransactionDisplayInfo } from '@/types'
 
@@ -13,30 +13,69 @@ interface TransactionCardProps {
   className?: string
 }
 
-// Transaction type icons (using Unicode emojis for now, can be replaced with icon library)
+// Transaction type configuration with Phosphor icons
 const getTransactionDisplayInfo = (transaction: Transaction): TransactionDisplayInfo => {
   const { transactionType, balanceType, reason } = transaction
 
   // Determine icon and color based on transaction type
   const baseInfo = {
     CREDIT: {
-      icon: '⬆️',
+      icon: 'ph-arrow-up-right',
       color: 'from-green-500 to-emerald-600',
+      bgColor: 'bg-green-50 dark:bg-green-900/20',
+      iconColor: 'text-green-600 dark:text-green-400',
+      amountColor: 'text-green-600 dark:text-green-400',
       amountPrefix: '+' as const,
     },
     DEBIT: {
-      icon: '⬇️', 
+      icon: 'ph-arrow-down-left', 
       color: 'from-red-500 to-rose-600',
+      bgColor: 'bg-red-50 dark:bg-red-900/20',
+      iconColor: 'text-red-600 dark:text-red-400',
+      amountColor: 'text-red-600 dark:text-red-400',
       amountPrefix: '-' as const,
     },
     RESET: {
-      icon: '🔄',
+      icon: 'ph-arrow-clockwise',
       color: 'from-blue-500 to-cyan-600',
+      bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+      iconColor: 'text-blue-600 dark:text-blue-400',
+      amountColor: 'text-blue-600 dark:text-blue-400',
       amountPrefix: '' as const,
     },
   }
 
   const typeInfo = baseInfo[transactionType]
+  
+  // Determine transaction source based on reason and balance type
+  let sourceIcon = 'ph-circle'
+  let sourceLabel = 'Sistema'
+  let sourceBgColor = 'bg-gray-100 dark:bg-gray-800/50'
+  let sourceIconColor = 'text-gray-600 dark:text-gray-400'
+  
+  const reasonLower = (reason || '').toLowerCase()
+  
+  // Check for prize-related transactions
+  if (reasonLower.includes('prize') || reasonLower.includes('prêmio') || reasonLower.includes('redemption') || reasonLower.includes('resgate')) {
+    sourceIcon = 'ph-gift'
+    sourceLabel = 'Prêmio'
+    sourceBgColor = 'bg-purple-100 dark:bg-purple-900/20'
+    sourceIconColor = 'text-purple-600 dark:text-purple-400'
+  }
+  // Check for compliment-related transactions
+  else if (reasonLower.includes('compliment') || reasonLower.includes('elogio') || balanceType === 'COMPLIMENT') {
+    sourceIcon = 'ph-heart'
+    sourceLabel = 'Elogio'
+    sourceBgColor = 'bg-pink-100 dark:bg-pink-900/20'
+    sourceIconColor = 'text-pink-600 dark:text-pink-400'
+  }
+  // System transactions (admin, monthly allowance, reset, etc.)
+  else {
+    sourceIcon = 'ph-gear'
+    sourceLabel = 'Sistema'
+    sourceBgColor = 'bg-blue-100 dark:bg-blue-900/20'
+    sourceIconColor = 'text-blue-600 dark:text-blue-400'
+  }
   
   // Generate title based on transaction type and reason
   let title = reason || 'Transação'
@@ -54,6 +93,10 @@ const getTransactionDisplayInfo = (transaction: Transaction): TransactionDisplay
     ...typeInfo,
     title,
     description: balanceTypeLabel,
+    sourceIcon,
+    sourceLabel,
+    sourceBgColor,
+    sourceIconColor,
   }
 }
 
@@ -62,6 +105,7 @@ export const TransactionCard = ({
   style = {},
   className = '',
 }: TransactionCardProps) => {
+  const [showDetails, setShowDetails] = useState(false)
   const displayInfo = useMemo(() => getTransactionDisplayInfo(transaction), [transaction])
   
   const formatDate = (dateString: string) => {
@@ -82,70 +126,108 @@ export const TransactionCard = ({
     <animated.div 
       style={style}
       className={`
-        bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm 
-        border border-white/30 dark:border-gray-700/30 
-        rounded-xl sm:rounded-2xl p-4 sm:p-6
-        hover:bg-white/80 dark:hover:bg-gray-800/80
-        transition-all duration-200
+        group
+        bg-white dark:bg-[#262626] 
+        border border-gray-200/80 dark:border-gray-700/50
+        rounded-2xl p-5
+        hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600
+        transition-all duration-300
+        cursor-pointer
         ${className}
       `}
+      onClick={() => setShowDetails(!showDetails)}
     >
-      <div className="flex items-start justify-between">
-        {/* Left side - Transaction info */}
-        <div className="flex items-start space-x-3 sm:space-x-4 flex-1">
-          {/* Icon */}
+      <div className="flex items-center justify-between gap-4">
+        {/* Left side - Icon and Transaction info */}
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          {/* Icon with gradient background */}
           <div className={`
-            w-10 h-10 sm:w-12 sm:h-12 
+            relative
+            w-14 h-14
             bg-gradient-to-br ${displayInfo.color}
-            rounded-xl sm:rounded-2xl
+            rounded-xl
             flex items-center justify-center
-            text-lg sm:text-xl
-            shadow-lg
+            shadow-md
+            group-hover:scale-110
+            transition-transform duration-300
           `}>
-            {displayInfo.icon}
+            <i className={`ph-bold ${displayInfo.icon} text-white text-2xl`}></i>
           </div>
           
           {/* Transaction details */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 truncate">
-                {displayInfo.title}
-              </h3>
+            <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 truncate mb-1">
+              {displayInfo.title}
+            </h3>
+            
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* Source indicator badge */}
               <span className={`
-                text-sm sm:text-base font-bold
-                ${transaction.transactionType === 'CREDIT' 
-                  ? 'text-green-600 dark:text-green-400'
-                  : transaction.transactionType === 'DEBIT'
-                  ? 'text-red-600 dark:text-red-400'  
-                  : 'text-blue-600 dark:text-blue-400'
-                }
+                inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium
+                ${displayInfo.sourceBgColor} ${displayInfo.sourceIconColor}
               `}>
-                {formatAmount(transaction.amount, displayInfo.amountPrefix)}
+                <i className={`ph-bold ${displayInfo.sourceIcon} text-sm`}></i>
+                {displayInfo.sourceLabel}
               </span>
-            </div>
-            
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2">
-              {displayInfo.description}
-            </p>
-            
-            {/* Balance info */}
-            <div className="flex items-center justify-between text-xs sm:text-sm">
-              <span className="text-gray-500 dark:text-gray-500">
-                Saldo anterior: {transaction.previousBalance.toLocaleString('pt-BR')}
-              </span>
-              <span className="text-gray-700 dark:text-gray-300 font-medium">
-                Novo saldo: {transaction.newBalance.toLocaleString('pt-BR')}
+              
+              {/* Balance type badge */}
+              <span className={`
+                inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium
+                ${displayInfo.bgColor} ${displayInfo.iconColor}
+              `}>
+                <i className="ph-bold ph-coins text-sm"></i>
+                {displayInfo.description}
               </span>
             </div>
           </div>
         </div>
+
+        {/* Right side - Amount */}
+        <div className="flex flex-col items-end gap-1">
+          <span className={`
+            text-2xl font-bold
+            ${displayInfo.amountColor}
+          `}>
+            {formatAmount(transaction.amount, displayInfo.amountPrefix)}
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {formatDate(transaction.createdAt)}
+          </span>
+        </div>
       </div>
       
-      {/* Footer with timestamp */}
-      <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
-        <span className="text-xs text-gray-500 dark:text-gray-500">
-          {formatDate(transaction.createdAt)}
-        </span>
+      {/* Expandable Balance Details */}
+      {showDetails && (
+        <div className="mt-4 pt-4 border-t border-gray-200/50 dark:border-gray-700/50 space-y-2 animate-in slide-in-from-top-2 duration-200">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+              <i className="ph-bold ph-arrow-bend-left-up text-base"></i>
+              Saldo anterior
+            </span>
+            <span className="font-semibold text-gray-900 dark:text-gray-100">
+              {transaction.previousBalance.toLocaleString('pt-BR')} moedas
+            </span>
+          </div>
+          
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+              <i className="ph-bold ph-check-circle text-base"></i>
+              Novo saldo
+            </span>
+            <span className="font-bold text-gray-900 dark:text-gray-100">
+              {transaction.newBalance.toLocaleString('pt-BR')} moedas
+            </span>
+          </div>
+        </div>
+      )}
+      
+      {/* Expand indicator */}
+      <div className="flex justify-center mt-3">
+        <i className={`
+          ph-bold ${showDetails ? 'ph-caret-up' : 'ph-caret-down'} 
+          text-gray-400 dark:text-gray-500 text-sm
+          transition-transform duration-200
+        `}></i>
       </div>
     </animated.div>
   )

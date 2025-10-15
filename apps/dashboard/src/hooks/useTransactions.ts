@@ -3,12 +3,14 @@
  * Manages transaction data loading, pagination, and filtering using React Query
  */
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
 import { getTransactions, getWalletBalance } from '@/services/wallets.service'
 import { useAuth } from '@/hooks/useAuth'
+import { convertUIFiltersToAPI, getDefaultUIFilters } from '@/lib/filterUtils'
 import type {
   TransactionFilters,
+  TransactionUIFilters,
   TransactionQueryParams,
   UseTransactionsReturn,
 } from '@/types'
@@ -25,8 +27,11 @@ export const useTransactions = (): UseTransactionsReturn => {
   const { user: currentUser } = useAuth()
   const queryClient = useQueryClient()
   
-  // Local state for filters
-  const [filters, setFiltersState] = useState<TransactionFilters>({})
+  // Local state for UI filters
+  const [uiFilters, setUIFilters] = useState<TransactionUIFilters>(getDefaultUIFilters())
+
+  // Convert UI filters to API filters
+  const apiFilters = useMemo(() => convertUIFiltersToAPI(uiFilters), [uiFilters])
 
   // Balance query (separate from transactions for independent caching)
   const balanceQuery = useQuery({
@@ -42,7 +47,7 @@ export const useTransactions = (): UseTransactionsReturn => {
 
   // Infinite query for transactions with pagination
   const transactionsQuery = useInfiniteQuery({
-    queryKey: [TRANSACTIONS_QUERY_KEY, filters],
+    queryKey: [TRANSACTIONS_QUERY_KEY, apiFilters],
     queryFn: async ({ pageParam = 0 }) => {
       if (!currentUser) {
         return { transactions: [], pagination: { total: 0, limit: DEFAULT_LIMIT, offset: 0, hasMore: false } }
@@ -51,7 +56,7 @@ export const useTransactions = (): UseTransactionsReturn => {
       const queryParams: TransactionQueryParams = {
         limit: DEFAULT_LIMIT,
         offset: pageParam,
-        ...filters,
+        ...apiFilters,
       }
 
       return await getTransactions(queryParams)
@@ -80,7 +85,26 @@ export const useTransactions = (): UseTransactionsReturn => {
 
   // Actions
   const setFilters = useCallback((newFilters: TransactionFilters) => {
-    setFiltersState(newFilters)
+    // Convert API filters back to UI filters (legacy support)
+    const newUIFilters: TransactionUIFilters = {
+      activity: 'all',
+      direction: 'both',
+      timePeriod: 'month',
+    }
+    
+    // Basic mapping - you can expand this as needed
+    if (newFilters.transactionType === 'CREDIT') {
+      newUIFilters.direction = 'in'
+    } else if (newFilters.transactionType === 'DEBIT') {
+      newUIFilters.direction = 'out'
+    }
+    
+    setUIFilters(newUIFilters)
+    queryClient.removeQueries({ queryKey: [TRANSACTIONS_QUERY_KEY] })
+  }, [queryClient])
+
+  const setUIFiltersAction = useCallback((newFilters: TransactionUIFilters) => {
+    setUIFilters(newFilters)
     // Reset pagination when filters change
     queryClient.removeQueries({ queryKey: [TRANSACTIONS_QUERY_KEY] })
   }, [queryClient])
@@ -103,7 +127,8 @@ export const useTransactions = (): UseTransactionsReturn => {
   return {
     // Data
     transactions: allTransactions,
-    filters,
+    filters: apiFilters,
+    uiFilters,
     pagination,
     balance: balanceQuery.data ?? { complimentBalance: 0, redeemableBalance: 0 },
     
@@ -121,6 +146,7 @@ export const useTransactions = (): UseTransactionsReturn => {
     
     // Actions
     setFilters,
+    setUIFilters: setUIFiltersAction,
     loadMore,
     refresh,
   }

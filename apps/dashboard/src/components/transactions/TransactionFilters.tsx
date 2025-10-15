@@ -1,15 +1,21 @@
 /**
  * TransactionFilters Component
- * Filter controls for transaction history
+ * Improved user-friendly filter controls for transaction history
  */
 
 import { useState, useCallback } from 'react'
-import { animated } from '@react-spring/web'
-import type { TransactionFilters as FiltersType, BalanceType, TransactionType } from '@/types'
+import { animated, useSpring } from '@react-spring/web'
+import { Button } from '@/components/ui/button'
+import type { 
+  TransactionUIFilters, 
+  ActivityFilter, 
+  DirectionFilter, 
+  TimePeriodFilter,
+} from '@/types'
 
 interface TransactionFiltersProps {
-  filters: FiltersType
-  onFiltersChange: (filters: FiltersType) => void
+  filters: TransactionUIFilters
+  onFiltersChange: (filters: TransactionUIFilters) => void
   loading?: boolean
   className?: string
 }
@@ -20,214 +26,380 @@ export const TransactionFilters = ({
   loading = false,
   className = '',
 }: TransactionFiltersProps) => {
-  const [showDateFilters, setShowDateFilters] = useState(false)
+  const [showCustomDates, setShowCustomDates] = useState(false)
 
-  // Handle filter changes
-  const handleBalanceTypeChange = useCallback((balanceType: BalanceType | undefined) => {
-    onFiltersChange({ ...filters, balanceType })
+  // Animation for custom date fields
+  const customDateAnimation = useSpring({
+    opacity: showCustomDates ? 1 : 0,
+    height: showCustomDates ? 'auto' : 0,
+    config: { tension: 300, friction: 30 },
+  })
+
+  // Handle activity filter change
+  const handleActivityChange = useCallback((activity: ActivityFilter) => {
+    onFiltersChange({ ...filters, activity })
   }, [filters, onFiltersChange])
 
-  const handleTransactionTypeChange = useCallback((transactionType: TransactionType | undefined) => {
-    onFiltersChange({ ...filters, transactionType })
+  // Handle direction filter change
+  const handleDirectionChange = useCallback((direction: DirectionFilter) => {
+    onFiltersChange({ ...filters, direction })
   }, [filters, onFiltersChange])
 
-  const handleDateChange = useCallback((field: 'fromDate' | 'toDate', value: string) => {
-    onFiltersChange({ ...filters, [field]: value || undefined })
+  // Handle time period change
+  const handleTimePeriodChange = useCallback((timePeriod: TimePeriodFilter) => {
+    if (timePeriod === 'custom') {
+      setShowCustomDates(true)
+    } else {
+      setShowCustomDates(false)
+      onFiltersChange({ 
+        ...filters, 
+        timePeriod,
+        customDateRange: undefined,
+      })
+    }
   }, [filters, onFiltersChange])
 
+  // Handle custom date range change
+  const handleCustomDateChange = useCallback((field: 'from' | 'to', value: string) => {
+    const currentRange = filters.customDateRange ?? { from: '', to: '' }
+    const newRange = { ...currentRange, [field]: value }
+    
+    onFiltersChange({
+      ...filters,
+      timePeriod: 'custom',
+      customDateRange: newRange,
+    })
+  }, [filters, onFiltersChange])
+
+  // Clear all filters
   const clearAllFilters = useCallback(() => {
-    onFiltersChange({})
-    setShowDateFilters(false)
+    setShowCustomDates(false)
+    onFiltersChange({
+      activity: 'all',
+      direction: 'both',
+      timePeriod: 'month',
+      customDateRange: undefined,
+    })
   }, [onFiltersChange])
 
-  const hasActiveFilters = !!(filters.balanceType ?? filters.transactionType ?? filters.fromDate ?? filters.toDate)
+  const hasActiveFilters = 
+    filters.activity !== 'all' || 
+    filters.direction !== 'both' || 
+    filters.timePeriod !== 'month'
 
   return (
     <div className={`space-y-4 ${className}`}>
-      {/* Balance Type Filters */}
-      <div className="space-y-2">
-        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Tipo de Moeda
-        </h4>
-        <div className="flex flex-wrap gap-2">
-          <button 
-            onClick={() => handleBalanceTypeChange(undefined)}
-            disabled={loading}
-            className={`px-3 py-2 backdrop-blur-sm border rounded-lg text-xs sm:text-sm font-medium transition-all hover:scale-105 ${
-              !filters.balanceType
-                ? 'bg-purple-100 dark:bg-purple-900/40 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
-                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
-            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            Todas
-          </button>
-          <button 
-            onClick={() => handleBalanceTypeChange('COMPLIMENT')}
-            disabled={loading}
-            className={`px-3 py-2 backdrop-blur-sm border rounded-lg text-xs sm:text-sm font-medium transition-all hover:scale-105 ${
-              filters.balanceType === 'COMPLIMENT'
-                ? 'bg-green-100 dark:bg-green-900/40 border-green-300 dark:border-green-700 text-green-700 dark:text-green-300'
-                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
-            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            Para Elogiar
-          </button>
-          <button 
-            onClick={() => handleBalanceTypeChange('REDEEMABLE')}
-            disabled={loading}
-            className={`px-3 py-2 backdrop-blur-sm border rounded-lg text-xs sm:text-sm font-medium transition-all hover:scale-105 ${
-              filters.balanceType === 'REDEEMABLE'
-                ? 'bg-blue-100 dark:bg-blue-900/40 border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300'
-                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
-            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            Para Resgatar
-          </button>
-        </div>
+      {/* Table-style Filters */}
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="border-b border-gray-200 dark:border-gray-700">
+              <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 dark:text-gray-100">
+                <div className="flex items-center gap-2">
+                  <i className="ph ph-squares-four text-lg" aria-hidden="true" />
+                  <span>Tipo de Atividade</span>
+                </div>
+              </th>
+              <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 dark:text-gray-100">
+                <div className="flex items-center gap-2">
+                  <i className="ph ph-arrows-left-right text-lg" aria-hidden="true" />
+                  <span>Direção do Fluxo</span>
+                </div>
+              </th>
+              <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 dark:text-gray-100">
+                <div className="flex items-center gap-2">
+                  <i className="ph ph-calendar text-lg" aria-hidden="true" />
+                  <span>Período</span>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* Row 1 */}
+            <tr>
+              <td className="py-2 px-4">
+                <button
+                  onClick={() => handleActivityChange('all')}
+                  disabled={loading}
+                  className={`
+                    w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-300 ease-out
+                    ${filters.activity === 'all'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 scale-105 shadow-sm'
+                      : 'bg-gray-100 dark:bg-[#404040] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#525252] hover:scale-102'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  <div className="flex items-center gap-2">
+                    <i className="ph ph-stack text-base" aria-hidden="true" />
+                    <span>Todas</span>
+                  </div>
+                </button>
+              </td>
+              <td className="py-2 px-4">
+                <button
+                  onClick={() => handleDirectionChange('both')}
+                  disabled={loading}
+                  className={`
+                    w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-300 ease-out
+                    ${filters.direction === 'both'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 scale-105 shadow-sm'
+                      : 'bg-gray-100 dark:bg-[#404040] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#525252] hover:scale-102'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  <div className="flex items-center gap-2">
+                    <i className="ph ph-swap text-base" aria-hidden="true" />
+                    <span>Ambos</span>
+                  </div>
+                </button>
+              </td>
+              <td className="py-2 px-4">
+                <button
+                  onClick={() => handleTimePeriodChange('today')}
+                  disabled={loading}
+                  className={`
+                    w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-300 ease-out
+                    ${filters.timePeriod === 'today'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 scale-105 shadow-sm'
+                      : 'bg-gray-100 dark:bg-[#404040] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#525252] hover:scale-102'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  <div className="flex items-center gap-2">
+                    <i className="ph ph-calendar-blank text-base" aria-hidden="true" />
+                    <span>Hoje</span>
+                  </div>
+                </button>
+              </td>
+            </tr>
+
+            {/* Row 2 */}
+            <tr>
+              <td className="py-2 px-4">
+                <button
+                  onClick={() => handleActivityChange('praises')}
+                  disabled={loading}
+                  className={`
+                    w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-300 ease-out
+                    ${filters.activity === 'praises'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 scale-105 shadow-sm'
+                      : 'bg-gray-100 dark:bg-[#404040] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#525252] hover:scale-102'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  <div className="flex items-center gap-2">
+                    <i className="ph ph-chat-circle-dots text-base" aria-hidden="true" />
+                    <span>Elogios</span>
+                  </div>
+                </button>
+              </td>
+              <td className="py-2 px-4">
+                <button
+                  onClick={() => handleDirectionChange('in')}
+                  disabled={loading}
+                  className={`
+                    w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-300 ease-out
+                    ${filters.direction === 'in'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 scale-105 shadow-sm'
+                      : 'bg-gray-100 dark:bg-[#404040] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#525252] hover:scale-102'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  <div className="flex items-center gap-2">
+                    <i className="ph ph-arrow-down-left text-base" aria-hidden="true" />
+                    <span>Entrada</span>
+                  </div>
+                </button>
+              </td>
+              <td className="py-2 px-4">
+                <button
+                  onClick={() => handleTimePeriodChange('week')}
+                  disabled={loading}
+                  className={`
+                    w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-300 ease-out
+                    ${filters.timePeriod === 'week'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 scale-105 shadow-sm'
+                      : 'bg-gray-100 dark:bg-[#404040] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#525252] hover:scale-102'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  <div className="flex items-center gap-2">
+                    <i className="ph ph-calendar-check text-base" aria-hidden="true" />
+                    <span>Esta Semana</span>
+                  </div>
+                </button>
+              </td>
+            </tr>
+
+            {/* Row 3 */}
+            <tr>
+              <td className="py-2 px-4">
+                <button
+                  onClick={() => handleActivityChange('prizes')}
+                  disabled={loading}
+                  className={`
+                    w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-300 ease-out
+                    ${filters.activity === 'prizes'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 scale-105 shadow-sm'
+                      : 'bg-gray-100 dark:bg-[#404040] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#525252] hover:scale-102'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  <div className="flex items-center gap-2">
+                    <i className="ph ph-gift text-base" aria-hidden="true" />
+                    <span>Prêmios</span>
+                  </div>
+                </button>
+              </td>
+              <td className="py-2 px-4">
+                <button
+                  onClick={() => handleDirectionChange('out')}
+                  disabled={loading}
+                  className={`
+                    w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-300 ease-out
+                    ${filters.direction === 'out'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 scale-105 shadow-sm'
+                      : 'bg-gray-100 dark:bg-[#404040] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#525252] hover:scale-102'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  <div className="flex items-center gap-2">
+                    <i className="ph ph-arrow-up-right text-base" aria-hidden="true" />
+                    <span>Saída</span>
+                  </div>
+                </button>
+              </td>
+              <td className="py-2 px-4">
+                <button
+                  onClick={() => handleTimePeriodChange('month')}
+                  disabled={loading}
+                  className={`
+                    w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-300 ease-out
+                    ${filters.timePeriod === 'month'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 scale-105 shadow-sm'
+                      : 'bg-gray-100 dark:bg-[#404040] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#525252] hover:scale-102'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  <div className="flex items-center gap-2">
+                    <i className="ph ph-calendar text-base" aria-hidden="true" />
+                    <span>Este Mês</span>
+                  </div>
+                </button>
+              </td>
+            </tr>
+
+            {/* Row 4 */}
+            <tr>
+              <td className="py-2 px-4">
+                <button
+                  onClick={() => handleActivityChange('system')}
+                  disabled={loading}
+                  className={`
+                    w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-300 ease-out
+                    ${filters.activity === 'system'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 scale-105 shadow-sm'
+                      : 'bg-gray-100 dark:bg-[#404040] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#525252] hover:scale-102'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  <div className="flex items-center gap-2">
+                    <i className="ph ph-gear text-base" aria-hidden="true" />
+                    <span>Sistema</span>
+                  </div>
+                </button>
+              </td>
+              <td className="py-2 px-4">
+                {/* Empty cell */}
+              </td>
+              <td className="py-2 px-4">
+                <button
+                  onClick={() => handleTimePeriodChange('custom')}
+                  disabled={loading}
+                  className={`
+                    w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-300 ease-out
+                    ${filters.timePeriod === 'custom'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 scale-105 shadow-sm'
+                      : 'bg-gray-100 dark:bg-[#404040] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#525252] hover:scale-102'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  <div className="flex items-center gap-2">
+                    <i className="ph ph-calendar-dots text-base" aria-hidden="true" />
+                    <span>Personalizado</span>
+                  </div>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      {/* Transaction Type Filters */}
-      <div className="space-y-2">
-        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Tipo de Transação
-        </h4>
-        <div className="flex flex-wrap gap-2">
-          <button 
-            onClick={() => handleTransactionTypeChange(undefined)}
-            disabled={loading}
-            className={`px-3 py-2 backdrop-blur-sm border rounded-lg text-xs sm:text-sm font-medium transition-all hover:scale-105 ${
-              !filters.transactionType
-                ? 'bg-purple-100 dark:bg-purple-900/40 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
-                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
-            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            Todas
-          </button>
-          <button 
-            onClick={() => handleTransactionTypeChange('CREDIT')}
-            disabled={loading}
-            className={`px-3 py-2 backdrop-blur-sm border rounded-lg text-xs sm:text-sm font-medium transition-all hover:scale-105 ${
-              filters.transactionType === 'CREDIT'
-                ? 'bg-green-100 dark:bg-green-900/40 border-green-300 dark:border-green-700 text-green-700 dark:text-green-300'
-                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
-            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            ⬆️ Recebidas
-          </button>
-          <button 
-            onClick={() => handleTransactionTypeChange('DEBIT')}
-            disabled={loading}
-            className={`px-3 py-2 backdrop-blur-sm border rounded-lg text-xs sm:text-sm font-medium transition-all hover:scale-105 ${
-              filters.transactionType === 'DEBIT'
-                ? 'bg-red-100 dark:bg-red-900/40 border-red-300 dark:border-red-700 text-red-700 dark:text-red-300'
-                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
-            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            ⬇️ Gastas
-          </button>
-          <button 
-            onClick={() => handleTransactionTypeChange('RESET')}
-            disabled={loading}
-            className={`px-3 py-2 backdrop-blur-sm border rounded-lg text-xs sm:text-sm font-medium transition-all hover:scale-105 ${
-              filters.transactionType === 'RESET'
-                ? 'bg-blue-100 dark:bg-blue-900/40 border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300'
-                : 'bg-white/60 dark:bg-gray-700/60 border-white/30 dark:border-gray-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-gray-600/80'
-            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            🔄 Reset
-          </button>
-        </div>
-      </div>
+      {/* Custom Date Range */}
+      {showCustomDates && (
+        <animated.div style={customDateAnimation} className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <div>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
+              Data inicial
+            </label>
+            <input
+              type="date"
+              value={filters.customDateRange?.from ?? ''}
+              onChange={(e) => handleCustomDateChange('from', e.target.value)}
+              disabled={loading}
+              className="w-full px-3 py-2 text-sm bg-white/60 dark:bg-[#262626]/60 border border-gray-200 dark:border-gray-700 rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-green-500/50 text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
+              Data final
+            </label>
+            <input
+              type="date"
+              value={filters.customDateRange?.to ?? ''}
+              onChange={(e) => handleCustomDateChange('to', e.target.value)}
+              disabled={loading}
+              className="w-full px-3 py-2 text-sm bg-white/60 dark:bg-[#262626]/60 border border-gray-200 dark:border-gray-700 rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-green-500/50 text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            />
+          </div>
+        </animated.div>
+      )}
 
-      {/* Date Filters Toggle */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Período
-          </h4>
-          <button
-            onClick={() => setShowDateFilters(!showDateFilters)}
-            disabled={loading}
-            className={`
-              text-xs px-2 py-1 rounded-md 
-              ${showDateFilters 
-                ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300' 
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
-              }
-              ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-50 dark:hover:bg-purple-900/20'}
-            `}
-          >
-            {showDateFilters ? 'Ocultar' : 'Filtrar por data'}
-          </button>
-        </div>
-
-        {showDateFilters && (
-          <animated.div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                Data inicial
-              </label>
-              <input
-                type="date"
-                value={filters.fromDate ?? ''}
-                onChange={(e) => handleDateChange('fromDate', e.target.value)}
-                disabled={loading}
-                className={`
-                  w-full px-3 py-2 text-sm
-                  bg-white/60 dark:bg-gray-800/60 
-                  border border-white/30 dark:border-gray-700/30
-                  rounded-lg backdrop-blur-sm
-                  focus:outline-none focus:ring-2 focus:ring-purple-500/50
-                  text-gray-900 dark:text-gray-100
-                  ${loading ? 'opacity-50 cursor-not-allowed' : ''}
-                `}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                Data final
-              </label>
-              <input
-                type="date"
-                value={filters.toDate ?? ''}
-                onChange={(e) => handleDateChange('toDate', e.target.value)}
-                disabled={loading}
-                className={`
-                  w-full px-3 py-2 text-sm
-                  bg-white/60 dark:bg-gray-800/60 
-                  border border-white/30 dark:border-gray-700/30
-                  rounded-lg backdrop-blur-sm
-                  focus:outline-none focus:ring-2 focus:ring-purple-500/50
-                  text-gray-900 dark:text-gray-100
-                  ${loading ? 'opacity-50 cursor-not-allowed' : ''}
-                `}
-              />
-            </div>
-          </animated.div>
-        )}
-      </div>
-
-      {/* Clear Filters */}
+      {/* Clear Filters Button */}
       {hasActiveFilters && (
         <div className="pt-2 border-t border-gray-200/50 dark:border-gray-700/50">
-          <button
+          <Button
             onClick={clearAllFilters}
             disabled={loading}
-            className={`
-              text-sm px-3 py-2 
-              bg-gray-100 dark:bg-gray-800/60 
-              border border-gray-200 dark:border-gray-700/30
-              rounded-lg
-              text-gray-700 dark:text-gray-300
-              transition-all
-              ${loading 
-                ? 'opacity-50 cursor-not-allowed' 
-                : 'hover:bg-gray-200 dark:hover:bg-gray-700/60'
-              }
-            `}
+            variant="outline"
+            size="sm"
+            className="w-full sm:w-auto flex items-center gap-2 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-700 dark:hover:text-green-300 hover:border-green-300 dark:hover:border-green-700 transition-all"
           >
-            Limpar Filtros
-          </button>
+            <i className="ph ph-x-circle text-base" aria-hidden="true" />
+            <span>Limpar Filtros</span>
+          </Button>
         </div>
       )}
     </div>

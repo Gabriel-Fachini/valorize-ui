@@ -31,13 +31,13 @@ export const EmptyState = ({
       {/* Empty state icon */}
       <div className="
         w-16 h-16 sm:w-20 sm:h-20 
-        bg-gradient-to-br from-purple-100 to-indigo-100 
-        dark:from-purple-900/30 dark:to-indigo-900/30
+        bg-green-100 
+        dark:bg-green-900/30
         rounded-full 
         flex items-center justify-center
         mb-4 sm:mb-6
       ">
-        <span className="text-2xl sm:text-3xl">📊</span>
+        <i className="ph ph-chart-bar text-3xl sm:text-4xl text-green-600 dark:text-green-400" aria-hidden="true" />
       </div>
       
       {/* Empty state text */}
@@ -53,10 +53,10 @@ export const EmptyState = ({
       <div className="mt-6 sm:mt-8">
         <div className="
           px-4 py-2 
-          bg-purple-50 dark:bg-purple-900/20 
-          border border-purple-200 dark:border-purple-800/30
+          bg-green-50 dark:bg-green-900/20 
+          border border-green-200 dark:border-green-800/30
           rounded-lg
-          text-sm text-purple-700 dark:text-purple-300
+          text-sm text-green-700 dark:text-green-300
         ">
           💡 Experimente ajustar os filtros para ver mais transações
         </div>

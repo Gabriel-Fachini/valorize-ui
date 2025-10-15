@@ -9,6 +9,11 @@ import type { UserBalance } from './compliments'
 export type TransactionType = 'DEBIT' | 'CREDIT' | 'RESET'
 export type BalanceType = 'COMPLIMENT' | 'REDEEMABLE'
 
+// User-friendly activity filter types
+export type ActivityFilter = 'all' | 'praises' | 'prizes' | 'system'
+export type DirectionFilter = 'both' | 'in' | 'out'
+export type TimePeriodFilter = 'today' | 'week' | 'month' | 'custom'
+
 // Main transaction interface based on /wallets/transactions endpoint
 export interface Transaction {
   id: string
@@ -22,12 +27,23 @@ export interface Transaction {
   createdAt: string
 }
 
-// Filter interface for transaction queries
+// Filter interface for transaction queries (API-level)
 export interface TransactionFilters {
   balanceType?: BalanceType
   transactionType?: TransactionType
   fromDate?: string // ISO date string
   toDate?: string   // ISO date string
+}
+
+// User-friendly filter interface (UI-level)
+export interface TransactionUIFilters {
+  activity: ActivityFilter
+  direction: DirectionFilter
+  timePeriod: TimePeriodFilter
+  customDateRange?: {
+    from: string
+    to: string
+  }
 }
 
 // Pagination information
@@ -61,8 +77,8 @@ export interface TransactionCardProps {
 }
 
 export interface TransactionFiltersProps {
-  filters: TransactionFilters
-  onFiltersChange: (filters: TransactionFilters) => void
+  filters: TransactionUIFilters
+  onFiltersChange: (filters: TransactionUIFilters) => void
   loading?: boolean
   className?: string
 }
@@ -81,6 +97,7 @@ export interface TransactionFeedProps {
 export interface UseTransactionsReturn {
   transactions: Transaction[]
   filters: TransactionFilters
+  uiFilters: TransactionUIFilters
   pagination: TransactionPagination
   balance: UserBalance
   loading: boolean
@@ -92,6 +109,7 @@ export interface UseTransactionsReturn {
   
   // Actions
   setFilters: (filters: TransactionFilters) => void
+  setUIFilters: (filters: TransactionUIFilters) => void
   loadMore: () => void
   refresh: () => void
 }
@@ -100,9 +118,16 @@ export interface UseTransactionsReturn {
 export interface TransactionDisplayInfo {
   icon: string
   color: string
+  bgColor: string
+  iconColor: string
+  amountColor: string
   title: string
   description: string
   amountPrefix: '+' | '-' | ''
+  sourceIcon: string
+  sourceLabel: string
+  sourceBgColor: string
+  sourceIconColor: string
 }
 
 // Transaction grouping by date

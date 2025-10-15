@@ -8,18 +8,18 @@ import { TransactionCard } from './TransactionCard'
 import { SkeletonTransactionCard } from './SkeletonTransactionCard'
 import { EmptyState } from './EmptyState'
 import { TransactionFilters } from './TransactionFilters'
-import type { Transaction, TransactionFilters as FiltersType } from '@/types'
+import type { Transaction, TransactionUIFilters } from '@/types'
 
 interface TransactionFeedProps {
   transactions: Transaction[]
-  filters: FiltersType
+  filters: TransactionUIFilters
   hasMore: boolean
   loading: boolean
   loadingMore: boolean
   trail: Array<Record<string, unknown>>
   filtersAnimation: Record<string, unknown>
   feedSectionAnimation: Record<string, unknown>
-  onFiltersChange: (filters: FiltersType) => void
+  onFiltersChange: (filters: TransactionUIFilters) => void
   onLoadMore: () => void
   className?: string
 }
@@ -49,7 +49,7 @@ export const TransactionFeed = ({
       {/* Filters */}
       <animated.div style={filtersAnimation}>
         <div className="
-          bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm 
+          bg-white/40 dark:bg-[#262626]/40 backdrop-blur-sm 
           border border-white/30 dark:border-gray-700/30 
           rounded-xl sm:rounded-2xl p-4 sm:p-6
         ">
@@ -106,12 +106,12 @@ export const TransactionFeed = ({
                   onClick={onLoadMore}
                   className="
                     px-6 py-3 
-                    bg-gradient-to-r from-purple-500 to-indigo-600 
-                    hover:from-purple-600 hover:to-indigo-700
+                    bg-green-600 
+                    hover:bg-green-700
                     text-white font-medium rounded-xl
                     transition-all duration-200 
                     hover:scale-105 hover:shadow-lg
-                    focus:outline-none focus:ring-2 focus:ring-purple-500/50
+                    focus:outline-none focus:ring-2 focus:ring-green-500/50
                     disabled:opacity-50 disabled:cursor-not-allowed
                   "
                 >
@@ -132,12 +132,12 @@ export const TransactionFeed = ({
       {loading && transactions.length > 0 && (
         <div className="
           fixed inset-0 z-50 
-          bg-white/20 dark:bg-gray-900/20 
+          bg-white/20 dark:bg-[#171717]/20 
           backdrop-blur-sm
           flex items-center justify-center
         ">
           <div className="
-            bg-white dark:bg-gray-800 
+            bg-white dark:bg-[#262626] 
             rounded-xl p-6 shadow-xl
             flex items-center space-x-3
           ">

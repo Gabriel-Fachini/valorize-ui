@@ -18,7 +18,7 @@ export const SkeletonTransactionCard = ({
     <animated.div 
       style={style}
       className={`
-        bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm 
+        bg-white/60 dark:bg-[#262626]/60 backdrop-blur-sm 
         border border-white/30 dark:border-gray-700/30 
         rounded-xl sm:rounded-2xl p-4 sm:p-6
         ${className}

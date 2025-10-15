@@ -5,7 +5,6 @@
 
 import { animated, useSpring } from '@react-spring/web'
 import { 
-  BalanceHeader,
   TransactionFeed,
 } from '@/components/transactions'
 import { 
@@ -20,13 +19,11 @@ export const TransactionsPage = () => {
   // Data management
   const {
     transactions,
-    filters,
-    balance,
+    uiFilters,
     loading,
     loadingMore,
-    loadingBalance,
     hasMore,
-    setFilters,
+    setUIFilters,
     loadMore,
   } = useTransactions()
 
@@ -50,7 +47,7 @@ export const TransactionsPage = () => {
 
         {/* Header */}
         <animated.div style={headerSpring} className="mb-8">
-          <h1 data-tour="transactions-page" className="mb-2 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
+          <h1 data-tour="transactions-page" className="mb-2 text-4xl font-bold text-green-600 dark:text-green-400">
             Transações
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">
@@ -59,27 +56,19 @@ export const TransactionsPage = () => {
         </animated.div>
 
         <div className="space-y-6 sm:space-y-8">
-          
-          {/* Balance Header */}
-          <div data-tour="transactions-balance">
-            <BalanceHeader
-              balance={balance}
-              loading={loadingBalance}
-            />
-          </div>
 
           {/* Transaction Feed */}
           <div data-tour="transactions-feed">
             <TransactionFeed
               transactions={transactions}
-              filters={filters}
+              filters={uiFilters}
               hasMore={hasMore}
               loading={loading}
               loadingMore={loadingMore}
               trail={transactionsTrail}
               filtersAnimation={filtersAnimation}
               feedSectionAnimation={feedSectionAnimation}
-              onFiltersChange={setFilters}
+              onFiltersChange={setUIFilters}
               onLoadMore={loadMore}
             />
           </div>

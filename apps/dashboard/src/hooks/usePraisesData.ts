@@ -193,7 +193,7 @@ export const usePraisesData = () => {
           avatar: compliment.receiver?.avatar ?? undefined,
         },
         message: compliment.message,
-        value: compliment.value?.title ?? 'Valor não informado',
+        value: compliment.companyValue?.title ?? 'Valor não informado',
         coins: compliment.coins,
         createdAt: compliment.createdAt,
       }))
