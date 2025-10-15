@@ -9,13 +9,13 @@ export const Logo = ({
     return (
       <button
         onClick={onToggle}
-        className="flex h-16 w-16 items-center justify-center rounded-xl p-2 hover:opacity-80 transition-opacity"
+        className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-gray-400 hover:bg-white/10 transition-all duration-300"
         aria-label="Expandir sidebar"
       >
-        <img 
-          src='/logo2.svg'
-          alt="Valorize Logo" 
-          className="w-full h-full object-contain"
+        <i 
+          className="ph ph-caret-right" 
+          style={{ fontSize: '1rem' }}
+          aria-hidden="true"
         />
       </button>
     )

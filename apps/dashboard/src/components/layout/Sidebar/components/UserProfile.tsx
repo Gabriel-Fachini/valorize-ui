@@ -1,13 +1,46 @@
 import type { UserProfileProps } from '../types'
 import { BalanceSection } from './BalanceSection'
+import { SkeletonAvatar, SkeletonBase } from '@components/ui/Skeleton'
 
 export const UserProfile = ({ 
   collapsed = false, 
   userName = 'Usuário', 
   userEmail = 'email@exemplo.com',
   avatarUrl,
+  isLoading = false,
 }: UserProfileProps) => {
   const initials = userName.charAt(0).toUpperCase()
+
+  // Skeleton loading state for collapsed sidebar
+  if (collapsed && isLoading) {
+    return (
+      <div className="flex justify-center py-4 border-b border-gray-800 bg-black/20">
+        <SkeletonAvatar size="lg" className="bg-gray-700" />
+      </div>
+    )
+  }
+
+  // Skeleton loading state for expanded sidebar
+  if (isLoading) {
+    return (
+      <div className="p-6 border-b border-gray-800 bg-black/20">
+        <div className="flex items-center gap-4 mb-6">
+          <SkeletonAvatar size="xl" className="bg-gray-700" />
+          <div className="flex-1 min-w-0 space-y-2">
+            <SkeletonBase>
+              <div className="h-5 w-32 bg-gray-700 rounded" />
+            </SkeletonBase>
+            <SkeletonBase>
+              <div className="h-4 w-40 bg-gray-700 rounded" />
+            </SkeletonBase>
+          </div>
+        </div>
+        <div data-tour="balance-cards">
+          <BalanceSection />
+        </div>
+      </div>
+    )
+  }
 
   const avatar = avatarUrl
     ? <img src={avatarUrl} alt="User Avatar" className="h-16 w-16 rounded-full" />

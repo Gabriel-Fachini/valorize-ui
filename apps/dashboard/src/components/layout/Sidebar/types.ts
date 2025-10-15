@@ -10,6 +10,7 @@ export interface UserProfileProps {
   userName?: string
   userEmail?: string
   avatarUrl?: string
+  isLoading?: boolean
 }
 
 export interface NavigationProps {

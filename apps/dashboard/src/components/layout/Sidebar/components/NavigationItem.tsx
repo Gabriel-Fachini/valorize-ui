@@ -28,10 +28,10 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={hoverStyle}
-      className={`relative z-10 flex w-full h-12 items-center ${
+      className={`relative z-10 flex h-12 items-center ${
         collapsed 
           ? 'justify-center w-12 mx-auto' 
-          : 'gap-4 px-4'
+          : 'w-full gap-4 px-4'
       } rounded-xl text-left transition-colors ${
         isActive
           ? 'text-black font-semibold'

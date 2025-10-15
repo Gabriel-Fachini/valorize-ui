@@ -8,7 +8,7 @@ import { Navigation } from './components/Navigation'
 import { BottomActions } from './components/BottomActions'
 
 export const SidebarMobile = () => {
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
   const { mobileSidebarOpen, setMobileSidebarOpen } = useSidebar()
   const { currentPath, handleNavigation } = useNavigation()
   const { handleLogout } = useSidebarActions()
@@ -63,6 +63,7 @@ export const SidebarMobile = () => {
           userName={user?.name}
           userEmail={user?.email}
           avatarUrl={user?.avatar}
+          isLoading={isLoading}
         />
 
         {/* Mobile Navigation */}

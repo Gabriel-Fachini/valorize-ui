@@ -8,7 +8,7 @@ import { Navigation } from './components/Navigation'
 import { BottomActions } from './components/BottomActions'
 
 export const SidebarDesktop = () => {
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
   const { desktopSidebarCollapsed, toggleDesktopSidebar } = useSidebar()
   const { currentPath, handleNavigation } = useNavigation()
   const { handleLogout } = useSidebarActions()
@@ -37,6 +37,7 @@ export const SidebarDesktop = () => {
         userName={user?.name}
         userEmail={user?.email}
         avatarUrl={user?.avatar}
+        isLoading={isLoading}
       />
 
       {/* Navigation */}
