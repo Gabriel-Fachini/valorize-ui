@@ -12,10 +12,113 @@ import {
 } from '@/hooks/useAnimations'
 import { PageLayout } from '@/components/layout/PageLayout'
 
+// Skeleton Loading Component
+const NewPraiseSkeleton = () => {
+  return (
+    <div className="space-y-6 animate-pulse">
+      {/* Header Skeleton */}
+      <div>
+        <div className="mb-6 flex items-center space-x-2">
+          <div className="w-6 h-6 bg-gray-300 dark:bg-gray-600 rounded"></div>
+          <div className="w-40 h-5 bg-gray-300 dark:bg-gray-600 rounded"></div>
+        </div>
+        
+        <div className="mb-6">
+          <div className="w-64 h-10 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+          <div className="w-48 h-6 bg-gray-300 dark:bg-gray-600 rounded"></div>
+        </div>
+
+        {/* Progress Bar Skeleton */}
+        <div className="flex space-x-2">
+          {[...Array(5)].map((_, index) => (
+            <div
+              key={index}
+              className="flex-1 h-2 bg-gray-300 dark:bg-gray-600 rounded-full"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Content Skeleton */}
+      <div className="space-y-6">
+        <div>
+          <div className="w-96 h-8 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+          <div className="w-80 h-5 bg-gray-300 dark:bg-gray-600 rounded"></div>
+        </div>
+        
+        {/* Search Input Skeleton */}
+        <div className="w-full h-14 bg-gray-300 dark:bg-gray-600 rounded-xl"></div>
+
+        {/* Cards Grid Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, index) => (
+            <div
+              key={index}
+              className="p-5 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-[#262626] flex items-center space-x-4"
+            >
+              <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-full flex-shrink-0"></div>
+              <div className="flex-1 space-y-2">
+                <div className="w-32 h-5 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                <div className="w-24 h-4 bg-gray-300 dark:bg-gray-600 rounded"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation Buttons Skeleton */}
+      <div className="flex justify-between items-center pt-8 border-t border-gray-300 dark:border-gray-600">
+        <div className="w-32 h-14 bg-gray-300 dark:bg-gray-600 rounded-xl"></div>
+        <div className="w-32 h-14 bg-gray-300 dark:bg-gray-600 rounded-xl"></div>
+      </div>
+    </div>
+  )
+}
+
+// Error State Component
+const NewPraiseError = ({ error, onRetry }: { error: string; onRetry: () => void }) => {
+  const navigate = useNavigate()
+  
+  return (
+    <div className="flex flex-col items-center justify-center py-16 px-4">
+      <div className="max-w-md w-full text-center">
+        <div className="w-24 h-24 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <i className="ph-bold ph-warning-circle text-red-500 text-6xl"></i>
+        </div>
+        
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+          Erro ao Carregar Dados
+        </h2>
+        
+        <p className="text-base text-gray-600 dark:text-gray-400 mb-6">
+          {error || 'Não foi possível carregar os dados necessários para enviar um elogio. Tente novamente.'}
+        </p>
+        
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <button
+            onClick={onRetry}
+            className="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl font-bold hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg flex items-center justify-center gap-2"
+          >
+            <i className="ph-bold ph-arrow-clockwise text-lg"></i>
+            Tentar Novamente
+          </button>
+          
+          <button
+            onClick={() => navigate({ to: '/elogios' })}
+            className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+          >
+            Voltar para Elogios
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export const NewPraisePage = () => {
   const navigate = useNavigate()
   const { onBalanceMovement } = useUser()
-  const { users, companyValues } = usePraisesData()
+  const { users, companyValues, loading, computed, actions } = usePraisesData()
 
   // Step management
   const [currentStep, setCurrentStep] = useState(0)
@@ -106,9 +209,39 @@ export const NewPraisePage = () => {
     }
   }
 
+  // Check if we're loading data
+  const isLoadingData = loading.users || loading.values
+  const hasDataError = computed.hasAnyError || !computed.hasUsers || !computed.hasCompanyValues
+  
+  const getDataErrorMessage = () => {
+    if (computed.combinedErrorMessage) return computed.combinedErrorMessage
+    if (!computed.hasUsers) return 'Nenhum usuário disponível para receber elogios.'
+    if (!computed.hasCompanyValues) return 'Nenhum valor da empresa configurado.'
+    return 'Erro ao carregar dados necessários.'
+  }
+  
+  const dataErrorMessage = getDataErrorMessage()
+
   return (
     <PageLayout maxWidth="5xl">
       <animated.div style={pageAnimation} className="space-y-6">
+        {/* Show skeleton while loading */}
+        {isLoadingData && <NewPraiseSkeleton />}
+        
+        {/* Show error if data failed to load */}
+        {!isLoadingData && hasDataError && (
+          <NewPraiseError 
+            error={dataErrorMessage} 
+            onRetry={() => {
+              actions.refreshUsers()
+              actions.refreshValues()
+            }} 
+          />
+        )}
+        
+        {/* Show form only when data is loaded successfully */}
+        {!isLoadingData && !hasDataError && (
+          <>
         {/* Header */}
         <div>
           <button
@@ -457,6 +590,8 @@ export const NewPraisePage = () => {
               </div>
             </animated.div>
           ) : null,
+        )}
+        </>
         )}
       </animated.div>
     </PageLayout>

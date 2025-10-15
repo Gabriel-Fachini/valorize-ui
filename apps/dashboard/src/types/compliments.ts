@@ -35,7 +35,7 @@ export interface Compliment {
   createdAt: string
   sender?: ComplimentUser
   receiver?: ComplimentUser
-  value?: CompanyValue
+  companyValue?: CompanyValue
 }
 
 export interface SendComplimentData {

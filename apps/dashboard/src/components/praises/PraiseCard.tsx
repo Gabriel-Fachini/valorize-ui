@@ -10,7 +10,6 @@ interface PraiseCardProps {
   praise: PraiseData
   valueColor?: string
   style?: React.CSSProperties
-  onLike?: (praiseId: string) => void
 }
 
 // Default value colors mapping - Verde como principal
@@ -26,7 +25,6 @@ export const PraiseCard = ({
   praise, 
   valueColor, 
   style = {},
-  onLike,
 }: PraiseCardProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -41,12 +39,6 @@ export const PraiseCard = ({
   const getValueColor = () => {
     if (valueColor) return valueColor
     return defaultValueColors[praise.value as keyof typeof defaultValueColors] ?? 'from-primary-500 to-primary-600'
-  }
-
-  const handleLike = () => {
-    if (onLike) {
-      onLike(praise.id)
-    }
   }
 
   return (
@@ -96,28 +88,17 @@ export const PraiseCard = ({
 
           {/* Footer */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
-            <div className={`inline-flex items-center px-3 py-1.5 bg-gradient-to-r ${getValueColor()} rounded-full shadow-lg`}>
-              <span className="text-white text-sm font-semibold">
+            <div className={`inline-flex items-center px-4 py-2 bg-gradient-to-r ${getValueColor()} rounded-full shadow-lg`}>
+              <span className="text-white text-sm sm:text-base font-bold drop-shadow-md">
                 {praise.value}
               </span>
             </div>
             
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="flex items-center space-x-1 bg-primary-100 dark:bg-primary-900/30 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full">
-                <i className="ph-bold ph-coins text-primary-600 dark:text-primary-400 text-xs sm:text-sm"></i>
-                <span className="text-primary-700 dark:text-primary-300 font-semibold text-xs sm:text-sm">
-                  +{praise.coins}
-                </span>
-              </div>
-              
-              {onLike && (
-                <button 
-                  onClick={handleLike}
-                  className="p-1.5 sm:p-2 rounded-full bg-gray-100/80 dark:bg-gray-700/80 hover:bg-gray-200/80 dark:hover:bg-gray-600/80 transition-colors duration-200"
-                >
-                  <i className="ph-bold ph-heart text-secondary-500 text-sm sm:text-base"></i>
-                </button>
-              )}
+            <div className="flex items-center space-x-1.5 bg-gradient-to-r from-primary-600 to-primary-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg">
+              <i className="ph-bold ph-coins text-white text-sm sm:text-base drop-shadow-md"></i>
+              <span className="text-white font-bold text-sm sm:text-base drop-shadow-md">
+                +{praise.coins}
+              </span>
             </div>
           </div>
         </div>

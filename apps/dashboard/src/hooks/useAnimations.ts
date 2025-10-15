@@ -80,12 +80,14 @@ export const useSuccessTransition = (isVisible: boolean) => {
   })
 }
 
-export const useListTrail = <T>(items: T[]) => {
+export const useListTrail = <T>(items: T[], key?: string | number) => {
   return useTrail(items.length, {
     from: { opacity: 0, scale: 0.7 },
     to: { opacity: 1, scale: 1 },
     delay: 0,
     config: config.gentle,
+    reset: true,
+    keys: key !== undefined ? [key] : undefined,
   })
 }
 

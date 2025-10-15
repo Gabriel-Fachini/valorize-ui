@@ -25,17 +25,12 @@ export const PraisesPage = () => {
 
   // Animations (hooks diretos evitando função que invoca hooks internamente)
   const pageAnimation = usePageEntrance()
-  const praisesTrail = useListTrail(praises)
+  const praisesTrail = useListTrail(praises, currentFilter)
   const feedSectionAnimation = useCardEntrance()
   const filterAnimation = useCardEntrance()
 
   const handleNewPraise = () => {
     navigate({ to: '/elogios/novo' })
-  }
-
-  const handleLikePraise = (praiseId: string) => {
-    // TODO: Implement like functionality
-    void praiseId // Placeholder to avoid unused parameter warning
   }
 
   const headerSpring = useSpring({
@@ -65,8 +60,7 @@ export const PraisesPage = () => {
           {/* Botão destacado de novo elogio */}
           <button
             onClick={handleNewPraise}
-            disabled={!computed.canSendPraise}
-            className={`flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-primary-600 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:shadow-primary-500/30 transition-all duration-200 ${!computed.canSendPraise ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary-700 hover:scale-105'}`}
+            className="flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-primary-600 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:shadow-primary-500/30 transition-all duration-200 hover:bg-primary-700 hover:scale-105"
           >
             <i className="ph-bold ph-plus-circle text-xl sm:text-2xl"></i>
             <span className="whitespace-nowrap">Novo Elogio</span>
@@ -93,7 +87,6 @@ export const PraisesPage = () => {
           filterAnimation={filterAnimation}
           feedSectionAnimation={feedSectionAnimation}
           onNewPraise={handleNewPraise}
-          onLikePraise={handleLikePraise}
           onFilterChange={actions.setFilter}
           loading={loading.praises}
           />

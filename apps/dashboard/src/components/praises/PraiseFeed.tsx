@@ -16,7 +16,6 @@ interface PraiseFeedProps {
   filterAnimation: Record<string, unknown>
   feedSectionAnimation: Record<string, unknown>
   onNewPraise?: () => void
-  onLikePraise?: (praiseId: string) => void
   onFilterChange?: (filter: 'all' | 'sent' | 'received') => void
   loading?: boolean
 }
@@ -28,7 +27,6 @@ export const PraiseFeed = ({
   filterAnimation, 
   feedSectionAnimation,
   onNewPraise,
-  onLikePraise,
   onFilterChange,
   loading = false,
 }: PraiseFeedProps) => {
@@ -76,9 +74,8 @@ export const PraiseFeed = ({
       {loading ? (
         <div className="space-y-4 sm:space-y-6">
           {Array.from({ length: 3 }).map((_, index) => {
-            // Apply trail animation in reverse order for cascading effect
-            const reversedIndex = 2 - index
-            const style = trail[reversedIndex] || {}
+            // Apply trail animation in natural order (top to bottom)
+            const style = trail[index] || {}
             
             return (
               <animated.div key={`skeleton-${index}`} style={style}>
@@ -90,15 +87,13 @@ export const PraiseFeed = ({
       ) : praises.length > 0 ? (
         <div className="space-y-4 sm:space-y-6">
           {praises.map((praise, index) => {
-            // Apply trail animation in reverse order for cascading effect
-            const reversedIndex = praises.length - 1 - index
-            const style = trail[reversedIndex] || {}
+            // Apply trail animation in natural order (top to bottom)
+            const style = trail[index] || {}
             
             return (
               <animated.div key={praise.id} style={style}>
                 <PraiseCard
                   praise={praise}
-                  onLike={onLikePraise}
                 />
               </animated.div>
             )
