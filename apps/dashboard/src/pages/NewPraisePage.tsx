@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { useState, useEffect } from 'react'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import { animated } from '@react-spring/web'
 import { sendCompliment } from '@/services/compliments'
 import { useUser } from '@/hooks/useUser'
@@ -117,6 +117,7 @@ const NewPraiseError = ({ error, onRetry }: { error: string; onRetry: () => void
 
 export const NewPraisePage = () => {
   const navigate = useNavigate()
+  const searchParams = useSearch({ strict: false }) as { userId?: string }
   const { onBalanceMovement } = useUser()
   const { users, companyValues, loading, computed, actions } = usePraisesData()
 
@@ -135,6 +136,17 @@ export const NewPraisePage = () => {
 
   // Success state
   const [showSuccess, setShowSuccess] = useState(false)
+
+  // Pre-select user from URL params if provided
+  useEffect(() => {
+    if (searchParams?.userId && users.length > 0 && !selectedUser) {
+      const preSelectedUser = users.find(u => u.id === searchParams.userId)
+      if (preSelectedUser) {
+        setSelectedUser(preSelectedUser)
+        setCurrentStep(1) // Move to next step (Value selection)
+      }
+    }
+  }, [searchParams?.userId, users, selectedUser])
 
   // Animations
   const pageAnimation = usePageEntrance()

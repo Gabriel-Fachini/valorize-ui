@@ -1,202 +1,386 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useSpring, animated, useTrail } from '@react-spring/web'
 import { PageLayout } from '@/components/layout/PageLayout'
+import {
+  WelcomeHeader,
+  SectionHeader,
+  NewsCard,
+  EventCard,
+} from '@/components/dashboard'
+import { useDashboardData } from '@/hooks/useDashboardData'
+import { useUser } from '@/hooks/useUser'
+import { usePrizes } from '@/hooks/usePrizes'
+import { usePraisesData } from '@/hooks/usePraisesData'
+import { useState, useMemo } from 'react'
 
 export const HomePage = () => {
   const navigate = useNavigate()
+  const { news, events, hasAnyError } = useDashboardData()
+  const { balance } = useUser()
+  const { data: prizesData } = usePrizes({ sortBy: 'newest' }, 1, 5)
+  const { users } = usePraisesData()
+  
+  const [searchQuery, setSearchQuery] = useState('')
 
-  // Animação principal da página - entrada pela direita
+  // Filter users based on search query
+  const filteredUsers = useMemo(() => {
+    if (!searchQuery.trim()) return []
+    return users
+      .filter(user => 
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+      .slice(0, 5) // Show max 5 results
+  }, [searchQuery, users])
+
+  // Mock data for courses/training
+  const courses = [
+    {
+      id: 1,
+      title: 'Fundamentos de Liderança',
+      type: 'Curso',
+      duration: '4h 30min',
+      thumbnail: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=250&fit=crop',
+      progress: 65,
+      category: 'Liderança',
+    },
+    {
+      id: 2,
+      title: 'Comunicação Efetiva no Trabalho',
+      type: 'Vídeo',
+      duration: '45min',
+      thumbnail: 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=400&h=250&fit=crop',
+      progress: 0,
+      category: 'Soft Skills',
+    },
+    {
+      id: 3,
+      title: 'Gestão de Tempo e Produtividade',
+      type: 'Treinamento',
+      duration: '2h 15min',
+      thumbnail: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=400&h=250&fit=crop',
+      progress: 100,
+      category: 'Produtividade',
+    },
+    {
+      id: 4,
+      title: 'Trabalho em Equipe e Colaboração',
+      type: 'Curso',
+      duration: '3h 20min',
+      thumbnail: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=250&fit=crop',
+      progress: 30,
+      category: 'Colaboração',
+    },
+  ]
+
+  // Animação principal da página
   const pageAnimation = useSpring({
-    from: { transform: 'translateX(100%)', opacity: 0 },
-    to: { transform: 'translateX(0%)', opacity: 1 },
+    from: { opacity: 0 },
+    to: { opacity: 1 },
     config: { tension: 180, friction: 25 },
   })
 
-  // Animação para os cards de estatísticas
-  const statsCards = [
-    { title: 'Pontos Totais', value: '2,547', icon: '⭐', color: 'bg-[#3a3a3a] dark:bg-[#2f2f2f]' },
-    { title: 'Conquistas', value: '15', icon: '🏆', color: 'bg-[#454545] dark:bg-[#3a3a3a]' },
-    { title: 'Rank', value: '#3', icon: '🏅', color: 'bg-[#323232] dark:bg-[#282828]' },
-    { title: 'Engajamento', value: '94%', icon: '💎', color: 'bg-[#3a3a3a] dark:bg-[#2f2f2f]' },
-  ]
-
-  const statsTrail = useTrail(statsCards.length, {
-    from: {
-      scale: 0.1,
-    },
-    to: {
-      scale: 1,
-    },
-    delay: 400,                     // ← Sem delay inicial
-    config: {
-      tension: 280,
-      friction: 10,
-    },
-  })
-
-  // Animação para as features principais
-  const featuresAnimation = useSpring({
-    from: { opacity: 0, transform: 'translateY(50px)' },
+  // Animação para seções com stagger
+  const sectionsTrail = useTrail(5, {
+    from: { opacity: 0, transform: 'translateY(30px)' },
     to: { opacity: 1, transform: 'translateY(0px)' },
-    delay: 250,                   // ← Reduzido drasticamente (600ms → 250ms)
-    config: { tension: 280, friction: 18 },  // ← Mais rápido
+    delay: 100,
+    config: { tension: 280, friction: 20 },
   })
 
-  // Animação para a seção Hero
-  const heroAnimation = useSpring({
-    from: { opacity: 0, transform: 'scale(0.9)' },
-    to: { opacity: 1, transform: 'scale(1)' },
-    delay: 150,                // ← Reduzido (300ms → 150ms)
-    config: { tension: 280, friction: 20 },  // ← Mais rápido
-  })
+
+
+  if (hasAnyError) {
+    return (
+      <PageLayout maxWidth="7xl">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i className="ph-duotone ph-warning text-red-600 dark:text-red-400" style={{ fontSize: '48px' }}></i>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              Erro ao carregar dashboard
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Tente recarregar a página ou entre em contato com o suporte.
+            </p>
+          </div>
+        </div>
+      </PageLayout>
+    )
+  }
 
   return (
     <PageLayout maxWidth="7xl">
-      <animated.div style={pageAnimation}>
+      <animated.div style={pageAnimation} className="space-y-8">
+        
+        {/* Welcome Header */}
+        <animated.div style={sectionsTrail[0]}>
+          <WelcomeHeader />
+        </animated.div>
 
-        {/* Hero Section */}
-        <div className="relative overflow-hidden">
-          <div className="pt-6 sm:pt-8 lg:pt-12 pb-6 sm:pb-8">
-          <animated.div
-            style={heroAnimation}
-            className="text-center relative"
-          >
-            <div className="absolute inset-0 flex items-center justify-center opacity-5">
-            </div>
-            <div className="relative z-10">
-              <h1 data-tour="welcome" className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6 leading-tight">
-                Bem-vindo ao{' '}
-                <span className="text-gray-800 dark:text-gray-200">
-                  Valorize!
-                </span>
-                <span className="ml-1 sm:ml-2 text-2xl sm:text-3xl lg:text-4xl">🎉</span>
-              </h1>
-              <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed px-2 sm:px-0">
-                Sua plataforma de cultura e engajamento empresarial. 
-                Transforme o ambiente de trabalho com reconhecimento, recompensas e conexão real.
-              </p>
-            </div>
-          </animated.div>
-        </div>
-      </div>
-
-        {/* Elogios CTA Section - Moved to top */}
-        <animated.div style={featuresAnimation} className="mb-6 sm:mb-8 lg:mb-12">
-        <div className="bg-[#2a2a2a] dark:bg-[#1f1f1f] rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-center shadow-2xl border border-neutral-700 dark:border-neutral-800">
-          <div className="max-w-3xl mx-auto">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-neutral-800/50 border border-neutral-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
-              <span className="text-3xl sm:text-4xl">✨</span>
-            </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4">
-              Sistema de Elogios
-            </h3>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-300 mb-6 sm:mb-8 leading-relaxed px-2 sm:px-0">
-              Reconheça seus colegas, compartilhe valores da empresa e fortaleça a cultura organizacional. 
-              Cada elogio conta pontos e fortalece os laços da equipe.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-              <button 
-                onClick={() => navigate({ to: '/elogios' })}
-                className="bg-secondary-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-bold text-base sm:text-lg hover:bg-secondary-700 shadow-lg hover:shadow-xl hover:shadow-secondary-500/20 transition-all duration-200"
-              >
-                📝 Enviar Elogio
-              </button>
-              <button 
-                onClick={() => navigate({ to: '/elogios' })}
-                className="bg-neutral-800 text-white border border-neutral-600 px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-bold text-base sm:text-lg hover:bg-neutral-700 shadow-lg hover:shadow-xl transition-all duration-200"
-              >
-                👀 Ver Feed
-              </button>
-            </div>
-          </div>
-        </div>
-      </animated.div>
-
-        {/* Stats Cards */}
-        <div className="mb-6 sm:mb-8 lg:mb-12">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-          {statsTrail.map((style, index) => {
-            const card = statsCards[index]
-            return (
-              <animated.div 
-                key={index}
-                style={style}
-                className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200/50 dark:border-neutral-700/50 shadow-lg hover:shadow-xl"
-              >
-                <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 sm:gap-0">
-                  <div className="text-center sm:text-left">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">{card.title}</p>
-                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{card.value}</p>
+        {/* Ações Rápidas */}
+        <animated.div style={sectionsTrail[1]} className="relative z-30">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Enviar Elogio - Com Saldo e Busca */}
+            <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 transition-all hover:shadow-xl relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 w-14 h-14 bg-gray-100 dark:bg-[#3a3a3a] rounded-xl flex items-center justify-center shadow-lg">
+                    <i className="ph-duotone ph-paper-plane-tilt text-gray-700 dark:text-green-600" style={{ fontSize: '28px' }}></i>
                   </div>
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 ${card.color} rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg`}>
-                    <span className="text-lg sm:text-xl lg:text-2xl">{card.icon}</span>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    Enviar Elogio
+                  </h3>
+                </div>
+                
+                {/* Saldo Display */}
+                <div className="text-right">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Seu saldo</div>
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                    {balance.complimentBalance}
                   </div>
                 </div>
-              </animated.div>
-            )
-          })}
-        </div>
-      </div>
-
-        {/* Main Features */}
-        <animated.div style={featuresAnimation} className="mb-6 sm:mb-8 lg:mb-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-          <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-gray-200/50 dark:border-neutral-700/50 shadow-lg hover:shadow-xl group sm:col-span-2 lg:col-span-1">
-            <div className="text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#3a3a3a] dark:bg-[#333333] rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-xl">
-                <span className="text-3xl sm:text-4xl">🏆</span>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">Conquistas</h3>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed mb-4 sm:mb-6">
-                Acompanhe suas conquistas e marcos alcançados na empresa. 
-                Cada meta atingida é uma vitória celebrada.
+              
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed text-sm">
+                Reconheça o trabalho incrível de um colega e fortaleça a cultura da empresa
               </p>
-              <div className="flex justify-center">
-                <button className="bg-[#2a2a2a] text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:bg-[#353535] shadow-lg hover:shadow-xl transition-all duration-200">
-                  Ver Conquistas
-                </button>
+              
+              {/* Search Field */}
+              <div className="relative mb-4">
+                <input
+                  type="text"
+                  placeholder="Buscar colega para elogiar..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-3 pl-10 bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-neutral-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 transition-all"
+                />
+                <i className="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" style={{ fontSize: '18px' }}></i>
+                
+                {/* Search Results Dropdown */}
+                {searchQuery && filteredUsers.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-neutral-600 rounded-xl shadow-xl max-h-60 overflow-y-auto z-[9999]">
+                    {filteredUsers.map((user) => (
+                      <div
+                        key={user.id}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          // Navigate to praise page with user pre-selected
+                          navigate({ 
+                            to: '/elogios/novo',
+                            search: { userId: user.id },
+                          })
+                        }}
+                        className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] cursor-pointer transition-colors border-b border-gray-200 dark:border-neutral-700 last:border-b-0 flex items-center gap-3"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-[#3a3a3a] flex items-center justify-center flex-shrink-0">
+                          {user.avatar ? (
+                            <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
+                          ) : (
+                            <span className="text-sm font-semibold text-gray-600 dark:text-gray-300">
+                              {user.name.charAt(0).toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                            {user.name}
+                          </div>
+                          {user.department && (
+                            <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                              {user.department}
+                            </div>
+                          )}
+                        </div>
+                        <i className="ph-bold ph-arrow-right text-gray-400 dark:text-gray-500" style={{ fontSize: '16px' }}></i>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {/* No Results */}
+                {searchQuery && filteredUsers.length === 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-neutral-600 rounded-xl shadow-xl p-4 z-[9999]">
+                    <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+                      Nenhum colega encontrado
+                    </div>
+                  </div>
+                )}
               </div>
+              
+              <button
+                onClick={() => navigate({ to: '/elogios/novo' })}
+                className="w-full flex items-center justify-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                Ou começar sem seleção
+                <i className="ph-bold ph-arrow-right" style={{ fontSize: '16px' }}></i>
+              </button>
+            </div>
+
+            {/* Explorar Prêmios - Com Thumbnails */}
+            <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 transition-all hover:shadow-xl">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex-shrink-0 w-14 h-14 bg-gray-100 dark:bg-[#3a3a3a] rounded-xl flex items-center justify-center shadow-lg">
+                  <i className="ph-duotone ph-gift text-gray-700 dark:text-red-400" style={{ fontSize: '28px' }}></i>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Explorar Prêmios
+                </h3>
+              </div>
+              
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Novidades na loja! Confira os prêmios adicionados recentemente
+              </p>
+              
+              {/* Prize Thumbnails */}
+              {prizesData && prizesData.prizes.length > 0 ? (
+                <div className="grid grid-cols-5 gap-2 mb-4">
+                  {prizesData.prizes.slice(0, 5).map((prize) => (
+                    <div
+                      key={prize.id}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigate({ to: `/prizes/${prize.id}` })
+                      }}
+                      className="aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-neutral-700 hover:border-gray-400 dark:hover:border-neutral-500 cursor-pointer transition-all hover:scale-105 group/prize"
+                    >
+                      {prize.images && prize.images.length > 0 ? (
+                        <img
+                          src={prize.images[0]}
+                          alt={prize.name}
+                          className="w-full h-full object-cover"
+                          title={prize.name}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-100 dark:bg-[#3a3a3a] flex items-center justify-center">
+                          <i className="ph-duotone ph-gift text-gray-400 dark:text-gray-600" style={{ fontSize: '20px' }}></i>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="h-20 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm mb-4">
+                  Carregando prêmios...
+                </div>
+              )}
+              
+              <button
+                onClick={() => navigate({ to: '/prizes' })}
+                className="w-full flex items-center justify-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                Ver todos os prêmios
+                <i className="ph-bold ph-arrow-right" style={{ fontSize: '16px' }}></i>
+              </button>
             </div>
           </div>
+        </animated.div>
 
-          <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-gray-200/50 dark:border-neutral-700/50 shadow-lg hover:shadow-xl group">
-            <div className="text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-secondary-600 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-xl shadow-secondary-500/20">
-                <span className="text-3xl sm:text-4xl">🎁</span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">Recompensas</h3>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed mb-4 sm:mb-6">
-                Resgate prêmios incríveis com seus pontos acumulados. 
-                De vales-presente a experiências únicas.
-              </p>
-              <div className="flex justify-center">
-                <button
-                  onClick={() => navigate({ to: '/prizes' })}
-                  className="bg-secondary-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:bg-secondary-700 shadow-lg hover:shadow-xl hover:shadow-secondary-500/20 transition-all duration-200">
-                  Explorar Loja
-                </button>
-              </div>
+        {/* Notícias da Empresa */}
+        {news.length > 0 && (
+          <animated.div style={sectionsTrail[2]}>
+            <SectionHeader
+              title="Notícias da Empresa"
+              icon={<i className="ph-duotone ph-newspaper" style={{ fontSize: '24px' }}></i>}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              {news.slice(0, 4).map((item) => (
+                <NewsCard key={item.id} news={item} />
+              ))}
             </div>
-          </div>
+          </animated.div>
+        )}
 
-          <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-gray-200/50 dark:border-neutral-700/50 shadow-lg hover:shadow-xl group sm:col-span-2 lg:col-span-1">
-            <div className="text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#323232] dark:bg-[#2a2a2a] rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-xl">
-                <span className="text-3xl sm:text-4xl">📊</span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">Analytics</h3>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed mb-4 sm:mb-6">
-                Veja suas métricas de engajamento e evolução cultural. 
-                Dados que mostram seu crescimento profissional.
-              </p>
-              <div className="flex justify-center">
-                <button className="bg-[#353535] text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:bg-[#404040] shadow-lg hover:shadow-xl transition-all duration-200">
-                  Ver Relatórios  
-                </button>
-              </div>
+        {/* Eventos Próximos */}
+        {events.length > 0 && (
+          <animated.div style={sectionsTrail[3]}>
+            <SectionHeader
+              title="Próximos Eventos"
+              icon={<i className="ph-duotone ph-calendar-blank" style={{ fontSize: '24px' }}></i>}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+              {events.slice(0, 3).map((item) => (
+                <EventCard key={item.id} event={item} />
+              ))}
             </div>
+          </animated.div>
+        )}
+
+        {/* Cursos e Treinamentos */}
+        <animated.div style={sectionsTrail[4]}>
+          <SectionHeader
+            title="Cursos e Treinamentos"
+            icon={<i className="ph-duotone ph-graduation-cap" style={{ fontSize: '24px' }}></i>}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+            {courses.map((course) => (
+              <div
+                key={course.id}
+                className="group bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 transition-all hover:shadow-xl cursor-pointer"
+              >
+                {/* Thumbnail */}
+                <div className="relative h-40 overflow-hidden">
+                  <img
+                    src={course.thumbnail}
+                    alt={course.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="px-3 py-1 bg-gray-900/80 dark:bg-gray-100/90 backdrop-blur-sm text-white dark:text-gray-900 text-xs font-semibold rounded-full">
+                      {course.type}
+                    </span>
+                  </div>
+                  {course.progress > 0 && (
+                    <div className="absolute top-3 right-3">
+                      <span className="px-3 py-1 bg-blue-600/90 backdrop-blur-sm text-white text-xs font-semibold rounded-full">
+                        {course.progress}%
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="px-2 py-1 bg-gray-100 dark:bg-[#3a3a3a] text-gray-700 dark:text-gray-300 text-xs font-medium rounded">
+                      {course.category}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                      <i className="ph-bold ph-clock" style={{ fontSize: '14px' }}></i>
+                      {course.duration}
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors">
+                    {course.title}
+                  </h3>
+
+                  {/* Progress Bar */}
+                  {course.progress > 0 && (
+                    <div className="space-y-1">
+                      <div className="w-full bg-gray-200 dark:bg-[#3a3a3a] rounded-full h-1.5 overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-300"
+                          style={{ width: `${course.progress}%` }}
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {course.progress === 100 ? 'Concluído' : 'Em progresso'}
+                      </p>
+                    </div>
+                  )}
+
+                  {course.progress === 0 && (
+                    <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-[#3a3a3a] text-gray-700 dark:text-gray-200 font-semibold text-sm rounded-lg hover:bg-gray-200 dark:hover:bg-[#4a4a4a] transition-colors">
+                      Começar agora
+                      <i className="ph-bold ph-arrow-right" style={{ fontSize: '16px' }}></i>
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
         </animated.div>
 
       </animated.div>
