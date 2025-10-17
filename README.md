@@ -21,22 +21,24 @@ Um SaaS B2B focado em cultura e engajamento empresarial, com possibilidade de re
 ## 📦 Instalação
 
 1. Clone o repositório:
+
 ```bash
 git clone <repository-url>
 cd valorize-ui
 ```
 
-2. Instale as dependências:
+1. Instale as dependências:
+
 ```bash
 npm install
 ```
 
-3. Inicie o servidor de desenvolvimento:
+1. Inicie o servidor de desenvolvimento:
 ```bash
 npm run dev
 ```
 
-4. Acesse a aplicação em: http://localhost:3000
+1. Acesse a aplicação em: http://localhost:3000
 
 ## 🔐 Como usar
 
@@ -81,22 +83,36 @@ A aplicação utiliza TailwindCSS com uma paleta de cores focada em:
 - `npm run preview` - Visualiza o build de produção
 - `npm run lint` - Executa o linter
 
-## 🎯 Próximos Passos
+## 🚀 Deploy
 
-Para tornar esta aplicação completa, considere implementar:
+Este projeto está pronto para deploy no **Google Cloud Run**.
 
-1. **Backend Real**: Integração com API de autenticação
-2. **Gestão de Estado**: Implementação completa com React Query
-3. **Funcionalidades Core**:
-   - Sistema de pontos e conquistas
-   - Catálogo de recompensas
-   - Dashboard de métricas
-   - Perfil de usuário
-4. **Recursos Avançados**:
-   - Notificações em tempo real
-   - Sistema de gamificação
-   - Relatórios e analytics
-   - Integração com sistemas HR
+### Deploy Rápido
+
+```bash
+# Configure seu projeto GCP
+gcloud config set project SEU-PROJECT-ID
+
+# Deploy dashboard
+./scripts/deploy-dashboard.sh
+
+# Deploy landing page
+./scripts/deploy-landing.sh
+```
+
+### Documentação Completa
+
+- 📖 **[Guia de Deploy Completo](docs/deployment/README.md)** - Instruções detalhadas
+- ⚡ **[Quick Start](docs/deployment/quick-start.md)** - Deploy em 5 minutos
+- 🔧 **[Troubleshooting](docs/deployment/troubleshooting.md)** - Solução de problemas
+
+### CI/CD Automático
+
+Configure deploy automático com GitHub + Cloud Build:
+
+```bash
+./scripts/setup-cicd.sh
+```
 
 ## 📝 Licença
 

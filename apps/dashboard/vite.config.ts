@@ -35,7 +35,7 @@ export default defineConfig({
       deleteOriginFile: false,
     }),
   ],
-
+  base: './',  // Base public path - ensures assets load correctly in nested routes
   // ============================
   // DEVELOPMENT SERVER CONFIG
   // ============================
