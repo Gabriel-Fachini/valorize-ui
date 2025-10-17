@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSpring, animated, useSpringRef, useChain } from '@react-spring/web'
+import { useSpring, animated, config } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 
 interface ImageCarouselProps {
@@ -9,263 +9,364 @@ interface ImageCarouselProps {
 
 export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title }) => {
   const [currentIndex, setCurrentIndex] = React.useState(0)
-  const [isFullscreen, setIsFullscreen] = React.useState(false)
+  const [isModalOpen, setIsModalOpen] = React.useState(false)
+  const [zoom, setZoom] = React.useState(1)
+  const [isDragging, setIsDragging] = React.useState(false)
 
-  const slideRef = useSpringRef()
+  // Main carousel slide animation
   const slideSpring = useSpring({
-    ref: slideRef,
     transform: `translateX(-${currentIndex * 100}%)`,
-    config: { tension: 280, friction: 60 },
+    config: config.gentle,
   })
 
-  const scaleRef = useSpringRef()
-  const scaleSpring = useSpring({
-    ref: scaleRef,
-    scale: isFullscreen ? 1.1 : 1,
-    config: { tension: 300, friction: 30 },
+  // Modal backdrop animation
+  const backdropSpring = useSpring({
+    opacity: isModalOpen ? 1 : 0,
+    config: config.stiff,
   })
 
-  useChain([slideRef, scaleRef], [0, 0.1])
-
-  const bind = useDrag(({ direction: [xDir], distance, cancel }) => {
-    const dist = Math.sqrt(distance[0] ** 2 + distance[1] ** 2)
-    if (dist > 50) {
-      cancel()
-      if (xDir > 0 && currentIndex > 0) {
-        setCurrentIndex(prev => prev - 1)
-      } else if (xDir < 0 && currentIndex < images.length - 1) {
-        setCurrentIndex(prev => prev + 1)
-      }
-    }
+  // Modal content animation
+  const modalSpring = useSpring({
+    transform: isModalOpen ? 'scale(1)' : 'scale(0.95)',
+    opacity: isModalOpen ? 1 : 0,
+    config: config.gentle,
   })
 
-  const goToSlide = (index: number) => {
+  // Zoom animation
+  const zoomSpring = useSpring({
+    scale: zoom,
+    config: config.wobbly,
+  })
+
+  // Memoized handlers for stable references
+  const goToSlide = React.useCallback((index: number) => {
     setCurrentIndex(index)
-  }
+    setZoom(1)
+  }, [])
 
-  const goToPrevious = () => {
+  const goToPrevious = React.useCallback(() => {
     setCurrentIndex(prev => (prev > 0 ? prev - 1 : images.length - 1))
-  }
+    setZoom(1)
+  }, [images.length])
 
-  const goToNext = () => {
+  const goToNext = React.useCallback(() => {
     setCurrentIndex(prev => (prev < images.length - 1 ? prev + 1 : 0))
-  }
+    setZoom(1)
+  }, [images.length])
 
-  const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen)
-  }
+  const handleZoomIn = React.useCallback(() => {
+    setZoom(prev => Math.min(prev + 0.5, 3))
+  }, [])
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') goToPrevious()
-    if (e.key === 'ArrowRight') goToNext()
-    if (e.key === 'Escape' && isFullscreen) setIsFullscreen(false)
-  }
+  const handleZoomOut = React.useCallback(() => {
+    setZoom(prev => Math.max(prev - 0.5, 1))
+  }, [])
 
+  const resetZoom = React.useCallback(() => {
+    setZoom(1)
+  }, [])
+
+  const openModal = React.useCallback(() => {
+    setIsModalOpen(true)
+  }, [])
+
+  const closeModal = React.useCallback(() => {
+    setIsModalOpen(false)
+    setZoom(1)
+  }, [])
+
+  // Body overflow management - proper cleanup
   React.useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isModalOpen])
+
+  // Drag gesture for carousel
+  // Note: useDrag callback has stable references via useCallback above
+  const bind = useDrag(
+    ({ direction: [xDir], distance, down }) => {
+      setIsDragging(down)
+      if (!down && distance[0] > 50) {
+        if (xDir > 0) {
+          goToPrevious()
+        } else if (xDir < 0) {
+          goToNext()
+        }
+      }
+    },
+    {
+      axis: 'x',
+      filterTaps: true,
+    },
+  )
+
+  // Keyboard navigation - now with proper dependencies
+  React.useEffect(() => {
+    if (!isModalOpen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') goToPrevious()
+      if (e.key === 'ArrowRight') goToNext()
+      if (e.key === 'Escape') closeModal()
+      if (e.key === '+' || e.key === '=') handleZoomIn()
+      if (e.key === '-') handleZoomOut()
+      if (e.key === '0') resetZoom()
+    }
+
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [currentIndex, isFullscreen])
+  }, [isModalOpen, goToPrevious, goToNext, closeModal, handleZoomIn, handleZoomOut, resetZoom])
+
+  // Early return for empty images
+  if (!images || images.length === 0) {
+    return (
+      <div className="aspect-[4/3] flex items-center justify-center rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl">
+        <p className="text-gray-500 dark:text-gray-400">Nenhuma imagem disponível</p>
+      </div>
+    )
+  }
 
   return (
     <>
-      <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-xl">
+      {/* Main Carousel Preview */}
+      <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl">
         <animated.div
           {...bind()}
           style={slideSpring}
-          className="flex h-full touch-pan-y cursor-grab active:cursor-grabbing"
+          className={`flex h-full ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
         >
           {images.map((image, index) => (
             <div
               key={index}
               className="relative h-full w-full flex-shrink-0"
+              onClick={openModal}
             >
-              <animated.img
-                style={scaleSpring}
+              <img
                 src={image}
                 alt={`${title} - Imagem ${index + 1}`}
                 className="h-full w-full object-contain"
                 loading={index === 0 ? 'eager' : 'lazy'}
-                onClick={toggleFullscreen}
               />
             </div>
           ))}
         </animated.div>
 
+        {/* Navigation Arrows */}
         {images.length > 1 && (
           <>
             <button
               onClick={goToPrevious}
-              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-md transition-all hover:bg-black/70 group-hover:opacity-100 opacity-0"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/60 dark:bg-white/10 p-2 sm:p-3 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 hover:bg-black/80 dark:hover:bg-white/20 transition-all"
               aria-label="Imagem anterior"
+              type="button"
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
+              <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
 
             <button
               onClick={goToNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-md transition-all hover:bg-black/70 group-hover:opacity-100 opacity-0"
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/60 dark:bg-white/10 p-2 sm:p-3 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 hover:bg-black/80 dark:hover:bg-white/20 transition-all"
               aria-label="Próxima imagem"
+              type="button"
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
+              <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
               </svg>
             </button>
-
-            <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-              {images.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`h-2 transition-all ${
-                    currentIndex === index
-                      ? 'w-8 bg-white'
-                      : 'w-2 bg-white/50 hover:bg-white/75'
-                  } rounded-full`}
-                  aria-label={`Ir para imagem ${index + 1}`}
-                />
-              ))}
-            </div>
           </>
         )}
 
+        {/* Expand Button */}
         <button
-          onClick={toggleFullscreen}
-          className="absolute right-4 top-4 rounded-full bg-black/50 p-2 text-white backdrop-blur-md transition-all hover:bg-black/70 group-hover:opacity-100 opacity-0"
-          aria-label="Tela cheia"
+          onClick={openModal}
+          className="absolute right-3 top-3 rounded-full bg-black/60 dark:bg-white/10 p-2 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 hover:bg-black/80 dark:hover:bg-white/20 transition-all"
+          aria-label="Ver em tela cheia"
+          type="button"
         >
-          <svg
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-            />
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
           </svg>
         </button>
 
-        <div className="absolute left-4 top-4 rounded-full bg-black/50 px-3 py-1 text-sm text-white backdrop-blur-md">
+        {/* Image Counter */}
+        <div className="absolute left-3 top-3 rounded-full bg-black/60 dark:bg-white/10 px-3 py-1.5 text-xs sm:text-sm font-medium text-white backdrop-blur-md">
           {currentIndex + 1} / {images.length}
         </div>
+
+        {/* Dot Indicators */}
+        {images.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`h-2 rounded-full transition-all ${
+                  currentIndex === index
+                    ? 'w-8 bg-white'
+                    : 'w-2 bg-white/50 hover:bg-white/75'
+                }`}
+                aria-label={`Ir para imagem ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {isFullscreen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-2xl"
-          onClick={() => setIsFullscreen(false)}
+      {/* Full Screen Modal */}
+      {isModalOpen && (
+        <animated.div
+          style={backdropSpring}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/90 dark:bg-black/90 backdrop-blur-md"
+          onClick={closeModal}
         >
-          <div
-            className="relative max-h-[90vh] max-w-[90vw]"
-            onClick={e => e.stopPropagation()}
+          <animated.div
+            style={modalSpring}
+            className="relative h-full w-full flex"
+            onClick={(e) => e.stopPropagation()}
           >
-            <animated.div
-              {...bind()}
-              style={slideSpring}
-              className="flex h-full"
-            >
-              {images.map((image, index) => (
-                <div
-                  key={index}
-                  className="relative flex h-full w-full flex-shrink-0 items-center justify-center"
-                >
-                  <img
-                    src={image}
-                    alt={`${title} - Imagem ${index + 1}`}
-                    className="max-h-[90vh] max-w-[90vw] object-contain"
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                  />
-                </div>
-              ))}
-            </animated.div>
+            {/* Thumbnail Sidebar */}
+            {images.length > 1 && (
+              <div className="hidden md:flex flex-col gap-3 p-6 overflow-y-auto max-h-screen w-32 bg-white/10 dark:bg-black/30 backdrop-blur-lg border-r border-white/10">
+                {images.map((image, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`relative aspect-square overflow-hidden rounded-lg flex-shrink-0 border-2 transition-all ${
+                      currentIndex === index
+                        ? 'border-white ring-2 ring-white/50'
+                        : 'border-white/30 hover:border-white/60'
+                    }`}
+                    aria-label={`Ver imagem ${index + 1}`}
+                  >
+                    <img
+                      src={image}
+                      alt={`Miniatura ${index + 1}`}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                    {currentIndex === index && (
+                      <div className="absolute inset-0 bg-white/20" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
 
+            {/* Main Image Container */}
+            <div className="flex-1 flex items-center justify-center p-4 sm:p-8 overflow-hidden">
+              <div className="relative max-w-full max-h-full">
+                <animated.img
+                  style={zoomSpring}
+                  src={images[currentIndex]}
+                  alt={`${title} - Imagem ${currentIndex + 1}`}
+                  className="max-h-[85vh] max-w-full object-contain"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            </div>
+
+            {/* Top Controls Bar */}
+            <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4 sm:p-6 bg-gradient-to-b from-gray-900/80 dark:from-black/80 to-transparent">
+              <div className="flex items-center gap-3">
+                <div className="rounded-lg bg-white/20 dark:bg-white/10 backdrop-blur-md px-4 py-2 text-sm font-semibold text-white shadow-lg">
+                  {currentIndex + 1} / {images.length}
+                </div>
+                <div className="hidden sm:block rounded-lg bg-white/10 dark:bg-white/5 backdrop-blur-md px-4 py-2 text-sm text-white shadow-lg">
+                  Use ← → para navegar
+                </div>
+              </div>
+
+              <button
+                onClick={closeModal}
+                className="rounded-lg bg-white/20 dark:bg-white/10 backdrop-blur-md p-2.5 text-white hover:bg-white/30 dark:hover:bg-white/20 transition-all shadow-lg"
+                aria-label="Fechar visualizador"
+                type="button"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Bottom Zoom Controls */}
+            <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center p-6 bg-gradient-to-t from-gray-900/80 dark:from-black/80 to-transparent">
+              <div className="flex items-center gap-2 rounded-lg bg-white/20 dark:bg-white/10 backdrop-blur-md p-2 shadow-lg">
+                <button
+                  onClick={handleZoomOut}
+                  disabled={zoom <= 1}
+                  className="rounded-md p-2 text-white hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  aria-label="Diminuir zoom"
+                  type="button"
+                >
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
+                  </svg>
+                </button>
+
+                <div className="px-3 text-sm font-medium text-white min-w-[60px] text-center">
+                  {Math.round(zoom * 100)}%
+                </div>
+
+                <button
+                  onClick={handleZoomIn}
+                  disabled={zoom >= 3}
+                  className="rounded-md p-2 text-white hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  aria-label="Aumentar zoom"
+                  type="button"
+                >
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                  </svg>
+                </button>
+
+                {zoom > 1 && (
+                  <button
+                    onClick={resetZoom}
+                    className="ml-2 rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                    aria-label="Resetar zoom"
+                    type="button"
+                  >
+                    Resetar
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Navigation Arrows in Modal */}
             {images.length > 1 && (
               <>
                 <button
                   onClick={goToPrevious}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white backdrop-blur-md transition-all hover:bg-white/20"
+                  className="absolute left-4 md:left-36 top-1/2 -translate-y-1/2 rounded-full bg-white/20 dark:bg-white/10 backdrop-blur-md p-3 sm:p-4 text-white hover:bg-white/30 dark:hover:bg-white/20 transition-all shadow-lg"
+                  aria-label="Imagem anterior"
+                  type="button"
                 >
-                  <svg
-                    className="h-8 w-8"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
+                  <svg className="h-6 w-6 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
 
                 <button
                   onClick={goToNext}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white backdrop-blur-md transition-all hover:bg-white/20"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/20 dark:bg-white/10 backdrop-blur-md p-3 sm:p-4 text-white hover:bg-white/30 dark:hover:bg-white/20 transition-all shadow-lg"
+                  aria-label="Próxima imagem"
+                  type="button"
                 >
-                  <svg
-                    className="h-8 w-8"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
+                  <svg className="h-6 w-6 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
               </>
             )}
-
-            <button
-              onClick={() => setIsFullscreen(false)}
-              className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white backdrop-blur-md transition-all hover:bg-white/20"
-            >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
+          </animated.div>
+        </animated.div>
       )}
     </>
   )

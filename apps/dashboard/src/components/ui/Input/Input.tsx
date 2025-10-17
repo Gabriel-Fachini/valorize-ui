@@ -26,7 +26,7 @@ const helperStyles = {
 }
 
 const inputDiv = [
-  'absolute bg-gray-800',
+  'absolute bg-[#262626]',
   'w-full px-4 py-3 rounded-lg border',
   'relative z-10 text-white',
 ].join(' ')

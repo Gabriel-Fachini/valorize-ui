@@ -4,6 +4,8 @@ import { usePrizeById } from '@/hooks/usePrizes'
 import { ImageCarousel } from '@/components/prizes/ImageCarousel'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { useSpring, animated, useTrail } from '@react-spring/web'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 export const PrizeDetailsPage: FC = () => {
   const { prizeId } = useParams({ strict: false })
@@ -56,14 +58,14 @@ export const PrizeDetailsPage: FC = () => {
     return (
       <PageLayout maxWidth="6xl">
         <div className="mx-auto max-w-6xl animate-pulse">
-          <div className="mb-8 h-8 w-32 rounded bg-gray-200 dark:bg-gray-800" />
+          <div className="mb-8 h-8 w-32 rounded bg-white/50 dark:bg-white/10" />
           <div className="grid gap-8 lg:grid-cols-2">
-            <div className="aspect-[4/3] rounded-2xl bg-gray-200 dark:bg-gray-800" />
+            <div className="aspect-[4/3] rounded-2xl bg-white/50 dark:bg-white/10" />
             <div className="space-y-4">
-              <div className="h-8 w-3/4 rounded bg-gray-200 dark:bg-gray-800" />
-              <div className="h-4 w-1/2 rounded bg-gray-200 dark:bg-gray-800" />
-              <div className="h-24 rounded bg-gray-200 dark:bg-gray-800" />
-              <div className="h-12 rounded bg-gray-200 dark:bg-gray-800" />
+              <div className="h-8 w-3/4 rounded bg-white/50 dark:bg-white/10" />
+              <div className="h-4 w-1/2 rounded bg-white/50 dark:bg-white/10" />
+              <div className="h-24 rounded bg-white/50 dark:bg-white/10" />
+              <div className="h-12 rounded bg-white/50 dark:bg-white/10" />
             </div>
           </div>
         </div>
@@ -77,41 +79,26 @@ export const PrizeDetailsPage: FC = () => {
         <div className="flex min-h-[60vh] items-center justify-center p-4">
         <div className="rounded-2xl border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 p-8 text-center backdrop-blur-xl">
           <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">Prêmio não encontrado</h2>
-          <button
+          <Button
             onClick={() => navigate({ to: '/prizes' })}
-            className="mt-4 rounded-lg bg-purple-600 px-4 py-2 text-white hover:bg-purple-700"
+            className="mt-4"
           >
             Voltar para a loja
-          </button>
+          </Button>
         </div>
         </div>
       </PageLayout>
     )
   }
 
-  const getCategoryColor = (category: string) => {
-    const colors: Record<string, string> = {
-      eletronicos: 'from-blue-500/20 to-cyan-500/20',
-      electronics: 'from-blue-500/20 to-cyan-500/20',
-      casa: 'from-amber-500/20 to-orange-500/20',
-      'home-office': 'from-amber-500/20 to-orange-500/20',
-      esporte: 'from-green-500/20 to-emerald-500/20',
-      livros: 'from-purple-500/20 to-pink-500/20',
-      'vale-compras': 'from-red-500/20 to-rose-500/20',
-      'gift-cards': 'from-red-500/20 to-rose-500/20',
-      experiencias: 'from-indigo-500/20 to-purple-500/20',
-      experiences: 'from-indigo-500/20 to-purple-500/20',
-    }
-    return colors[category] || 'from-gray-500/20 to-gray-600/20'
-  }
-
   return (
     <PageLayout maxWidth="6xl">
       <div className="relative">
         <animated.div style={fadeIn} className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-          <button
+          <Button
             onClick={() => navigate({ to: '/prizes' })}
-            className="mb-6 flex items-center gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2 text-sm text-gray-700 dark:text-white backdrop-blur-xl transition-all hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/10"
+            variant="ghost"
+            className="mb-6 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/5"
           >
             <svg
               className="h-4 w-4"
@@ -127,7 +114,7 @@ export const PrizeDetailsPage: FC = () => {
               />
             </svg>
             Voltar
-          </button>
+          </Button>
 
           <div className="grid gap-8 lg:grid-cols-2">
             <div>
@@ -163,9 +150,12 @@ export const PrizeDetailsPage: FC = () => {
                 </div>
 
                 <div className="mb-4 flex items-center gap-3">
-                  <span className={`rounded-full bg-gradient-to-r ${getCategoryColor(prize.category)} px-4 py-1.5 text-sm font-medium text-white`}>
+                  <Badge 
+                    variant="outline" 
+                    className="rounded-full bg-gray-100/50 dark:bg-gray-800/30 border-gray-200/60 dark:border-gray-700/50 text-gray-700 dark:text-gray-300 px-4 py-1.5 text-sm font-medium backdrop-blur-sm"
+                  >
                     {prize.category}
-                  </span>
+                  </Badge>
                   {prize.brand && (
                     <span className="text-sm text-gray-600 dark:text-gray-400">por {prize.brand}</span>
                   )}
@@ -193,21 +183,23 @@ export const PrizeDetailsPage: FC = () => {
                         </label>
                         <div className="flex flex-wrap gap-2">
                           {variants.map(variant => (
-                            <button
+                            <Button
                               key={variant.id}
                               onClick={() => handleVariantChange(variant.id)}
                               disabled={variant.stock === 0}
-                              className={`rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
+                              variant="outline"
+                              size="sm"
+                              className={
                                 selectedVariantId === variant.id
-                                  ? 'border-purple-500 bg-purple-50 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300'
+                                  ? 'border-primary bg-primary/5 dark:bg-primary/10 text-primary hover:bg-primary/10 dark:hover:bg-primary/15 ring-2 ring-primary/20'
                                   : variant.stock === 0
-                                    ? 'border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
-                                    : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/10'
-                              }`}
+                                    ? 'opacity-50 cursor-not-allowed bg-gray-50 dark:bg-gray-900/20'
+                                    : 'bg-white dark:bg-gray-800/30 hover:bg-gray-50 dark:hover:bg-gray-800/50 border-gray-200 dark:border-gray-700'
+                              }
                             >
                               {variant.value}
                               {variant.stock === 0 && ' (Esgotado)'}
-                            </button>
+                            </Button>
                           ))}
                         </div>
                       </div>
@@ -216,32 +208,33 @@ export const PrizeDetailsPage: FC = () => {
                 </div>
               )}
 
-              <div className="rounded-2xl border border-purple-200 dark:border-purple-500/20 bg-gradient-to-br from-purple-50 dark:from-purple-500/10 to-indigo-50 dark:to-indigo-500/10 p-6 backdrop-blur-xl">
-                <div className="mb-4 flex items-center justify-between">
+              <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 p-6 backdrop-blur-xl">
+                <div className="mb-6 flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Valor do prêmio</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Valor do prêmio</p>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">
+                      <span className="text-4xl font-bold text-primary">
                         {prize.coinPrice.toLocaleString('pt-BR')}
                       </span>
-                      <span className="text-lg text-gray-600 dark:text-gray-300">moedas</span>
+                      <span className="text-lg font-medium text-gray-600 dark:text-gray-400">moedas</span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Estoque</p>
-                    <p className={`text-lg font-semibold ${prize.stock <= 5 ? 'text-orange-600 dark:text-orange-400' : 'text-green-600 dark:text-green-400'}`}>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Estoque</p>
+                    <p className={`text-lg font-semibold ${prize.stock <= 5 ? 'text-orange-600 dark:text-orange-400' : 'text-primary'}`}>
                       {prize.stock} {prize.stock === 1 ? 'unidade' : 'unidades'}
                     </p>
                   </div>
                 </div>
 
-                <button
+                <Button
                   onClick={handleProceedToConfirm}
                   disabled={prize.stock === 0}
-                  className="w-full rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 py-3 font-semibold text-white transition-all hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-12 rounded-xl bg-primary text-white font-semibold hover:bg-primary-600 active:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  size="lg"
                 >
                   {prize.stock === 0 ? 'Produto Esgotado' : 'Continuar para Resgate'}
-                </button>
+                </Button>
               </div>
             </div>
           </div>
