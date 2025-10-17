@@ -58,9 +58,9 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleClick}
-        className="group relative h-full cursor-pointer overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl transition-colors hover:border-gray-300 dark:hover:border-white/20 shadow-lg hover:shadow-xl flex flex-col"
+        className="group relative h-full cursor-pointer overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl hover:border-gray-300 dark:hover:border-white/20 shadow-lg hover:shadow-xl flex flex-col"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent dark:from-white/5 opacity-0 transition-opacity group-hover:opacity-100" />
 
         <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900/50 dark:to-gray-800/50">
           <img
@@ -74,30 +74,31 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
         </div>
 
         <div className="relative p-5 flex flex-col flex-grow">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="rounded-full bg-gray-100 dark:bg-white/10 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 backdrop-blur-md">
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <span className="rounded-full bg-white/80 dark:bg-white/10 border border-white/40 dark:border-white/20 px-3 py-1 text-xs font-medium text-gray-800 dark:text-white backdrop-blur-sm group-hover:bg-white dark:group-hover:bg-white/15">
               {prize.category}
             </span>
             {prize.stock <= 5 && (
-              <span className="text-xs text-orange-400">
-                Últimas {prize.stock} unidades
+              <span className="flex items-center gap-1 rounded-full bg-orange-50 dark:bg-orange-500/10 px-2 py-1 text-xs font-medium text-orange-600 dark:text-orange-400">
+                <i className="ph ph-warning-circle text-sm"></i>
+                {prize.stock} restantes
               </span>
             )}
           </div>
 
-          <h3 className="mb-2 line-clamp-2 text-lg font-semibold text-gray-900 dark:text-white transition-colors group-hover:text-green-600 dark:group-hover:text-green-500">
+          <h3 className="mb-2 line-clamp-2 text-lg font-semibold text-gray-900 dark:text-white">
             {prize.name}
           </h3>
 
-          <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
+          <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
             {prize.description}
           </p>
 
-          <div className="flex items-center gap-1 mt-auto">
-            <span className="text-2xl font-bold text-amber-600 dark:text-amber-500">
+          <div className="flex items-baseline gap-1.5 mt-auto pt-3 border-t border-gray-100 dark:border-white/5">
+            <span className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
               {prize.coinPrice.toLocaleString('pt-BR')}
             </span>
-            <span className="text-sm text-gray-600 dark:text-gray-400">moedas</span>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">moedas</span>
           </div>
         </div>
       </animated.div>

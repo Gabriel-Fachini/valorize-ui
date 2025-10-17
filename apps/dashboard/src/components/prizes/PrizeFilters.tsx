@@ -1,6 +1,14 @@
 import React from 'react'
 import { Prize, PrizeFilters as Filters } from '@/types/prize.types'
 import { useSpring, animated } from '@react-spring/web'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
 
 interface PrizeFiltersProps {
   filters: Filters
@@ -9,22 +17,22 @@ interface PrizeFiltersProps {
 }
 
 export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersChange, totalResults }) => {
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [isMoreFiltersOpen, setIsMoreFiltersOpen] = React.useState(false)
 
   const springProps = useSpring({
-    maxHeight: isOpen ? '600px' : '0px',
-    opacity: isOpen ? 1 : 0,
-    marginTop: isOpen ? '16px' : '0px',
+    maxHeight: isMoreFiltersOpen ? '400px' : '0px',
+    opacity: isMoreFiltersOpen ? 1 : 0,
+    marginTop: isMoreFiltersOpen ? '16px' : '0px',
     config: { tension: 260, friction: 30 },
   })
 
   const categories: Array<{ value: Prize['category'], label: string, icon: string }> = [
-    { value: 'eletronicos', label: 'Eletrônicos', icon: '📱' },
-    { value: 'casa', label: 'Casa', icon: '🏠' },
-    { value: 'esporte', label: 'Esporte', icon: '⚽' },
-    { value: 'livros', label: 'Livros', icon: '📚' },
-    { value: 'vale-compras', label: 'Vale Compras', icon: '🛍️' },
-    { value: 'experiencias', label: 'Experiências', icon: '✨' },
+    { value: 'eletronicos', label: 'Eletrônicos', icon: 'ph-device-mobile' },
+    { value: 'casa', label: 'Casa', icon: 'ph-house' },
+    { value: 'esporte', label: 'Esporte', icon: 'ph-soccer-ball' },
+    { value: 'livros', label: 'Livros', icon: 'ph-book' },
+    { value: 'vale-compras', label: 'Vale Compras', icon: 'ph-shopping-bag' },
+    { value: 'experiencias', label: 'Experiências', icon: 'ph-star' },
   ]
 
   const sortOptions = [
@@ -35,11 +43,11 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
   ]
 
   const priceRanges = [
-    { label: 'Até 500 moedas', min: 0, max: 500 },
-    { label: '500 - 1000 moedas', min: 500, max: 1000 },
-    { label: '1000 - 2000 moedas', min: 1000, max: 2000 },
-    { label: '2000 - 3000 moedas', min: 2000, max: 3000 },
-    { label: 'Acima de 3000 moedas', min: 3000, max: 999999 },
+    { label: 'Até 500', min: 0, max: 500 },
+    { label: '500 - 1000', min: 500, max: 1000 },
+    { label: '1000 - 2000', min: 1000, max: 2000 },
+    { label: '2000 - 3000', min: 2000, max: 3000 },
+    { label: 'Acima de 3000', min: 3000, max: 999999 },
   ]
 
   const handleCategoryChange = (category: Prize['category']) => {
@@ -49,10 +57,10 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
     })
   }
 
-  const handleSortChange = (sortBy: Filters['sortBy']) => {
+  const handleSortChange = (sortBy: string) => {
     onFiltersChange({
       ...filters,
-      sortBy,
+      sortBy: sortBy as Filters['sortBy'],
     })
   }
 
@@ -78,141 +86,189 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
     onFiltersChange({})
   }
 
+  const removeFilter = (filterKey: keyof Filters) => {
+    const newFilters = { ...filters }
+    delete newFilters[filterKey]
+    onFiltersChange(newFilters)
+  }
+
   const hasActiveFilters = !!(filters.category ?? filters.priceRange ?? filters.search)
+  const activeFilterCount = Object.keys(filters).filter(k => filters[k as keyof Filters] && k !== 'sortBy').length
+
+  const getActiveCategoryLabel = () => {
+    const cat = categories.find(c => c.value === filters.category)
+    return cat ? cat.label : filters.category
+  }
+
+  const getActiveCategoryIcon = () => {
+    const cat = categories.find(c => c.value === filters.category)
+    return cat?.icon
+  }
+
+  const getActivePriceRangeLabel = () => {
+    if (!filters.priceRange) return ''
+    const range = priceRanges.find(r => r.min === filters.priceRange?.min && r.max === filters.priceRange?.max)
+    return range ? `${range.label} moedas` : `${filters.priceRange.min} - ${filters.priceRange.max} moedas`
+  }
 
   return (
-    <div className="mb-8">
+    <div className="mb-8 space-y-4">
+      {/* Top bar: Search + Sort + Results count */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-white backdrop-blur-xl transition-all hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/10"
-          >
-            <svg
-              className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-              />
-            </svg>
-            Filtros
-            {hasActiveFilters && (
-              <span className="ml-1 rounded-full bg-purple-100 dark:bg-purple-500/20 px-2 py-0.5 text-xs text-purple-600 dark:text-purple-400">
-                {Object.keys(filters).filter(k => filters[k as keyof Filters]).length}
-              </span>
-            )}
-          </button>
-
-          {hasActiveFilters && (
-            <button
-              onClick={clearFilters}
-              className="rounded-xl border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 px-3 py-2 text-xs font-medium text-red-600 dark:text-red-400 backdrop-blur-xl transition-all hover:border-red-300 dark:hover:border-red-500/30 hover:bg-red-100 dark:hover:bg-red-500/20"
-            >
-              Limpar filtros
-            </button>
-          )}
-
-          {totalResults !== undefined && (
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              {totalResults} {totalResults === 1 ? 'prêmio' : 'prêmios'}
-            </span>
-          )}
-        </div>
-
-        <div className="relative">
+        {/* Search Input */}
+        <div className="relative flex-1 max-w-md">
           <input
             type="text"
             placeholder="Buscar prêmios..."
             value={filters.search ?? ''}
             onChange={handleSearchChange}
-            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 pl-10 text-sm text-gray-700 dark:text-white placeholder-gray-400 backdrop-blur-xl transition-all focus:border-purple-500 dark:focus:border-purple-500/50 focus:outline-none focus:ring-2 focus:ring-purple-500/20 sm:w-64"
+            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 pl-10 text-sm text-gray-700 dark:text-white placeholder-gray-400 backdrop-blur-xl transition-all focus:border-green-500 dark:focus:border-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-500/20"
           />
-          <svg
-            className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
+          <i className="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-base text-gray-400"></i>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Sort Select */}
+          <Select value={filters.sortBy ?? 'popular'} onValueChange={handleSortChange}>
+            <SelectTrigger className="w-[180px] rounded-xl border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl focus:border-green-500 focus:ring-green-500/20">
+              <i className="ph ph-sort-ascending mr-2 text-base"></i>
+              <SelectValue placeholder="Ordenar por" />
+            </SelectTrigger>
+            <SelectContent>
+              {sortOptions.map(option => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Results count */}
+          {totalResults !== undefined && (
+            <span className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+              {totalResults} {totalResults === 1 ? 'prêmio' : 'prêmios'}
+            </span>
+          )}
         </div>
       </div>
 
-      <animated.div
-        style={springProps}
-        className="overflow-hidden"
-      >
-        <div className="space-y-6 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 p-6 backdrop-blur-xl">
-          <div>
-            <h3 className="mb-3 text-sm font-semibold text-gray-700 dark:text-white">Categorias</h3>
-            <div className="flex flex-wrap gap-2">
-              {categories.map(cat => (
-                <button
-                  key={cat.value}
-                  onClick={() => handleCategoryChange(cat.value)}
-                  className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
-                    filters.category === cat.value
-                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300'
-                      : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/10'
-                  }`}
-                >
-                  <span>{cat.icon}</span>
-                  <span>{cat.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+      {/* Active Filters Chips */}
+      {hasActiveFilters && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Filtros ativos:</span>
+          
+          {filters.category && (
+            <Badge 
+              variant="secondary" 
+              className="gap-1.5 bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/20 hover:bg-green-100 dark:hover:bg-green-500/20 cursor-pointer"
+              onClick={() => removeFilter('category')}
+            >
+              {getActiveCategoryIcon() && <i className={`ph ${getActiveCategoryIcon()} text-sm`}></i>}
+              {getActiveCategoryLabel()}
+              <i className="ph ph-x text-sm"></i>
+            </Badge>
+          )}
 
-          <div>
-            <h3 className="mb-3 text-sm font-semibold text-gray-700 dark:text-white">Faixa de Preço</h3>
-            <div className="flex flex-wrap gap-2">
-              {priceRanges.map(range => (
-                <button
-                  key={range.label}
-                  onClick={() => handlePriceRangeChange(range.min, range.max)}
-                  className={`rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
-                    filters.priceRange?.min === range.min && filters.priceRange?.max === range.max
-                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300'
-                      : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/10'
-                  }`}
-                >
-                  {range.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          {filters.priceRange && (
+            <Badge 
+              variant="secondary" 
+              className="gap-1.5 bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/20 hover:bg-green-100 dark:hover:bg-green-500/20 cursor-pointer"
+              onClick={() => removeFilter('priceRange')}
+            >
+              {getActivePriceRangeLabel()}
+              <i className="ph ph-x text-sm"></i>
+            </Badge>
+          )}
 
-          <div>
-            <h3 className="mb-3 text-sm font-semibold text-gray-700 dark:text-white">Ordenar por</h3>
-            <div className="flex flex-wrap gap-2">
-              {sortOptions.map(option => (
-                <button
-                  key={option.value}
-                  onClick={() => handleSortChange(option.value as Filters['sortBy'])}
-                  className={`rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
-                    filters.sortBy === option.value
-                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300'
-                      : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/10'
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          {filters.search && (
+            <Badge 
+              variant="secondary" 
+              className="gap-1.5 bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/20 hover:bg-green-100 dark:hover:bg-green-500/20 cursor-pointer"
+              onClick={() => removeFilter('search')}
+            >
+              Busca: "{filters.search}"
+              <i className="ph ph-x text-sm"></i>
+            </Badge>
+          )}
+
+          <button
+            onClick={clearFilters}
+            className="ml-2 text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium transition-colors"
+          >
+            Limpar todos
+          </button>
         </div>
-      </animated.div>
+      )}
+
+      {/* Categories (Always Visible) */}
+      <div>
+        <h3 className="mb-3 text-sm font-semibold text-gray-700 dark:text-white flex items-center gap-2">
+          <i className="ph ph-squares-four text-base"></i>
+          Categorias
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {categories.map(cat => (
+            <button
+              key={cat.value}
+              onClick={() => handleCategoryChange(cat.value)}
+              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
+                filters.category === cat.value
+                  ? 'border-green-500 bg-green-50 dark:bg-green-500/20 text-green-700 dark:text-green-300 shadow-sm'
+                  : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/10'
+              }`}
+            >
+              <i className={`ph ${cat.icon} text-base`}></i>
+              <span>{cat.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* More Filters Toggle */}
+      <div>
+        <button
+          onClick={() => setIsMoreFiltersOpen(!isMoreFiltersOpen)}
+          className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-white transition-colors hover:text-green-600 dark:hover:text-green-400"
+        >
+          <i className={`ph ${isMoreFiltersOpen ? 'ph-caret-up' : 'ph-caret-down'} text-base transition-transform`}></i>
+          Mais filtros
+          {activeFilterCount > 0 && !hasActiveFilters && (
+            <Badge variant="secondary" className="ml-1 bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 border-green-200 dark:border-green-500/20">
+              {activeFilterCount}
+            </Badge>
+          )}
+        </button>
+
+        {/* Collapsible More Filters */}
+        <animated.div
+          style={springProps}
+          className="overflow-hidden"
+        >
+          <div className="space-y-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 p-6 backdrop-blur-xl">
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-gray-700 dark:text-white flex items-center gap-2">
+                <i className="ph ph-coins text-base"></i>
+                Faixa de Preço
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {priceRanges.map(range => (
+                  <button
+                    key={range.label}
+                    onClick={() => handlePriceRangeChange(range.min, range.max)}
+                    className={`rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
+                      filters.priceRange?.min === range.min && filters.priceRange?.max === range.max
+                        ? 'border-green-500 bg-green-50 dark:bg-green-500/20 text-green-700 dark:text-green-300 shadow-sm'
+                        : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/10'
+                    }`}
+                  >
+                    {range.label} moedas
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </animated.div>
+      </div>
     </div>
   )
 }
