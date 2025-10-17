@@ -132,7 +132,7 @@ export const AddressTab: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">Endereços salvos</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
             Gerencie seus endereços de entrega
           </p>
         </div>
@@ -151,10 +151,10 @@ export const AddressTab: React.FC = () => {
       {loading && (
         <div className="space-y-4">
           <SkeletonBase>
-            <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-gray-800 p-6 h-32" />
+            <div className="rounded-2xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-neutral-800 p-6 h-32" />
           </SkeletonBase>
           <SkeletonBase>
-            <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-gray-800 p-6 h-32" />
+            <div className="rounded-2xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-neutral-800 p-6 h-32" />
           </SkeletonBase>
         </div>
       )}
@@ -163,9 +163,9 @@ export const AddressTab: React.FC = () => {
       {!loading && !showForm && (
         <>
           {addresses.length === 0 ? (
-            <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-white/5 p-8 text-center backdrop-blur-xl">
-              <i className="ph-bold ph-map-pin text-gray-400 dark:text-gray-600 text-6xl mb-3 block"></i>
-              <p className="text-gray-600 dark:text-gray-400">
+            <div className="rounded-2xl border border-neutral-200 dark:border-white/10 bg-white/80 dark:bg-white/5 p-8 text-center backdrop-blur-xl">
+              <i className="ph-bold ph-map-pin text-neutral-400 dark:text-neutral-600 text-6xl mb-3 block"></i>
+              <p className="text-neutral-600 dark:text-neutral-400">
                 Nenhum endereço cadastrado ainda.
               </p>
               <Button
@@ -181,7 +181,7 @@ export const AddressTab: React.FC = () => {
               {addresses.map((addr) => (
                 <div
                   key={addr.id}
-                  className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-white/5 p-6 backdrop-blur-xl"
+                  className="rounded-2xl border border-neutral-200 dark:border-white/10 bg-white/80 dark:bg-white/5 p-6 backdrop-blur-xl"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                     <div className="flex-1">
@@ -193,7 +193,7 @@ export const AddressTab: React.FC = () => {
                           </Badge>
                         )}
                       </div>
-                      <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                      <div className="text-sm text-neutral-700 dark:text-neutral-300 space-y-1">
                         <p>
                           {addr.street}, {addr.number}
                           {addr.complement && ` - ${addr.complement}`}

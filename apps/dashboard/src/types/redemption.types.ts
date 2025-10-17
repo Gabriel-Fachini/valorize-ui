@@ -41,8 +41,23 @@ export interface RedemptionDetails {
   status: string
   trackingCode?: string | null
   redeemedAt: string
-  // Note: Details endpoint returns a simpler structure without nested objects
-  // The nested prize, variant, address data needs to be fetched separately if needed
+  prize: {
+    id: string
+    name: string
+    images: string[]
+    category: string
+  }
+  variant?: {
+    id: string
+    name: string
+    value: string
+  }
+  tracking?: Array<{
+    id: string
+    status: string
+    notes: string
+    createdAt: string
+  }>
 }
 
 export interface RedemptionsQuery {

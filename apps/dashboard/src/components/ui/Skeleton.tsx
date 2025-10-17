@@ -47,7 +47,7 @@ export const SkeletonText: React.FC<{
 
   return (
     <SkeletonBase>
-      <div className={`bg-gray-300 dark:bg-gray-600 rounded ${widthClasses[width]} ${heightClasses[height]} ${className}`} />
+      <div className={`bg-neutral-300 dark:bg-neutral-600 rounded ${widthClasses[width]} ${heightClasses[height]} ${className}`} />
     </SkeletonBase>
   )
 }
@@ -68,7 +68,7 @@ export const SkeletonAvatar: React.FC<{
 
   return (
     <SkeletonBase>
-      <div className={`bg-gray-300 dark:bg-gray-600 rounded-full ${sizeClasses[size]} ${className}`} />
+      <div className={`bg-neutral-300 dark:bg-neutral-600 rounded-full ${sizeClasses[size]} ${className}`} />
     </SkeletonBase>
   )
 }
@@ -78,14 +78,13 @@ export const SkeletonAvatar: React.FC<{
  */
 export const SkeletonCard: React.FC<{
   children: React.ReactNode
-  gradient?: 'purple' | 'emerald' | 'blue' | 'gray'
+  gradient?: 'green' | 'emerald' | 'neutral'
   className?: string
-}> = ({ children, gradient = 'gray', className = '' }) => {
+}> = ({ children, gradient = 'neutral', className = '' }) => {
   const gradientClasses = {
-    purple: 'bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20',
+    green: 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20',
     emerald: 'bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20',
-    blue: 'bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20',
-    gray: 'bg-gray-50 dark:bg-gray-800',
+    neutral: 'bg-neutral-50 dark:bg-neutral-800',
   }
 
   return (
@@ -119,7 +118,7 @@ export const SkeletonNavigation: React.FC<{ itemCount?: number }> = ({ itemCount
       {Array.from({ length: itemCount }).map((_, index) => (
         <div key={index} className="flex items-center gap-4 rounded-lg px-4 py-3">
           <SkeletonBase>
-            <div className="h-5 w-5 bg-gray-300 dark:bg-gray-600 rounded" />
+            <div className="h-5 w-5 bg-neutral-300 dark:bg-neutral-600 rounded" />
           </SkeletonBase>
           <SkeletonText width="md" />
         </div>

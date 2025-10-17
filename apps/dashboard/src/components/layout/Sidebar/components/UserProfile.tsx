@@ -14,8 +14,8 @@ export const UserProfile = ({
   // Skeleton loading state for collapsed sidebar
   if (collapsed && isLoading) {
     return (
-      <div className="flex justify-center py-4 border-b border-gray-800 bg-black/20">
-        <SkeletonAvatar size="lg" className="bg-gray-700" />
+      <div className="flex justify-center py-4 border-b border-neutral-800 bg-black/20">
+        <SkeletonAvatar size="lg" className="bg-neutral-700" />
       </div>
     )
   }
@@ -23,15 +23,15 @@ export const UserProfile = ({
   // Skeleton loading state for expanded sidebar
   if (isLoading) {
     return (
-      <div className="p-6 border-b border-gray-800 bg-black/20">
+      <div className="p-6 border-b border-neutral-800 bg-black/20">
         <div className="flex items-center gap-4 mb-6">
-          <SkeletonAvatar size="xl" className="bg-gray-700" />
+          <SkeletonAvatar size="xl" className="bg-neutral-700" />
           <div className="flex-1 min-w-0 space-y-2">
             <SkeletonBase>
-              <div className="h-5 w-32 bg-gray-700 rounded" />
+              <div className="h-5 w-32 bg-neutral-700 rounded" />
             </SkeletonBase>
             <SkeletonBase>
-              <div className="h-4 w-40 bg-gray-700 rounded" />
+              <div className="h-4 w-40 bg-neutral-700 rounded" />
             </SkeletonBase>
           </div>
         </div>

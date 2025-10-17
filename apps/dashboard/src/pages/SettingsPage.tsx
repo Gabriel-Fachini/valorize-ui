@@ -1,42 +1,25 @@
-import React from 'react'
+import { animated, useSpring } from '@react-spring/web'
 import { ProfileForm } from '@/components/settings/ProfileForm'
 import { PreferencesForm } from '@/components/settings/PreferencesForm'
 import { AddressTab } from '@/components/settings/AddressTab'
 import { useOnboarding } from '@/contexts/OnboardingContext'
+import { PageLayout } from '@/components/layout/PageLayout'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { usePageEntrance, useCardEntrance } from '@/hooks/useAnimations'
 
-type TabKey = 'profile' | 'preferences' | 'addresses'
-
-interface TabConfig {
-  key: TabKey
-  label: string
-  icon: string
-  description: string
-}
-
-const TABS: TabConfig[] = [
-  {
-    key: 'profile',
-    label: 'Perfil',
-    icon: '👤',
-    description: 'Gerencie suas informações pessoais',
-  },
-  {
-    key: 'preferences',
-    label: 'Preferências',
-    icon: '⚙️',
-    description: 'Personalize sua experiência',
-  },
-  {
-    key: 'addresses',
-    label: 'Endereços',
-    icon: '📍',
-    description: 'Gerencie endereços de entrega',
-  },
-]
-
-export const SettingsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = React.useState<TabKey>('profile')
+export const SettingsPage = () => {
   const { startTour, resetTour, hasCompletedOnboarding } = useOnboarding()
+
+  // Animations
+  const pageAnimation = usePageEntrance()
+  const cardAnimation = useCardEntrance()
+
+  const headerSpring = useSpring({
+    from: { opacity: 0, transform: 'translateY(-20px)' },
+    to: { opacity: 1, transform: 'translateY(0px)' },
+    config: { tension: 280, friction: 60 },
+  })
 
   const handleStartTour = () => {
     if (hasCompletedOnboarding) {
@@ -45,136 +28,154 @@ export const SettingsPage: React.FC = () => {
     startTour()
   }
 
-  const activeTabConfig = TABS.find((tab) => tab.key === activeTab)
-
   return (
-    <main
-      id="main-content"
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page Header */}
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+    <PageLayout maxWidth="7xl">
+      <animated.div style={pageAnimation}>
+        {/* Header */}
+        <animated.div style={headerSpring} className="mb-8">
+          <h1 className="mb-2 text-4xl font-bold text-gray-900 dark:text-white">
             Configurações
           </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-lg text-neutral-600 dark:text-neutral-400">
             Personalize sua conta e preferências do sistema
           </p>
-        </header>
+        </animated.div>
 
-        {/* Layout with Vertical Tabs */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar - Vertical Tabs */}
-          <aside className="lg:col-span-1">
-            <nav
+        {/* Tabs */}
+        <animated.div style={cardAnimation}>
+          <Tabs defaultValue="profile" className="space-y-6">
+            <TabsList 
               data-tour="settings-tabs"
-              className="sticky top-24 rounded-2xl p-2 bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-xl"
-              aria-label="Settings navigation"
+              className="inline-flex h-auto w-full sm:w-auto bg-white/70 dark:bg-neutral-800/70 backdrop-blur-xl border border-neutral-200 dark:border-neutral-700/50 p-1.5 rounded-xl shadow-lg"
             >
-              {TABS.map((tab) => (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => setActiveTab(tab.key)}
-                  className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex items-center gap-3 group ${
-                    activeTab === tab.key
-                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-500/20'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5'
-                  }`}
-                  aria-current={activeTab === tab.key ? 'page' : undefined}
-                >
-                  <span className="text-2xl">{tab.icon}</span>
-                  <div className="flex-1">
-                    <div className="font-medium">{tab.label}</div>
-                    <div
-                      className={`text-xs mt-0.5 ${
-                        activeTab === tab.key
-                          ? 'text-white/80'
-                          : 'text-gray-500 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-400'
-                      }`}
-                    >
-                      {tab.description}
+              <TabsTrigger 
+                value="profile" 
+                className="flex items-center gap-2 px-4 py-2.5 data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-green-500/20"
+              >
+                <i className="ph ph-user text-lg" />
+                <span className="hidden sm:inline">Perfil</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="preferences"
+                className="flex items-center gap-2 px-4 py-2.5 data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-green-500/20"
+              >
+                <i className="ph ph-sliders text-lg" />
+                <span className="hidden sm:inline">Preferências</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="addresses"
+                className="flex items-center gap-2 px-4 py-2.5 data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-green-500/20"
+              >
+                <i className="ph ph-map-pin text-lg" />
+                <span className="hidden sm:inline">Endereços</span>
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Profile Tab */}
+            <TabsContent value="profile" className="space-y-6">
+              <Card className="border-neutral-200 dark:border-neutral-700/50 bg-white/70 dark:bg-neutral-800/70 backdrop-blur-xl shadow-xl">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30">
+                      <i className="ph ph-user text-2xl text-green-600 dark:text-green-400" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-2xl text-gray-900 dark:text-white">
+                        Informações do Perfil
+                      </CardTitle>
+                      <CardDescription className="text-neutral-600 dark:text-neutral-400">
+                        Gerencie suas informações pessoais
+                      </CardDescription>
                     </div>
                   </div>
-                  {activeTab === tab.key && (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  )}
-                </button>
-              ))}
-            </nav>
-          </aside>
+                </CardHeader>
+                <CardContent>
+                  <ProfileForm />
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          {/* Main Content Area */}
-          <main className="lg:col-span-3">
-            <div className="rounded-2xl p-6 sm:p-8 bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-xl">
-              {/* Tab Header */}
-              <div className="mb-6 pb-6 border-b border-gray-200 dark:border-white/10">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-3xl">{activeTabConfig?.icon}</span>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {activeTabConfig?.label}
-                  </h2>
-                </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 ml-12">
-                  {activeTabConfig?.description}
-                </p>
-              </div>
+            {/* Preferences Tab */}
+            <TabsContent value="preferences" className="space-y-6">
+              <Card className="border-neutral-200 dark:border-neutral-700/50 bg-white/70 dark:bg-neutral-800/70 backdrop-blur-xl shadow-xl">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30">
+                      <i className="ph ph-sliders text-2xl text-green-600 dark:text-green-400" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-2xl text-gray-900 dark:text-white">
+                        Preferências do Sistema
+                      </CardTitle>
+                      <CardDescription className="text-neutral-600 dark:text-neutral-400">
+                        Personalize sua experiência no Valorize
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <PreferencesForm />
 
-              {/* Tab Content */}
-              <div className="animate-fadeIn">
-                {activeTab === 'profile' && <ProfileForm />}
-                
-                {activeTab === 'preferences' && (
-                  <div>
-                    <PreferencesForm />
-
-                    {/* Onboarding Tour Control */}
-                    <div
-                      data-tour="settings-tour-control"
-                      className="mt-8 pt-6 border-t border-gray-200 dark:border-white/10"
-                    >
-                      <div className="flex items-start gap-4">
-                        <span className="text-3xl">🎯</span>
-                        <div className="flex-1">
-                          <h3 className="text-lg font-semibold mb-2">Tour Interativo</h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                            {hasCompletedOnboarding
-                              ? 'Quer fazer o tour novamente? Clique no botão abaixo para reiniciar.'
-                              : 'Inicie o tour para conhecer melhor o Valorize.'}
-                          </p>
-                          <button
-                            type="button"
-                            onClick={handleStartTour}
-                            className="rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:from-purple-700 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
-                          >
-                            {hasCompletedOnboarding ? '🔄 Reiniciar Tour' : '🎯 Iniciar Tour'}
-                          </button>
-                        </div>
+                  {/* Onboarding Tour Control */}
+                  <div
+                    data-tour="settings-tour-control"
+                    className="rounded-xl border border-neutral-200 dark:border-neutral-700/50 bg-neutral-50/50 dark:bg-neutral-900/30 p-6"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30">
+                        <i className="ph ph-compass text-2xl text-green-600 dark:text-green-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                          Tour Interativo
+                        </h3>
+                        <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+                          {hasCompletedOnboarding
+                            ? 'Quer fazer o tour novamente? Clique no botão abaixo para reiniciar.'
+                            : 'Inicie o tour para conhecer melhor o Valorize.'}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={handleStartTour}
+                          className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-green-500/20 transition-all hover:bg-green-700 hover:shadow-xl active:scale-95"
+                        >
+                          <i className={`ph ${hasCompletedOnboarding ? 'ph-arrow-clockwise' : 'ph-play'}`} />
+                          {hasCompletedOnboarding ? 'Reiniciar Tour' : 'Iniciar Tour'}
+                        </button>
                       </div>
                     </div>
                   </div>
-                )}
-                
-                {activeTab === 'addresses' && <AddressTab />}
-              </div>
-            </div>
-          </main>
-        </div>
-      </div>
-    </main>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Addresses Tab */}
+            <TabsContent value="addresses" className="space-y-6">
+              <Card className="border-neutral-200 dark:border-neutral-700/50 bg-white/70 dark:bg-neutral-800/70 backdrop-blur-xl shadow-xl">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30">
+                      <i className="ph ph-map-pin text-2xl text-green-600 dark:text-green-400" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-2xl text-gray-900 dark:text-white">
+                        Endereços de Entrega
+                      </CardTitle>
+                      <CardDescription className="text-neutral-600 dark:text-neutral-400">
+                        Gerencie seus endereços cadastrados
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <AddressTab />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </animated.div>
+      </animated.div>
+    </PageLayout>
   )
 }
 

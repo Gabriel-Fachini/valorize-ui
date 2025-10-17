@@ -5,6 +5,8 @@ import { RedemptionCard } from '@/components/redemptions/RedemptionCard'
 import { SkeletonRedemptionCard } from '@/components/redemptions/SkeletonRedemptionCard'
 import { useSpring, useTrail, animated } from '@react-spring/web'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 
 const STATUS_OPTIONS: Array<{ label: string; value: string }> = [
   { label: 'Todos', value: 'ALL' },
@@ -38,42 +40,80 @@ export const RedemptionsPage: React.FC = () => {
   const params: RedemptionsQuery = React.useMemo(() => ({
     limit,
     offset,
-    status,
+    status: status === 'ALL' ? undefined : status,
     fromDate,
     toDate,
     search: search.trim() || undefined,
   }), [limit, offset, status, fromDate, toDate, search])
 
   const { data, isLoading, error, refetch, isFetching } = useRedemptions(params)
-  // Calculate hasMore: if we got exactly 'limit' items, there might be more
+  
+  // Client-side filtering (backup since backend doesn't filter properly)
+  const filteredRedemptions = React.useMemo(() => {
+    if (!data?.redemptions) return []
+    
+    let filtered = [...data.redemptions]
+    
+    // Apply search filter
+    if (search.trim()) {
+      const searchLower = search.toLowerCase().trim()
+      filtered = filtered.filter(redemption => 
+        redemption.prize.name.toLowerCase().includes(searchLower) ||
+        redemption.prize.category.toLowerCase().includes(searchLower) ||
+        redemption.variant?.value?.toLowerCase().includes(searchLower),
+      )
+    }
+    
+    // Apply status filter
+    if (status !== 'ALL') {
+      filtered = filtered.filter(redemption => {
+        // Handle 'completed' and 'delivered' as the same status
+        if (status === 'completed') {
+          return redemption.status === 'completed' || redemption.status === 'delivered'
+        }
+        return redemption.status === status
+      })
+    }
+    
+    // Apply period filter
+    if (period.days) {
+      const cutoffDate = new Date(Date.now() - period.days * 24 * 60 * 60 * 1000)
+      filtered = filtered.filter(redemption => 
+        new Date(redemption.redeemedAt) >= cutoffDate,
+      )
+    }
+    
+    return filtered
+  }, [data?.redemptions, search, status, period])
+  
   const hasMore = data ? data.redemptions.length === limit : false
 
-  // Animações
+  // Animations
   const headerSpring = useSpring({
     from: { opacity: 0, transform: 'translateY(-20px)' },
     to: { opacity: 1, transform: 'translateY(0px)' },
     config: { tension: 280, friction: 60 },
   })
 
-  const filtersTrail = useTrail(4, {
-    from: { opacity: 0, transform: 'translateY(20px) scale(0.95)' },
-    to: { opacity: 1, transform: 'translateY(0px) scale(1)' },
+  const filtersSpring = useSpring({
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    to: { opacity: 1, transform: 'translateY(0px)' },
     config: { tension: 250, friction: 20 },
-    delay: 300,
+    delay: 200,
   })
 
-  const cardsTrail = useTrail(data?.redemptions.length ?? 0, {
-    from: { opacity: 0, transform: 'translateY(30px) scale(0.95)' },
-    to: { opacity: 1, transform: 'translateY(0px) scale(1)' },
+  const cardsTrail = useTrail(filteredRedemptions.length ?? 0, {
+    from: { opacity: 0, transform: 'translateY(30px)' },
+    to: { opacity: 1, transform: 'translateY(0px)' },
     config: { tension: 200, friction: 25 },
-    delay: 600,
+    delay: 400,
   })
 
   const emptyStateSpring = useSpring({
     from: { opacity: 0, scale: 0.9 },
     to: { opacity: 1, scale: 1 },
     config: { tension: 200, friction: 25 },
-    delay: 800,
+    delay: 600,
   })
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,223 +133,214 @@ export const RedemptionsPage: React.FC = () => {
     if (hasMore) setOffset((prev) => prev + limit)
   }
 
+  const handleClearFilters = () => {
+    setSearch('')
+    setStatus('ALL')
+    setPeriod(PERIOD_OPTIONS[0])
+    setOffset(0)
+  }
+
   return (
     <PageLayout maxWidth="6xl">
-        <div className="relative z-10">
-          <animated.div style={headerSpring} className="mb-8">
-            <h1 data-tour="redemptions-page" className="mb-2 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
-              Meus Resgates
-            </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              Histórico de prêmios resgatados e status de processamento
-            </p>
-          </animated.div>
+      <div className="relative z-10">
+        {/* Header */}
+        <animated.div style={headerSpring} className="mb-8">
+          <h1 data-tour="redemptions-page" className="mb-2 text-4xl font-bold text-gray-900 dark:text-white">
+            Meus Resgates
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            Acompanhe o status dos seus prêmios resgatados e rastreamento de entrega
+          </p>
+        </animated.div>
 
-          {/* Filtros */}
-          <div data-tour="redemptions-filters" className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {filtersTrail.map((style, index) => {
-              const filterElements = [
-                // Search Input
-                <animated.div
-                  key="search"
-                  style={style}
-                  className="rounded-2xl border border-gray-200/50 dark:border-white/10 bg-white/80 dark:bg-white/10 px-4 py-3 backdrop-blur-xl"
-                >
-                  <div className="flex items-center gap-3">
-                    <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <input
-                      value={search}
-                      onChange={onSearchChange}
-                      placeholder="Buscar resgates..."
-                      className="w-full bg-transparent text-sm text-gray-800 dark:text-gray-200 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none"
-                    />
-                  </div>
-                </animated.div>,
-
-                // Status Filter
-                <animated.div
-                  key="status"
-                  style={style}
-                  className="rounded-2xl border border-gray-200/50 dark:border-white/10 bg-white/80 dark:bg-white/10 p-4 backdrop-blur-xl"
-                >
-                  <div className="flex items-center gap-2 mb-3">
-                    <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">Status</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {STATUS_OPTIONS.map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onStatusChange(opt.value)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium focus:outline-none ${
-                          status === opt.value
-                            ? 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </animated.div>,
-
-                // Period Filter
-                <animated.div
-                  key="period"
-                  style={style}
-                  className="rounded-2xl border border-gray-200/50 dark:border-white/10 bg-white/80 dark:bg-white/10 p-4 backdrop-blur-xl"
-                >
-                  <div className="flex items-center gap-2 mb-3">
-                    <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">Período</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {PERIOD_OPTIONS.map(opt => (
-                      <button
-                        key={opt.label}
-                        onClick={() => onPeriodChange(opt)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium focus:outline-none ${
-                          period.label === opt.label
-                            ? 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </animated.div>,
-
-                // Clear Filters Button
-                <animated.div
-                  key="clear"
-                  style={style}
-                  className="flex items-center justify-end"
-                >
-                  <button
-                    onClick={() => { setSearch(''); setStatus('ALL'); setPeriod(PERIOD_OPTIONS[0]); setOffset(0); refetch() }}
-                    className="group rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:from-purple-700 hover:to-indigo-700 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-                  >
-                    <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4 transition-transform group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                      Limpar filtros
-                    </div>
-                  </button>
-                </animated.div>,
-              ]
-              return filterElements[index]
-            })}
-          </div>
-
-          {/* Conteúdo */}
-          {isLoading ? (
-            <div className="grid gap-4 md:grid-cols-2">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <SkeletonRedemptionCard key={i} />
-              ))}
-            </div>
-          ) : error ? (
-            <animated.div
-              style={emptyStateSpring}
-              className="rounded-3xl border border-red-200/50 dark:border-red-500/20 bg-gradient-to-br from-red-50/80 via-red-25/70 to-rose-50/80 dark:from-red-500/10 dark:via-red-500/5 dark:to-rose-500/10 p-12 text-center backdrop-blur-2xl shadow-xl shadow-red-500/10"
-            >
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-500/20 dark:to-rose-500/20 shadow-lg">
-                <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+        {/* Filters Section */}
+        <animated.div style={filtersSpring} data-tour="redemptions-filters" className="mb-8">
+          <Card className="p-6 bg-white dark:bg-neutral-800 border-gray-200 dark:border-neutral-700">
+            <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
+              Filtros de Busca
+            </h2>
+            
+            <div className="space-y-6">
+              {/* Search Input */}
+              <div>
+                <label htmlFor="search-input" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Buscar por prêmio
+                </label>
+                <div className="relative">
+                  <i className="ph-bold ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500" />
+                  <input
+                    id="search-input"
+                    type="text"
+                    value={search}
+                    onChange={onSearchChange}
+                    placeholder="Digite o nome do prêmio..."
+                    className="w-full rounded-lg border border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 pl-12 pr-4 py-3 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
               </div>
-              <h2 className="mb-3 text-2xl font-bold bg-gradient-to-r from-red-600 to-rose-600 dark:from-red-400 dark:to-rose-400 bg-clip-text text-transparent">
+
+              {/* Status Filter */}
+              <div>
+                <label className="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Status do Resgate
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {STATUS_OPTIONS.map(opt => (
+                    <Button
+                      key={opt.value}
+                      onClick={() => onStatusChange(opt.value)}
+                      variant={status === opt.value ? 'default' : 'outline'}
+                      size="sm"
+                      className={
+                        status === opt.value
+                          ? 'bg-green-600 hover:bg-green-700 text-white border-green-600'
+                          : 'bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-neutral-600 hover:bg-gray-100 dark:hover:bg-neutral-700'
+                      }
+                    >
+                      {opt.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Period Filter */}
+              <div>
+                <label className="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Período
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {PERIOD_OPTIONS.map(opt => (
+                    <Button
+                      key={opt.label}
+                      onClick={() => onPeriodChange(opt)}
+                      variant={period.label === opt.label ? 'default' : 'outline'}
+                      size="sm"
+                      className={
+                        period.label === opt.label
+                          ? 'bg-green-600 hover:bg-green-700 text-white border-green-600'
+                          : 'bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-neutral-600 hover:bg-gray-100 dark:hover:bg-neutral-700'
+                      }
+                    >
+                      {opt.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Clear Filters Button */}
+              <div className="flex justify-end pt-2 border-t border-gray-200 dark:border-neutral-700">
+                <Button
+                  onClick={handleClearFilters}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-neutral-600 hover:bg-gray-100 dark:hover:bg-neutral-700"
+                >
+                  <i className="ph-bold ph-arrow-clockwise text-base" />
+                  Limpar filtros
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </animated.div>
+
+        {/* Content */}
+        {isLoading ? (
+          <div className="space-y-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonRedemptionCard key={i} />
+            ))}
+          </div>
+        ) : error ? (
+          <animated.div
+            style={emptyStateSpring}
+          >
+            <Card className="p-12 text-center border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-xl bg-red-100 dark:bg-red-900">
+                <i className="ph-bold ph-warning text-5xl text-red-600 dark:text-red-400" />
+              </div>
+              <h2 className="mb-3 text-2xl font-bold text-red-900 dark:text-red-100">
                 Erro ao carregar resgates
               </h2>
-              <p className="mb-8 text-gray-600 dark:text-gray-400 text-lg leading-relaxed max-w-md mx-auto">
-                Ops! Algo deu errado. Verifique sua conexão e tente novamente.
+              <p className="mb-8 text-gray-700 dark:text-gray-300 text-lg leading-relaxed max-w-md mx-auto">
+                Não foi possível carregar seus resgates. Verifique sua conexão e tente novamente.
               </p>
-              <button
+              <Button
                 onClick={() => refetch()}
-                className="group rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 px-8 py-4 text-sm font-medium text-white transition-all duration-300 hover:from-red-700 hover:to-rose-700 hover:scale-105 hover:shadow-lg hover:shadow-red-500/25 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                className="bg-red-600 hover:bg-red-700 text-white"
               >
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  Tentar novamente
-                </div>
-              </button>
-            </animated.div>
-          ) : (
-            <>
-              {data && data.redemptions.length > 0 ? (
-                <div data-tour="redemptions-list" className="space-y-6">
-                  {cardsTrail.map((style, index) => {
-                    const redemption = data.redemptions[index]
-                    if (!redemption) return null
-                    return (
-                      <animated.div key={redemption.id} style={style}>
-                        <RedemptionCard redemption={redemption} />
-                      </animated.div>
-                    )
-                  })}
+                <i className="ph-bold ph-arrow-clockwise text-base mr-2" />
+                Tentar novamente
+              </Button>
+            </Card>
+          </animated.div>
+        ) : (
+          <>
+            {filteredRedemptions.length > 0 ? (
+              <div data-tour="redemptions-list" className="space-y-4">
+                {cardsTrail.map((style, index) => {
+                  const redemption = filteredRedemptions[index]
+                  if (!redemption) return null
+                  return (
+                    <animated.div key={redemption.id} style={style}>
+                      <RedemptionCard redemption={redemption} />
+                    </animated.div>
+                  )
+                })}
 
-                  {hasMore && (
-                    <div className="flex justify-center pt-8">
-                      <button
-                        onClick={handleLoadMore}
-                        disabled={isFetching}
-                        className="group rounded-2xl border border-gray-200/50 dark:border-white/10 bg-white/80 dark:bg-white/10 px-8 py-4 text-sm font-medium text-gray-800 dark:text-gray-200 backdrop-blur-xl transition-all duration-300 hover:border-purple-300/50 dark:hover:border-purple-500/30 hover:bg-white/90 dark:hover:bg-white/15 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/10 disabled:opacity-60 disabled:hover:scale-100 disabled:cursor-not-allowed"
-                      >
-                        <div className="flex items-center gap-3">
-                          {isFetching ? (
-                            <>
-                              <div className="w-4 h-4 border-2 border-purple-600/30 border-t-purple-600 rounded-full" style={{ animation: 'spin 1s linear infinite' }} />
-                              Carregando...
-                            </>
-                          ) : (
-                            <>
-                              <span>Carregar mais</span>
-                              <svg className="w-4 h-4 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                              </svg>
-                            </>
-                          )}
-                        </div>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <animated.div
-                  style={emptyStateSpring}
-                  className="rounded-3xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-br from-white/80 via-white/70 to-purple-50/80 dark:from-white/10 dark:via-white/5 dark:to-purple-500/10 p-12 text-center backdrop-blur-2xl shadow-xl shadow-purple-500/5 dark:shadow-purple-500/10"
-                >
-                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-500/20 dark:to-indigo-500/20 shadow-lg">
-                    <span className="text-3xl" style={{ animationDelay: '1s' }}>🎁</span>
+                {hasMore && (
+                  <div className="flex justify-center pt-8">
+                    <Button
+                      onClick={handleLoadMore}
+                      disabled={isFetching}
+                      variant="outline"
+                      size="lg"
+                      className="flex items-center gap-3 min-w-[200px] border-green-300 dark:border-green-700 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-950"
+                    >
+                      {isFetching ? (
+                        <>
+                          <i className="ph-bold ph-spinner text-base animate-spin" />
+                          Carregando...
+                        </>
+                      ) : (
+                        <>
+                          <i className="ph-bold ph-caret-down text-base" />
+                          Carregar mais resgates
+                        </>
+                      )}
+                    </Button>
                   </div>
-                  <h3 className="mb-3 text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                )}
+              </div>
+            ) : (
+              <animated.div style={emptyStateSpring}>
+                <Card className="p-12 text-center border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800">
+                  <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-2xl bg-green-50 dark:bg-green-950">
+                    <i className="ph-bold ph-gift text-6xl text-green-600 dark:text-green-400" />
+                  </div>
+                  <h3 className="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
                     Nenhum resgate encontrado
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed max-w-md mx-auto">
-                    Seus resgates aparecerão aqui quando você trocar suas moedas por prêmios incríveis!
+                  <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed max-w-md mx-auto mb-8">
+                    {search || status !== 'ALL' || period.days
+                      ? 'Não encontramos resgates com os filtros aplicados. Tente ajustar os critérios de busca.'
+                      : 'Você ainda não resgatou nenhum prêmio. Explore nossa loja e troque suas moedas por recompensas incríveis!'
+                    }
                   </p>
-                  <div className="mt-8">
-                    <div className="inline-flex items-center gap-2 text-sm text-purple-600 dark:text-purple-400 font-medium">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                      </svg>
-                      Explore nossa loja de prêmios
-                    </div>
-                  </div>
-                </animated.div>
-              )}
-            </>
-          )}
+                  {(search || status !== 'ALL' || period.days) && (
+                    <Button
+                      onClick={handleClearFilters}
+                      variant="outline"
+                      className="border-green-300 dark:border-green-700 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-950"
+                    >
+                      <i className="ph-bold ph-x text-base mr-2" />
+                      Limpar filtros
+                    </Button>
+                  )}
+                </Card>
+              </animated.div>
+            )}
+          </>
+        )}
       </div>
     </PageLayout>
   )

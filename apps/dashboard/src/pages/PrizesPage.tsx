@@ -85,22 +85,22 @@ export const PrizesPage: React.FC = () => {
               {[...Array(12)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-[450px] animate-pulse rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl"
+                  className="h-[450px] animate-pulse rounded-2xl border border-neutral-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl"
                 >
-                  <div className="aspect-square bg-gray-200 dark:bg-gray-800/50" />
+                  <div className="aspect-square bg-neutral-200 dark:bg-neutral-800/50" />
                   <div className="p-5 space-y-3">
-                    <div className="h-4 bg-gray-300 dark:bg-gray-700/50 rounded" />
-                    <div className="h-3 bg-gray-300 dark:bg-gray-700/50 rounded w-3/4" />
-                    <div className="h-3 bg-gray-300 dark:bg-gray-700/50 rounded w-1/2" />
+                    <div className="h-4 bg-neutral-300 dark:bg-neutral-700/50 rounded" />
+                    <div className="h-3 bg-neutral-300 dark:bg-neutral-700/50 rounded w-3/4" />
+                    <div className="h-3 bg-neutral-300 dark:bg-neutral-700/50 rounded w-1/2" />
                   </div>
                 </div>
               ))}
             </div>
           ) : data?.prizes.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="mb-6 rounded-full bg-gray-100 dark:bg-gray-800/50 p-6">
+              <div className="mb-6 rounded-full bg-neutral-100 dark:bg-neutral-800/50 p-6">
                 <svg
-                  className="h-16 w-16 text-gray-400 dark:text-gray-500"
+                  className="h-16 w-16 text-neutral-400 dark:text-neutral-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"

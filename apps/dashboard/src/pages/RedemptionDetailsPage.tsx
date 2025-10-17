@@ -3,50 +3,45 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { useRedemptionById, useCancelRedemption } from '@/hooks/useRedemptions'
 import { useSpring, animated, useTrail } from '@react-spring/web'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { statusColors } from '@/lib/colors'
 
 const statusConfig: Record<string, {
   badge: string
-  icon: React.ReactNode
+  icon: string
+  label: string
 }> = {
   pending: {
-    badge: 'bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-orange-500/10 text-amber-700 border border-amber-300/30 dark:from-amber-400/20 dark:via-yellow-400/20 dark:to-orange-400/20 dark:text-amber-300 dark:border-amber-400/40',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
+    badge: `${statusColors.pending.bg} ${statusColors.pending.text} ${statusColors.pending.border}`,
+    icon: 'ph-bold ph-clock',
+    label: 'Pendente',
   },
   processing: {
-    badge: 'bg-gradient-to-r from-indigo-500/10 via-blue-500/10 to-cyan-500/10 text-indigo-700 border border-indigo-300/30 dark:from-indigo-400/20 dark:via-blue-400/20 dark:to-cyan-400/20 dark:text-indigo-300 dark:border-indigo-400/40',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-      </svg>
-    ),
+    badge: `${statusColors.processing.bg} ${statusColors.processing.text} ${statusColors.processing.border}`,
+    icon: 'ph-bold ph-arrows-clockwise',
+    label: 'Processando',
   },
   shipped: {
-    badge: 'bg-gradient-to-r from-purple-500/10 via-violet-500/10 to-fuchsia-500/10 text-purple-700 border border-purple-300/30 dark:from-purple-400/20 dark:via-violet-400/20 dark:to-fuchsia-400/20 dark:text-purple-300 dark:border-purple-400/40',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-      </svg>
-    ),
+    badge: `${statusColors.shipped.bg} ${statusColors.shipped.text} ${statusColors.shipped.border}`,
+    icon: 'ph-bold ph-package',
+    label: 'Enviado',
+  },
+  delivered: {
+    badge: `${statusColors.completed.bg} ${statusColors.completed.text} ${statusColors.completed.border}`,
+    icon: 'ph-bold ph-check-circle',
+    label: 'Concluído',
   },
   completed: {
-    badge: 'bg-gradient-to-r from-emerald-500/10 via-green-500/10 to-teal-500/10 text-emerald-700 border border-emerald-300/30 dark:from-emerald-400/20 dark:via-green-400/20 dark:to-teal-400/20 dark:text-emerald-300 dark:border-emerald-400/40',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-      </svg>
-    ),
+    badge: `${statusColors.completed.bg} ${statusColors.completed.text} ${statusColors.completed.border}`,
+    icon: 'ph-bold ph-check-circle',
+    label: 'Concluído',
   },
   cancelled: {
-    badge: 'bg-gradient-to-r from-gray-500/10 via-slate-500/10 to-gray-600/10 text-gray-700 border border-gray-300/30 dark:from-white/10 dark:via-gray-400/10 dark:to-gray-500/10 dark:text-gray-300 dark:border-white/20',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    ),
+    badge: `${statusColors.cancelled.bg} ${statusColors.cancelled.text} ${statusColors.cancelled.border}`,
+    icon: 'ph-bold ph-x-circle',
+    label: 'Cancelado',
   },
 }
 
@@ -55,19 +50,47 @@ export const RedemptionDetailsPage: React.FC = () => {
   const navigate = useNavigate()
   const { data: redemption, isLoading, error } = useRedemptionById(redemptionId)
   const cancelMutation = useCancelRedemption()
+  const [showCancelModal, setShowCancelModal] = React.useState(false)
+  const [cancelReason, setCancelReason] = React.useState('')
+  const [cancelSuccess, setCancelSuccess] = React.useState(false)
+  const [cancelError, setCancelError] = React.useState<string | null>(null)
+  const [countdown, setCountdown] = React.useState(3)
 
-  const fadeIn = useSpring({ from: { opacity: 0, transform: 'translateY(20px)' }, to: { opacity: 1, transform: 'translateY(0px)' } })
+  const fadeIn = useSpring({ 
+    from: { opacity: 0, transform: 'translateY(20px)' }, 
+    to: { opacity: 1, transform: 'translateY(0px)' }, 
+  })
 
   const tracking = React.useMemo(() => {
-    // Mock de tracking; em produção, viria do backend do pedido
-    const base = redemption?.redeemedAt ? new Date(redemption.redeemedAt).getTime() : Date.now() - 1000 * 60 * 60 * 6
     const status = redemption?.status?.toLowerCase()
-    return [
-      { title: 'Pedido recebido', time: new Date(base).toLocaleString('pt-BR'), done: true },
-      { title: 'Processando pedido', time: new Date(base + 1000 * 60 * 60 * 2).toLocaleString('pt-BR'), done: status !== 'pending' },
-      { title: 'Despachado para entrega', time: new Date(base + 1000 * 60 * 60 * 4).toLocaleString('pt-BR'), done: status === 'completed' || status === 'shipped' },
-      { title: 'Entregue', time: status === 'completed' ? new Date(base + 1000 * 60 * 60 * 6).toLocaleString('pt-BR') : '-', done: status === 'completed' },
+    const redeemedDate = redemption?.redeemedAt ? new Date(redemption.redeemedAt).toLocaleString('pt-BR') : null
+    
+    // Always build complete tracking with all steps (done and pending)
+    // This ensures users can see what's coming next
+    const steps = [
+      { 
+        title: 'Pedido recebido', 
+        time: redeemedDate ?? '-', 
+        done: true,
+      },
+      { 
+        title: 'Processando pedido', 
+        time: '-', 
+        done: status !== 'pending',
+      },
+      { 
+        title: 'Despachado para entrega', 
+        time: '-', 
+        done: status === 'shipped' || status === 'completed' || status === 'delivered',
+      },
+      { 
+        title: 'Entregue', 
+        time: '-', 
+        done: status === 'completed' || status === 'delivered',
+      },
     ]
+    
+    return steps
   }, [redemption])
 
   const trail = useTrail(tracking.length, {
@@ -79,28 +102,54 @@ export const RedemptionDetailsPage: React.FC = () => {
   const canCancel = React.useMemo(() => {
     if (!redemption) return false
     const status = redemption.status?.toLowerCase()
-    if (status === 'cancelled' || status === 'completed') return false
+    if (status === 'cancelled' || status === 'completed' || status === 'delivered') return false
     const created = new Date(redemption.redeemedAt).getTime()
     const now = Date.now()
     return now - created <= 24 * 60 * 60 * 1000
   }, [redemption])
 
-  const handleCancel = async () => {
-    if (!redemption) return
-    const ok = window.confirm('Deseja cancelar este resgate? O valor será estornado ao seu saldo.')
-    if (!ok) return
+  const handleCancelClick = () => {
+    setShowCancelModal(true)
+    setCancelSuccess(false)
+    setCancelError(null)
+    setCancelReason('')
+  }
+
+  const handleCancelSubmit = async () => {
+    if (!redemption || !cancelReason.trim()) return
     
-    const reason = window.prompt('Por favor, informe o motivo do cancelamento:')
-    if (!reason || reason.trim() === '') {
-      alert('É necessário informar um motivo para o cancelamento.')
-      return
-    }
+    setCancelError(null)
     
     try {
-      await cancelMutation.mutateAsync({ id: redemption.id, reason: reason.trim() })
+      await cancelMutation.mutateAsync({ id: redemption.id, reason: cancelReason.trim() })
+      setCancelSuccess(true)
+      setCountdown(3)
+      
+      // Start countdown
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer)
+            navigate({ to: '/resgates' })
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
     } catch (e) {
-      alert((e as Error).message)
+      setCancelError((e as Error).message || 'Erro ao cancelar resgate')
     }
+  }
+
+  const handleGoToRedemptions = () => {
+    navigate({ to: '/resgates' })
+  }
+
+  const handleCancelCancel = () => {
+    setShowCancelModal(false)
+    setCancelReason('')
+    setCancelSuccess(false)
+    setCancelError(null)
   }
 
   if (isLoading) {
@@ -108,57 +157,46 @@ export const RedemptionDetailsPage: React.FC = () => {
       <PageLayout maxWidth="5xl">
         <div className="relative z-10 space-y-8">
           {/* Back Button Skeleton */}
-          <div className="h-12 w-48 rounded-2xl bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
+          <div className="h-12 w-48 rounded-lg bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
           
           {/* Hero Section Skeleton */}
-          <div className="rounded-3xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-br from-white/90 via-white/80 to-purple-50/80 dark:from-white/10 dark:via-white/5 dark:to-purple-500/10 backdrop-blur-2xl p-8 shadow-xl">
+          <Card className="p-8">
             <div className="flex items-start gap-8">
-              <div className="h-32 w-32 rounded-3xl bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
+              <div className="h-32 w-32 rounded-xl bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
               <div className="flex-1 space-y-6">
                 <div className="space-y-3">
-                  <div className="h-10 w-3/4 rounded-xl bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
-                  <div className="h-4 w-1/2 rounded-lg bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
+                  <div className="h-10 w-3/4 rounded-lg bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
+                  <div className="h-4 w-1/2 rounded-md bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="h-8 w-32 rounded-xl bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
-                  <div className="h-10 w-24 rounded-xl bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
+                  <div className="h-8 w-32 rounded-lg bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
+                  <div className="h-10 w-24 rounded-lg bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
           
           {/* Grid Skeleton */}
           <div className="grid gap-6 lg:gap-8 xl:grid-cols-3">
-            {/* Timeline Skeleton */}
-            <div className="lg:col-span-2 rounded-3xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-br from-white/90 via-white/80 to-gray-50/80 dark:from-white/10 dark:via-white/5 dark:to-gray-500/5 backdrop-blur-2xl p-8 shadow-xl">
-              <div className="h-8 w-64 rounded-xl bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse mb-8" />
+            <Card className="lg:col-span-2 p-8">
+              <div className="h-8 w-64 rounded-lg bg-neutral-200 dark:bg-neutral-700 animate-pulse mb-8" />
               <div className="space-y-6">
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="flex items-start gap-6">
-                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
+                    <div className="h-12 w-12 rounded-xl bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
                     <div className="flex-1 space-y-3">
-                      <div className="h-6 w-48 rounded-xl bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
-                      <div className="h-4 w-32 rounded-lg bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
+                      <div className="h-6 w-48 rounded-lg bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
+                      <div className="h-4 w-32 rounded-md bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
             
-            {/* Actions Skeleton */}
-            <div className="rounded-3xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-br from-white/90 via-white/80 to-gray-50/80 dark:from-white/10 dark:via-white/5 dark:to-gray-500/5 backdrop-blur-2xl p-8 shadow-xl space-y-6">
-              <div className="h-8 w-40 rounded-xl bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
-              <div className="rounded-2xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-br from-gray-50/80 to-white/80 dark:from-white/5 dark:to-gray-500/5 p-6 space-y-4">
-                <div className="h-5 w-32 rounded-lg bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="flex items-center justify-between py-2">
-                    <div className="h-4 w-20 rounded bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
-                    <div className="h-4 w-16 rounded bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
-                  </div>
-                ))}
-              </div>
-              <div className="h-12 w-full rounded-2xl bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-white/10 dark:via-white/5 dark:to-white/10 animate-pulse" />
-            </div>
+            <Card className="p-8 space-y-6">
+              <div className="h-8 w-40 rounded-lg bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
+              <div className="h-12 w-full rounded-lg bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
+            </Card>
           </div>
         </div>
       </PageLayout>
@@ -170,273 +208,482 @@ export const RedemptionDetailsPage: React.FC = () => {
       <PageLayout maxWidth="6xl">
         <div className="relative z-10 flex min-h-[60vh] items-center justify-center px-4 py-8">
           <div className="w-full max-w-lg">
-            <div className="text-center">
-              <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-red-500/20 to-orange-500/20 backdrop-blur-xl">
-                <svg className="h-10 w-10 text-red-500 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                </svg>
+            <Card className="text-center p-8 border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+              <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-xl bg-red-100 dark:bg-red-900">
+                <i className="ph-bold ph-warning text-5xl text-red-500 dark:text-red-400" />
               </div>
               
-              <div className="rounded-3xl border border-red-200/50 dark:border-red-500/20 bg-gradient-to-br from-white/90 via-white/80 to-red-50/80 dark:from-white/10 dark:via-white/5 dark:to-red-500/10 backdrop-blur-2xl p-8 shadow-xl">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                  {error ? 'Erro ao carregar resgate' : 'Resgate não encontrado'}
-                </h1>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  {error 
-                    ? 'Não foi possível carregar os detalhes do resgate. Verifique sua conexão e tente novamente.'
-                    : 'O resgate que você está procurando não foi encontrado ou pode ter sido removido.'
-                  }
-                </p>
-                <div className="space-y-3">
-                  <button
-                    onClick={() => window.location.reload()}
-                    className="w-full rounded-2xl bg-gradient-to-r from-red-500 to-orange-500 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:from-red-600 hover:to-orange-600 hover:shadow-xl hover:scale-105 active:scale-95"
-                  >
-                    Tentar novamente
-                  </button>
-                  <button
-                    onClick={() => navigate({ to: '/redemptions' })}
-                    className="w-full rounded-2xl border border-gray-200 dark:border-white/10 bg-gradient-to-r from-white/90 to-gray-50/90 dark:from-white/10 dark:to-gray-500/10 px-6 py-3 font-medium text-gray-700 dark:text-gray-300 backdrop-blur-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 dark:hover:from-white/20 dark:hover:to-gray-500/20 hover:scale-105 active:scale-95"
-                  >
-                    Voltar aos resgates
-                  </button>
-                </div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                {error ? 'Erro ao carregar resgate' : 'Resgate não encontrado'}
+              </h1>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
+                {error 
+                  ? 'Não foi possível carregar os detalhes do resgate. Verifique sua conexão e tente novamente.'
+                  : 'O resgate que você está procurando não foi encontrado ou pode ter sido removido.'
+                }
+              </p>
+              <div className="space-y-3">
+                <Button
+                  onClick={() => window.location.reload()}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white"
+                >
+                  Tentar novamente
+                </Button>
+                <Button
+                  onClick={() => navigate({ to: '/redemptions' })}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Voltar aos resgates
+                </Button>
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </PageLayout>
     )
   }
 
+  const safeStatus = redemption.status.toLowerCase()
+  const statusInfo = statusConfig[safeStatus] ?? statusConfig.pending
+  
+  // Get prize data from API response
+  const prizeImage = redemption.prize?.images?.[0] ?? '/valorize_logo.png'
+  const prizeName = redemption.prize?.name ?? `Resgate #${redemption.id.slice(0, 8).toUpperCase()}`
+  const prizeCategory = redemption.prize?.category ?? 'Prêmio'
+  const variantInfo = redemption.variant ? `${redemption.variant.name}: ${redemption.variant.value}` : null
+
   return (
     <PageLayout maxWidth="6xl">
       <div className="relative z-10">
-        <animated.div style={fadeIn} className="relative space-y-6">
-          <button
+        <animated.div style={fadeIn} className="space-y-6">
+          {/* Back Button */}
+          <Button
             onClick={() => navigate({ to: '/resgates' })}
-            className="group mb-6 flex items-center gap-3 rounded-2xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-r from-white/80 to-gray-50/80 dark:from-white/10 dark:to-white/5 px-6 py-3 text-sm font-medium text-gray-700 dark:text-white backdrop-blur-2xl transition-all duration-300 hover:border-purple-300/50 dark:hover:border-purple-500/30 hover:from-purple-50/80 hover:to-indigo-50/80 dark:hover:from-purple-500/10 dark:hover:to-indigo-500/10 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/10"
+            variant="outline"
+            size="lg"
+            className="flex items-center gap-2 hover:gap-3 transition-all"
           >
-            <svg className="h-4 w-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Voltar aos resgates
-          </button>
+            <i className="ph-bold ph-arrow-left text-lg" />
+            <span className="font-semibold">Voltar aos resgates</span>
+          </Button>
 
-          {/* Hero Section */}
-          <div className="rounded-3xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-br from-white/90 via-white/80 to-purple-50/80 dark:from-white/10 dark:via-white/5 dark:to-purple-500/10 backdrop-blur-2xl p-6 sm:p-8 shadow-xl shadow-purple-500/5 dark:shadow-purple-500/10">
-            <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8">
-              <div className="relative group">
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <img
-                  src={'/valorize_logo.png'}
-                  alt="Prize"
-                  className="h-24 w-24 sm:h-32 sm:w-32 rounded-3xl object-cover border-4 border-white/50 dark:border-white/20 shadow-2xl relative z-10 transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-              
-              <div className="flex-1 space-y-4">
-                <div>
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-2">
-                    Resgate #{redemption.id.slice(0, 8)}
-                  </h1>
-                  <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                    <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      <span className="font-mono text-purple-600 dark:text-purple-400">{redemption.id}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {new Date(redemption.redeemedAt).toLocaleString('pt-BR')}
-                    </div>
-                  </div>
+          {/* Hero Card - Prize Information */}
+          <Card className="overflow-hidden border-gray-200 dark:border-neutral-700">
+            <div className="p-6 sm:p-8 bg-white dark:bg-neutral-900">
+              <div className="flex flex-col sm:flex-row gap-6">
+                {/* Prize Image */}
+                <div className="shrink-0">
+                  <img
+                    src={prizeImage}
+                    alt={prizeName}
+                    className="h-32 w-32 sm:h-40 sm:w-40 rounded-xl object-cover border-2 border-gray-200 dark:border-neutral-700"
+                  />
                 </div>
                 
-                {/* Status Badge */}
-                <div className="flex items-center justify-between">
-                  <div className={`inline-flex items-center gap-3 rounded-2xl px-5 py-3 text-sm font-semibold backdrop-blur-sm ${statusConfig[redemption.status.toLowerCase()] ? statusConfig[redemption.status.toLowerCase()].badge : statusConfig.pending.badge}`}>
-                    <span className="flex items-center justify-center">
-                      {statusConfig[redemption.status.toLowerCase()]?.icon ?? statusConfig.pending.icon}
-                    </span>
-                    <span>
-                      {redemption.status.toLowerCase() === 'pending' && 'Pendente'}
-                      {redemption.status.toLowerCase() === 'processing' && 'Processando'}
-                      {redemption.status.toLowerCase() === 'shipped' && 'Enviado'}
-                      {redemption.status.toLowerCase() === 'completed' && 'Concluído'}
-                      {redemption.status === 'CANCELLED' && 'Cancelado'}
-                    </span>
+                {/* Prize Info */}
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <Badge 
+                        className={`flex items-center gap-2 px-4 py-2 text-sm font-bold border-2 ${statusInfo.badge}`}
+                        variant="outline"
+                      >
+                        <i className={`${statusInfo.icon} text-lg`} />
+                        {statusInfo.label}
+                      </Badge>
+                    </div>
+                    
+                    <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                      {prizeName}
+                    </h1>
+                    
+                    <div className="flex flex-wrap items-center gap-4 text-gray-700 dark:text-gray-300">
+                      <div className="flex items-center gap-2">
+                        <i className="ph-bold ph-tag text-lg text-green-600 dark:text-green-400" />
+                        <span className="font-medium">{prizeCategory}</span>
+                      </div>
+                      
+                      {variantInfo && (
+                        <>
+                          <span className="text-gray-400">•</span>
+                          <div className="flex items-center gap-2">
+                            <i className="ph-bold ph-package text-lg text-green-600 dark:text-green-400" />
+                            <span className="font-medium">{variantInfo}</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                   
-                  <button
-                    onClick={() => navigate({ to: `/prizes/${redemption.prizeId}` })}
-                    className="group flex items-center gap-2 rounded-xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-r from-white/80 to-gray-50/80 dark:from-white/10 dark:to-white/5 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 backdrop-blur-xl transition-all duration-300 hover:border-purple-300/50 dark:hover:border-purple-500/30 hover:from-purple-50/80 hover:to-indigo-50/80 dark:hover:from-purple-500/10 dark:hover:to-indigo-500/10 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/10"
-                  >
-                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    Ver prêmio
-                  </button>
+                  {/* Redemption Details */}
+                  <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex items-center gap-3 bg-gray-50 dark:bg-neutral-800 rounded-xl px-4 py-3 border border-gray-200 dark:border-neutral-700">
+                      <div className="p-2 bg-red-100 dark:bg-red-950 rounded-lg">
+                        <i className="ph-bold ph-coins text-xl text-red-600 dark:text-red-400" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">Valor Gasto</p>
+                        <p className="text-lg font-bold text-red-600 dark:text-red-400">
+                          {new Intl.NumberFormat('pt-BR').format(redemption.coinsSpent)} moedas
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 bg-gray-50 dark:bg-neutral-800 rounded-xl px-4 py-3 border border-gray-200 dark:border-neutral-700">
+                      <div className="p-2 bg-blue-100 dark:bg-blue-950 rounded-lg">
+                        <i className="ph-bold ph-calendar-blank text-xl text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">Data do Resgate</p>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white">
+                          {new Date(redemption.redeemedAt).toLocaleString('pt-BR', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    <Button
+                      onClick={() => navigate({ to: `/prizes/${redemption.prizeId}` })}
+                      variant="outline"
+                      size="lg"
+                      className="flex items-center gap-2 font-semibold"
+                    >
+                      <i className="ph-bold ph-gift text-lg" />
+                      Ver detalhes do prêmio
+                      <i className="ph-bold ph-arrow-up-right text-base" />
+                    </Button>
+                    
+                    {redemption.trackingCode && (
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="flex items-center gap-2 font-semibold border-green-300 dark:border-green-700 text-green-700 dark:text-green-300"
+                      >
+                        <i className="ph-bold ph-barcode text-lg" />
+                        {redemption.trackingCode}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="grid gap-6 lg:gap-8 xl:grid-cols-3">
-            <div className="xl:col-span-2 rounded-3xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-br from-white/90 via-white/80 to-gray-50/80 dark:from-white/10 dark:via-white/5 dark:to-gray-500/5 backdrop-blur-2xl p-6 lg:p-8 shadow-xl shadow-purple-500/5 dark:shadow-purple-500/10">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-500/20 dark:to-indigo-500/20">
-                  <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
+            
+            {/* Redemption ID Footer */}
+            <div className="bg-gray-50 dark:bg-neutral-900 px-6 sm:px-8 py-4 border-t border-gray-200 dark:border-neutral-700">
+              <div className="flex items-center justify-between gap-4 text-sm">
+                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                  <i className="ph-bold ph-hash text-base" />
+                  <span className="font-medium">ID do Resgate:</span>
                 </div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-                  Timeline de Rastreamento
-                </h2>
+                <code className="px-3 py-1.5 bg-gray-200 dark:bg-neutral-800 rounded-lg font-mono text-gray-900 dark:text-white font-semibold">
+                  {redemption.id}
+                </code>
               </div>
+            </div>
+          </Card>
+
+          <div className="grid gap-6 xl:grid-cols-3">
+            {/* Timeline Section */}
+            <Card className="xl:col-span-2 border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900">
+              <CardHeader className="pb-6 bg-white dark:bg-neutral-900">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-green-100 dark:bg-green-950 rounded-xl">
+                    <i className="ph-bold ph-clock-countdown text-2xl text-green-600 dark:text-green-400" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl">Acompanhamento do Pedido</CardTitle>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      Veja o status e histórico do seu resgate
+                    </p>
+                  </div>
+                </div>
+              </CardHeader>
               
-              <div className="relative">
-                {/* Timeline Line */}
-                <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-indigo-500 to-gray-300 dark:to-gray-600" />
-                
-                <div className="space-y-8">
-                  {trail.map((style, idx) => (
-                    <animated.div key={idx} style={style} className="relative flex items-start gap-6">
-                      {/* Timeline Dot */}
-                      <div className={`relative z-10 flex items-center justify-center w-12 h-12 rounded-2xl border-4 ${
-                        tracking[idx].done 
-                          ? 'bg-gradient-to-br from-emerald-400 to-green-500 border-emerald-300 dark:border-emerald-400 shadow-lg shadow-emerald-500/25' 
-                          : 'bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 border-gray-200 dark:border-gray-500'
-                      } transition-all duration-500`}>
-                        {tracking[idx].done ? (
-                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                          </svg>
-                        ) : (
-                          <div className="w-3 h-3 rounded-full bg-white dark:bg-gray-800" />
-                        )}
+              <CardContent>
+                <div className="space-y-6 bg-white dark:bg-neutral-900">
+                  {trail.map((style, idx) => {
+                    const item = tracking[idx]
+                    const isLast = idx === tracking.length - 1
+                    
+                    return (
+                      <animated.div key={idx} style={style}>
+                        <div className="relative flex gap-4">
+                          {/* Timeline Line */}
+                          {!isLast && (
+                            <div className={`absolute left-5 top-10 w-0.5 h-full ${
+                              item.done && tracking[idx + 1]?.done
+                                ? 'bg-green-500' 
+                                : 'bg-gray-300 dark:bg-neutral-700'
+                            }`} />
+                          )}
+                          
+                          {/* Timeline Dot */}
+                          <div className="relative shrink-0">
+                            <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                              item.done 
+                                ? 'bg-green-500 border-green-500' 
+                                : 'bg-gray-200 dark:bg-neutral-700 border-gray-300 dark:border-neutral-600'
+                            }`}>
+                              {item.done ? (
+                                <i className="ph-bold ph-check text-lg text-white" />
+                              ) : (
+                                <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-neutral-500" />
+                              )}
+                            </div>
+                          </div>
+                          
+                          {/* Content */}
+                          <div className="flex-1 pb-2">
+                            <h3 className={`text-base font-bold mb-1 ${
+                              item.done 
+                                ? 'text-gray-900 dark:text-white' 
+                                : 'text-gray-500 dark:text-gray-400'
+                            }`}>
+                              {item.title}
+                            </h3>
+                            <div className={`flex items-center gap-2 text-sm ${
+                              item.done 
+                                ? 'text-gray-600 dark:text-gray-400' 
+                                : 'text-gray-500 dark:text-gray-500'
+                            }`}>
+                              <i className="ph-bold ph-clock text-base" />
+                              {item.time}
+                            </div>
+                          </div>
+                        </div>
+                      </animated.div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Actions Card */}
+            <Card className="border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 h-fit">
+              <CardHeader className="bg-white dark:bg-neutral-900">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-blue-100 dark:bg-blue-950 rounded-xl">
+                    <i className="ph-bold ph-lightning text-2xl text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <CardTitle className="text-xl">Ações Rápidas</CardTitle>
+                </div>
+              </CardHeader>
+              
+              <CardContent className="space-y-6 bg-white dark:bg-neutral-900">{/* Summary Card */}
+                {/* Summary Card */}
+                <div className="space-y-4">
+                  <h3 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wide">
+                    Resumo do Pedido
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between py-3 border-b border-gray-200 dark:border-neutral-700">
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Status Atual</span>
+                      <Badge className={`${statusInfo.badge} font-bold`} variant="outline">
+                        {statusInfo.label}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center justify-between py-3 border-b border-gray-200 dark:border-neutral-700">
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Valor Total</span>
+                      <span className="text-base font-bold text-red-600 dark:text-red-400">
+                        -{new Intl.NumberFormat('pt-BR').format(redemption.coinsSpent)} moedas
+                      </span>
+                    </div>
+                    
+                    {redemption.trackingCode && (
+                      <div className="flex items-center justify-between py-3">
+                        <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Código de Rastreio</span>
+                        <code className="text-sm font-mono font-bold text-green-600 dark:text-green-400">
+                          {redemption.trackingCode}
+                        </code>
                       </div>
-                      
-                      {/* Content */}
-                      <div className={`flex-1 pb-8 ${tracking[idx].done ? '' : 'opacity-60'}`}>
-                        <div className={`rounded-2xl border p-6 transition-all duration-500 ${
-                          tracking[idx].done 
-                            ? 'border-emerald-200/50 dark:border-emerald-500/30 bg-gradient-to-br from-emerald-50/80 to-green-50/80 dark:from-emerald-500/10 dark:to-green-500/10 shadow-lg shadow-emerald-500/10' 
-                            : 'border-gray-200/50 dark:border-white/10 bg-gradient-to-br from-gray-50/80 to-slate-50/80 dark:from-white/5 dark:to-gray-500/5'
-                        }`}>
-                          <h3 className={`text-lg font-bold mb-2 ${
-                            tracking[idx].done 
-                              ? 'text-emerald-800 dark:text-emerald-300' 
-                              : 'text-gray-600 dark:text-gray-400'
-                          }`}>
-                            {tracking[idx].title}
-                          </h3>
-                          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            {tracking[idx].time}
+                    )}
+                  </div>
+                </div>
+                
+                {/* Cancel Button or Info */}
+                {canCancel ? (
+                  <div className="space-y-3">
+                    <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                      <div className="flex gap-3">
+                        <i className="ph-bold ph-info text-lg text-blue-600 dark:text-blue-400 shrink-0" />
+                        <p className="text-sm text-blue-900 dark:text-blue-100">
+                          Você pode cancelar este resgate dentro de 24 horas. O valor será devolvido ao seu saldo.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <Button
+                      onClick={handleCancelClick}
+                      variant="outline"
+                      size="lg"
+                      className="w-full font-semibold text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-950/30"
+                    >
+                      <i className="ph-bold ph-x-circle text-lg mr-2" />
+                      Cancelar Resgate
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg p-5 text-center space-y-3">
+                    <div className="inline-flex p-3 bg-gray-200 dark:bg-neutral-700 rounded-full">
+                      <i className="ph-bold ph-lock text-2xl text-gray-500 dark:text-gray-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 dark:text-white mb-1">
+                        Cancelamento Indisponível
+                      </h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {redemption.status === 'completed' || redemption.status === 'delivered' || redemption.status === 'cancelled'
+                          ? 'Este resgate já foi finalizado'
+                          : 'O prazo de 24 horas para cancelamento expirou'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </animated.div>
+
+        {/* Cancel Modal */}
+        {showCancelModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="relative w-full max-w-lg bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-neutral-700 overflow-hidden">
+              {/* Success State */}
+              {cancelSuccess ? (
+                <div className="p-8 text-center space-y-6">
+                  <div className="mx-auto w-20 h-20 bg-green-100 dark:bg-green-950 rounded-full flex items-center justify-center">
+                    <i className="ph-bold ph-check-circle text-5xl text-green-600 dark:text-green-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                      Resgate Cancelado!
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                      O valor foi devolvido ao seu saldo.
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-500">
+                      Redirecionando em {countdown} segundo{countdown !== 1 ? 's' : ''}...
+                    </p>
+                  </div>
+                  <Button
+                    onClick={handleGoToRedemptions}
+                    size="lg"
+                    className="w-full bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white font-semibold"
+                  >
+                    <i className="ph-bold ph-arrow-left text-lg mr-2" />
+                    Voltar para resgates
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  {/* Header */}
+                  <div className="p-6 border-b border-gray-200 dark:border-neutral-700">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-red-100 dark:bg-red-950 rounded-lg">
+                          <i className="ph-bold ph-warning text-2xl text-red-600 dark:text-red-400" />
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                          Cancelar Resgate
+                        </h3>
+                      </div>
+                      <button
+                        onClick={handleCancelCancel}
+                        disabled={cancelMutation.isPending}
+                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50"
+                      >
+                        <i className="ph-bold ph-x text-2xl text-gray-500 dark:text-gray-400" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6 space-y-4">
+                    <p className="text-gray-700 dark:text-gray-300">
+                      Você está prestes a cancelar este resgate. O valor de <span className="font-bold text-red-600 dark:text-red-400">{redemption ? new Intl.NumberFormat('pt-BR').format(redemption.coinsSpent) : '0'} moedas</span> será devolvido ao seu saldo.
+                    </p>
+
+                    {cancelError && (
+                      <div className="p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg">
+                        <div className="flex gap-3">
+                          <i className="ph-bold ph-warning text-lg text-red-600 dark:text-red-400 shrink-0" />
+                          <div>
+                            <h4 className="font-bold text-red-900 dark:text-red-100 mb-1">Erro ao cancelar</h4>
+                            <p className="text-sm text-red-700 dark:text-red-300">{cancelError}</p>
                           </div>
                         </div>
                       </div>
-                    </animated.div>
-                  ))}
-                </div>
-              </div>
-            </div>
+                    )}
 
-            <div className="rounded-3xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-br from-white/90 via-white/80 to-gray-50/80 dark:from-white/10 dark:via-white/5 dark:to-gray-500/5 backdrop-blur-2xl p-8 shadow-xl shadow-purple-500/5 dark:shadow-purple-500/10 space-y-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-500/20 dark:to-indigo-500/20">
-                  <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100-4m0 4v2m0-6V4" />
-                  </svg>
-                </div>
-                <h2 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-                  Ações Disponíveis
-                </h2>
-              </div>
-              
-              {/* Informações do Resgate */}
-              <div className="rounded-2xl border border-gray-200/50 dark:border-white/10 bg-gradient-to-br from-gray-50/80 to-white/80 dark:from-white/5 dark:to-gray-500/5 p-6 space-y-4">
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Detalhes do Resgate</h3>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between py-2 border-b border-gray-200/50 dark:border-white/10">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">ID do Prêmio</span>
-                    <span className="font-mono text-sm text-gray-800 dark:text-gray-200">{redemption.prizeId.slice(0, 12)}...</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between py-2 border-b border-gray-200/50 dark:border-white/10">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Valor Total</span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-rose-600 dark:text-rose-400">
-                        -{new Intl.NumberFormat('pt-BR').format(redemption.coinsSpent)}
-                      </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">moedas</span>
+                    <div>
+                      <label htmlFor="cancel-reason" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                        Motivo do cancelamento *
+                      </label>
+                      <textarea
+                        id="cancel-reason"
+                        value={cancelReason}
+                        onChange={(e) => setCancelReason(e.target.value)}
+                        placeholder="Ex: Escolhi o prêmio errado, não preciso mais, etc."
+                        rows={4}
+                        className="w-full px-4 py-3 text-sm border border-gray-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-600 focus:border-transparent resize-none"
+                        disabled={cancelMutation.isPending}
+                      />
+                      <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                        Por favor, informe o motivo para que possamos melhorar nossos serviços.
+                      </p>
                     </div>
                   </div>
-                  
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Status</span>
-                    <span className={`text-sm font-semibold ${
-                      redemption.status === 'COMPLETED' ? 'text-emerald-600 dark:text-emerald-400' :
-                      redemption.status === 'PROCESSING' ? 'text-indigo-600 dark:text-indigo-400' :
-                      redemption.status === 'PENDING' ? 'text-amber-600 dark:text-amber-400' :
-                      'text-gray-600 dark:text-gray-400'
-                    }`}>
-                      {redemption.status === 'PENDING' && 'Pendente'}
-                      {redemption.status === 'PROCESSING' && 'Processando'}
-                      {redemption.status === 'COMPLETED' && 'Concluído'}
-                      {redemption.status === 'CANCELLED' && 'Cancelado'}
-                    </span>
+
+                  {/* Footer */}
+                  <div className="p-6 bg-gray-50 dark:bg-neutral-800/50 border-t border-gray-200 dark:border-neutral-700">
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={handleCancelCancel}
+                        variant="outline"
+                        size="lg"
+                        className="flex-1"
+                        disabled={cancelMutation.isPending}
+                      >
+                        Manter Resgate
+                      </Button>
+                      <Button
+                        onClick={handleCancelSubmit}
+                        disabled={cancelMutation.isPending || !cancelReason.trim()}
+                        variant="destructive"
+                        size="lg"
+                        className="flex-1"
+                      >
+                        {cancelMutation.isPending ? (
+                          <>
+                            <i className="ph-bold ph-spinner text-lg animate-spin mr-2" />
+                            Cancelando...
+                          </>
+                        ) : (
+                          <>
+                            <i className="ph-bold ph-check text-lg mr-2" />
+                            Confirmar Cancelamento
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </div>
-              
-              {/* Botão de Cancelamento */}
-              {canCancel ? (
-                <button
-                  onClick={handleCancel}
-                  disabled={cancelMutation.isPending}
-                  className="w-full flex items-center justify-center gap-3 rounded-2xl border border-gray-300 dark:border-gray-600 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 py-4 text-sm font-medium text-gray-700 dark:text-gray-300 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-                >
-                  {cancelMutation.isPending ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-gray-400/30 border-t-gray-700 dark:border-t-gray-300 rounded-full" style={{ animation: 'spin 1s linear infinite' }} />
-                      Cancelando resgate...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                      Cancelar Resgate
-                    </>
-                  )}
-                </button>
-              ) : (
-                <div className="rounded-2xl border border-gray-300/50 dark:border-gray-600/50 bg-gradient-to-br from-gray-100/80 to-gray-200/80 dark:from-gray-700/50 dark:to-gray-800/50 p-6 text-center">
-                  <svg className="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                    Cancelamento não disponível
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-500">
-                    {redemption.status === 'COMPLETED' || redemption.status === 'CANCELLED' 
-                      ? 'Resgate já finalizado' 
-                      : 'Prazo de 24h expirado'
-                    }
-                  </p>
-                </div>
+                </>
               )}
             </div>
           </div>
-        </animated.div>
+        )}
       </div>
     </PageLayout>
   )
