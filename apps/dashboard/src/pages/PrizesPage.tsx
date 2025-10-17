@@ -64,7 +64,7 @@ export const PrizesPage: React.FC = () => {
 
         <div className="relative">
           <animated.div style={headerSpring} className="mb-8">
-            <h1 className="mb-2 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
+            <h1 className="mb-2 text-4xl font-bold text-gray-900 dark:text-white">
               Loja de Prêmios
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-400">
@@ -98,9 +98,9 @@ export const PrizesPage: React.FC = () => {
             </div>
           ) : data?.prizes.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="mb-6 rounded-full bg-purple-100 dark:bg-purple-500/10 p-6">
+              <div className="mb-6 rounded-full bg-gray-100 dark:bg-gray-800/50 p-6">
                 <svg
-                  className="h-16 w-16 text-purple-600 dark:text-purple-400"
+                  className="h-16 w-16 text-gray-400 dark:text-gray-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -117,7 +117,7 @@ export const PrizesPage: React.FC = () => {
               <p className="mb-6 text-gray-600 dark:text-gray-400">Tente ajustar os filtros ou fazer uma nova busca</p>
               <button
                 onClick={() => setFilters({})}
-                className="rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-3 font-medium text-white transition-all hover:from-purple-700 hover:to-indigo-700"
+                className="rounded-xl bg-green-600 px-6 py-3 font-medium text-white transition-all hover:bg-green-700"
               >
                 Limpar filtros
               </button>
@@ -134,7 +134,7 @@ export const PrizesPage: React.FC = () => {
                 <div className="mt-12 flex justify-center">
                   <button
                     onClick={handleLoadMore}
-                    className="group flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-6 py-3 font-medium text-gray-700 dark:text-white backdrop-blur-xl transition-all hover:border-purple-500 dark:hover:border-purple-500/50 hover:bg-purple-50 dark:hover:bg-purple-500/10"
+                    className="group flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-6 py-3 font-medium text-gray-700 dark:text-white backdrop-blur-xl transition-all hover:border-green-500 dark:hover:border-green-500/50 hover:bg-green-50 dark:hover:bg-green-500/10"
                   >
                     <span>Carregar mais</span>
                     <svg

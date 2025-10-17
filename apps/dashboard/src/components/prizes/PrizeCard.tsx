@@ -58,7 +58,7 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleClick}
-        className="group relative h-full cursor-pointer overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl transition-colors hover:border-gray-300 dark:hover:border-white/20 shadow-lg hover:shadow-xl"
+        className="group relative h-full cursor-pointer overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl transition-colors hover:border-gray-300 dark:hover:border-white/20 shadow-lg hover:shadow-xl flex flex-col"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
@@ -73,7 +73,7 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
           <div className={`absolute inset-0 bg-gradient-to-t ${getCategoryColor(prize.category)} opacity-40`} />
         </div>
 
-        <div className="relative p-5">
+        <div className="relative p-5 flex flex-col flex-grow">
           <div className="mb-2 flex items-center justify-between">
             <span className="rounded-full bg-gray-100 dark:bg-white/10 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 backdrop-blur-md">
               {prize.category}
@@ -85,7 +85,7 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
             )}
           </div>
 
-          <h3 className="mb-2 line-clamp-2 text-lg font-semibold text-gray-900 dark:text-white transition-colors group-hover:text-purple-600 dark:group-hover:text-purple-400">
+          <h3 className="mb-2 line-clamp-2 text-lg font-semibold text-gray-900 dark:text-white transition-colors group-hover:text-green-600 dark:group-hover:text-green-500">
             {prize.name}
           </h3>
 
@@ -93,37 +93,12 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
             {prize.description}
           </p>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">
-                {prize.coinPrice.toLocaleString('pt-BR')}
-              </span>
-              <span className="text-sm text-gray-600 dark:text-gray-400">moedas</span>
-            </div>
-
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 dark:bg-white/10 backdrop-blur-md transition-all group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-indigo-500">
-              <svg
-                className="h-4 w-4 text-gray-700 dark:text-white group-hover:text-white transition-transform group-hover:translate-x-0.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </div>
+          <div className="flex items-center gap-1 mt-auto">
+            <span className="text-2xl font-bold text-amber-600 dark:text-amber-500">
+              {prize.coinPrice.toLocaleString('pt-BR')}
+            </span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">moedas</span>
           </div>
-
-          {prize.brand && (
-            <div className="mt-3 flex items-center gap-2 border-t border-gray-200 dark:border-white/5 pt-3">
-              <span className="text-xs text-gray-500">por</span>
-              <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{prize.brand}</span>
-            </div>
-          )}
         </div>
       </animated.div>
     </animated.div>
