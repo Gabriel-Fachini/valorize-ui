@@ -44,7 +44,7 @@ export const prizeService = {
     try {
       const response = await api.get<GetPrizeResponse>(`/prizes/catalog/${id}`)
       return response.data.prize
-    } catch (error) {
+    } catch {
       return null
     }
   },

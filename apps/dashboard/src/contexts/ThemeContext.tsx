@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { ThemeContext } from './theme'
 import type { Theme, ProviderProps } from '@types'
 
 export const ThemeProvider = ({ children }: ProviderProps) => {
   const [theme, setTheme] = useState<Theme>(() => {
-    // Verificar se há um tema armazenado no localStorage
+    // If there is no theme stored in localStorage, use the system preference
     const storedTheme = localStorage.getItem('valorize_theme') as Theme
     
-    // Se não houver tema armazenado, usar a preferência do sistema
+    // If there is no theme stored in localStorage, use the system preference
     if (!storedTheme) {
       const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
       const initialTheme = systemPrefersDark ? 'dark' : 'light'
@@ -18,7 +18,7 @@ export const ThemeProvider = ({ children }: ProviderProps) => {
   })
 
   useEffect(() => {
-    // Aplicar ou remover a classe 'dark' no elemento html e body
+    // Apply or remove the 'dark' class on the html and body elements
     if (theme === 'dark') {
       document.documentElement.classList.add('dark')
       document.body.classList.add('dark')
@@ -28,28 +28,32 @@ export const ThemeProvider = ({ children }: ProviderProps) => {
     }
   }, [theme])
 
-  const toggleTheme = () => {
+
+  // Listener for changes in the operating system theme
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = (e: MediaQueryListEvent) => {
+      // If there is no theme stored in localStorage, update the theme
+      if (!localStorage.getItem('valorize_theme')) {
+        setTheme(e.matches ? 'dark' : 'light')
+      }
+    }
+
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [])
+
+  const toggleTheme = useCallback(() => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
     setTheme(newTheme)
     localStorage.setItem('valorize_theme', newTheme)
-    
-    // Aplicar o tema imediatamente
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark')
-      document.body.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      document.body.classList.remove('dark')
-    }
-  }
+  }, [theme])
 
-  return (
-    <ThemeContext.Provider value={{ 
-      theme, 
-      toggleTheme, 
-      isDark: theme === 'dark',
-    }}>
-      {children}
-    </ThemeContext.Provider>
-  )
+  const value = useMemo(() => ({
+    theme,
+    toggleTheme,
+    isDark: theme === 'dark',
+  }), [theme, toggleTheme])
+
+  return <ThemeContext value={value}>{children}</ThemeContext>
 }
