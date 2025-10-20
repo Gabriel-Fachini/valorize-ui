@@ -11,7 +11,7 @@ interface UseTourSidebarProps {
 export const useTourSidebar = ({ isOpen, currentStep }: UseTourSidebarProps) => {
   const { setMobileSidebarOpen } = useSidebar()
 
-  // Gerencia sidebar durante o tour
+  // Manage sidebar during the tour
   useEffect(() => {
     if (!isOpen || !isMobile()) return
 
@@ -19,14 +19,14 @@ export const useTourSidebar = ({ isOpen, currentStep }: UseTourSidebarProps) => 
     setMobileSidebarOpen(shouldShowSidebar)
   }, [currentStep, isOpen, setMobileSidebarOpen])
 
-  // Abre sidebar ao iniciar tour
+  // Open sidebar when starting the tour
   const openSidebarOnStart = useCallback(() => {
     if (isMobile()) {
       setMobileSidebarOpen(true)
     }
   }, [setMobileSidebarOpen])
 
-  // Fecha sidebar ao completar tour
+  // Close sidebar when completing the tour
   const closeSidebarOnComplete = useCallback(() => {
     if (isMobile()) {
       setMobileSidebarOpen(false)

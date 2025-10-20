@@ -17,10 +17,10 @@ export const useTourController = (): OnboardingContextType => {
   
   const previousRouteRef = useRef<string>('')
   
-  // Hooks especializados
+  // Specialized hooks
   const { openSidebarOnStart, closeSidebarOnComplete } = useTourSidebar({ isOpen, currentStep })
   
-  // Atualiza steps quando tour abre ou tela muda de tamanho
+  // Update steps when tour opens or screen size changes
   useEffect(() => {
     if (!isOpen || !setSteps) return
     
@@ -34,7 +34,7 @@ export const useTourController = (): OnboardingContextType => {
     return () => window.removeEventListener('resize', updateSteps)
   }, [isOpen, setSteps])
   
-  // Callbacks memoizados
+  // Memoized callbacks
   const startTour = useCallback(() => {
     setIsOpen(true)
     openSidebarOnStart()
@@ -70,7 +70,7 @@ export const useTourController = (): OnboardingContextType => {
     previousRouteRef.current = pathname
   }, [isOpen, currentStep, setCurrentStep, setSteps])
   
-  // Auto-start
+  // Auto-start when user is authenticated and onboarding is not completed
   useTourAutoStart({
     isLoading,
     hasUser: !!user,
@@ -79,14 +79,14 @@ export const useTourController = (): OnboardingContextType => {
     onOpenSidebar: openSidebarOnStart,
   })
   
-  // Listen for completion event
+  // Listen for completion event to mark onboarding as completed
   useEffect(() => {
     const handleComplete = () => completeTour()
     window.addEventListener('onboarding:complete', handleComplete)
     return () => window.removeEventListener('onboarding:complete', handleComplete)
   }, [completeTour])
   
-  // Close tour when user logs out
+  // Close tour when user logs out and onboarding is not completed
   useEffect(() => {
     if (!isLoading && !user && isOpen) {
       setIsOpen(false)

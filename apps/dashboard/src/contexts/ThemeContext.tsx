@@ -7,7 +7,6 @@ export const ThemeProvider = ({ children }: ProviderProps) => {
     // If there is no theme stored in localStorage, use the system preference
     const storedTheme = localStorage.getItem('valorize_theme') as Theme
     
-    // If there is no theme stored in localStorage, use the system preference
     if (!storedTheme) {
       const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
       const initialTheme = systemPrefersDark ? 'dark' : 'light'
@@ -18,7 +17,7 @@ export const ThemeProvider = ({ children }: ProviderProps) => {
   })
 
   useEffect(() => {
-    // Apply or remove the 'dark' class on the html and body elements
+    // Apply or remove the 'dark' class on the document root (html) and body elements
     if (theme === 'dark') {
       document.documentElement.classList.add('dark')
       document.body.classList.add('dark')
@@ -28,8 +27,7 @@ export const ThemeProvider = ({ children }: ProviderProps) => {
     }
   }, [theme])
 
-
-  // Listener for changes in the operating system theme
+  // Listen for changes in system theme preference and update automatically if no user preference is stored
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handleChange = (e: MediaQueryListEvent) => {
