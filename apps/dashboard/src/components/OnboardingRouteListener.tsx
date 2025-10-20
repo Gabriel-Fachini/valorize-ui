@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from '@tanstack/react-router'
-import { useOnboarding } from '@/contexts/OnboardingContext'
+import { useOnboarding } from '@/contexts/onboarding'
 
 /**
  * Componente que monitora mudanças de rota e avança o tour do onboarding

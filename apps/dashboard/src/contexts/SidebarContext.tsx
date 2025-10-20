@@ -1,15 +1,5 @@
-import React, { createContext, useState } from 'react'
-
-interface SidebarContextType {
-  desktopSidebarCollapsed: boolean
-  setDesktopSidebarCollapsed: (collapsed: boolean) => void
-  toggleDesktopSidebar: () => void
-  mobileSidebarOpen: boolean
-  setMobileSidebarOpen: (open: boolean) => void
-  toggleMobileSidebar: () => void
-}
-
-export const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
+import React, { useState, useCallback, useMemo } from 'react'
+import { SidebarContext } from './sidebar'
 
 interface SidebarProviderProps {
   children: React.ReactNode
@@ -19,24 +9,22 @@ export const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) =>
   const [desktopSidebarCollapsed, setDesktopSidebarCollapsed] = useState(false)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
 
-  const toggleDesktopSidebar = () => {
+  const toggleDesktopSidebar = useCallback(() => {
     setDesktopSidebarCollapsed(prev => !prev)
-  }
+  }, [])
 
-  const toggleMobileSidebar = () => {
+  const toggleMobileSidebar = useCallback(() => {
     setMobileSidebarOpen(prev => !prev)
-  }
+  }, [])
 
-  return (
-    <SidebarContext.Provider value={{
-      desktopSidebarCollapsed,
-      setDesktopSidebarCollapsed,
-      toggleDesktopSidebar,
-      mobileSidebarOpen,
-      setMobileSidebarOpen,
-      toggleMobileSidebar,
-    }}>
-      {children}
-    </SidebarContext.Provider>
-  )
+  const value = useMemo(() => ({
+    desktopSidebarCollapsed,
+    setDesktopSidebarCollapsed,
+    toggleDesktopSidebar,
+    mobileSidebarOpen,
+    setMobileSidebarOpen,
+    toggleMobileSidebar,
+  }), [desktopSidebarCollapsed, mobileSidebarOpen, toggleDesktopSidebar, toggleMobileSidebar])
+
+  return <SidebarContext value={value}>{children}</SidebarContext>
 }

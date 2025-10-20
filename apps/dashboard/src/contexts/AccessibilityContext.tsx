@@ -64,9 +64,5 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     resetDefaults,
   }), [prefs, setFontScale, toggleHighContrast, toggleReduceMotion, resetDefaults])
 
-  return (
-    <AccessibilityContext.Provider value={value}>
-      {children}
-    </AccessibilityContext.Provider>
-  )
+  return <AccessibilityContext value={value}>{children}</AccessibilityContext>
 }
