@@ -1,1502 +1,5 @@
 {
   "before": {
-    "totalCommits": 12,
-    "totalDuration": "88.30",
-    "avgCommitDuration": "7.36",
-    "components": [
-      {
-        "name": "Component-96",
-        "renders": 8,
-        "totalDuration": "54.00",
-        "avgDuration": "6.75",
-        "maxDuration": "13.60",
-        "minDuration": "3.60"
-      },
-      {
-        "name": "Component-97",
-        "renders": 8,
-        "totalDuration": "20.80",
-        "avgDuration": "2.60",
-        "maxDuration": "6.80",
-        "minDuration": "0.80"
-      },
-      {
-        "name": "Component-98",
-        "renders": 8,
-        "totalDuration": "19.90",
-        "avgDuration": "2.49",
-        "maxDuration": "6.60",
-        "minDuration": "0.70"
-      },
-      {
-        "name": "Component-99",
-        "renders": 8,
-        "totalDuration": "3.40",
-        "avgDuration": "0.42",
-        "maxDuration": "0.60",
-        "minDuration": "0.30"
-      },
-      {
-        "name": "Component-100",
-        "renders": 8,
-        "totalDuration": "2.70",
-        "avgDuration": "0.34",
-        "maxDuration": "0.50",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-101",
-        "renders": 8,
-        "totalDuration": "2.10",
-        "avgDuration": "0.26",
-        "maxDuration": "1.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-102",
-        "renders": 8,
-        "totalDuration": "2.80",
-        "avgDuration": "0.35",
-        "maxDuration": "0.90",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-103",
-        "renders": 8,
-        "totalDuration": "0.80",
-        "avgDuration": "0.10",
-        "maxDuration": "0.20",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-112",
-        "renders": 8,
-        "totalDuration": "47.10",
-        "avgDuration": "5.89",
-        "maxDuration": "11.20",
-        "minDuration": "3.50"
-      },
-      {
-        "name": "Component-113",
-        "renders": 8,
-        "totalDuration": "16.20",
-        "avgDuration": "2.02",
-        "maxDuration": "6.30",
-        "minDuration": "0.80"
-      },
-      {
-        "name": "Component-114",
-        "renders": 8,
-        "totalDuration": "15.30",
-        "avgDuration": "1.91",
-        "maxDuration": "6.20",
-        "minDuration": "0.70"
-      },
-      {
-        "name": "Component-115",
-        "renders": 8,
-        "totalDuration": "3.00",
-        "avgDuration": "0.38",
-        "maxDuration": "0.50",
-        "minDuration": "0.30"
-      },
-      {
-        "name": "Component-116",
-        "renders": 8,
-        "totalDuration": "2.50",
-        "avgDuration": "0.31",
-        "maxDuration": "0.40",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-117",
-        "renders": 8,
-        "totalDuration": "1.20",
-        "avgDuration": "0.15",
-        "maxDuration": "0.30",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-118",
-        "renders": 8,
-        "totalDuration": "2.30",
-        "avgDuration": "0.29",
-        "maxDuration": "0.60",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-119",
-        "renders": 8,
-        "totalDuration": "0.80",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-12",
-        "renders": 4,
-        "totalDuration": "37.30",
-        "avgDuration": "9.32",
-        "maxDuration": "20.90",
-        "minDuration": "0.30"
-      },
-      {
-        "name": "Component-13",
-        "renders": 4,
-        "totalDuration": "36.90",
-        "avgDuration": "9.22",
-        "maxDuration": "20.90",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-17",
-        "renders": 4,
-        "totalDuration": "36.40",
-        "avgDuration": "9.10",
-        "maxDuration": "20.90",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-18",
-        "renders": 4,
-        "totalDuration": "35.90",
-        "avgDuration": "8.97",
-        "maxDuration": "20.90",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-24",
-        "renders": 4,
-        "totalDuration": "0.60",
-        "avgDuration": "0.15",
-        "maxDuration": "0.40",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-37",
-        "renders": 3,
-        "totalDuration": "0.10",
-        "avgDuration": "0.03",
-        "maxDuration": "0.10",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-47",
-        "renders": 3,
-        "totalDuration": "35.70",
-        "avgDuration": "11.90",
-        "maxDuration": "20.80",
-        "minDuration": "1.40"
-      },
-      {
-        "name": "Component-51",
-        "renders": 3,
-        "totalDuration": "0.60",
-        "avgDuration": "0.20",
-        "maxDuration": "0.40",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-53",
-        "renders": 3,
-        "totalDuration": "2.40",
-        "avgDuration": "0.80",
-        "maxDuration": "1.20",
-        "minDuration": "0.40"
-      },
-      {
-        "name": "Component-71",
-        "renders": 3,
-        "totalDuration": "1.40",
-        "avgDuration": "0.47",
-        "maxDuration": "0.60",
-        "minDuration": "0.30"
-      },
-      {
-        "name": "Component-85",
-        "renders": 3,
-        "totalDuration": "0.90",
-        "avgDuration": "0.30",
-        "maxDuration": "0.30",
-        "minDuration": "0.30"
-      },
-      {
-        "name": "Component-25",
-        "renders": 2,
-        "totalDuration": "3.90",
-        "avgDuration": "1.95",
-        "maxDuration": "3.40",
-        "minDuration": "0.50"
-      },
-      {
-        "name": "Component-26",
-        "renders": 2,
-        "totalDuration": "3.50",
-        "avgDuration": "1.75",
-        "maxDuration": "3.20",
-        "minDuration": "0.30"
-      },
-      {
-        "name": "Component-27",
-        "renders": 2,
-        "totalDuration": "3.50",
-        "avgDuration": "1.75",
-        "maxDuration": "3.20",
-        "minDuration": "0.30"
-      },
-      {
-        "name": "Component-28",
-        "renders": 2,
-        "totalDuration": "3.40",
-        "avgDuration": "1.70",
-        "maxDuration": "3.10",
-        "minDuration": "0.30"
-      },
-      {
-        "name": "Component-48",
-        "renders": 2,
-        "totalDuration": "15.30",
-        "avgDuration": "7.65",
-        "maxDuration": "9.30",
-        "minDuration": "6.00"
-      },
-      {
-        "name": "Component-49",
-        "renders": 2,
-        "totalDuration": "1.20",
-        "avgDuration": "0.60",
-        "maxDuration": "0.80",
-        "minDuration": "0.40"
-      },
-      {
-        "name": "Component-50",
-        "renders": 2,
-        "totalDuration": "8.30",
-        "avgDuration": "4.15",
-        "maxDuration": "5.40",
-        "minDuration": "2.90"
-      },
-      {
-        "name": "Component-52",
-        "renders": 2,
-        "totalDuration": "2.40",
-        "avgDuration": "1.20",
-        "maxDuration": "1.80",
-        "minDuration": "0.60"
-      },
-      {
-        "name": "Component-54",
-        "renders": 2,
-        "totalDuration": "0.70",
-        "avgDuration": "0.35",
-        "maxDuration": "0.40",
-        "minDuration": "0.30"
-      },
-      {
-        "name": "Component-55",
-        "renders": 2,
-        "totalDuration": "4.10",
-        "avgDuration": "2.05",
-        "maxDuration": "2.50",
-        "minDuration": "1.60"
-      },
-      {
-        "name": "Component-56",
-        "renders": 2,
-        "totalDuration": "0.50",
-        "avgDuration": "0.25",
-        "maxDuration": "0.40",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-57",
-        "renders": 2,
-        "totalDuration": "0.60",
-        "avgDuration": "0.30",
-        "maxDuration": "0.30",
-        "minDuration": "0.30"
-      },
-      {
-        "name": "Component-58",
-        "renders": 2,
-        "totalDuration": "0.20",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-59",
-        "renders": 2,
-        "totalDuration": "0.80",
-        "avgDuration": "0.40",
-        "maxDuration": "0.50",
-        "minDuration": "0.30"
-      },
-      {
-        "name": "Component-60",
-        "renders": 2,
-        "totalDuration": "0.30",
-        "avgDuration": "0.15",
-        "maxDuration": "0.20",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-61",
-        "renders": 2,
-        "totalDuration": "0.50",
-        "avgDuration": "0.25",
-        "maxDuration": "0.30",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-62",
-        "renders": 2,
-        "totalDuration": "0.30",
-        "avgDuration": "0.15",
-        "maxDuration": "0.20",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-63",
-        "renders": 2,
-        "totalDuration": "0.40",
-        "avgDuration": "0.20",
-        "maxDuration": "0.20",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-64",
-        "renders": 2,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-65",
-        "renders": 2,
-        "totalDuration": "0.50",
-        "avgDuration": "0.25",
-        "maxDuration": "0.30",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-66",
-        "renders": 2,
-        "totalDuration": "0.10",
-        "avgDuration": "0.05",
-        "maxDuration": "0.10",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-67",
-        "renders": 2,
-        "totalDuration": "0.90",
-        "avgDuration": "0.45",
-        "maxDuration": "0.50",
-        "minDuration": "0.40"
-      },
-      {
-        "name": "Component-68",
-        "renders": 2,
-        "totalDuration": "0.20",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-69",
-        "renders": 2,
-        "totalDuration": "5.70",
-        "avgDuration": "2.85",
-        "maxDuration": "3.00",
-        "minDuration": "2.70"
-      },
-      {
-        "name": "Component-70",
-        "renders": 2,
-        "totalDuration": "1.20",
-        "avgDuration": "0.60",
-        "maxDuration": "0.70",
-        "minDuration": "0.50"
-      },
-      {
-        "name": "Component-72",
-        "renders": 2,
-        "totalDuration": "0.60",
-        "avgDuration": "0.30",
-        "maxDuration": "0.40",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-73",
-        "renders": 2,
-        "totalDuration": "3.00",
-        "avgDuration": "1.50",
-        "maxDuration": "1.50",
-        "minDuration": "1.50"
-      },
-      {
-        "name": "Component-74",
-        "renders": 2,
-        "totalDuration": "0.20",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-75",
-        "renders": 2,
-        "totalDuration": "0.50",
-        "avgDuration": "0.25",
-        "maxDuration": "0.30",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-76",
-        "renders": 2,
-        "totalDuration": "0.30",
-        "avgDuration": "0.15",
-        "maxDuration": "0.20",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-77",
-        "renders": 2,
-        "totalDuration": "0.40",
-        "avgDuration": "0.20",
-        "maxDuration": "0.20",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-78",
-        "renders": 2,
-        "totalDuration": "0.20",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-79",
-        "renders": 2,
-        "totalDuration": "0.50",
-        "avgDuration": "0.25",
-        "maxDuration": "0.30",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-80",
-        "renders": 2,
-        "totalDuration": "0.20",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-81",
-        "renders": 2,
-        "totalDuration": "0.40",
-        "avgDuration": "0.20",
-        "maxDuration": "0.20",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-82",
-        "renders": 2,
-        "totalDuration": "0.10",
-        "avgDuration": "0.05",
-        "maxDuration": "0.10",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-83",
-        "renders": 2,
-        "totalDuration": "0.50",
-        "avgDuration": "0.25",
-        "maxDuration": "0.30",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-84",
-        "renders": 2,
-        "totalDuration": "0.20",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-86",
-        "renders": 2,
-        "totalDuration": "0.10",
-        "avgDuration": "0.05",
-        "maxDuration": "0.10",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-87",
-        "renders": 2,
-        "totalDuration": "10.10",
-        "avgDuration": "5.05",
-        "maxDuration": "6.40",
-        "minDuration": "3.70"
-      },
-      {
-        "name": "Component-122",
-        "renders": 2,
-        "totalDuration": "7.60",
-        "avgDuration": "3.80",
-        "maxDuration": "5.30",
-        "minDuration": "2.30"
-      },
-      {
-        "name": "Component-123",
-        "renders": 2,
-        "totalDuration": "0.50",
-        "avgDuration": "0.25",
-        "maxDuration": "0.30",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-124",
-        "renders": 2,
-        "totalDuration": "3.80",
-        "avgDuration": "1.90",
-        "maxDuration": "3.00",
-        "minDuration": "0.80"
-      },
-      {
-        "name": "Component-125",
-        "renders": 2,
-        "totalDuration": "2.20",
-        "avgDuration": "1.10",
-        "maxDuration": "2.00",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-126",
-        "renders": 2,
-        "totalDuration": "1.60",
-        "avgDuration": "0.80",
-        "maxDuration": "1.00",
-        "minDuration": "0.60"
-      },
-      {
-        "name": "Component-127",
-        "renders": 2,
-        "totalDuration": "0.10",
-        "avgDuration": "0.05",
-        "maxDuration": "0.10",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-128",
-        "renders": 2,
-        "totalDuration": "1.60",
-        "avgDuration": "0.80",
-        "maxDuration": "0.90",
-        "minDuration": "0.70"
-      },
-      {
-        "name": "Component-129",
-        "renders": 2,
-        "totalDuration": "0.20",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-130",
-        "renders": 2,
-        "totalDuration": "5.20",
-        "avgDuration": "2.60",
-        "maxDuration": "2.90",
-        "minDuration": "2.30"
-      },
-      {
-        "name": "Component-131",
-        "renders": 2,
-        "totalDuration": "0.30",
-        "avgDuration": "0.15",
-        "maxDuration": "0.20",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-132",
-        "renders": 2,
-        "totalDuration": "1.70",
-        "avgDuration": "0.85",
-        "maxDuration": "0.90",
-        "minDuration": "0.80"
-      },
-      {
-        "name": "Component-133",
-        "renders": 2,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-134",
-        "renders": 2,
-        "totalDuration": "1.40",
-        "avgDuration": "0.70",
-        "maxDuration": "0.80",
-        "minDuration": "0.60"
-      },
-      {
-        "name": "Component-135",
-        "renders": 2,
-        "totalDuration": "0.20",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-136",
-        "renders": 2,
-        "totalDuration": "1.60",
-        "avgDuration": "0.80",
-        "maxDuration": "0.90",
-        "minDuration": "0.70"
-      },
-      {
-        "name": "Component-137",
-        "renders": 2,
-        "totalDuration": "0.20",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-1",
-        "renders": 1,
-        "totalDuration": "4.50",
-        "avgDuration": "4.50",
-        "maxDuration": "4.50",
-        "minDuration": "4.50"
-      },
-      {
-        "name": "Component-2",
-        "renders": 1,
-        "totalDuration": "3.80",
-        "avgDuration": "3.80",
-        "maxDuration": "3.80",
-        "minDuration": "3.80"
-      },
-      {
-        "name": "Component-3",
-        "renders": 1,
-        "totalDuration": "3.50",
-        "avgDuration": "3.50",
-        "maxDuration": "3.50",
-        "minDuration": "3.50"
-      },
-      {
-        "name": "Component-4",
-        "renders": 1,
-        "totalDuration": "3.30",
-        "avgDuration": "3.30",
-        "maxDuration": "3.30",
-        "minDuration": "3.30"
-      },
-      {
-        "name": "Component-5",
-        "renders": 1,
-        "totalDuration": "3.10",
-        "avgDuration": "3.10",
-        "maxDuration": "3.10",
-        "minDuration": "3.10"
-      },
-      {
-        "name": "Component-6",
-        "renders": 1,
-        "totalDuration": "3.00",
-        "avgDuration": "3.00",
-        "maxDuration": "3.00",
-        "minDuration": "3.00"
-      },
-      {
-        "name": "Component-7",
-        "renders": 1,
-        "totalDuration": "2.60",
-        "avgDuration": "2.60",
-        "maxDuration": "2.60",
-        "minDuration": "2.60"
-      },
-      {
-        "name": "Component-8",
-        "renders": 1,
-        "totalDuration": "2.60",
-        "avgDuration": "2.60",
-        "maxDuration": "2.60",
-        "minDuration": "2.60"
-      },
-      {
-        "name": "Component-9",
-        "renders": 1,
-        "totalDuration": "2.50",
-        "avgDuration": "2.50",
-        "maxDuration": "2.50",
-        "minDuration": "2.50"
-      },
-      {
-        "name": "Component-10",
-        "renders": 1,
-        "totalDuration": "2.50",
-        "avgDuration": "2.50",
-        "maxDuration": "2.50",
-        "minDuration": "2.50"
-      },
-      {
-        "name": "Component-11",
-        "renders": 1,
-        "totalDuration": "2.40",
-        "avgDuration": "2.40",
-        "maxDuration": "2.40",
-        "minDuration": "2.40"
-      },
-      {
-        "name": "Component-14",
-        "renders": 1,
-        "totalDuration": "2.20",
-        "avgDuration": "2.20",
-        "maxDuration": "2.20",
-        "minDuration": "2.20"
-      },
-      {
-        "name": "Component-15",
-        "renders": 1,
-        "totalDuration": "2.00",
-        "avgDuration": "2.00",
-        "maxDuration": "2.00",
-        "minDuration": "2.00"
-      },
-      {
-        "name": "Component-16",
-        "renders": 1,
-        "totalDuration": "1.80",
-        "avgDuration": "1.80",
-        "maxDuration": "1.80",
-        "minDuration": "1.80"
-      },
-      {
-        "name": "Component-19",
-        "renders": 1,
-        "totalDuration": "1.40",
-        "avgDuration": "1.40",
-        "maxDuration": "1.40",
-        "minDuration": "1.40"
-      },
-      {
-        "name": "Component-20",
-        "renders": 1,
-        "totalDuration": "1.30",
-        "avgDuration": "1.30",
-        "maxDuration": "1.30",
-        "minDuration": "1.30"
-      },
-      {
-        "name": "Component-21",
-        "renders": 1,
-        "totalDuration": "1.20",
-        "avgDuration": "1.20",
-        "maxDuration": "1.20",
-        "minDuration": "1.20"
-      },
-      {
-        "name": "Component-22",
-        "renders": 1,
-        "totalDuration": "1.20",
-        "avgDuration": "1.20",
-        "maxDuration": "1.20",
-        "minDuration": "1.20"
-      },
-      {
-        "name": "Component-23",
-        "renders": 1,
-        "totalDuration": "1.20",
-        "avgDuration": "1.20",
-        "maxDuration": "1.20",
-        "minDuration": "1.20"
-      },
-      {
-        "name": "Component-29",
-        "renders": 1,
-        "totalDuration": "3.10",
-        "avgDuration": "3.10",
-        "maxDuration": "3.10",
-        "minDuration": "3.10"
-      },
-      {
-        "name": "Component-30",
-        "renders": 1,
-        "totalDuration": "2.70",
-        "avgDuration": "2.70",
-        "maxDuration": "2.70",
-        "minDuration": "2.70"
-      },
-      {
-        "name": "Component-31",
-        "renders": 1,
-        "totalDuration": "2.70",
-        "avgDuration": "2.70",
-        "maxDuration": "2.70",
-        "minDuration": "2.70"
-      },
-      {
-        "name": "Component-32",
-        "renders": 1,
-        "totalDuration": "2.60",
-        "avgDuration": "2.60",
-        "maxDuration": "2.60",
-        "minDuration": "2.60"
-      },
-      {
-        "name": "Component-33",
-        "renders": 1,
-        "totalDuration": "2.50",
-        "avgDuration": "2.50",
-        "maxDuration": "2.50",
-        "minDuration": "2.50"
-      },
-      {
-        "name": "Component-34",
-        "renders": 1,
-        "totalDuration": "2.50",
-        "avgDuration": "2.50",
-        "maxDuration": "2.50",
-        "minDuration": "2.50"
-      },
-      {
-        "name": "Component-35",
-        "renders": 1,
-        "totalDuration": "2.50",
-        "avgDuration": "2.50",
-        "maxDuration": "2.50",
-        "minDuration": "2.50"
-      },
-      {
-        "name": "Component-36",
-        "renders": 1,
-        "totalDuration": "2.30",
-        "avgDuration": "2.30",
-        "maxDuration": "2.30",
-        "minDuration": "2.30"
-      },
-      {
-        "name": "Component-38",
-        "renders": 1,
-        "totalDuration": "2.10",
-        "avgDuration": "2.10",
-        "maxDuration": "2.10",
-        "minDuration": "2.10"
-      },
-      {
-        "name": "Component-39",
-        "renders": 1,
-        "totalDuration": "1.90",
-        "avgDuration": "1.90",
-        "maxDuration": "1.90",
-        "minDuration": "1.90"
-      },
-      {
-        "name": "Component-40",
-        "renders": 1,
-        "totalDuration": "1.60",
-        "avgDuration": "1.60",
-        "maxDuration": "1.60",
-        "minDuration": "1.60"
-      },
-      {
-        "name": "Component-41",
-        "renders": 1,
-        "totalDuration": "1.60",
-        "avgDuration": "1.60",
-        "maxDuration": "1.60",
-        "minDuration": "1.60"
-      },
-      {
-        "name": "Component-42",
-        "renders": 1,
-        "totalDuration": "1.60",
-        "avgDuration": "1.60",
-        "maxDuration": "1.60",
-        "minDuration": "1.60"
-      },
-      {
-        "name": "Component-43",
-        "renders": 1,
-        "totalDuration": "1.60",
-        "avgDuration": "1.60",
-        "maxDuration": "1.60",
-        "minDuration": "1.60"
-      },
-      {
-        "name": "Component-44",
-        "renders": 1,
-        "totalDuration": "1.60",
-        "avgDuration": "1.60",
-        "maxDuration": "1.60",
-        "minDuration": "1.60"
-      },
-      {
-        "name": "Component-45",
-        "renders": 1,
-        "totalDuration": "1.50",
-        "avgDuration": "1.50",
-        "maxDuration": "1.50",
-        "minDuration": "1.50"
-      },
-      {
-        "name": "Component-46",
-        "renders": 1,
-        "totalDuration": "1.50",
-        "avgDuration": "1.50",
-        "maxDuration": "1.50",
-        "minDuration": "1.50"
-      },
-      {
-        "name": "Component-88",
-        "renders": 1,
-        "totalDuration": "6.20",
-        "avgDuration": "6.20",
-        "maxDuration": "6.20",
-        "minDuration": "6.20"
-      },
-      {
-        "name": "Component-89",
-        "renders": 1,
-        "totalDuration": "6.10",
-        "avgDuration": "6.10",
-        "maxDuration": "6.10",
-        "minDuration": "6.10"
-      },
-      {
-        "name": "Component-90",
-        "renders": 1,
-        "totalDuration": "5.90",
-        "avgDuration": "5.90",
-        "maxDuration": "5.90",
-        "minDuration": "5.90"
-      },
-      {
-        "name": "Component-91",
-        "renders": 1,
-        "totalDuration": "5.90",
-        "avgDuration": "5.90",
-        "maxDuration": "5.90",
-        "minDuration": "5.90"
-      },
-      {
-        "name": "Component-92",
-        "renders": 1,
-        "totalDuration": "5.90",
-        "avgDuration": "5.90",
-        "maxDuration": "5.90",
-        "minDuration": "5.90"
-      },
-      {
-        "name": "Component-93",
-        "renders": 1,
-        "totalDuration": "5.80",
-        "avgDuration": "5.80",
-        "maxDuration": "5.80",
-        "minDuration": "5.80"
-      },
-      {
-        "name": "Component-94",
-        "renders": 1,
-        "totalDuration": "5.70",
-        "avgDuration": "5.70",
-        "maxDuration": "5.70",
-        "minDuration": "5.70"
-      },
-      {
-        "name": "Component-95",
-        "renders": 1,
-        "totalDuration": "5.70",
-        "avgDuration": "5.70",
-        "maxDuration": "5.70",
-        "minDuration": "5.70"
-      },
-      {
-        "name": "Component-104",
-        "renders": 1,
-        "totalDuration": "4.80",
-        "avgDuration": "4.80",
-        "maxDuration": "4.80",
-        "minDuration": "4.80"
-      },
-      {
-        "name": "Component-105",
-        "renders": 1,
-        "totalDuration": "4.80",
-        "avgDuration": "4.80",
-        "maxDuration": "4.80",
-        "minDuration": "4.80"
-      },
-      {
-        "name": "Component-106",
-        "renders": 1,
-        "totalDuration": "4.50",
-        "avgDuration": "4.50",
-        "maxDuration": "4.50",
-        "minDuration": "4.50"
-      },
-      {
-        "name": "Component-107",
-        "renders": 1,
-        "totalDuration": "4.50",
-        "avgDuration": "4.50",
-        "maxDuration": "4.50",
-        "minDuration": "4.50"
-      },
-      {
-        "name": "Component-108",
-        "renders": 1,
-        "totalDuration": "4.50",
-        "avgDuration": "4.50",
-        "maxDuration": "4.50",
-        "minDuration": "4.50"
-      },
-      {
-        "name": "Component-109",
-        "renders": 1,
-        "totalDuration": "4.40",
-        "avgDuration": "4.40",
-        "maxDuration": "4.40",
-        "minDuration": "4.40"
-      },
-      {
-        "name": "Component-110",
-        "renders": 1,
-        "totalDuration": "4.40",
-        "avgDuration": "4.40",
-        "maxDuration": "4.40",
-        "minDuration": "4.40"
-      },
-      {
-        "name": "Component-111",
-        "renders": 1,
-        "totalDuration": "4.40",
-        "avgDuration": "4.40",
-        "maxDuration": "4.40",
-        "minDuration": "4.40"
-      },
-      {
-        "name": "Component-120",
-        "renders": 1,
-        "totalDuration": "0.60",
-        "avgDuration": "0.60",
-        "maxDuration": "0.60",
-        "minDuration": "0.60"
-      },
-      {
-        "name": "Component-121",
-        "renders": 1,
-        "totalDuration": "0.40",
-        "avgDuration": "0.40",
-        "maxDuration": "0.40",
-        "minDuration": "0.40"
-      },
-      {
-        "name": "Component-138",
-        "renders": 1,
-        "totalDuration": "3.30",
-        "avgDuration": "3.30",
-        "maxDuration": "3.30",
-        "minDuration": "3.30"
-      },
-      {
-        "name": "Component-139",
-        "renders": 1,
-        "totalDuration": "0.20",
-        "avgDuration": "0.20",
-        "maxDuration": "0.20",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-140",
-        "renders": 1,
-        "totalDuration": "0.90",
-        "avgDuration": "0.90",
-        "maxDuration": "0.90",
-        "minDuration": "0.90"
-      },
-      {
-        "name": "Component-141",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-142",
-        "renders": 1,
-        "totalDuration": "0.20",
-        "avgDuration": "0.20",
-        "maxDuration": "0.20",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-143",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-144",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-145",
-        "renders": 1,
-        "totalDuration": "0.70",
-        "avgDuration": "0.70",
-        "maxDuration": "0.70",
-        "minDuration": "0.70"
-      },
-      {
-        "name": "Component-146",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-147",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-148",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-149",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-150",
-        "renders": 1,
-        "totalDuration": "0.70",
-        "avgDuration": "0.70",
-        "maxDuration": "0.70",
-        "minDuration": "0.70"
-      },
-      {
-        "name": "Component-151",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-152",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-153",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-154",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-155",
-        "renders": 1,
-        "totalDuration": "0.70",
-        "avgDuration": "0.70",
-        "maxDuration": "0.70",
-        "minDuration": "0.70"
-      },
-      {
-        "name": "Component-156",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-157",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-158",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-159",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-160",
-        "renders": 1,
-        "totalDuration": "3.10",
-        "avgDuration": "3.10",
-        "maxDuration": "3.10",
-        "minDuration": "3.10"
-      },
-      {
-        "name": "Component-161",
-        "renders": 1,
-        "totalDuration": "0.20",
-        "avgDuration": "0.20",
-        "maxDuration": "0.20",
-        "minDuration": "0.20"
-      },
-      {
-        "name": "Component-162",
-        "renders": 1,
-        "totalDuration": "0.60",
-        "avgDuration": "0.60",
-        "maxDuration": "0.60",
-        "minDuration": "0.60"
-      },
-      {
-        "name": "Component-163",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-164",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-165",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-166",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-167",
-        "renders": 1,
-        "totalDuration": "0.90",
-        "avgDuration": "0.90",
-        "maxDuration": "0.90",
-        "minDuration": "0.90"
-      },
-      {
-        "name": "Component-168",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-169",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-170",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-171",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-172",
-        "renders": 1,
-        "totalDuration": "0.70",
-        "avgDuration": "0.70",
-        "maxDuration": "0.70",
-        "minDuration": "0.70"
-      },
-      {
-        "name": "Component-173",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-174",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-175",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-176",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-177",
-        "renders": 1,
-        "totalDuration": "0.60",
-        "avgDuration": "0.60",
-        "maxDuration": "0.60",
-        "minDuration": "0.60"
-      },
-      {
-        "name": "Component-178",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-179",
-        "renders": 1,
-        "totalDuration": "0.10",
-        "avgDuration": "0.10",
-        "maxDuration": "0.10",
-        "minDuration": "0.10"
-      },
-      {
-        "name": "Component-180",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      },
-      {
-        "name": "Component-181",
-        "renders": 1,
-        "totalDuration": "0.00",
-        "avgDuration": "0.00",
-        "maxDuration": "0.00",
-        "minDuration": "0.00"
-      }
-    ],
-    "contexts": {
-      "theme": {
-        "renders": 376,
-        "totalDuration": "667.70",
-        "avgDuration": "1.78"
-      },
-      "sidebar": {
-        "renders": 376,
-        "totalDuration": "667.70",
-        "avgDuration": "1.78"
-      },
-      "accessibility": {
-        "renders": 376,
-        "totalDuration": "667.70",
-        "avgDuration": "1.78"
-      },
-      "auth": {
-        "renders": 376,
-        "totalDuration": "667.70",
-        "avgDuration": "1.78"
-      },
-      "onboarding": {
-        "renders": 376,
-        "totalDuration": "667.70",
-        "avgDuration": "1.78"
-      },
-      "query": {
-        "renders": 376,
-        "totalDuration": "667.70",
-        "avgDuration": "1.78"
-      },
-      "router": {
-        "renders": 376,
-        "totalDuration": "667.70",
-        "avgDuration": "1.78"
-      },
-      "tour": {
-        "renders": 376,
-        "totalDuration": "667.70",
-        "avgDuration": "1.78"
-      }
-    }
-  },
-  "after": {
     "totalCommits": 13,
     "totalDuration": "119.10",
     "avgCommitDuration": "9.16",
@@ -2985,5 +1488,1502 @@
       }
     }
   },
-  "timestamp": "2025-10-20T03:25:50.013Z"
+  "after": {
+    "totalCommits": 13,
+    "totalDuration": "116.10",
+    "avgCommitDuration": "8.93",
+    "components": [
+      {
+        "name": "Component-96",
+        "renders": 9,
+        "totalDuration": "60.70",
+        "avgDuration": "6.74",
+        "maxDuration": "12.40",
+        "minDuration": "3.60"
+      },
+      {
+        "name": "Component-97",
+        "renders": 9,
+        "totalDuration": "20.50",
+        "avgDuration": "2.28",
+        "maxDuration": "6.70",
+        "minDuration": "0.80"
+      },
+      {
+        "name": "Component-98",
+        "renders": 9,
+        "totalDuration": "19.80",
+        "avgDuration": "2.20",
+        "maxDuration": "6.60",
+        "minDuration": "0.70"
+      },
+      {
+        "name": "Component-99",
+        "renders": 9,
+        "totalDuration": "4.30",
+        "avgDuration": "0.48",
+        "maxDuration": "0.80",
+        "minDuration": "0.40"
+      },
+      {
+        "name": "Component-100",
+        "renders": 9,
+        "totalDuration": "3.80",
+        "avgDuration": "0.42",
+        "maxDuration": "0.70",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-101",
+        "renders": 9,
+        "totalDuration": "1.60",
+        "avgDuration": "0.18",
+        "maxDuration": "0.50",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-102",
+        "renders": 9,
+        "totalDuration": "2.90",
+        "avgDuration": "0.32",
+        "maxDuration": "0.80",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-103",
+        "renders": 9,
+        "totalDuration": "1.40",
+        "avgDuration": "0.16",
+        "maxDuration": "0.20",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-112",
+        "renders": 9,
+        "totalDuration": "53.40",
+        "avgDuration": "5.93",
+        "maxDuration": "11.50",
+        "minDuration": "3.60"
+      },
+      {
+        "name": "Component-113",
+        "renders": 9,
+        "totalDuration": "17.40",
+        "avgDuration": "1.93",
+        "maxDuration": "6.90",
+        "minDuration": "0.80"
+      },
+      {
+        "name": "Component-114",
+        "renders": 9,
+        "totalDuration": "15.30",
+        "avgDuration": "1.70",
+        "maxDuration": "5.70",
+        "minDuration": "0.70"
+      },
+      {
+        "name": "Component-115",
+        "renders": 9,
+        "totalDuration": "3.60",
+        "avgDuration": "0.40",
+        "maxDuration": "0.60",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-116",
+        "renders": 9,
+        "totalDuration": "2.90",
+        "avgDuration": "0.32",
+        "maxDuration": "0.40",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-117",
+        "renders": 9,
+        "totalDuration": "1.10",
+        "avgDuration": "0.12",
+        "maxDuration": "0.30",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-118",
+        "renders": 9,
+        "totalDuration": "2.70",
+        "avgDuration": "0.30",
+        "maxDuration": "0.60",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-119",
+        "renders": 9,
+        "totalDuration": "1.20",
+        "avgDuration": "0.13",
+        "maxDuration": "0.20",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-12",
+        "renders": 4,
+        "totalDuration": "60.70",
+        "avgDuration": "15.18",
+        "maxDuration": "43.10",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-13",
+        "renders": 4,
+        "totalDuration": "60.00",
+        "avgDuration": "15.00",
+        "maxDuration": "42.70",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-17",
+        "renders": 4,
+        "totalDuration": "59.40",
+        "avgDuration": "14.85",
+        "maxDuration": "42.70",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-18",
+        "renders": 4,
+        "totalDuration": "58.80",
+        "avgDuration": "14.70",
+        "maxDuration": "42.50",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-24",
+        "renders": 4,
+        "totalDuration": "0.70",
+        "avgDuration": "0.17",
+        "maxDuration": "0.50",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-47",
+        "renders": 3,
+        "totalDuration": "58.80",
+        "avgDuration": "19.60",
+        "maxDuration": "42.50",
+        "minDuration": "1.80"
+      },
+      {
+        "name": "Component-51",
+        "renders": 3,
+        "totalDuration": "1.50",
+        "avgDuration": "0.50",
+        "maxDuration": "1.10",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-53",
+        "renders": 3,
+        "totalDuration": "4.30",
+        "avgDuration": "1.43",
+        "maxDuration": "3.20",
+        "minDuration": "0.40"
+      },
+      {
+        "name": "Component-71",
+        "renders": 3,
+        "totalDuration": "1.70",
+        "avgDuration": "0.57",
+        "maxDuration": "0.90",
+        "minDuration": "0.30"
+      },
+      {
+        "name": "Component-85",
+        "renders": 3,
+        "totalDuration": "1.20",
+        "avgDuration": "0.40",
+        "maxDuration": "0.60",
+        "minDuration": "0.30"
+      },
+      {
+        "name": "Component-25",
+        "renders": 2,
+        "totalDuration": "4.40",
+        "avgDuration": "2.20",
+        "maxDuration": "3.80",
+        "minDuration": "0.60"
+      },
+      {
+        "name": "Component-26",
+        "renders": 2,
+        "totalDuration": "4.10",
+        "avgDuration": "2.05",
+        "maxDuration": "3.70",
+        "minDuration": "0.40"
+      },
+      {
+        "name": "Component-27",
+        "renders": 2,
+        "totalDuration": "4.10",
+        "avgDuration": "2.05",
+        "maxDuration": "3.70",
+        "minDuration": "0.40"
+      },
+      {
+        "name": "Component-28",
+        "renders": 2,
+        "totalDuration": "4.00",
+        "avgDuration": "2.00",
+        "maxDuration": "3.60",
+        "minDuration": "0.40"
+      },
+      {
+        "name": "Component-48",
+        "renders": 2,
+        "totalDuration": "31.60",
+        "avgDuration": "15.80",
+        "maxDuration": "24.60",
+        "minDuration": "7.00"
+      },
+      {
+        "name": "Component-49",
+        "renders": 2,
+        "totalDuration": "3.10",
+        "avgDuration": "1.55",
+        "maxDuration": "2.80",
+        "minDuration": "0.30"
+      },
+      {
+        "name": "Component-50",
+        "renders": 2,
+        "totalDuration": "17.80",
+        "avgDuration": "8.90",
+        "maxDuration": "14.80",
+        "minDuration": "3.00"
+      },
+      {
+        "name": "Component-52",
+        "renders": 2,
+        "totalDuration": "5.20",
+        "avgDuration": "2.60",
+        "maxDuration": "4.60",
+        "minDuration": "0.60"
+      },
+      {
+        "name": "Component-54",
+        "renders": 2,
+        "totalDuration": "1.20",
+        "avgDuration": "0.60",
+        "maxDuration": "0.90",
+        "minDuration": "0.30"
+      },
+      {
+        "name": "Component-55",
+        "renders": 2,
+        "totalDuration": "8.20",
+        "avgDuration": "4.10",
+        "maxDuration": "6.60",
+        "minDuration": "1.60"
+      },
+      {
+        "name": "Component-56",
+        "renders": 2,
+        "totalDuration": "1.00",
+        "avgDuration": "0.50",
+        "maxDuration": "0.90",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-57",
+        "renders": 2,
+        "totalDuration": "1.30",
+        "avgDuration": "0.65",
+        "maxDuration": "1.00",
+        "minDuration": "0.30"
+      },
+      {
+        "name": "Component-58",
+        "renders": 2,
+        "totalDuration": "0.60",
+        "avgDuration": "0.30",
+        "maxDuration": "0.50",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-59",
+        "renders": 2,
+        "totalDuration": "1.00",
+        "avgDuration": "0.50",
+        "maxDuration": "0.80",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-60",
+        "renders": 2,
+        "totalDuration": "0.50",
+        "avgDuration": "0.25",
+        "maxDuration": "0.40",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-61",
+        "renders": 2,
+        "totalDuration": "1.30",
+        "avgDuration": "0.65",
+        "maxDuration": "1.00",
+        "minDuration": "0.30"
+      },
+      {
+        "name": "Component-62",
+        "renders": 2,
+        "totalDuration": "0.50",
+        "avgDuration": "0.25",
+        "maxDuration": "0.40",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-63",
+        "renders": 2,
+        "totalDuration": "0.90",
+        "avgDuration": "0.45",
+        "maxDuration": "0.70",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-64",
+        "renders": 2,
+        "totalDuration": "0.30",
+        "avgDuration": "0.15",
+        "maxDuration": "0.30",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-65",
+        "renders": 2,
+        "totalDuration": "0.90",
+        "avgDuration": "0.45",
+        "maxDuration": "0.70",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-66",
+        "renders": 2,
+        "totalDuration": "0.40",
+        "avgDuration": "0.20",
+        "maxDuration": "0.30",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-67",
+        "renders": 2,
+        "totalDuration": "1.80",
+        "avgDuration": "0.90",
+        "maxDuration": "1.40",
+        "minDuration": "0.40"
+      },
+      {
+        "name": "Component-68",
+        "renders": 2,
+        "totalDuration": "0.40",
+        "avgDuration": "0.20",
+        "maxDuration": "0.30",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-69",
+        "renders": 2,
+        "totalDuration": "10.00",
+        "avgDuration": "5.00",
+        "maxDuration": "6.50",
+        "minDuration": "3.50"
+      },
+      {
+        "name": "Component-70",
+        "renders": 2,
+        "totalDuration": "2.00",
+        "avgDuration": "1.00",
+        "maxDuration": "1.40",
+        "minDuration": "0.60"
+      },
+      {
+        "name": "Component-72",
+        "renders": 2,
+        "totalDuration": "0.90",
+        "avgDuration": "0.45",
+        "maxDuration": "0.60",
+        "minDuration": "0.30"
+      },
+      {
+        "name": "Component-73",
+        "renders": 2,
+        "totalDuration": "5.50",
+        "avgDuration": "2.75",
+        "maxDuration": "3.30",
+        "minDuration": "2.20"
+      },
+      {
+        "name": "Component-74",
+        "renders": 2,
+        "totalDuration": "0.90",
+        "avgDuration": "0.45",
+        "maxDuration": "0.70",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-75",
+        "renders": 2,
+        "totalDuration": "0.90",
+        "avgDuration": "0.45",
+        "maxDuration": "0.50",
+        "minDuration": "0.40"
+      },
+      {
+        "name": "Component-76",
+        "renders": 2,
+        "totalDuration": "0.20",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-77",
+        "renders": 2,
+        "totalDuration": "0.80",
+        "avgDuration": "0.40",
+        "maxDuration": "0.60",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-78",
+        "renders": 2,
+        "totalDuration": "0.40",
+        "avgDuration": "0.20",
+        "maxDuration": "0.30",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-79",
+        "renders": 2,
+        "totalDuration": "0.60",
+        "avgDuration": "0.30",
+        "maxDuration": "0.40",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-80",
+        "renders": 2,
+        "totalDuration": "0.30",
+        "avgDuration": "0.15",
+        "maxDuration": "0.20",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-81",
+        "renders": 2,
+        "totalDuration": "0.70",
+        "avgDuration": "0.35",
+        "maxDuration": "0.50",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-82",
+        "renders": 2,
+        "totalDuration": "0.30",
+        "avgDuration": "0.15",
+        "maxDuration": "0.20",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-83",
+        "renders": 2,
+        "totalDuration": "0.70",
+        "avgDuration": "0.35",
+        "maxDuration": "0.50",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-84",
+        "renders": 2,
+        "totalDuration": "0.30",
+        "avgDuration": "0.15",
+        "maxDuration": "0.20",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-86",
+        "renders": 2,
+        "totalDuration": "0.20",
+        "avgDuration": "0.10",
+        "maxDuration": "0.20",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-87",
+        "renders": 2,
+        "totalDuration": "13.80",
+        "avgDuration": "6.90",
+        "maxDuration": "10.10",
+        "minDuration": "3.70"
+      },
+      {
+        "name": "Component-122",
+        "renders": 2,
+        "totalDuration": "6.70",
+        "avgDuration": "3.35",
+        "maxDuration": "4.30",
+        "minDuration": "2.40"
+      },
+      {
+        "name": "Component-123",
+        "renders": 2,
+        "totalDuration": "0.50",
+        "avgDuration": "0.25",
+        "maxDuration": "0.30",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-124",
+        "renders": 2,
+        "totalDuration": "3.20",
+        "avgDuration": "1.60",
+        "maxDuration": "2.50",
+        "minDuration": "0.70"
+      },
+      {
+        "name": "Component-125",
+        "renders": 2,
+        "totalDuration": "1.70",
+        "avgDuration": "0.85",
+        "maxDuration": "1.60",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-126",
+        "renders": 2,
+        "totalDuration": "1.40",
+        "avgDuration": "0.70",
+        "maxDuration": "0.80",
+        "minDuration": "0.60"
+      },
+      {
+        "name": "Component-127",
+        "renders": 2,
+        "totalDuration": "0.20",
+        "avgDuration": "0.10",
+        "maxDuration": "0.20",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-128",
+        "renders": 2,
+        "totalDuration": "1.50",
+        "avgDuration": "0.75",
+        "maxDuration": "0.80",
+        "minDuration": "0.70"
+      },
+      {
+        "name": "Component-129",
+        "renders": 2,
+        "totalDuration": "0.20",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-130",
+        "renders": 2,
+        "totalDuration": "4.40",
+        "avgDuration": "2.20",
+        "maxDuration": "2.40",
+        "minDuration": "2.00"
+      },
+      {
+        "name": "Component-131",
+        "renders": 2,
+        "totalDuration": "0.40",
+        "avgDuration": "0.20",
+        "maxDuration": "0.20",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-132",
+        "renders": 2,
+        "totalDuration": "1.20",
+        "avgDuration": "0.60",
+        "maxDuration": "0.60",
+        "minDuration": "0.60"
+      },
+      {
+        "name": "Component-133",
+        "renders": 2,
+        "totalDuration": "0.20",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-134",
+        "renders": 2,
+        "totalDuration": "1.40",
+        "avgDuration": "0.70",
+        "maxDuration": "0.80",
+        "minDuration": "0.60"
+      },
+      {
+        "name": "Component-135",
+        "renders": 2,
+        "totalDuration": "0.10",
+        "avgDuration": "0.05",
+        "maxDuration": "0.10",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-136",
+        "renders": 2,
+        "totalDuration": "1.40",
+        "avgDuration": "0.70",
+        "maxDuration": "0.80",
+        "minDuration": "0.60"
+      },
+      {
+        "name": "Component-137",
+        "renders": 2,
+        "totalDuration": "0.20",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-1",
+        "renders": 1,
+        "totalDuration": "4.80",
+        "avgDuration": "4.80",
+        "maxDuration": "4.80",
+        "minDuration": "4.80"
+      },
+      {
+        "name": "Component-2",
+        "renders": 1,
+        "totalDuration": "4.20",
+        "avgDuration": "4.20",
+        "maxDuration": "4.20",
+        "minDuration": "4.20"
+      },
+      {
+        "name": "Component-3",
+        "renders": 1,
+        "totalDuration": "3.80",
+        "avgDuration": "3.80",
+        "maxDuration": "3.80",
+        "minDuration": "3.80"
+      },
+      {
+        "name": "Component-4",
+        "renders": 1,
+        "totalDuration": "3.70",
+        "avgDuration": "3.70",
+        "maxDuration": "3.70",
+        "minDuration": "3.70"
+      },
+      {
+        "name": "Component-5",
+        "renders": 1,
+        "totalDuration": "3.40",
+        "avgDuration": "3.40",
+        "maxDuration": "3.40",
+        "minDuration": "3.40"
+      },
+      {
+        "name": "Component-6",
+        "renders": 1,
+        "totalDuration": "3.40",
+        "avgDuration": "3.40",
+        "maxDuration": "3.40",
+        "minDuration": "3.40"
+      },
+      {
+        "name": "Component-7",
+        "renders": 1,
+        "totalDuration": "2.80",
+        "avgDuration": "2.80",
+        "maxDuration": "2.80",
+        "minDuration": "2.80"
+      },
+      {
+        "name": "Component-8",
+        "renders": 1,
+        "totalDuration": "2.80",
+        "avgDuration": "2.80",
+        "maxDuration": "2.80",
+        "minDuration": "2.80"
+      },
+      {
+        "name": "Component-9",
+        "renders": 1,
+        "totalDuration": "2.70",
+        "avgDuration": "2.70",
+        "maxDuration": "2.70",
+        "minDuration": "2.70"
+      },
+      {
+        "name": "Component-10",
+        "renders": 1,
+        "totalDuration": "2.70",
+        "avgDuration": "2.70",
+        "maxDuration": "2.70",
+        "minDuration": "2.70"
+      },
+      {
+        "name": "Component-11",
+        "renders": 1,
+        "totalDuration": "2.60",
+        "avgDuration": "2.60",
+        "maxDuration": "2.60",
+        "minDuration": "2.60"
+      },
+      {
+        "name": "Component-14",
+        "renders": 1,
+        "totalDuration": "2.50",
+        "avgDuration": "2.50",
+        "maxDuration": "2.50",
+        "minDuration": "2.50"
+      },
+      {
+        "name": "Component-15",
+        "renders": 1,
+        "totalDuration": "2.30",
+        "avgDuration": "2.30",
+        "maxDuration": "2.30",
+        "minDuration": "2.30"
+      },
+      {
+        "name": "Component-16",
+        "renders": 1,
+        "totalDuration": "2.00",
+        "avgDuration": "2.00",
+        "maxDuration": "2.00",
+        "minDuration": "2.00"
+      },
+      {
+        "name": "Component-19",
+        "renders": 1,
+        "totalDuration": "1.60",
+        "avgDuration": "1.60",
+        "maxDuration": "1.60",
+        "minDuration": "1.60"
+      },
+      {
+        "name": "Component-20",
+        "renders": 1,
+        "totalDuration": "1.60",
+        "avgDuration": "1.60",
+        "maxDuration": "1.60",
+        "minDuration": "1.60"
+      },
+      {
+        "name": "Component-21",
+        "renders": 1,
+        "totalDuration": "1.50",
+        "avgDuration": "1.50",
+        "maxDuration": "1.50",
+        "minDuration": "1.50"
+      },
+      {
+        "name": "Component-22",
+        "renders": 1,
+        "totalDuration": "1.40",
+        "avgDuration": "1.40",
+        "maxDuration": "1.40",
+        "minDuration": "1.40"
+      },
+      {
+        "name": "Component-23",
+        "renders": 1,
+        "totalDuration": "1.30",
+        "avgDuration": "1.30",
+        "maxDuration": "1.30",
+        "minDuration": "1.30"
+      },
+      {
+        "name": "Component-29",
+        "renders": 1,
+        "totalDuration": "3.60",
+        "avgDuration": "3.60",
+        "maxDuration": "3.60",
+        "minDuration": "3.60"
+      },
+      {
+        "name": "Component-30",
+        "renders": 1,
+        "totalDuration": "3.20",
+        "avgDuration": "3.20",
+        "maxDuration": "3.20",
+        "minDuration": "3.20"
+      },
+      {
+        "name": "Component-31",
+        "renders": 1,
+        "totalDuration": "3.10",
+        "avgDuration": "3.10",
+        "maxDuration": "3.10",
+        "minDuration": "3.10"
+      },
+      {
+        "name": "Component-32",
+        "renders": 1,
+        "totalDuration": "3.10",
+        "avgDuration": "3.10",
+        "maxDuration": "3.10",
+        "minDuration": "3.10"
+      },
+      {
+        "name": "Component-33",
+        "renders": 1,
+        "totalDuration": "3.10",
+        "avgDuration": "3.10",
+        "maxDuration": "3.10",
+        "minDuration": "3.10"
+      },
+      {
+        "name": "Component-34",
+        "renders": 1,
+        "totalDuration": "3.10",
+        "avgDuration": "3.10",
+        "maxDuration": "3.10",
+        "minDuration": "3.10"
+      },
+      {
+        "name": "Component-35",
+        "renders": 1,
+        "totalDuration": "3.00",
+        "avgDuration": "3.00",
+        "maxDuration": "3.00",
+        "minDuration": "3.00"
+      },
+      {
+        "name": "Component-36",
+        "renders": 1,
+        "totalDuration": "2.90",
+        "avgDuration": "2.90",
+        "maxDuration": "2.90",
+        "minDuration": "2.90"
+      },
+      {
+        "name": "Component-37",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-38",
+        "renders": 1,
+        "totalDuration": "2.50",
+        "avgDuration": "2.50",
+        "maxDuration": "2.50",
+        "minDuration": "2.50"
+      },
+      {
+        "name": "Component-39",
+        "renders": 1,
+        "totalDuration": "2.40",
+        "avgDuration": "2.40",
+        "maxDuration": "2.40",
+        "minDuration": "2.40"
+      },
+      {
+        "name": "Component-40",
+        "renders": 1,
+        "totalDuration": "2.10",
+        "avgDuration": "2.10",
+        "maxDuration": "2.10",
+        "minDuration": "2.10"
+      },
+      {
+        "name": "Component-41",
+        "renders": 1,
+        "totalDuration": "2.10",
+        "avgDuration": "2.10",
+        "maxDuration": "2.10",
+        "minDuration": "2.10"
+      },
+      {
+        "name": "Component-42",
+        "renders": 1,
+        "totalDuration": "2.10",
+        "avgDuration": "2.10",
+        "maxDuration": "2.10",
+        "minDuration": "2.10"
+      },
+      {
+        "name": "Component-43",
+        "renders": 1,
+        "totalDuration": "2.10",
+        "avgDuration": "2.10",
+        "maxDuration": "2.10",
+        "minDuration": "2.10"
+      },
+      {
+        "name": "Component-44",
+        "renders": 1,
+        "totalDuration": "2.00",
+        "avgDuration": "2.00",
+        "maxDuration": "2.00",
+        "minDuration": "2.00"
+      },
+      {
+        "name": "Component-45",
+        "renders": 1,
+        "totalDuration": "2.00",
+        "avgDuration": "2.00",
+        "maxDuration": "2.00",
+        "minDuration": "2.00"
+      },
+      {
+        "name": "Component-46",
+        "renders": 1,
+        "totalDuration": "1.90",
+        "avgDuration": "1.90",
+        "maxDuration": "1.90",
+        "minDuration": "1.90"
+      },
+      {
+        "name": "Component-88",
+        "renders": 1,
+        "totalDuration": "9.80",
+        "avgDuration": "9.80",
+        "maxDuration": "9.80",
+        "minDuration": "9.80"
+      },
+      {
+        "name": "Component-89",
+        "renders": 1,
+        "totalDuration": "9.70",
+        "avgDuration": "9.70",
+        "maxDuration": "9.70",
+        "minDuration": "9.70"
+      },
+      {
+        "name": "Component-90",
+        "renders": 1,
+        "totalDuration": "9.20",
+        "avgDuration": "9.20",
+        "maxDuration": "9.20",
+        "minDuration": "9.20"
+      },
+      {
+        "name": "Component-91",
+        "renders": 1,
+        "totalDuration": "9.10",
+        "avgDuration": "9.10",
+        "maxDuration": "9.10",
+        "minDuration": "9.10"
+      },
+      {
+        "name": "Component-92",
+        "renders": 1,
+        "totalDuration": "9.10",
+        "avgDuration": "9.10",
+        "maxDuration": "9.10",
+        "minDuration": "9.10"
+      },
+      {
+        "name": "Component-93",
+        "renders": 1,
+        "totalDuration": "9.00",
+        "avgDuration": "9.00",
+        "maxDuration": "9.00",
+        "minDuration": "9.00"
+      },
+      {
+        "name": "Component-94",
+        "renders": 1,
+        "totalDuration": "9.00",
+        "avgDuration": "9.00",
+        "maxDuration": "9.00",
+        "minDuration": "9.00"
+      },
+      {
+        "name": "Component-95",
+        "renders": 1,
+        "totalDuration": "9.00",
+        "avgDuration": "9.00",
+        "maxDuration": "9.00",
+        "minDuration": "9.00"
+      },
+      {
+        "name": "Component-104",
+        "renders": 1,
+        "totalDuration": "6.90",
+        "avgDuration": "6.90",
+        "maxDuration": "6.90",
+        "minDuration": "6.90"
+      },
+      {
+        "name": "Component-105",
+        "renders": 1,
+        "totalDuration": "6.80",
+        "avgDuration": "6.80",
+        "maxDuration": "6.80",
+        "minDuration": "6.80"
+      },
+      {
+        "name": "Component-106",
+        "renders": 1,
+        "totalDuration": "6.30",
+        "avgDuration": "6.30",
+        "maxDuration": "6.30",
+        "minDuration": "6.30"
+      },
+      {
+        "name": "Component-107",
+        "renders": 1,
+        "totalDuration": "6.30",
+        "avgDuration": "6.30",
+        "maxDuration": "6.30",
+        "minDuration": "6.30"
+      },
+      {
+        "name": "Component-108",
+        "renders": 1,
+        "totalDuration": "6.30",
+        "avgDuration": "6.30",
+        "maxDuration": "6.30",
+        "minDuration": "6.30"
+      },
+      {
+        "name": "Component-109",
+        "renders": 1,
+        "totalDuration": "6.20",
+        "avgDuration": "6.20",
+        "maxDuration": "6.20",
+        "minDuration": "6.20"
+      },
+      {
+        "name": "Component-110",
+        "renders": 1,
+        "totalDuration": "6.20",
+        "avgDuration": "6.20",
+        "maxDuration": "6.20",
+        "minDuration": "6.20"
+      },
+      {
+        "name": "Component-111",
+        "renders": 1,
+        "totalDuration": "6.10",
+        "avgDuration": "6.10",
+        "maxDuration": "6.10",
+        "minDuration": "6.10"
+      },
+      {
+        "name": "Component-120",
+        "renders": 1,
+        "totalDuration": "0.60",
+        "avgDuration": "0.60",
+        "maxDuration": "0.60",
+        "minDuration": "0.60"
+      },
+      {
+        "name": "Component-121",
+        "renders": 1,
+        "totalDuration": "0.40",
+        "avgDuration": "0.40",
+        "maxDuration": "0.40",
+        "minDuration": "0.40"
+      },
+      {
+        "name": "Component-138",
+        "renders": 1,
+        "totalDuration": "3.30",
+        "avgDuration": "3.30",
+        "maxDuration": "3.30",
+        "minDuration": "3.30"
+      },
+      {
+        "name": "Component-139",
+        "renders": 1,
+        "totalDuration": "0.20",
+        "avgDuration": "0.20",
+        "maxDuration": "0.20",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-140",
+        "renders": 1,
+        "totalDuration": "1.00",
+        "avgDuration": "1.00",
+        "maxDuration": "1.00",
+        "minDuration": "1.00"
+      },
+      {
+        "name": "Component-141",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-142",
+        "renders": 1,
+        "totalDuration": "0.20",
+        "avgDuration": "0.20",
+        "maxDuration": "0.20",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-143",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-144",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-145",
+        "renders": 1,
+        "totalDuration": "0.70",
+        "avgDuration": "0.70",
+        "maxDuration": "0.70",
+        "minDuration": "0.70"
+      },
+      {
+        "name": "Component-146",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-147",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-148",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-149",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-150",
+        "renders": 1,
+        "totalDuration": "0.60",
+        "avgDuration": "0.60",
+        "maxDuration": "0.60",
+        "minDuration": "0.60"
+      },
+      {
+        "name": "Component-151",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-152",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-153",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-154",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-155",
+        "renders": 1,
+        "totalDuration": "0.70",
+        "avgDuration": "0.70",
+        "maxDuration": "0.70",
+        "minDuration": "0.70"
+      },
+      {
+        "name": "Component-156",
+        "renders": 1,
+        "totalDuration": "0.20",
+        "avgDuration": "0.20",
+        "maxDuration": "0.20",
+        "minDuration": "0.20"
+      },
+      {
+        "name": "Component-157",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-158",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-159",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-160",
+        "renders": 1,
+        "totalDuration": "2.90",
+        "avgDuration": "2.90",
+        "maxDuration": "2.90",
+        "minDuration": "2.90"
+      },
+      {
+        "name": "Component-161",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-162",
+        "renders": 1,
+        "totalDuration": "0.70",
+        "avgDuration": "0.70",
+        "maxDuration": "0.70",
+        "minDuration": "0.70"
+      },
+      {
+        "name": "Component-163",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-164",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-165",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-166",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-167",
+        "renders": 1,
+        "totalDuration": "0.70",
+        "avgDuration": "0.70",
+        "maxDuration": "0.70",
+        "minDuration": "0.70"
+      },
+      {
+        "name": "Component-168",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-169",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-170",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-171",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-172",
+        "renders": 1,
+        "totalDuration": "0.60",
+        "avgDuration": "0.60",
+        "maxDuration": "0.60",
+        "minDuration": "0.60"
+      },
+      {
+        "name": "Component-173",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-174",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-175",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-176",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-177",
+        "renders": 1,
+        "totalDuration": "0.60",
+        "avgDuration": "0.60",
+        "maxDuration": "0.60",
+        "minDuration": "0.60"
+      },
+      {
+        "name": "Component-178",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-179",
+        "renders": 1,
+        "totalDuration": "0.10",
+        "avgDuration": "0.10",
+        "maxDuration": "0.10",
+        "minDuration": "0.10"
+      },
+      {
+        "name": "Component-180",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      },
+      {
+        "name": "Component-181",
+        "renders": 1,
+        "totalDuration": "0.00",
+        "avgDuration": "0.00",
+        "maxDuration": "0.00",
+        "minDuration": "0.00"
+      }
+    ],
+    "contexts": {
+      "theme": {
+        "renders": 390,
+        "totalDuration": "912.80",
+        "avgDuration": "2.34"
+      },
+      "sidebar": {
+        "renders": 390,
+        "totalDuration": "912.80",
+        "avgDuration": "2.34"
+      },
+      "accessibility": {
+        "renders": 390,
+        "totalDuration": "912.80",
+        "avgDuration": "2.34"
+      },
+      "auth": {
+        "renders": 390,
+        "totalDuration": "912.80",
+        "avgDuration": "2.34"
+      },
+      "onboarding": {
+        "renders": 390,
+        "totalDuration": "912.80",
+        "avgDuration": "2.34"
+      },
+      "query": {
+        "renders": 390,
+        "totalDuration": "912.80",
+        "avgDuration": "2.34"
+      },
+      "router": {
+        "renders": 390,
+        "totalDuration": "912.80",
+        "avgDuration": "2.34"
+      },
+      "tour": {
+        "renders": 390,
+        "totalDuration": "912.80",
+        "avgDuration": "2.34"
+      }
+    }
+  },
+  "timestamp": "2025-10-20T03:48:56.941Z"
 }

@@ -30,3 +30,5 @@ yarn.lock
 *.sw?
 
 tsconfig.tsbuildinfo
+
+scripts/profiling/*
