@@ -1,8 +1,3 @@
-/**
- * Step Header Component
- * Cabeçalho com título e descrição do step atual
- */
-
 import { animated, useSpring } from '@react-spring/web'
 
 interface StepHeaderProps {

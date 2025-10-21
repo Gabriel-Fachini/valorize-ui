@@ -1,8 +1,3 @@
-/**
- * Message Step Component
- * Step 3: Textarea com sugestões de mensagem
- */
-
 import { animated, useSpring } from '@react-spring/web'
 import type { InputStepProps } from '@/types/praise.types'
 

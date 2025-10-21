@@ -1,8 +1,3 @@
-/**
- * New Praise Form Hook
- * Manages the state and validation of the multi-step praise form
- */
-
 import { useState, useCallback, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -12,20 +7,15 @@ import { useUser } from '@/hooks/useUser'
 import { newPraiseSchema, type NewPraiseFormData, type PraiseStep } from '@/types/praise.types'
 import type { SendComplimentData } from '@/types'
 
-/**
- * Hook para gerenciar formulário de novo elogio
- */
 export const useNewPraiseForm = () => {
   const navigate = useNavigate()
   const { onBalanceMovement } = useUser()
   
-  // Estado do step atual
   const [currentStep, setCurrentStep] = useState<PraiseStep>(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Configuração do react-hook-form
   const form = useForm<NewPraiseFormData>({
     resolver: zodResolver(newPraiseSchema),
     mode: 'onChange',
@@ -39,10 +29,8 @@ export const useNewPraiseForm = () => {
 
   const { watch, setValue, trigger, formState: { errors, isValid } } = form
 
-  // Valores atuais do formulário
   const formData = watch()
 
-  // Memoized field validation map to avoid recreation
   const fieldsForStep = useMemo(() => ({
     0: ['userId'] as const,
     1: ['valueId'] as const,
@@ -51,9 +39,6 @@ export const useNewPraiseForm = () => {
     4: ['userId', 'valueId', 'coins', 'message'] as const,
   }), [])
 
-  /**
-   * Valida se o step atual pode prosseguir - memoizado
-   */
   const canProceed = useMemo(() => {
     switch (currentStep) {
       case 0:
@@ -71,12 +56,8 @@ export const useNewPraiseForm = () => {
     }
   }, [currentStep, formData, isValid])
 
-  /**
-   * Navega para o próximo step - otimizado
-   */
   const goToNextStep = useCallback(async () => {
     if (currentStep < 4) {
-      // Valida o step atual antes de prosseguir
       const fieldsToValidate = fieldsForStep[currentStep]
       const isValidStep = await trigger(fieldsToValidate)
       
@@ -87,9 +68,6 @@ export const useNewPraiseForm = () => {
     }
   }, [currentStep, trigger, fieldsForStep])
 
-  /**
-   * Navega para o step anterior
-   */
   const goToPrevStep = useCallback(() => {
     if (currentStep > 0) {
       setCurrentStep((prev) => (prev - 1) as PraiseStep)
@@ -97,16 +75,10 @@ export const useNewPraiseForm = () => {
     }
   }, [currentStep])
 
-  /**
-   * Cancela o formulário e volta para a página de elogios
-   */
   const cancelForm = useCallback(() => {
     navigate({ to: '/elogios' })
   }, [navigate])
 
-  /**
-   * Submete o formulário
-   */
   const submitForm = useCallback(async () => {
     if (!isValid) return
 
@@ -123,11 +95,9 @@ export const useNewPraiseForm = () => {
 
       await sendCompliment(complimentData)
       
-      // Invalida o saldo e mostra sucesso
       onBalanceMovement()
       setShowSuccess(true)
       
-      // Redireciona após animação de sucesso
       setTimeout(() => {
         navigate({ to: '/elogios' })
       }, 2500)
@@ -140,9 +110,6 @@ export const useNewPraiseForm = () => {
   }, [isValid, formData, onBalanceMovement, navigate])
 
 
-  /**
-   * Atualiza um valor do formulário
-   */
   const updateFormValue = useCallback((
     field: keyof NewPraiseFormData,
     value: string | number,
@@ -151,21 +118,17 @@ export const useNewPraiseForm = () => {
     setError(null)
   }, [setValue])
 
-  // Retorno memoizado para evitar re-renders desnecessários
   return useMemo(() => ({
-    // Estado
     currentStep,
     isSubmitting,
     showSuccess,
     error,
     formData,
     
-    // Form methods
     form,
     errors,
     isValid,
     
-    // Ações
     goToNextStep,
     goToPrevStep,
     cancelForm,
@@ -173,7 +136,6 @@ export const useNewPraiseForm = () => {
     updateFormValue,
     canProceed,
     
-    // Helpers
     setError,
   }), [
     currentStep,
@@ -193,11 +155,7 @@ export const useNewPraiseForm = () => {
   ])
 }
 
-/**
- * Hook para obter informações do step atual - OTIMIZADO
- */
 export const useStepInfo = (currentStep: PraiseStep) => {
-  // Memoized steps array to avoid recreation
   const steps = useMemo(() => [
     { name: 'Usuário', description: 'Selecione quem você quer elogiar' },
     { name: 'Valor', description: 'Escolha o valor demonstrado' },

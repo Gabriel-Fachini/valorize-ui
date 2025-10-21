@@ -1,8 +1,3 @@
-/**
- * Step Navigation Component
- * Botões de navegação entre steps com animação react-spring
- */
-
 import { animated, useSpring } from '@react-spring/web'
 import type { StepComponentProps } from '@/types/praise.types'
 

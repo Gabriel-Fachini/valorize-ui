@@ -1,8 +1,3 @@
-/**
- * Progress Bar Component
- * Barra de progresso dos steps com animação react-spring
- */
-
 import { animated, useSpring } from '@react-spring/web'
 import type { PraiseStep } from '@/types/praise.types'
 

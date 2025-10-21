@@ -148,8 +148,8 @@ export const usePraisesData = () => {
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    refetchOnWindowFocus: true, // ✅ Refetch quando usuário volta para a aba
-    refetchOnMount: true, // ✅ Refetch quando componente monta
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   })
 
   // User balance query
@@ -162,7 +162,6 @@ export const usePraisesData = () => {
     },
     enabled: !!currentUser,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    // ✅ SOLUÇÃO 2: Retry automático para recuperar de falhas temporárias
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     refetchOnWindowFocus: true,

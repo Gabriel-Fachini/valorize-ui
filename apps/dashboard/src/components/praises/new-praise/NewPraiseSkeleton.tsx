@@ -1,8 +1,3 @@
-/**
- * New Praise Skeleton Component
- * Loading state composto de Skeleton genéricos
- */
-
 import { animated } from '@react-spring/web'
 import { useCardEntrance } from '@/hooks/useAnimations'
 import { SkeletonBase, SkeletonText, SkeletonAvatar, SkeletonCard } from '@/components/ui/Skeleton'

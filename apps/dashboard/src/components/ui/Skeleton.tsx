@@ -1,14 +1,6 @@
-/**
- * Skeleton Components
- * Componentes de loading skeleton reutilizáveis com animação react-spring
- */
-
 import React from 'react'
 import { animated, useSpring } from '@react-spring/web'
 
-/**
- * Componente base para skeleton com animação de pulse usando react-spring
- */
 export const SkeletonBase: React.FC<{
   className?: string
   children?: React.ReactNode
@@ -27,9 +19,6 @@ export const SkeletonBase: React.FC<{
   )
 }
 
-/**
- * Skeleton para texto simples
- */
 export const SkeletonText: React.FC<{
   className?: string
   width?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
@@ -60,9 +49,6 @@ export const SkeletonText: React.FC<{
   )
 }
 
-/**
- * Skeleton para avatar circular
- */
 export const SkeletonAvatar: React.FC<{
   size?: 'sm' | 'md' | 'lg' | 'xl'
   className?: string
@@ -81,9 +67,6 @@ export const SkeletonAvatar: React.FC<{
   )
 }
 
-/**
- * Skeleton para cards com gradiente
- */
 export const SkeletonCard: React.FC<{
   children: React.ReactNode
   gradient?: 'green' | 'emerald' | 'neutral'
@@ -102,9 +85,6 @@ export const SkeletonCard: React.FC<{
   )
 }
 
-/**
- * Skeleton para perfil de usuário
- */
 export const SkeletonUserProfile: React.FC = () => {
   return (
     <div className="flex items-center gap-4 mb-6">
@@ -117,9 +97,6 @@ export const SkeletonUserProfile: React.FC = () => {
   )
 }
 
-/**
- * Skeleton para navegação
- */
 export const SkeletonNavigation: React.FC<{ itemCount?: number }> = ({ itemCount = 3 }) => {
   return (
     <div className="space-y-2">

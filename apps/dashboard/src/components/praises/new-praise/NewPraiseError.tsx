@@ -1,8 +1,3 @@
-/**
- * New Praise Error Component
- * Error state com retry para carregamento de dados
- */
-
 import { animated } from '@react-spring/web'
 import { useNavigate } from '@tanstack/react-router'
 import { useCardEntrance } from '@/hooks/useAnimations'

@@ -1,8 +1,3 @@
-/**
- * Value Selection Step Component
- * Step 1: Seleção de valor da empresa
- */
-
 import { animated, useSpring } from '@react-spring/web'
 import type { PraiseCompanyValue } from '@/hooks/usePraisesData'
 import type { SelectionStepProps } from '@/types/praise.types'

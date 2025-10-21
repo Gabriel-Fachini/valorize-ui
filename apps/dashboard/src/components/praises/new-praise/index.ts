@@ -1,8 +1,3 @@
-/**
- * New Praise Components
- * Componentes para o fluxo de criação de elogio
- */
-
 export { NewPraiseSkeleton } from './NewPraiseSkeleton'
 export { NewPraiseError } from './NewPraiseError'
 export { ProgressBar } from './ProgressBar'

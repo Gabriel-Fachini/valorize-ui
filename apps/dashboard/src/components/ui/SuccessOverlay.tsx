@@ -1,8 +1,3 @@
-/**
- * Success Overlay Component
- * Overlay genérico para feedback de sucesso com animação react-spring
- */
-
 import { memo, useMemo } from 'react'
 import { animated } from '@react-spring/web'
 import { useSuccessTransition } from '@/hooks/useAnimations'
@@ -19,7 +14,6 @@ interface SuccessOverlayProps {
   valueColor?: string
 }
 
-// Componente memoizado para o conteúdo do overlay
 const SuccessContent = memo(({
   title,
   description,
@@ -45,10 +39,10 @@ const SuccessContent = memo(({
       </h3>
       
       <p className="text-lg text-[#525252] dark:text-[#d4d4d4] mb-4">
-        {description || defaultDescription}
+        {description ?? defaultDescription}
       </p>
       
-      {/* Value Badge - memoizado */}
+      {/* Value Badge */}
       {valueName && valueIcon && valueColor && (
         <div className="mb-4">
           <div className={`inline-flex items-center px-4 py-2 bg-gradient-to-r ${valueColor} rounded-full shadow-lg`}>
@@ -58,7 +52,7 @@ const SuccessContent = memo(({
         </div>
       )}
       
-      {/* Coin Amount - memoizado */}
+      {/* Coin Amount */}
       {coinAmount && (
         <div className="flex items-center justify-center space-x-2 bg-green-100 dark:bg-green-900/30 px-6 py-3 rounded-full inline-flex">
           <i className="ph-fill ph-coins text-green-600 dark:text-green-400 text-2xl"></i>
@@ -84,7 +78,6 @@ export const SuccessOverlay = memo(({
 }: SuccessOverlayProps) => {
   const transition = useSuccessTransition(isVisible)
 
-  // Memoized props para evitar re-renders
   const contentProps = useMemo(() => ({
     title,
     description,

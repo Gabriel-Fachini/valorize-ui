@@ -1,8 +1,3 @@
-/**
- * EmptyState Component
- * Shows appropriate empty state messages for different scenarios
- */
-
 import { animated } from '@react-spring/web'
 
 interface EmptyStateProps {

@@ -1,8 +1,3 @@
-/**
- * User Selection Step Component
- * Step 0: User Selection Step with search
- */
-
 import { memo, useMemo, useCallback } from 'react'
 import { animated, useSpring } from '@react-spring/web'
 import type { PraiseUser } from '@/hooks/usePraisesData'
