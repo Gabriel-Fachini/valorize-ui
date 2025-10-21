@@ -1,21 +1,29 @@
 /**
  * Skeleton Components
- * Componentes de loading skeleton reutilizáveis
+ * Componentes de loading skeleton reutilizáveis com animação react-spring
  */
 
 import React from 'react'
+import { animated, useSpring } from '@react-spring/web'
 
 /**
- * Componente base para skeleton com animação de pulse
+ * Componente base para skeleton com animação de pulse usando react-spring
  */
 export const SkeletonBase: React.FC<{
   className?: string
   children?: React.ReactNode
 }> = ({ className = '', children }) => {
+  const pulseAnimation = useSpring({
+    from: { opacity: 0.3 },
+    to: { opacity: 0.7 },
+    loop: { reverse: true },
+    config: { duration: 1000 },
+  })
+
   return (
-    <div className={`animate-pulse ${className}`}>
+    <animated.div style={pulseAnimation} className={className}>
       {children}
-    </div>
+    </animated.div>
   )
 }
 
