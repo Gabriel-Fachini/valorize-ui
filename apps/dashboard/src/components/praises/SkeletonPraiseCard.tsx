@@ -1,8 +1,3 @@
-/**
- * SkeletonPraiseCard Component
- * Loading skeleton for praise cards that works in light and dark themes
- */
-
 import { animated } from '@react-spring/web'
 
 interface SkeletonPraiseCardProps {

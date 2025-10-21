@@ -1,8 +1,3 @@
-/**
- * SuccessModal Component
- * Success animation modal for when a praise is sent
- */
-
 import { animated } from '@react-spring/web'
 import type { PraiseUser, PraiseCompanyValue } from '@/hooks/usePraisesData'
 

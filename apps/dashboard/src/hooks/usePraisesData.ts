@@ -1,8 +1,3 @@
-/**
- * Praises Data Hook
- * Manages all data loading and state for the Praises page using React Query for optimal caching
- */
-
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { listReceivableUsers, getCompanyValues, getUserBalance, getComplimentsHistory } from '@/services/compliments'
@@ -124,6 +119,10 @@ export const usePraisesData = () => {
     },
     enabled: !!currentUser,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   })
 
   // Company values query
@@ -147,6 +146,10 @@ export const usePraisesData = () => {
     },
     enabled: !!currentUser?.companyId,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   })
 
   // User balance query
@@ -159,6 +162,10 @@ export const usePraisesData = () => {
     },
     enabled: !!currentUser,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   })
 
   // Praises query
@@ -205,27 +212,36 @@ export const usePraisesData = () => {
     },
     enabled: !!currentUser,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   })
 
   // Actions
   const actions: PraisesDataActions = {
     refreshBalance: () => {
       queryClient.invalidateQueries({ queryKey: ['praises', 'balance'] })
+      queryClient.refetchQueries({ queryKey: ['praises', 'balance'] })
     },
     refreshUsers: () => {
       queryClient.invalidateQueries({ queryKey: ['praises', 'users'] })
+      queryClient.refetchQueries({ queryKey: ['praises', 'users'] })
     },
     refreshValues: () => {
       queryClient.invalidateQueries({ queryKey: ['praises', 'values'] })
+      queryClient.refetchQueries({ queryKey: ['praises', 'values'] })
     },
     refreshPraises: () => {
       queryClient.invalidateQueries({ queryKey: ['praises', 'history'] })
+      queryClient.refetchQueries({ queryKey: ['praises', 'history'] })
     },
     setFilter: (filter) => {
       setCurrentFilter(filter)
     },
     invalidateCache: () => {
       queryClient.invalidateQueries({ queryKey: ['praises'] })
+      queryClient.refetchQueries({ queryKey: ['praises'] })
     },
     clearError: () => {
       // Errors are automatically handled by React Query
@@ -242,6 +258,14 @@ export const usePraisesData = () => {
     balanceQuery.error?.message,
     praisesQuery.error?.message,
   ].filter(Boolean).join('; ') || null
+
+  const hasUsers = (usersQuery.data?.length ?? 0) > 0
+  const hasCompanyValues = (companyValuesQuery.data?.length ?? 0) > 0
+  const isUsersLoading = usersQuery.isLoading
+  const isValuesLoading = companyValuesQuery.isLoading
+  
+  const hasUsersError = !isUsersLoading && !hasUsers && usersQuery.error
+  const hasValuesError = !isValuesLoading && !hasCompanyValues && companyValuesQuery.error
 
   return {
     users: usersQuery.data ?? [],
@@ -266,10 +290,14 @@ export const usePraisesData = () => {
       hasAnyError,
       isAnyLoading,
       combinedErrorMessage,
-      hasUsers: (usersQuery.data?.length ?? 0) > 0,
-      hasCompanyValues: (companyValuesQuery.data?.length ?? 0) > 0,
+      hasUsers,
+      hasCompanyValues,
       hasPraises: (praisesQuery.data?.length ?? 0) > 0,
-      canSendPraise: (usersQuery.data?.length ?? 0) > 0 && (companyValuesQuery.data?.length ?? 0) > 0 && !isAnyLoading,
+      canSendPraise: hasUsers && hasCompanyValues && !isAnyLoading,
+      hasUsersError,
+      hasValuesError,
+      isUsersLoading,
+      isValuesLoading,
     },
   }
 }

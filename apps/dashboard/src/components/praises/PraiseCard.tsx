@@ -1,8 +1,3 @@
-/**
- * PraiseCard Component
- * Individual praise card display
- */
-
 import { animated } from '@react-spring/web'
 import type { PraiseData } from '@/hooks/usePraisesData'
 

@@ -1,8 +1,3 @@
-/**
- * PraiseFeed Component
- * Feed section with filters and praise cards
- */
-
 import { animated } from '@react-spring/web'
 import { PraiseCard } from './PraiseCard'
 import { SkeletonPraiseCard } from './SkeletonPraiseCard'
