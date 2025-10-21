@@ -147,7 +147,7 @@ export const useNewPraiseForm = () => {
     field: keyof NewPraiseFormData,
     value: string | number,
   ) => {
-    setValue(field as keyof NewPraiseFormData, value as never)
+    setValue(field, value as string | number)
     setError(null)
   }, [setValue])
 

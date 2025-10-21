@@ -1,8 +1,3 @@
-/**
- * Praises Data Hook
- * Manages all data loading and state for the Praises page using React Query for optimal caching
- */
-
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { listReceivableUsers, getCompanyValues, getUserBalance, getComplimentsHistory } from '@/services/compliments'
@@ -124,11 +119,10 @@ export const usePraisesData = () => {
     },
     enabled: !!currentUser,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    // ✅ SOLUÇÃO 2: Retry automático para recuperar de falhas temporárias
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    refetchOnWindowFocus: true, // ✅ Refetch quando usuário volta para a aba
-    refetchOnMount: true, // ✅ Refetch quando componente monta
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   })
 
   // Company values query
@@ -152,7 +146,6 @@ export const usePraisesData = () => {
     },
     enabled: !!currentUser?.companyId,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    // ✅ SOLUÇÃO 2: Retry automático para recuperar de falhas temporárias
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     refetchOnWindowFocus: true, // ✅ Refetch quando usuário volta para a aba
@@ -172,8 +165,8 @@ export const usePraisesData = () => {
     // ✅ SOLUÇÃO 2: Retry automático para recuperar de falhas temporárias
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    refetchOnWindowFocus: true, // ✅ Refetch quando usuário volta para a aba
-    refetchOnMount: true, // ✅ Refetch quando componente monta
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   })
 
   // Praises query
@@ -220,33 +213,28 @@ export const usePraisesData = () => {
     },
     enabled: !!currentUser,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    // ✅ SOLUÇÃO 2: Retry automático para recuperar de falhas temporárias
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    refetchOnWindowFocus: true, // ✅ Refetch quando usuário volta para a aba
-    refetchOnMount: true, // ✅ Refetch quando componente monta
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   })
 
   // Actions
   const actions: PraisesDataActions = {
     refreshBalance: () => {
       queryClient.invalidateQueries({ queryKey: ['praises', 'balance'] })
-      // ✅ SOLUÇÃO 3: Forçar refetch imediato
       queryClient.refetchQueries({ queryKey: ['praises', 'balance'] })
     },
     refreshUsers: () => {
       queryClient.invalidateQueries({ queryKey: ['praises', 'users'] })
-      // ✅ SOLUÇÃO 3: Forçar refetch imediato
       queryClient.refetchQueries({ queryKey: ['praises', 'users'] })
     },
     refreshValues: () => {
       queryClient.invalidateQueries({ queryKey: ['praises', 'values'] })
-      // ✅ SOLUÇÃO 3: Forçar refetch imediato
       queryClient.refetchQueries({ queryKey: ['praises', 'values'] })
     },
     refreshPraises: () => {
       queryClient.invalidateQueries({ queryKey: ['praises', 'history'] })
-      // ✅ SOLUÇÃO 3: Forçar refetch imediato
       queryClient.refetchQueries({ queryKey: ['praises', 'history'] })
     },
     setFilter: (filter) => {
@@ -254,7 +242,6 @@ export const usePraisesData = () => {
     },
     invalidateCache: () => {
       queryClient.invalidateQueries({ queryKey: ['praises'] })
-      // ✅ SOLUÇÃO 3: Forçar refetch imediato de todas as queries
       queryClient.refetchQueries({ queryKey: ['praises'] })
     },
     clearError: () => {
@@ -273,13 +260,11 @@ export const usePraisesData = () => {
     praisesQuery.error?.message,
   ].filter(Boolean).join('; ') || null
 
-  // ✅ SOLUÇÃO 4: Lógica inteligente para detectar erros vs dados vazios
   const hasUsers = (usersQuery.data?.length ?? 0) > 0
   const hasCompanyValues = (companyValuesQuery.data?.length ?? 0) > 0
   const isUsersLoading = usersQuery.isLoading
   const isValuesLoading = companyValuesQuery.isLoading
   
-  // ✅ SOLUÇÃO 4: Só considera erro se não estiver carregando E não tiver dados
   const hasUsersError = !isUsersLoading && !hasUsers && usersQuery.error
   const hasValuesError = !isValuesLoading && !hasCompanyValues && companyValuesQuery.error
 
@@ -309,9 +294,7 @@ export const usePraisesData = () => {
       hasUsers,
       hasCompanyValues,
       hasPraises: (praisesQuery.data?.length ?? 0) > 0,
-      // ✅ SOLUÇÃO 4: Lógica melhorada para canSendPraise
       canSendPraise: hasUsers && hasCompanyValues && !isAnyLoading,
-      // ✅ SOLUÇÃO 4: Novos computed properties para melhor controle
       hasUsersError,
       hasValuesError,
       isUsersLoading,
