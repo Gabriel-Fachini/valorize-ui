@@ -30,7 +30,8 @@
 ### Code Style
 - **No semicolons** - ESLint enforces semicolon-free style
 - **Single quotes** for strings
-- **English only** for all code, comments, and documentation
+- **English only** for code and comments** - For better maintainability and international collaboration
+- **Portuguese (Brazil)** for user interface text, labels, messages, and user-facing content
 - Use `eslint . --fix` to auto-fix linting errors quickly
 
 ### Documentation
