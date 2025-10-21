@@ -3,9 +3,10 @@
  * Página refatorada seguindo padrões de PraisesPage com componentes extraídos
  */
 
-import { useState, useEffect } from 'react'
-import { useSearch } from '@tanstack/react-router'
+import { useState, useEffect, useMemo, useCallback, memo } from 'react'
+import { useSearch, Navigate } from '@tanstack/react-router'
 import { animated } from '@react-spring/web'
+import { useAuth } from '@/hooks/useAuth'
 import { usePraisesData } from '@/hooks/usePraisesData'
 import { useNewPraiseForm, useStepInfo } from '@/hooks/useNewPraiseForm'
 import { usePageEntrance, useCardEntrance } from '@/hooks/useAnimations'
@@ -24,8 +25,31 @@ import {
   ConfirmationStep,
 } from '@/components/praises/new-praise'
 
+// Componentes memoizados para evitar re-renders desnecessários
+const MemoizedUserSelectionStep = memo(UserSelectionStep)
+const MemoizedValueSelectionStep = memo(ValueSelectionStep)
+const MemoizedCoinSelectionStep = memo(CoinSelectionStep)
+const MemoizedMessageStep = memo(MessageStep)
+const MemoizedConfirmationStep = memo(ConfirmationStep)
+
 export const NewPraisePage = () => {
   const searchParams = useSearch({ strict: false }) as { userId?: string }
+  const { user, isLoading: authLoading } = useAuth()
+  
+  // ✅ SOLUÇÃO 1: Aguardar AuthContext carregar antes de fazer queries
+  if (authLoading) {
+    return (
+      <PageLayout maxWidth="5xl">
+        <NewPraiseSkeleton />
+      </PageLayout>
+    )
+  }
+  
+  // ✅ SOLUÇÃO 1: Redirecionar para login se não houver usuário
+  if (!user) {
+    return <Navigate to="/login" />
+  }
+  
   const { users, companyValues, loading, computed, actions } = usePraisesData()
   
   // Form management
@@ -49,6 +73,82 @@ export const NewPraisePage = () => {
   // Search state for user selection
   const [searchQuery, setSearchQuery] = useState('')
 
+  // Memoized computed values to prevent unnecessary re-renders
+  const selectedUser = useMemo(() => 
+    users.find(u => u.id === formData.userId) || null,
+    [users, formData.userId]
+  )
+  
+  const selectedValue = useMemo(() => 
+    companyValues.find(v => v.id === formData.valueId) || null,
+    [companyValues, formData.valueId]
+  )
+
+  // ✅ SOLUÇÃO 5: Lógica melhorada para detectar carregamento
+  const isLoadingData = useMemo(() => 
+    computed.isUsersLoading || computed.isValuesLoading,
+    [computed.isUsersLoading, computed.isValuesLoading]
+  )
+  
+  // ✅ SOLUÇÃO 5: Lógica inteligente para detectar erros reais
+  const hasDataError = useMemo(() => {
+    // Se ainda está carregando, não é erro
+    if (isLoadingData) return false
+    
+    // Se há erro real nas queries, é erro
+    if (computed.hasAnyError) return true
+    
+    // Se não está carregando e não tem dados, é erro
+    if (!computed.hasUsers && !computed.isUsersLoading) return true
+    if (!computed.hasCompanyValues && !computed.isValuesLoading) return true
+    
+    return false
+  }, [isLoadingData, computed.hasAnyError, computed.hasUsers, computed.hasCompanyValues, computed.isUsersLoading, computed.isValuesLoading])
+
+  // Memoized error message to avoid recreation on every render
+  const dataErrorMessage = useMemo(() => {
+    if (computed.combinedErrorMessage) return computed.combinedErrorMessage
+    if (!computed.hasUsers) return 'Nenhum usuário disponível para receber elogios.'
+    if (!computed.hasCompanyValues) return 'Nenhum valor da empresa configurado.'
+    return 'Erro ao carregar dados necessários.'
+  }, [computed.combinedErrorMessage, computed.hasUsers, computed.hasCompanyValues])
+
+  // ✅ SOLUÇÃO 6: Retry handler melhorado com timeout
+  const handleRetry = useCallback(() => {
+    // Força invalidação e refetch de todas as queries críticas
+    actions.invalidateCache()
+    
+    // ✅ SOLUÇÃO 6: Timeout para detectar se ainda está falhando
+    setTimeout(() => {
+      if (computed.hasAnyError) {
+        console.warn('Retry failed, attempting individual refresh...')
+        actions.refreshUsers()
+        actions.refreshValues()
+      }
+    }, 2000)
+  }, [actions, computed.hasAnyError])
+
+  // Memoized form handlers to prevent re-creation
+  const handleUserSelect = useCallback((user: any) => {
+    updateFormValue('userId', user.id)
+  }, [updateFormValue])
+
+  const handleValueSelect = useCallback((value: any) => {
+    updateFormValue('valueId', value.id)
+  }, [updateFormValue])
+
+  const handleCoinChange = useCallback((amount: number) => {
+    updateFormValue('coins', amount)
+  }, [updateFormValue])
+
+  const handleMessageChange = useCallback((message: string) => {
+    updateFormValue('message', message)
+  }, [updateFormValue])
+
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query)
+  }, [])
+
   // Pre-select user from URL params if provided
   useEffect(() => {
     if (searchParams?.userId && users.length > 0 && !formData.userId) {
@@ -63,37 +163,42 @@ export const NewPraisePage = () => {
     }
   }, [searchParams?.userId, users, formData.userId, currentStep, updateFormValue, goToNextStep])
 
+  // ✅ SOLUÇÃO 7: Auto-recovery para falhas de rede
+  useEffect(() => {
+    if (computed.hasAnyError && !isLoadingData) {
+      console.warn('Data loading failed, attempting auto-recovery...')
+      
+      // Aguarda um pouco antes de tentar recovery
+      const recoveryTimeout = setTimeout(() => {
+        if (computed.hasAnyError) {
+          console.log('Auto-recovery: refreshing data...')
+          actions.invalidateCache()
+        }
+      }, 3000)
+      
+      return () => clearTimeout(recoveryTimeout)
+    }
+    
+    // ✅ SOLUÇÃO 7: Return undefined para satisfazer o linter
+    return undefined
+  }, [computed.hasAnyError, isLoadingData, actions])
+
   // Animations
   const pageAnimation = usePageEntrance()
   const cardAnimation = useCardEntrance()
 
-  // Data loading states
-  const isLoadingData = loading.users || loading.values
-  const hasDataError = computed.hasAnyError || !computed.hasUsers || !computed.hasCompanyValues
-  
-  const getDataErrorMessage = () => {
-    if (computed.combinedErrorMessage) return computed.combinedErrorMessage
-    if (!computed.hasUsers) return 'Nenhum usuário disponível para receber elogios.'
-    if (!computed.hasCompanyValues) return 'Nenhum valor da empresa configurado.'
-    return 'Erro ao carregar dados necessários.'
-  }
-
-  // Get selected items for display
-  const selectedUser = users.find(u => u.id === formData.userId) || null
-  const selectedValue = companyValues.find(v => v.id === formData.valueId) || null
-
-  // Render current step
-  const renderCurrentStep = () => {
+  // Memoized step renderer to prevent recreation on every render
+  const renderCurrentStep = useMemo(() => {
     switch (currentStep) {
       case 0:
         return (
-          <UserSelectionStep
+          <MemoizedUserSelectionStep
             selectedItem={selectedUser}
-            onSelect={(user) => updateFormValue('userId', user.id)}
+            onSelect={handleUserSelect}
             items={users}
             loading={loading.users}
             searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
+            onSearchChange={handleSearchChange}
             onNext={goToNextStep}
             onPrev={goToPrevStep}
             onCancel={cancelForm}
@@ -103,9 +208,9 @@ export const NewPraisePage = () => {
       
       case 1:
         return (
-          <ValueSelectionStep
+          <MemoizedValueSelectionStep
             selectedItem={selectedValue}
-            onSelect={(value) => updateFormValue('valueId', value.id)}
+            onSelect={handleValueSelect}
             items={companyValues}
             loading={loading.values}
             selectedUserName={selectedUser?.name}
@@ -118,9 +223,9 @@ export const NewPraisePage = () => {
       
       case 2:
         return (
-          <CoinSelectionStep
+          <MemoizedCoinSelectionStep
             coinAmount={formData.coins}
-            onCoinChange={(amount) => updateFormValue('coins', amount)}
+            onCoinChange={handleCoinChange}
             onNext={goToNextStep}
             onPrev={goToPrevStep}
             onCancel={cancelForm}
@@ -130,9 +235,9 @@ export const NewPraisePage = () => {
       
       case 3:
         return (
-          <MessageStep
+          <MemoizedMessageStep
             value={formData.message}
-            onChange={(message) => updateFormValue('message', message)}
+            onChange={handleMessageChange}
             error={errors.message?.message}
             onNext={goToNextStep}
             onPrev={goToPrevStep}
@@ -143,7 +248,7 @@ export const NewPraisePage = () => {
       
       case 4:
         return (
-          <ConfirmationStep
+          <MemoizedConfirmationStep
             formData={formData}
             selectedUser={selectedUser}
             selectedValue={selectedValue}
@@ -157,7 +262,28 @@ export const NewPraisePage = () => {
       default:
         return null
     }
-  }
+  }, [
+    currentStep,
+    selectedUser,
+    selectedValue,
+    formData,
+    errors.message?.message,
+    users,
+    companyValues,
+    loading.users,
+    loading.values,
+    searchQuery,
+    handleUserSelect,
+    handleValueSelect,
+    handleCoinChange,
+    handleMessageChange,
+    handleSearchChange,
+    goToNextStep,
+    goToPrevStep,
+    cancelForm,
+    submitForm,
+    isSubmitting,
+  ])
 
   return (
     <PageLayout maxWidth="5xl">
@@ -168,11 +294,8 @@ export const NewPraisePage = () => {
         {/* Show error if data failed to load */}
         {!isLoadingData && hasDataError && (
           <NewPraiseError 
-            error={getDataErrorMessage()} 
-            onRetry={() => {
-              actions.refreshUsers()
-              actions.refreshValues()
-            }} 
+            error={dataErrorMessage} 
+            onRetry={handleRetry}
           />
         )}
         
@@ -217,7 +340,7 @@ export const NewPraisePage = () => {
 
             {/* Main Content */}
             <animated.div style={cardAnimation}>
-              {renderCurrentStep()}
+              {renderCurrentStep}
             </animated.div>
 
             {/* Navigation Buttons */}

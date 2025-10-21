@@ -1,8 +1,9 @@
 /**
  * User Selection Step Component
- * Step 0: Seleção de usuário com busca
+ * Step 0: User Selection Step with search
  */
 
+import { memo, useMemo, useCallback } from 'react'
 import { animated, useSpring } from '@react-spring/web'
 import type { PraiseUser } from '@/hooks/usePraisesData'
 import type { SelectionStepProps } from '@/types/praise.types'
@@ -12,14 +13,54 @@ interface UserSelectionStepProps extends SelectionStepProps<PraiseUser> {
   onSearchChange: (query: string) => void
 }
 
-export const UserSelectionStep = ({
+// Memoized user card component
+const UserCard = memo(({ 
+  user, 
+  isSelected, 
+  onSelect,
+}: { 
+  user: PraiseUser
+  isSelected: boolean
+  onSelect: (user: PraiseUser) => void,
+}) => {
+  const handleClick = useCallback(() => {
+    onSelect(user)
+  }, [user, onSelect])
+
+  return (
+    <button
+      onClick={handleClick}
+      className={`w-full p-5 rounded-xl border-2 flex items-center space-x-4 transition-all ${
+        isSelected
+          ? 'border-green-500 bg-green-50 dark:bg-green-900/20 scale-[1.02] shadow-lg shadow-green-500/20'
+          : 'border-[#e5e5e5] dark:border-[#404040] bg-white dark:bg-[#262626] hover:border-green-300 hover:bg-[#fafafa] dark:hover:bg-[#404040]/50'
+      }`}
+    >
+      <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+        <i className="ph-bold ph-user text-white text-xl"></i>
+      </div>
+      <div className="flex-1 text-left min-w-0">
+        <p className="font-bold text-[#171717] dark:text-[#f5f5f5] text-base truncate">{user.name}</p>
+        <p className="text-sm text-[#525252] dark:text-[#a3a3a3] truncate">{user.department}</p>
+      </div>
+      {isSelected && (
+        <div className="w-7 h-7 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+          <i className="ph-bold ph-check text-white text-base"></i>
+        </div>
+      )}
+    </button>
+  )
+})
+
+UserCard.displayName = 'UserCard'
+
+export const UserSelectionStep = memo(({
   selectedItem,
   onSelect,
   items,
   searchQuery,
   onSearchChange,
 }: UserSelectionStepProps) => {
-
   const searchAnimation = useSpring({
     from: { opacity: 0, transform: 'translateY(10px)' },
     to: { opacity: 1, transform: 'translateY(0px)' },
@@ -32,10 +73,19 @@ export const UserSelectionStep = ({
     config: { tension: 280, friction: 60 },
   })
 
-  const filteredUsers = items.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.department.toLowerCase().includes(searchQuery.toLowerCase()),
+  // Memoized filtered users to prevent recalculation on every render
+  const filteredUsers = useMemo(() => 
+    items.filter(user =>
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.department.toLowerCase().includes(searchQuery.toLowerCase()),
+    ),
+    [items, searchQuery],
   )
+
+  // Memoized search handler
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    onSearchChange(e.target.value)
+  }, [onSearchChange])
 
   return (
     <div className="space-y-6">
@@ -54,7 +104,7 @@ export const UserSelectionStep = ({
           type="text"
           placeholder="Buscar por nome ou departamento..."
           value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={handleSearchChange}
           className="w-full px-4 py-4 bg-white dark:bg-[#262626] border border-[#d4d4d4] dark:border-[#525252] rounded-xl text-base text-[#171717] dark:text-[#f5f5f5] placeholder-[#737373] dark:placeholder-[#a3a3a3] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
           autoFocus
         />
@@ -68,30 +118,16 @@ export const UserSelectionStep = ({
             key={user.id}
             style={cardAnimation}
           >
-            <button
-              onClick={() => onSelect(user)}
-              className={`w-full p-5 rounded-xl border-2 flex items-center space-x-4 transition-all ${
-                selectedItem?.id === user.id
-                  ? 'border-green-500 bg-green-50 dark:bg-green-900/20 scale-[1.02] shadow-lg shadow-green-500/20'
-                  : 'border-[#e5e5e5] dark:border-[#404040] bg-white dark:bg-[#262626] hover:border-green-300 hover:bg-[#fafafa] dark:hover:bg-[#404040]/50'
-              }`}
-            >
-              <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
-                <i className="ph-bold ph-user text-white text-xl"></i>
-              </div>
-              <div className="flex-1 text-left min-w-0">
-                <p className="font-bold text-[#171717] dark:text-[#f5f5f5] text-base truncate">{user.name}</p>
-                <p className="text-sm text-[#525252] dark:text-[#a3a3a3] truncate">{user.department}</p>
-              </div>
-              {selectedItem?.id === user.id && (
-                <div className="w-7 h-7 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <i className="ph-bold ph-check text-white text-base"></i>
-                </div>
-              )}
-            </button>
+            <UserCard
+              user={user}
+              isSelected={selectedItem?.id === user.id}
+              onSelect={onSelect}
+            />
           </animated.div>
         ))}
       </div>
     </div>
   )
-}
+})
+
+UserSelectionStep.displayName = 'UserSelectionStep'

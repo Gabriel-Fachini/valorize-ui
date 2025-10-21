@@ -1,9 +1,9 @@
 /**
  * New Praise Form Hook
- * Gerencia estado e validação do formulário multi-step de elogio
+ * Manages the state and validation of the multi-step praise form
  */
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
@@ -42,11 +42,20 @@ export const useNewPraiseForm = () => {
   // Valores atuais do formulário
   const formData = watch()
 
+  // Memoized field validation map to avoid recreation
+  const fieldsForStep = useMemo(() => ({
+    0: ['userId'] as const,
+    1: ['valueId'] as const,
+    2: ['coins'] as const,
+    3: ['message'] as const,
+    4: ['userId', 'valueId', 'coins', 'message'] as const,
+  }), [])
+
   /**
-   * Valida se o step atual pode prosseguir
+   * Valida se o step atual pode prosseguir - memoizado
    */
-  const canProceed = useCallback((step: PraiseStep): boolean => {
-    switch (step) {
+  const canProceed = useMemo(() => {
+    switch (currentStep) {
       case 0:
         return Boolean(formData.userId)
       case 1:
@@ -60,15 +69,15 @@ export const useNewPraiseForm = () => {
       default:
         return false
     }
-  }, [formData, isValid])
+  }, [currentStep, formData, isValid])
 
   /**
-   * Navega para o próximo step
+   * Navega para o próximo step - otimizado
    */
   const goToNextStep = useCallback(async () => {
     if (currentStep < 4) {
       // Valida o step atual antes de prosseguir
-      const fieldsToValidate = getFieldsForStep(currentStep)
+      const fieldsToValidate = fieldsForStep[currentStep]
       const isValidStep = await trigger(fieldsToValidate)
       
       if (isValidStep) {
@@ -76,7 +85,7 @@ export const useNewPraiseForm = () => {
         setError(null)
       }
     }
-  }, [currentStep, trigger])
+  }, [currentStep, trigger, fieldsForStep])
 
   /**
    * Navega para o step anterior
@@ -130,38 +139,20 @@ export const useNewPraiseForm = () => {
     }
   }, [isValid, formData, onBalanceMovement, navigate])
 
-  /**
-   * Retorna os campos que devem ser validados para cada step
-   */
-  const getFieldsForStep = (step: PraiseStep): (keyof NewPraiseFormData)[] => {
-    switch (step) {
-      case 0:
-        return ['userId']
-      case 1:
-        return ['valueId']
-      case 2:
-        return ['coins']
-      case 3:
-        return ['message']
-      case 4:
-        return ['userId', 'valueId', 'coins', 'message']
-      default:
-        return []
-    }
-  }
 
   /**
    * Atualiza um valor do formulário
    */
   const updateFormValue = useCallback((
     field: keyof NewPraiseFormData,
-    value: string | number
+    value: string | number,
   ) => {
-    setValue(field as any, value as any)
+    setValue(field as keyof NewPraiseFormData, value as never)
     setError(null)
   }, [setValue])
 
-  return {
+  // Retorno memoizado para evitar re-renders desnecessários
+  return useMemo(() => ({
     // Estado
     currentStep,
     isSubmitting,
@@ -180,28 +171,44 @@ export const useNewPraiseForm = () => {
     cancelForm,
     submitForm,
     updateFormValue,
-    canProceed: canProceed(currentStep),
+    canProceed,
     
     // Helpers
     setError,
-  }
+  }), [
+    currentStep,
+    isSubmitting,
+    showSuccess,
+    error,
+    formData,
+    form,
+    errors,
+    isValid,
+    goToNextStep,
+    goToPrevStep,
+    cancelForm,
+    submitForm,
+    updateFormValue,
+    canProceed,
+  ])
 }
 
 /**
- * Hook para obter informações do step atual
+ * Hook para obter informações do step atual - OTIMIZADO
  */
 export const useStepInfo = (currentStep: PraiseStep) => {
-  const steps = [
+  // Memoized steps array to avoid recreation
+  const steps = useMemo(() => [
     { name: 'Usuário', description: 'Selecione quem você quer elogiar' },
     { name: 'Valor', description: 'Escolha o valor demonstrado' },
     { name: 'Moedas', description: 'Defina a quantidade de moedas' },
     { name: 'Mensagem', description: 'Escreva sua mensagem' },
     { name: 'Confirmar', description: 'Revise e envie o elogio' },
-  ]
+  ], [])
 
-  return {
+  return useMemo(() => ({
     currentStepInfo: steps[currentStep],
     totalSteps: steps.length,
     progress: ((currentStep + 1) / steps.length) * 100,
-  }
+  }), [steps, currentStep])
 }

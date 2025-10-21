@@ -6,7 +6,7 @@
 import { z } from 'zod'
 
 /**
- * Schema de validação para o formulário de elogio multi-step
+ * @description Multi-setp form validation schema for the praise form
  */
 export const newPraiseSchema = z.object({
   // Step 0: User Selection
@@ -34,17 +34,17 @@ export const newPraiseSchema = z.object({
 })
 
 /**
- * Type inferido do schema para type-safety
+ * @description Type inferred from the schema for type-safety
  */
 export type NewPraiseFormData = z.infer<typeof newPraiseSchema>
 
 /**
- * Estados possíveis dos steps
+ * @description Possible states for the steps
  */
 export type PraiseStep = 0 | 1 | 2 | 3 | 4
 
 /**
- * Props base para componentes de step
+ * @description Base props for the step components
  */
 export interface StepComponentProps {
   onNext: () => void
@@ -54,7 +54,7 @@ export interface StepComponentProps {
 }
 
 /**
- * Props para componentes de seleção
+ * @description Props for the selection step components
  */
 export interface SelectionStepProps<T> extends StepComponentProps {
   selectedItem: T | null
@@ -64,7 +64,7 @@ export interface SelectionStepProps<T> extends StepComponentProps {
 }
 
 /**
- * Props para componentes de input
+ * @description Props for the input step components
  */
 export interface InputStepProps extends StepComponentProps {
   value: string
@@ -75,7 +75,7 @@ export interface InputStepProps extends StepComponentProps {
 }
 
 /**
- * Props para componente de confirmação
+ * @description Props for the confirmation step components
  */
 export interface ConfirmationStepProps extends StepComponentProps {
   formData: NewPraiseFormData
