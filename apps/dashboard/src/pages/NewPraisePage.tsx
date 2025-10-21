@@ -1,13 +1,8 @@
-/**
- * New Praise Page
- * Página refatorada seguindo padrões de PraisesPage com componentes extraídos
- */
-
 import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import { useSearch, Navigate } from '@tanstack/react-router'
 import { animated } from '@react-spring/web'
 import { useAuth } from '@/hooks/useAuth'
-import { usePraisesData } from '@/hooks/usePraisesData'
+import { usePraisesData, type PraiseUser, type PraiseCompanyValue } from '@/hooks/usePraisesData'
 import { useNewPraiseForm, useStepInfo } from '@/hooks/useNewPraiseForm'
 import { usePageEntrance, useCardEntrance } from '@/hooks/useAnimations'
 import { PageLayout } from '@/components/layout/PageLayout'
@@ -25,7 +20,6 @@ import {
   ConfirmationStep,
 } from '@/components/praises/new-praise'
 
-// Componentes memoizados para evitar re-renders desnecessários
 const MemoizedUserSelectionStep = memo(UserSelectionStep)
 const MemoizedValueSelectionStep = memo(ValueSelectionStep)
 const MemoizedCoinSelectionStep = memo(CoinSelectionStep)
@@ -36,23 +30,8 @@ export const NewPraisePage = () => {
   const searchParams = useSearch({ strict: false }) as { userId?: string }
   const { user, isLoading: authLoading } = useAuth()
   
-  // ✅ SOLUÇÃO 1: Aguardar AuthContext carregar antes de fazer queries
-  if (authLoading) {
-    return (
-      <PageLayout maxWidth="5xl">
-        <NewPraiseSkeleton />
-      </PageLayout>
-    )
-  }
-  
-  // ✅ SOLUÇÃO 1: Redirecionar para login se não houver usuário
-  if (!user) {
-    return <Navigate to="/login" />
-  }
-  
   const { users, companyValues, loading, computed, actions } = usePraisesData()
   
-  // Form management
   const {
     currentStep,
     isSubmitting,
@@ -67,38 +46,31 @@ export const NewPraisePage = () => {
     updateFormValue,
   } = useNewPraiseForm()
 
-  // Step info
   const { currentStepInfo, totalSteps } = useStepInfo(currentStep)
 
   // Search state for user selection
   const [searchQuery, setSearchQuery] = useState('')
 
-  // Memoized computed values to prevent unnecessary re-renders
   const selectedUser = useMemo(() => 
-    users.find(u => u.id === formData.userId) || null,
-    [users, formData.userId]
+    users.find(u => u.id === formData.userId) ?? null,
+    [users, formData.userId],
   )
   
   const selectedValue = useMemo(() => 
-    companyValues.find(v => v.id === formData.valueId) || null,
-    [companyValues, formData.valueId]
+    companyValues.find(v => v.id === formData.valueId) ?? null,
+    [companyValues, formData.valueId],
   )
 
-  // ✅ SOLUÇÃO 5: Lógica melhorada para detectar carregamento
   const isLoadingData = useMemo(() => 
     computed.isUsersLoading || computed.isValuesLoading,
-    [computed.isUsersLoading, computed.isValuesLoading]
+    [computed.isUsersLoading, computed.isValuesLoading],
   )
   
-  // ✅ SOLUÇÃO 5: Lógica inteligente para detectar erros reais
   const hasDataError = useMemo(() => {
-    // Se ainda está carregando, não é erro
     if (isLoadingData) return false
     
-    // Se há erro real nas queries, é erro
     if (computed.hasAnyError) return true
     
-    // Se não está carregando e não tem dados, é erro
     if (!computed.hasUsers && !computed.isUsersLoading) return true
     if (!computed.hasCompanyValues && !computed.isValuesLoading) return true
     
@@ -113,15 +85,11 @@ export const NewPraisePage = () => {
     return 'Erro ao carregar dados necessários.'
   }, [computed.combinedErrorMessage, computed.hasUsers, computed.hasCompanyValues])
 
-  // ✅ SOLUÇÃO 6: Retry handler melhorado com timeout
   const handleRetry = useCallback(() => {
-    // Força invalidação e refetch de todas as queries críticas
     actions.invalidateCache()
     
-    // ✅ SOLUÇÃO 6: Timeout para detectar se ainda está falhando
     setTimeout(() => {
       if (computed.hasAnyError) {
-        console.warn('Retry failed, attempting individual refresh...')
         actions.refreshUsers()
         actions.refreshValues()
       }
@@ -129,11 +97,11 @@ export const NewPraisePage = () => {
   }, [actions, computed.hasAnyError])
 
   // Memoized form handlers to prevent re-creation
-  const handleUserSelect = useCallback((user: any) => {
+  const handleUserSelect = useCallback((user: PraiseUser) => {
     updateFormValue('userId', user.id)
   }, [updateFormValue])
 
-  const handleValueSelect = useCallback((value: any) => {
+  const handleValueSelect = useCallback((value: PraiseCompanyValue) => {
     updateFormValue('valueId', value.id)
   }, [updateFormValue])
 
@@ -163,12 +131,10 @@ export const NewPraisePage = () => {
     }
   }, [searchParams?.userId, users, formData.userId, currentStep, updateFormValue, goToNextStep])
 
-  // ✅ SOLUÇÃO 7: Auto-recovery para falhas de rede
   useEffect(() => {
     if (computed.hasAnyError && !isLoadingData) {
       console.warn('Data loading failed, attempting auto-recovery...')
       
-      // Aguarda um pouco antes de tentar recovery
       const recoveryTimeout = setTimeout(() => {
         if (computed.hasAnyError) {
           console.log('Auto-recovery: refreshing data...')
@@ -179,15 +145,12 @@ export const NewPraisePage = () => {
       return () => clearTimeout(recoveryTimeout)
     }
     
-    // ✅ SOLUÇÃO 7: Return undefined para satisfazer o linter
     return undefined
   }, [computed.hasAnyError, isLoadingData, actions])
 
-  // Animations
   const pageAnimation = usePageEntrance()
   const cardAnimation = useCardEntrance()
 
-  // Memoized step renderer to prevent recreation on every render
   const renderCurrentStep = useMemo(() => {
     switch (currentStep) {
       case 0:
@@ -284,6 +247,18 @@ export const NewPraisePage = () => {
     submitForm,
     isSubmitting,
   ])
+
+  if (authLoading) {
+    return (
+      <PageLayout maxWidth="5xl">
+        <NewPraiseSkeleton />
+      </PageLayout>
+    )
+  }
+  
+  if (!user) {
+    return <Navigate to="/login" />
+  }
 
   return (
     <PageLayout maxWidth="5xl">
