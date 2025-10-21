@@ -4,7 +4,7 @@ export const LoginHeader = () => {
       {/* Logo */}
       <div className="flex items-center">
         <div className="w-64 h-16 flex items-center justify-center mr-3">
-          <img src='/logo1.svg' />
+          <img src='/logo1.svg' alt="Valorize Logo" />
         </div>
       </div>
 

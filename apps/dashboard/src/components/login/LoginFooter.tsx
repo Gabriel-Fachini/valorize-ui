@@ -5,7 +5,7 @@ export const LoginFooter = () => {
       <div className="text-center">
         <p className="text-gray-400">
           Não tem uma conta?{' '}
-          <a href="#" className="text-green-400 hover:text-green-300 font-semibold transition-colors">
+          <a href="#" className="text-green-400 hover:text-green-300 font-semibold">
             Cadastre-se
           </a>
         </p>

@@ -44,7 +44,7 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit }: LoginFormProps) 
       <button
         type="submit"
         disabled={isSubmitting || isLoading}
-        className="w-full flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-[#1a1a1a] shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-[#1a1a1a] shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/40 disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {isSubmitting || isLoading ? 'Entrando...' : 'Entrar'}
       </button>
