@@ -7,7 +7,7 @@ interface SkeletonPrizeCardProps {
   className?: string
 }
 
-export const SkeletonPrizeCard: React.FC<SkeletonPrizeCardProps> = ({ 
+export const SkeletonPrizeCard: React.FC<SkeletonPrizeCardProps> = React.memo(({ 
   style = {},
   className = '',
 }) => {
@@ -52,4 +52,6 @@ export const SkeletonPrizeCard: React.FC<SkeletonPrizeCardProps> = ({
       </div>
     </animated.div>
   )
-}
+})
+
+SkeletonPrizeCard.displayName = 'SkeletonPrizeCard'

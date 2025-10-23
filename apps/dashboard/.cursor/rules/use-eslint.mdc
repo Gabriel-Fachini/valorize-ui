@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+---
+Use eslint with fix flag for resolve linting errors more quickly.
