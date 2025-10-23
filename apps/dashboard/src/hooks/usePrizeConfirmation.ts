@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { usePrizeById, useRedeemPrize } from '@/hooks/usePrizes'
 import { useAddresses, useCreateAddress, useUpdateAddress, useDeleteAddress } from '@/hooks/useAddresses'
 import { useUser } from '@/hooks/useUser'
-import type { AddressInput } from '@/types/address.types'
+import type { Address, AddressInput } from '@/types/address.types'
 import type { Prize, PrizeVariant } from '@/types/prize.types'
 
 interface UsePrizeConfirmationProps {
@@ -15,7 +15,7 @@ interface UsePrizeConfirmationReturn {
   // Data
   prize: Prize | undefined
   selectedVariant: PrizeVariant | undefined
-  addresses: any[]
+  addresses: Address[]
   selectedAddressId: string | undefined
   
   // Loading states
@@ -84,6 +84,7 @@ export const usePrizeConfirmation = ({
         setSelectedAddressId(addressToSelect)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addresses.length, selectedAddressId]) // Only depend on length to avoid infinite loops
   
   // Address modal handlers
@@ -107,6 +108,7 @@ export const usePrizeConfirmation = ({
       }
       handleCloseAddressModal()
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error saving address:', error)
       setErrorMessage('Erro ao salvar endereço. Tente novamente.')
       throw error
@@ -120,6 +122,7 @@ export const usePrizeConfirmation = ({
         setSelectedAddressId(undefined)
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error deleting address:', error)
       setErrorMessage('Erro ao excluir endereço. Tente novamente.')
     }
@@ -143,6 +146,7 @@ export const usePrizeConfirmation = ({
       onBalanceMovement()
       setShowSuccessModal(true)
     } catch (error: unknown) {
+      // eslint-disable-next-line no-console
       console.error('Error redeeming prize:', error)
       const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message
       setErrorMessage(errorMessage ?? 'Erro ao resgatar prêmio. Verifique seu saldo e tente novamente.')
@@ -156,7 +160,7 @@ export const usePrizeConfirmation = ({
   
   return {
     // Data
-    prize,
+    prize: prize ?? undefined,
     selectedVariant,
     addresses,
     selectedAddressId,

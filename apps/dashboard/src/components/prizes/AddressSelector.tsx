@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react'
+import { memo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { AddressCard } from './AddressCard'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -49,15 +49,11 @@ export const AddressSelector = memo<AddressSelectorProps>(({
           icon="ph-bold ph-map-pin"
           title="Nenhum endereço cadastrado"
           description="Você ainda não tem nenhum endereço cadastrado. Adicione um endereço para continuar."
-          action={
-            <Button
-              onClick={handleAddAddress}
-              className="bg-green-600 hover:bg-green-700 text-white"
-            >
-              <i className="ph-bold ph-plus" />
-              Cadastrar Endereço
-            </Button>
-          }
+          action={{
+            label: 'Cadastrar Endereço',
+            onClick: handleAddAddress,
+            icon: 'ph-bold ph-plus',
+          }}
         />
       </div>
     )

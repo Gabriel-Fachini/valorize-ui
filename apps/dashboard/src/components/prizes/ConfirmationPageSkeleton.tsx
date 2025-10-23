@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import { memo } from 'react'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { SkeletonBase } from '@/components/ui/Skeleton'
 import { usePageEntrance } from '@/hooks/useAnimations'

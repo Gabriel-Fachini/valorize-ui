@@ -75,6 +75,7 @@ export const Modal: React.FC<ModalProps> = ({
           aria-modal="true"
         >
           <animated.div
+            role="document"
             className={cn(
               'relative w-full rounded-2xl border border-gray-200 dark:border-white/10 bg-white/95 dark:bg-[#262626]/95 p-6 backdrop-blur-xl shadow-2xl max-h-[90vh] overflow-y-auto',
               sizeClasses[size],

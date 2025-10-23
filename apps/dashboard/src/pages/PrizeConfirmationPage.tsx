@@ -197,7 +197,7 @@ export const PrizeConfirmationPage = () => {
           <div className="flex gap-3">
             <Button
               variant="outline"
-              onClick={() => window.location.href = '/prizes'}
+              onClick={() => navigate({ to: '/prizes' })}
               className="flex-1"
             >
               <i className="ph ph-storefront" />
