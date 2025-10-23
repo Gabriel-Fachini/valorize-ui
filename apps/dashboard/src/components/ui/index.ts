@@ -41,4 +41,8 @@ export { SectionCardHeader } from './SectionCardHeader'
 // Navigation components
 export { BackButton } from './BackButton'
 
+// Modal components
+export { Modal, ModalHeader, ModalTitle, ModalContent, ModalFooter } from './modal'
+export { AlertDialog, useAlertDialog } from './alert-dialog'
+
 export { ProtectedRoute } from '../ProtectedRoute'
