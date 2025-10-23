@@ -117,7 +117,7 @@ export const PrizesPage: React.FC = () => {
               <p className="mb-6 text-gray-600 dark:text-gray-400">Tente ajustar os filtros ou fazer uma nova busca</p>
               <button
                 onClick={() => setFilters({})}
-                className="rounded-xl bg-green-600 px-6 py-3 font-medium text-white transition-all hover:bg-green-700"
+                className="rounded-xl bg-green-600 px-6 py-3 font-medium text-white hover:bg-green-700"
               >
                 Limpar filtros
               </button>
@@ -134,11 +134,11 @@ export const PrizesPage: React.FC = () => {
                 <div className="mt-12 flex justify-center">
                   <button
                     onClick={handleLoadMore}
-                    className="group flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-6 py-3 font-medium text-gray-700 dark:text-white backdrop-blur-xl transition-all hover:border-green-500 dark:hover:border-green-500/50 hover:bg-green-50 dark:hover:bg-green-500/10"
+                    className="group flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-6 py-3 font-medium text-gray-700 dark:text-white backdrop-blur-xl hover:border-green-500 dark:hover:border-green-500/50 hover:bg-green-50 dark:hover:bg-green-500/10"
                   >
                     <span>Carregar mais</span>
                     <svg
-                      className="h-4 w-4 transition-transform group-hover:translate-y-0.5"
+                      className="h-4 w-4 group-hover:translate-y-0.5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"

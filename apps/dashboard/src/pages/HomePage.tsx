@@ -123,7 +123,7 @@ export const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* Enviar Elogio - Com Saldo e Busca */}
-            <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 transition-all hover:shadow-xl relative">
+            <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 hover:shadow-xl relative">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-4">
                   <div className="flex-shrink-0 w-14 h-14 bg-gray-100 dark:bg-[#3a3a3a] rounded-xl flex items-center justify-center shadow-lg">
@@ -154,7 +154,7 @@ export const HomePage = () => {
                   placeholder="Buscar colega para elogiar..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-3 pl-10 bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-neutral-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 transition-all"
+                  className="w-full px-4 py-3 pl-10 bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-neutral-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
                 />
                 <i className="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" style={{ fontSize: '18px' }}></i>
                 
@@ -172,7 +172,7 @@ export const HomePage = () => {
                             search: { userId: user.id },
                           })
                         }}
-                        className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] cursor-pointer transition-colors border-b border-gray-200 dark:border-neutral-700 last:border-b-0 flex items-center gap-3"
+                        className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] cursor-pointer border-b border-gray-200 dark:border-neutral-700 last:border-b-0 flex items-center gap-3"
                       >
                         <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-[#3a3a3a] flex items-center justify-center flex-shrink-0">
                           {user.avatar ? (
@@ -211,7 +211,7 @@ export const HomePage = () => {
               
               <button
                 onClick={() => navigate({ to: '/elogios/novo' })}
-                className="w-full flex items-center justify-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:text-gray-900 dark:hover:text-white transition-colors"
+                className="w-full flex items-center justify-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:text-gray-900 dark:hover:text-white "
               >
                 Ou começar sem seleção
                 <i className="ph-bold ph-arrow-right" style={{ fontSize: '16px' }}></i>
@@ -219,7 +219,7 @@ export const HomePage = () => {
             </div>
 
             {/* Explorar Prêmios - Com Thumbnails */}
-            <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 transition-all hover:shadow-xl">
+            <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600  hover:shadow-xl">
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-shrink-0 w-14 h-14 bg-gray-100 dark:bg-[#3a3a3a] rounded-xl flex items-center justify-center shadow-lg">
                   <i className="ph-duotone ph-gift text-gray-700 dark:text-red-400" style={{ fontSize: '28px' }}></i>
@@ -243,7 +243,7 @@ export const HomePage = () => {
                         e.stopPropagation()
                         navigate({ to: `/prizes/${prize.id}` })
                       }}
-                      className="aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-neutral-700 hover:border-gray-400 dark:hover:border-neutral-500 cursor-pointer transition-all hover:scale-105 group/prize"
+                      className="aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-neutral-700 hover:border-gray-400 dark:hover:border-neutral-500 cursor-pointer  hover:scale-105 group/prize"
                     >
                       {prize.images && prize.images.length > 0 ? (
                         <img
@@ -268,7 +268,7 @@ export const HomePage = () => {
               
               <button
                 onClick={() => navigate({ to: '/prizes' })}
-                className="w-full flex items-center justify-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:text-gray-900 dark:hover:text-white transition-colors"
+                className="w-full flex items-center justify-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:text-gray-900 dark:hover:text-white "
               >
                 Ver todos os prêmios
                 <i className="ph-bold ph-arrow-right" style={{ fontSize: '16px' }}></i>
@@ -317,14 +317,14 @@ export const HomePage = () => {
             {courses.map((course) => (
               <div
                 key={course.id}
-                className="group bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 transition-all hover:shadow-xl cursor-pointer"
+                className="group bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600  hover:shadow-xl cursor-pointer"
               >
                 {/* Thumbnail */}
                 <div className="relative h-40 overflow-hidden">
                   <img
                     src={course.thumbnail}
                     alt={course.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-105"
                   />
                   <div className="absolute top-3 left-3">
                     <span className="px-3 py-1 bg-gray-900/80 dark:bg-gray-100/90 backdrop-blur-sm text-white dark:text-gray-900 text-xs font-semibold rounded-full">
@@ -352,7 +352,7 @@ export const HomePage = () => {
                     </span>
                   </div>
                   
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors">
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-gray-700 dark:group-hover:text-gray-200 ">
                     {course.title}
                   </h3>
 
@@ -361,7 +361,7 @@ export const HomePage = () => {
                     <div className="space-y-1">
                       <div className="w-full bg-gray-200 dark:bg-[#3a3a3a] rounded-full h-1.5 overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-300"
+                          className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
                           style={{ width: `${course.progress}%` }}
                         />
                       </div>
@@ -372,7 +372,7 @@ export const HomePage = () => {
                   )}
 
                   {course.progress === 0 && (
-                    <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-[#3a3a3a] text-gray-700 dark:text-gray-200 font-semibold text-sm rounded-lg hover:bg-gray-200 dark:hover:bg-[#4a4a4a] transition-colors">
+                    <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-[#3a3a3a] text-gray-700 dark:text-gray-200 font-semibold text-sm rounded-lg hover:bg-gray-200 dark:hover:bg-[#4a4a4a] ">
                       Começar agora
                       <i className="ph-bold ph-arrow-right" style={{ fontSize: '16px' }}></i>
                     </button>

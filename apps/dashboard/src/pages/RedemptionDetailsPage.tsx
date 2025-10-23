@@ -262,7 +262,7 @@ export const RedemptionDetailsPage: React.FC = () => {
             onClick={() => navigate({ to: '/resgates' })}
             variant="outline"
             size="lg"
-            className="flex items-center gap-2 hover:gap-3 transition-all"
+            className="flex items-center gap-2 hover:gap-3"
           >
             <i className="ph-bold ph-arrow-left text-lg" />
             <span className="font-semibold">Voltar aos resgates</span>
@@ -602,7 +602,7 @@ export const RedemptionDetailsPage: React.FC = () => {
                       <button
                         onClick={handleCancelCancel}
                         disabled={cancelMutation.isPending}
-                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50"
+                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-800 disabled:opacity-50"
                       >
                         <i className="ph-bold ph-x text-2xl text-gray-500 dark:text-gray-400" />
                       </button>

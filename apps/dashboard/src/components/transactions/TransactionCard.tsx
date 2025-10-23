@@ -131,7 +131,6 @@ export const TransactionCard = ({
         border border-gray-200/80 dark:border-gray-700/50
         rounded-2xl p-5
         hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600
-        transition-all duration-300
         cursor-pointer
         ${className}
       `}
@@ -149,7 +148,6 @@ export const TransactionCard = ({
             flex items-center justify-center
             shadow-md
             group-hover:scale-110
-            transition-transform duration-300
           `}>
             <i className={`ph-bold ${displayInfo.icon} text-white text-2xl`}></i>
           </div>
@@ -198,7 +196,7 @@ export const TransactionCard = ({
       
       {/* Expandable Balance Details */}
       {showDetails && (
-        <div className="mt-4 pt-4 border-t border-gray-200/50 dark:border-gray-700/50 space-y-2 animate-in slide-in-from-top-2 duration-200">
+        <div className="mt-4 pt-4 border-t border-gray-200/50 dark:border-gray-700/50 space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2">
               <i className="ph-bold ph-arrow-bend-left-up text-base"></i>
@@ -226,7 +224,6 @@ export const TransactionCard = ({
         <i className={`
           ph-bold ${showDetails ? 'ph-caret-up' : 'ph-caret-down'} 
           text-gray-400 dark:text-gray-500 text-sm
-          transition-transform duration-200
         `}></i>
       </div>
     </animated.div>

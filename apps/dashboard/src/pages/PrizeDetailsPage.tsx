@@ -230,7 +230,7 @@ export const PrizeDetailsPage: FC = () => {
                 <Button
                   onClick={handleProceedToConfirm}
                   disabled={prize.stock === 0}
-                  className="w-full h-12 rounded-xl bg-primary text-white font-semibold hover:bg-primary-600 active:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-12 rounded-xl bg-primary text-white font-semibold hover:bg-primary-600 active:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   size="lg"
                 >
                   {prize.stock === 0 ? 'Produto Esgotado' : 'Continuar para Resgate'}

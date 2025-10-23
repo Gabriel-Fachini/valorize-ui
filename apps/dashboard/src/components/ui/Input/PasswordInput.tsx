@@ -145,7 +145,7 @@ export const PasswordInput = ({
         <button
           type="button"
           onClick={toggleVisibility}
-          className="absolute right-3 top-[2.125rem] p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus:text-gray-700 dark:focus:text-gray-200 transition-colors duration-200"
+          className="absolute right-3 top-[2.125rem] p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus:text-gray-700 dark:focus:text-gray-200"
           aria-label={isVisible ? 'Ocultar senha' : 'Mostrar senha'}
           tabIndex={-1} // Remove from tab order
         >
