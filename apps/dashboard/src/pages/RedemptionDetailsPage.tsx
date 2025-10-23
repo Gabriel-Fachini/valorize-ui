@@ -8,7 +8,6 @@ import { ErrorState } from '@/components/ui'
 import { useRedemptionCancellation } from '@/hooks/useRedemptionCancellation'
 import { RedemptionDetailsHero } from '@/components/redemptions/RedemptionDetailsHero'
 import { RedemptionTimeline } from '@/components/redemptions/RedemptionTimeline'
-import { RedemptionActionCard } from '@/components/redemptions/RedemptionActionCard'
 import { CancelRedemptionModal } from '@/components/redemptions/CancelRedemptionModal'
 import { RedemptionDetailsSkeleton } from '@/components/redemptions/RedemptionDetailsSkeleton'
 
@@ -88,20 +87,61 @@ export const RedemptionDetailsPage: React.FC = () => {
           {/* Hero Card - Prize Information */}
           <RedemptionDetailsHero redemption={redemption} />
 
-          {/* React 19: Optimized grid layout with automatic responsive behavior */}
-          <div className="grid gap-6 xl:grid-cols-3">
-            {/* Timeline Section - React 19: Automatic memoization */}
-            <RedemptionTimeline 
-              redemption={redemption} 
-              className="xl:col-span-2" 
-            />
+          {/* Timeline Section - Full Width */}
+          <RedemptionTimeline 
+            redemption={redemption} 
+          />
 
-            {/* Actions Card - React 19: Simplified prop passing */}
-            <RedemptionActionCard
-              redemption={redemption}
-              canCancel={canCancel}
-              onCancelClick={handleCancelClick}
-            />
+          {/* Cancellation Section */}
+          <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-xl p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 bg-red-100 dark:bg-red-950 rounded-xl">
+                <i className="ph-bold ph-clock text-2xl text-red-600 dark:text-red-400" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Cancelamento do Resgate</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Você pode cancelar seu resgate em até 24 horas após a confirmação
+                </p>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Status do cancelamento */}
+              {canCancel ? (
+                <div className="flex items-center gap-2 px-4 py-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <i className="ph-bold ph-info text-red-600 dark:text-red-400" />
+                  <span className="text-sm font-medium text-red-700 dark:text-red-300">
+                    Prazo de cancelamento: 24 horas após a confirmação do resgate
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 px-4 py-3 bg-gray-100 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg">
+                  <i className="ph-bold ph-lock text-gray-500 dark:text-gray-400" />
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {redemption.status === 'completed' || redemption.status === 'delivered' || redemption.status === 'cancelled'
+                      ? 'Cancelamento indisponível - resgate finalizado'
+                      : 'Prazo de cancelamento expirado (24h)'}
+                  </p>
+                </div>
+              )}
+              
+              {/* Botão de cancelamento sempre visível */}
+              <Button
+                onClick={canCancel ? handleCancelClick : undefined}
+                variant="outline"
+                size="lg"
+                disabled={!canCancel}
+                className={`w-full font-semibold ${
+                  canCancel 
+                    ? 'text-red-600 dark:text-red-400 border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-950/30' 
+                    : 'text-gray-400 dark:text-gray-500 border-gray-300 dark:border-gray-600 cursor-not-allowed'
+                }`}
+              >
+                <i className={`ph-bold ph-x-circle text-lg mr-2 ${canCancel ? '' : 'opacity-50'}`} />
+                Cancelar Resgate
+              </Button>
+            </div>
           </div>
         </animated.div>
 
