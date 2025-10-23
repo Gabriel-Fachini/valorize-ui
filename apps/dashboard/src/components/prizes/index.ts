@@ -8,3 +8,9 @@ export { PrizePricingCard } from './PrizePricingCard'
 export { PrizeHeader } from './PrizeHeader'
 export { PrizeDetailsLoading } from './PrizeDetailsLoading'
 export { PrizeDetailsError } from './PrizeDetailsError'
+
+// New confirmation page components
+export { AddressCard } from './AddressCard'
+export { AddressSelector } from './AddressSelector'
+export { PrizeSummaryCard } from './PrizeSummaryCard'
+export { ConfirmationPageSkeleton } from './ConfirmationPageSkeleton'
