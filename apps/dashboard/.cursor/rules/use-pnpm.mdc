@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+---
+use pnpm instead of npm.

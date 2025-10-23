@@ -63,19 +63,6 @@ export const PrizesPage = () => {
     }
   }, [filters])
 
-  // Debug: Log current state
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('Debug PrizesPage:', {
-      filters,
-      allPrizesCount: allPrizes.length,
-      displayPrizesCount: displayPrizes.length,
-      hasSearch: !!filters.search,
-      searchTerm: filters.search,
-    })
-  }, [filters, allPrizes.length, displayPrizes.length])
-
-
   // Memoized spring animation
   const headerSpring = useSpring({
     from: { opacity: 0, transform: 'translateY(-20px)' },
