@@ -7,6 +7,8 @@ import type { UpdateUserProfileDto, UserProfile } from '@/types/user.types'
 import { useAuth } from '@/hooks/useAuth'
 import { Input } from '@/components/ui/Input/Input'
 import { SkeletonBase } from '@/components/ui/Skeleton'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertIcon } from '@/components/ui/alert'
 
 const profileSchema = z.object({
   name: z.string().trim().min(2, 'Informe ao menos 2 caracteres').max(60, 'Máximo de 60 caracteres'),
@@ -148,51 +150,35 @@ export const ProfileForm: React.FC = () => {
 
       {/* Feedback */}
       {error && (
-        <div
-          className="rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-200 px-4 py-3"
-          role="alert"
-          aria-live="polite"
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-lg">⚠️</span>
-            <span>{error}</span>
-          </div>
-        </div>
+        <Alert variant="error">
+          <AlertIcon variant="error" />
+          <span>{error}</span>
+        </Alert>
       )}
       {success && (
-        <div
-          className="rounded-xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-200 px-4 py-3"
-          role="status"
-          aria-live="polite"
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-lg">✓</span>
-            <span>{success}</span>
-          </div>
-        </div>
+        <Alert variant="success">
+          <AlertIcon variant="success" />
+          <span>{success}</span>
+        </Alert>
       )}
 
       <div className="flex gap-3">
-        <button
+        <Button
           type="submit"
           disabled={saving || !isDirty}
-          className={`px-5 py-3 rounded-xl transition-all duration-200 font-medium ${
-            saving || !isDirty
-              ? 'bg-neutral-200 dark:bg-neutral-700 text-neutral-400 dark:text-neutral-500 cursor-not-allowed'
-              : 'bg-green-600 text-white hover:bg-green-700 hover:shadow-lg hover:shadow-green-500/20 active:scale-95'
-          }`}
+          className="bg-green-600 hover:bg-green-700 text-white"
         >
           {saving ? 'Salvando...' : 'Salvar alterações'}
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={() => reset({ name: profile?.name ?? '', picture: profile?.picture ?? '' })}
           disabled={saving || !isDirty}
-          className="px-5 py-3 rounded-xl transition-all duration-200 border bg-white/70 dark:bg-neutral-800/70 text-neutral-800 dark:text-neutral-200 border-neutral-200 dark:border-neutral-700/40 hover:bg-white/90 dark:hover:bg-neutral-800/90 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
         >
           Desfazer
-        </button>
+        </Button>
       </div>
     </form>
   )
