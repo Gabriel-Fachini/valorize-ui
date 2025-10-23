@@ -25,26 +25,23 @@ export const TransactionList = ({
 }: TransactionListProps) => {
   // Trail animation for transactions
   const transactionTrail = useTrail(transactions.length, {
-    from: { opacity: 0, transform: 'translateY(20px)' },
-    to: { opacity: 1, transform: 'translateY(0px)' },
+    from: { opacity: 0, scale: 0.7 },
+    to: { opacity: 1, scale: 1 },
     config: config.gentle,
-    delay: 100,
   })
 
   // Trail animation for skeletons (initial load)
   const skeletonTrail = useTrail(5, {
-    from: { opacity: 0, transform: 'translateY(20px)' },
-    to: { opacity: 1, transform: 'translateY(0px)' },
+    from: { opacity: 0, scale: 0.7 },
+    to: { opacity: 1, scale: 1 },
     config: config.gentle,
-    delay: 50,
   })
 
   // Trail animation for loading skeletons (filter changes)
   const loadingSkeletonTrail = useTrail(3, {
-    from: { opacity: 0, transform: 'translateY(20px)' },
-    to: { opacity: 1, transform: 'translateY(0px)' },
-    config: { tension: 200, friction: 25 },
-    delay: 50,
+    from: { opacity: 0, scale: 0.7 },
+    to: { opacity: 1, scale: 1 },
+    config: config.gentle,
   })
 
   // Show skeletons while loading (initial load or filter change)
