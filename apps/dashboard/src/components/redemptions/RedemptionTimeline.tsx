@@ -1,5 +1,5 @@
 import React from 'react'
-import { useTrail, animated } from '@react-spring/web'
+import { useTrail, animated, type SpringValue } from '@react-spring/web'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useRedemptionTimeline, type TimelineStep } from '@/hooks/useRedemptionTimeline'
 import type { Redemption } from '@/types/redemption.types'
@@ -13,7 +13,10 @@ const TimelineStepComponent: React.FC<{
   step: TimelineStep
   index: number
   isLast: boolean
-  style: any
+  style: {
+    opacity: SpringValue<number>
+    transform: SpringValue<string>
+  }
 }> = ({ step, isLast, style }) => {
   return (
     <animated.div style={style}>
@@ -75,11 +78,6 @@ export const RedemptionTimeline: React.FC<RedemptionTimelineProps> = ({
     to: { opacity: 1, transform: 'translateX(0px)' },
     config: { tension: 280, friction: 60 },
   })
-
-  // Safety check for trail length
-  if (trail.length !== steps.length) {
-    console.warn('Trail length mismatch with steps length')
-  }
 
   // Early return if no steps
   if (!steps.length) {

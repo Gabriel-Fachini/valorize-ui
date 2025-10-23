@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useCancelRedemption } from './useRedemptions'
 import { canCancelRedemption, COUNTDOWN_SECONDS } from '@/lib/redemptionUtils'
@@ -16,7 +16,7 @@ export const useRedemptionCancellation = (redemption: Redemption | null) => {
   const navigate = useNavigate()
   const cancelMutation = useCancelRedemption()
   
-  const [state, setState] = React.useState<CancellationState>({
+  const [state, setState] = useState<CancellationState>({
     showModal: false,
     reason: '',
     success: false,
@@ -24,7 +24,24 @@ export const useRedemptionCancellation = (redemption: Redemption | null) => {
     countdown: COUNTDOWN_SECONDS,
   })
 
-  const canCancel = React.useMemo(() => canCancelRedemption(redemption), [redemption])
+  const canCancel = useMemo(() => canCancelRedemption(redemption), [redemption])
+
+  // Effect to handle countdown and navigation after successful cancellation
+  useEffect(() => {
+    if (!state.success || state.countdown === 0) return
+
+    const timer = setInterval(() => {
+      setState(prev => {
+        if (prev.countdown <= 1) {
+          navigate({ to: '/resgates' })
+          return { ...prev, countdown: 0 }
+        }
+        return { ...prev, countdown: prev.countdown - 1 }
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [state.success, state.countdown, navigate])
 
   const handleCancelClick = () => {
     setState(prev => ({
@@ -44,7 +61,7 @@ export const useRedemptionCancellation = (redemption: Redemption | null) => {
     try {
       await cancelMutation.mutateAsync({ 
         id: redemption.id, 
-        reason: state.reason.trim() 
+        reason: state.reason.trim(),
       })
       
       setState(prev => ({
@@ -52,21 +69,6 @@ export const useRedemptionCancellation = (redemption: Redemption | null) => {
         success: true,
         countdown: COUNTDOWN_SECONDS,
       }))
-      
-      // Start countdown
-      const timer = setInterval(() => {
-        setState(prev => {
-          if (prev.countdown <= 1) {
-            clearInterval(timer)
-            navigate({ to: '/resgates' })
-            return { ...prev, countdown: 0 }
-          }
-          return { ...prev, countdown: prev.countdown - 1 }
-        })
-      }, 1000)
-      
-      // Cleanup timer on unmount
-      return () => clearInterval(timer)
     } catch (e) {
       setState(prev => ({
         ...prev,

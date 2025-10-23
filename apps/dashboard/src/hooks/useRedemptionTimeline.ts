@@ -1,4 +1,4 @@
-import React from 'react'
+import { useMemo } from 'react'
 import type { Redemption } from '@/types/redemption.types'
 
 export interface TimelineStep {
@@ -8,7 +8,7 @@ export interface TimelineStep {
 }
 
 export const useRedemptionTimeline = (redemption: Redemption | null) => {
-  const steps = React.useMemo((): TimelineStep[] => {
+  const steps = useMemo((): TimelineStep[] => {
     if (!redemption) return []
     
     const status = redemption.status.toLowerCase()
@@ -38,9 +38,9 @@ export const useRedemptionTimeline = (redemption: Redemption | null) => {
         done: status === 'completed' || status === 'delivered',
       },
     ]
-  }, [redemption?.status, redemption?.redeemedAt])
+  }, [redemption])
 
-  const progressPercentage = React.useMemo(() => {
+  const progressPercentage = useMemo(() => {
     if (!steps.length) return 0
     const completedSteps = steps.filter(step => step.done).length
     return (completedSteps / steps.length) * 100

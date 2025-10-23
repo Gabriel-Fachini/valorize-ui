@@ -3,7 +3,7 @@ import type { Redemption } from '@/types/redemption.types'
 // Constants
 export const CANCEL_WINDOW_MS = 24 * 60 * 60 * 1000 // 24 hours
 export const COUNTDOWN_SECONDS = 3
-export const FALLBACK_PRIZE_IMAGE = '/logo.svg'
+export const FALLBACK_PRIZE_IMAGE = '/valorize_logo.png'
 
 // Utility functions
 export const canCancelRedemption = (redemption: Redemption | null): boolean => {

@@ -78,7 +78,7 @@ export const RedemptionDetailsPage: React.FC = () => {
             onClick={() => navigate({ to: '/resgates' })}
             size="lg"
             variant="outline"
-            className="flex items-center gap-2 hover:gap-3 transition-all duration-200"
+            className="flex items-center gap-2"
             aria-label="Voltar para a página de resgates"
           >
             <i className="ph-bold ph-arrow-left text-lg" aria-hidden="true" />
