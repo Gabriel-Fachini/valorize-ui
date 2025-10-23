@@ -41,29 +41,7 @@ export const ImageViewer = memo<ImageViewerProps>(({
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault()
-      // Create a minimal synthetic React event with just the properties we need
-      const syntheticEvent = {
-        deltaY: e.deltaY,
-        deltaX: e.deltaX,
-        deltaZ: e.deltaZ,
-        deltaMode: e.deltaMode,
-        preventDefault: () => e.preventDefault(),
-        stopPropagation: () => e.stopPropagation(),
-        nativeEvent: e,
-        currentTarget: e.currentTarget,
-        target: e.target,
-        bubbles: e.bubbles,
-        cancelable: e.cancelable,
-        defaultPrevented: e.defaultPrevented,
-        eventPhase: e.eventPhase,
-        isTrusted: e.isTrusted,
-        timeStamp: e.timeStamp,
-        type: e.type,
-        isDefaultPrevented: () => e.defaultPrevented,
-        isPropagationStopped: () => false,
-        persist: () => {},
-      } as unknown as React.WheelEvent
-      onWheel(syntheticEvent)
+      onWheel(e)
     }
 
     // Add event listener with { passive: false } to allow preventDefault

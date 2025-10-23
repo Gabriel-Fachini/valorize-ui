@@ -4,13 +4,16 @@ import { useDrag } from '@use-gesture/react'
 import { getAnimationConfig } from '@/constants/animations'
 import { CarouselPreviewProps } from '../types'
 
+// Number of slides to render adjacent to the current slide (for performance)
+const ADJACENT_SLIDE_RENDER_DISTANCE = 1
+
 export const CarouselPreview = memo<CarouselPreviewProps>(({ 
   images, 
   currentIndex, 
   isDragging, 
   onImageClick, 
   onNavigate, 
-  onGoToSlide 
+  onGoToSlide,
 }) => {
   const cardConfig = getAnimationConfig('card')
 
@@ -24,7 +27,7 @@ export const CarouselPreview = memo<CarouselPreviewProps>(({
     if (!images || images.length === 0) return null
     
     return images.map((image, index) => {
-      const shouldRender = Math.abs(index - currentIndex) <= 1
+      const shouldRender = Math.abs(index - currentIndex) <= ADJACENT_SLIDE_RENDER_DISTANCE
       
       return (
         <div

@@ -1,13 +1,16 @@
 import { memo } from 'react'
 import { ImageControlsProps } from '../types'
 
+const MIN_ZOOM = 0.9
+const MAX_ZOOM = 3
+
 export const ImageControls = memo<ImageControlsProps>(({ 
   zoom, 
   onZoomIn, 
   onZoomOut, 
   onResetZoom, 
   onClose,
-  showReset = true 
+  showReset = true,
 }) => {
   return (
     <>
@@ -34,7 +37,7 @@ export const ImageControls = memo<ImageControlsProps>(({
         <div className="flex items-center justify-center gap-2 rounded-lg bg-gray-900 dark:bg-[#171717] p-3 shadow-lg border border-gray-700 dark:border-gray-600">
           <button
             onClick={onZoomOut}
-            disabled={zoom <= 0.9}
+            disabled={zoom <= MIN_ZOOM}
             className="w-10 h-10 rounded-md bg-gray-800 dark:bg-[#262626] text-white hover:bg-gray-700 dark:hover:bg-[#404040] disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
             aria-label="Diminuir zoom"
             type="button"
@@ -48,7 +51,7 @@ export const ImageControls = memo<ImageControlsProps>(({
 
           <button
             onClick={onZoomIn}
-            disabled={zoom >= 3}
+            disabled={zoom >= MAX_ZOOM}
             className="w-10 h-10 rounded-md bg-gray-800 dark:bg-[#262626] text-white hover:bg-gray-700 dark:hover:bg-[#404040] disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
             aria-label="Aumentar zoom"
             type="button"

@@ -24,7 +24,7 @@ export const PrizeDetailsPage: FC = () => {
     handleVariantChange,
     handleProceedToConfirm,
     canProceed,
-  } = usePrizeDetails({ prize: prize ?? undefined, prizeId })
+  } = usePrizeDetails({ prize: prize ?? undefined })
 
   const fadeIn = usePageEntrance()
 

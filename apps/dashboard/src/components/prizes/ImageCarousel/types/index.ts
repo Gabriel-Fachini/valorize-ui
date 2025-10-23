@@ -41,7 +41,7 @@ export interface ImageViewerProps {
   position: { x: number; y: number }
   isImageDragging: boolean
   onImageDrag: (offset: [number, number], dragging?: boolean) => void
-  onWheel: (e: React.WheelEvent) => void
+  onWheel: (e: WheelEvent) => void
 }
 
 export interface ThumbnailSidebarProps {

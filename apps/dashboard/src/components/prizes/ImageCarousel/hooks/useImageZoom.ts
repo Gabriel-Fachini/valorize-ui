@@ -1,6 +1,11 @@
 import { useReducer, useCallback } from 'react'
 import { ZoomState, ZoomAction } from '../types'
 
+const MIN_ZOOM = 0.9
+const MAX_ZOOM = 3
+const BASE_OFFSET = 150
+const ZOOM_OFFSET_MULTIPLIER = 200
+
 const initialState: ZoomState = {
   zoom: 1,
   position: { x: 0, y: 0 },
@@ -22,13 +27,12 @@ const zoomReducer = (state: ZoomState, action: ZoomAction): ZoomState => {
       return { ...state, zoom: 1, position: { x: 0, y: 0 } }
     
     case 'ADJUST_ZOOM':
-      return { ...state, zoom: Math.max(0.9, Math.min(3, state.zoom + action.payload)) }
+      return { ...state, zoom: Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, state.zoom + action.payload)) }
     
     case 'UPDATE_IMAGE_POSITION': {
       const { offset, zoom } = action.payload
       const zoomFactor = zoom - 1
-      const baseOffset = 150
-      const maxOffset = baseOffset + (zoomFactor * 200)
+      const maxOffset = BASE_OFFSET + (zoomFactor * ZOOM_OFFSET_MULTIPLIER)
       
       const clampedX = Math.max(-maxOffset, Math.min(maxOffset, offset[0]))
       const clampedY = Math.max(-maxOffset, Math.min(maxOffset, offset[1]))
@@ -74,7 +78,7 @@ export const useImageZoom = () => {
     dispatch({ type: 'UPDATE_IMAGE_POSITION', payload: { offset, zoom: state.zoom } })
   }, [state.zoom])
 
-  const handleWheel = useCallback((e: React.WheelEvent) => {
+  const handleWheel = useCallback((e: WheelEvent) => {
     e.preventDefault()
     const delta = e.deltaY > 0 ? -0.1 : 0.1
     dispatch({ type: 'ADJUST_ZOOM', payload: delta })

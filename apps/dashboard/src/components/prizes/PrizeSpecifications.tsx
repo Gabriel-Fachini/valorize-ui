@@ -1,4 +1,4 @@
-import { type FC, useMemo } from 'react'
+import { type FC } from 'react'
 import { useTrail, animated } from '@react-spring/web'
 import { getAnimationConfig } from '@/constants/animations'
 
@@ -7,7 +7,7 @@ interface PrizeSpecificationsProps {
 }
 
 export const PrizeSpecifications: FC<PrizeSpecificationsProps> = ({ specifications }) => {
-  const specificationEntries = useMemo(() => Object.entries(specifications), [specifications])
+  const specificationEntries = Object.entries(specifications)
   
   const trail = useTrail(specificationEntries.length, {
     from: { opacity: 0, transform: 'translateX(-20px)' },

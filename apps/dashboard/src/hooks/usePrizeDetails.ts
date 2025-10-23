@@ -4,7 +4,6 @@ import { Prize, PrizeVariant } from '@/types/prize.types'
 
 interface UsePrizeDetailsProps {
   prize: Prize | undefined
-  prizeId: string | undefined
 }
 
 interface UsePrizeDetailsReturn {
