@@ -1,6 +1,7 @@
 import React from 'react'
-import { useSpring, animated, config } from '@react-spring/web'
+import { useSpring, animated } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
+import { getAnimationConfig, getAnimationPreset } from '@/constants/animations'
 
 interface ImageCarouselProps {
   images: string[]
@@ -16,26 +17,26 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title }) =
   // Main carousel slide animation
   const slideSpring = useSpring({
     transform: `translateX(-${currentIndex * 100}%)`,
-    config: config.gentle,
+    config: getAnimationConfig('card'),
   })
 
   // Modal backdrop animation
   const backdropSpring = useSpring({
     opacity: isModalOpen ? 1 : 0,
-    config: config.stiff,
+    config: getAnimationConfig('modalBackdrop'),
   })
 
   // Modal content animation
   const modalSpring = useSpring({
-    transform: isModalOpen ? 'scale(1)' : 'scale(0.95)',
+    ...getAnimationPreset('modalEntrance'),
     opacity: isModalOpen ? 1 : 0,
-    config: config.gentle,
+    config: getAnimationConfig('modal'),
   })
 
   // Zoom animation
   const zoomSpring = useSpring({
     scale: zoom,
-    config: config.wobbly,
+    config: getAnimationConfig('button'),
   })
 
   // Memoized handlers for stable references
@@ -165,9 +166,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title }) =
               aria-label="Imagem anterior"
               type="button"
             >
-              <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-              </svg>
+              <i className="ph ph-caret-left text-lg sm:text-xl" />
             </button>
 
             <button
@@ -176,9 +175,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title }) =
               aria-label="Próxima imagem"
               type="button"
             >
-              <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-              </svg>
+              <i className="ph ph-caret-right text-lg sm:text-xl" />
             </button>
           </>
         )}
@@ -190,9 +187,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title }) =
           aria-label="Ver em tela cheia"
           type="button"
         >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-          </svg>
+          <i className="ph ph-arrows-out text-lg" />
         </button>
 
         {/* Image Counter */}
@@ -289,9 +284,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title }) =
                 aria-label="Fechar visualizador"
                 type="button"
               >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <i className="ph ph-x text-xl" />
               </button>
             </div>
 
@@ -305,9 +298,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title }) =
                   aria-label="Diminuir zoom"
                   type="button"
                 >
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
-                  </svg>
+                  <i className="ph ph-magnifying-glass-minus text-lg" />
                 </button>
 
                 <div className="px-3 text-sm font-medium text-white min-w-[60px] text-center">
@@ -321,9 +312,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title }) =
                   aria-label="Aumentar zoom"
                   type="button"
                 >
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                  </svg>
+                  <i className="ph ph-magnifying-glass-plus text-lg" />
                 </button>
 
                 {zoom > 1 && (
@@ -348,9 +337,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title }) =
                   aria-label="Imagem anterior"
                   type="button"
                 >
-                  <svg className="h-6 w-6 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                  </svg>
+                  <i className="ph ph-caret-left text-2xl sm:text-3xl" />
                 </button>
 
                 <button
@@ -359,9 +346,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title }) =
                   aria-label="Próxima imagem"
                   type="button"
                 >
-                  <svg className="h-6 w-6 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <i className="ph ph-caret-right text-2xl sm:text-3xl" />
                 </button>
               </>
             )}

@@ -38,4 +38,7 @@ export { Alert, AlertIcon, AlertTitle, AlertDescription } from './alert'
 // Section components
 export { SectionCardHeader } from './SectionCardHeader'
 
+// Navigation components
+export { BackButton } from './BackButton'
+
 export { ProtectedRoute } from '../ProtectedRoute'
