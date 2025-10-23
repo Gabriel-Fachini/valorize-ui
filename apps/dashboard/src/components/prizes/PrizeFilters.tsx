@@ -118,6 +118,7 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         {/* Search Input */}
         <SearchInput
+          id="prizes-search-input"
           value={filters.search ?? ''}
           onChange={handleSearchChange}
           placeholder="Buscar prêmios..."

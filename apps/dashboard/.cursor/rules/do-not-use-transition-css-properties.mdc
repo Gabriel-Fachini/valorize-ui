@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+---
+do not apply transition properties using tailwindcss on code. only use react-spring for animations.

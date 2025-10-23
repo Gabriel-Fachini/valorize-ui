@@ -58,7 +58,6 @@
     "noUncheckedIndexedAccess": false, // Add 'undefined' to a type when accessed using an index (temporarily disabled)
     "noImplicitOverride": true, // Ensure overriding members in derived classes are marked with an override modifier
     "noPropertyAccessFromIndexSignature": false, // Enforces using indexed accessors for keys declared using an indexed type
-    "noUncheckedSideEffectImports": true, // Check side effect imports
 
     /* Completeness */
     "skipLibCheck": true // Skip type checking all .d.ts files
