@@ -1,4 +1,0 @@
----
-alwaysApply: true
----
-this is a monorepo project that uses turbo and pnpm.
