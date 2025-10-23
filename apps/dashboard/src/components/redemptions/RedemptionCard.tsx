@@ -4,45 +4,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useSpring, animated } from '@react-spring/web'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { statusColors } from '@/lib/colors'
-
-const statusConfig: Record<string, {
-  badge: string
-  icon: string
-  label: string
-}> = {
-  pending: {
-    badge: `${statusColors.pending.bg} ${statusColors.pending.text} ${statusColors.pending.border}`,
-    icon: 'ph-bold ph-clock',
-    label: 'Pendente',
-  },
-  processing: {
-    badge: `${statusColors.processing.bg} ${statusColors.processing.text} ${statusColors.processing.border}`,
-    icon: 'ph-bold ph-arrows-clockwise',
-    label: 'Processando',
-  },
-  shipped: {
-    badge: `${statusColors.shipped.bg} ${statusColors.shipped.text} ${statusColors.shipped.border}`,
-    icon: 'ph-bold ph-package',
-    label: 'Enviado',
-  },
-  delivered: {
-    badge: `${statusColors.completed.bg} ${statusColors.completed.text} ${statusColors.completed.border}`,
-    icon: 'ph-bold ph-check-circle',
-    label: 'Concluído',
-  },
-  completed: {
-    badge: `${statusColors.completed.bg} ${statusColors.completed.text} ${statusColors.completed.border}`,
-    icon: 'ph-bold ph-check-circle',
-    label: 'Concluído',
-  },
-  cancelled: {
-    badge: `${statusColors.cancelled.bg} ${statusColors.cancelled.text} ${statusColors.cancelled.border}`,
-    icon: 'ph-bold ph-x-circle',
-    label: 'Cancelado',
-  },
-}
+import { RedemptionStatusBadge } from './RedemptionStatusBadge'
 
 interface Props {
   redemption: Redemption
@@ -54,9 +16,6 @@ export const RedemptionCard: React.FC<Props> = ({ redemption }) => {
   const [isHovered, setIsHovered] = React.useState(false)
   const [isImageLoading, setIsImageLoading] = React.useState(true)
 
-  // Safety check for status - fallback to pending if status is invalid
-  const safeStatus = statusConfig[redemption.status.toLowerCase()] ? redemption.status.toLowerCase() : 'pending'
-  const statusInfo = statusConfig[safeStatus]
 
   // Card hover animation
   const cardSpring = useSpring({
@@ -123,13 +82,11 @@ export const RedemptionCard: React.FC<Props> = ({ redemption }) => {
                 </p>
               </button>
               
-              <Badge 
-                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold border shrink-0 ${statusInfo.badge}`} 
-                variant="outline"
-              >
-                <i className={`${statusInfo.icon} text-sm`} />
-                <span>{statusInfo.label}</span>
-              </Badge>
+              <RedemptionStatusBadge 
+                status={redemption.status}
+                size="sm"
+                showIcon={true}
+              />
             </div>
 
             {/* Variant Info (if exists) */}
