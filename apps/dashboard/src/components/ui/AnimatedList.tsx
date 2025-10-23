@@ -4,14 +4,37 @@ import { cn } from '@/lib/utils'
 interface AnimatedListProps<T> {
   items: T[]
   renderItem: (item: T, index: number) => React.ReactNode
+  keyExtractor?: (item: T, index: number) => string | number
   className?: string
   animationType?: 'fade' | 'slide' | 'scale'
   delay?: number
 }
 
+/**
+ * AnimatedList Component
+ * 
+ * Renders a list of items with smooth animations using React Spring.
+ * 
+ * @example
+ * // For items with unique IDs
+ * <AnimatedList
+ *   items={transactions}
+ *   renderItem={(transaction) => <TransactionCard transaction={transaction} />}
+ *   keyExtractor={(transaction) => transaction.id}
+ * />
+ * 
+ * @example
+ * // For items without unique IDs (fallback to index)
+ * <AnimatedList
+ *   items={skeletonItems}
+ *   renderItem={(_, index) => <SkeletonCard />}
+ *   keyExtractor={(_, index) => `skeleton-${index}`}
+ * />
+ */
 export function AnimatedList<T>({
   items,
   renderItem,
+  keyExtractor,
   className,
   animationType = 'fade',
   delay = 0,
@@ -29,8 +52,12 @@ export function AnimatedList<T>({
         const item = items[index]
         if (!item) return null
         
+        // Use keyExtractor if provided, otherwise fallback to index
+        // This prevents animation glitches when items are reordered, added, or removed
+        const key = keyExtractor ? keyExtractor(item, index) : index
+        
         return (
-          <animated.div key={index} style={style}>
+          <animated.div key={key} style={style}>
             {renderItem(item, index)}
           </animated.div>
         )

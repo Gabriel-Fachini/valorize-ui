@@ -15,12 +15,6 @@ export interface PeriodOption {
   days?: number
 }
 
-export const PERIOD_OPTIONS: PeriodOption[] = [
-  { label: 'Últimos 30 dias', days: 30 },
-  { label: 'Últimos 90 dias', days: 90 },
-  { label: 'Todos' },
-]
-
 /**
  * Get date range for a given period
  */

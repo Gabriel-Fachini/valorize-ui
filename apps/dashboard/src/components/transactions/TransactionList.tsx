@@ -27,7 +27,8 @@ export const TransactionList = ({
     return (
       <AnimatedList
         items={Array.from({ length: 5 })}
-        renderItem={(_, index) => <SkeletonTransactionCard key={index} />}
+        renderItem={() => <SkeletonTransactionCard />}
+        keyExtractor={(_, index) => `skeleton-${index}`}
         className={className}
         animationType="fade"
       />
@@ -41,14 +42,16 @@ export const TransactionList = ({
         <AnimatedList
           items={transactions}
           renderItem={(transaction) => (
-            <TransactionCard key={transaction.id} transaction={transaction} />
+            <TransactionCard transaction={transaction} />
           )}
+          keyExtractor={(transaction) => transaction.id}
           animationType="fade"
         />
         <div className="mt-4">
           <AnimatedList
             items={Array.from({ length: 3 })}
-            renderItem={(_, index) => <SkeletonTransactionCard key={`loading-${index}`} />}
+            renderItem={() => <SkeletonTransactionCard />}
+            keyExtractor={(_, index) => `loading-${index}`}
             animationType="fade"
           />
         </div>
@@ -76,8 +79,9 @@ export const TransactionList = ({
     <AnimatedList
       items={transactions}
       renderItem={(transaction) => (
-        <TransactionCard key={transaction.id} transaction={transaction} />
+        <TransactionCard transaction={transaction} />
       )}
+      keyExtractor={(transaction) => transaction.id}
       className={className}
       animationType="fade"
     />
