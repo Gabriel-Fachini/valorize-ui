@@ -31,7 +31,8 @@ export const SearchInput = ({
     if (debounceMs > 0) {
       onChange(debouncedValue)
     }
-  }, [debouncedValue, onChange, debounceMs])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedValue, debounceMs])
 
   // Sync external value changes (only when external value changes, not internal)
   useEffect(() => {
@@ -71,7 +72,7 @@ export const SearchInput = ({
           placeholder={placeholder}
           disabled={disabled}
           aria-label={label ?? placeholder}
-          aria-describedby={`${id}-description`}
+          aria-describedby={debounceMs > 0 ? `${id}-description` : undefined}
           role="searchbox"
           autoComplete="off"
           className="w-full rounded-lg border border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 pl-12 pr-4 py-3 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
