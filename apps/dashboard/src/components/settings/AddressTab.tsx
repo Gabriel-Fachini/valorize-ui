@@ -265,5 +265,3 @@ export const AddressTab: React.FC = () => {
     </div>
   )
 }
-
-export default AddressTab

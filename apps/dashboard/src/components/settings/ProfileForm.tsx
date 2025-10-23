@@ -183,5 +183,3 @@ export const ProfileForm: React.FC = () => {
     </form>
   )
 }
-
-export default ProfileForm

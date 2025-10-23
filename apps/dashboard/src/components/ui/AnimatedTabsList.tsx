@@ -76,8 +76,8 @@ export const AnimatedTabsList: React.FC<AnimatedTabsListProps> = ({
       ref={containerRef}
       data-tour={dataTour}
       className={cn(
-        "relative inline-flex h-auto w-full sm:w-auto bg-white/70 dark:bg-neutral-800/70 backdrop-blur-xl border border-neutral-200 dark:border-neutral-700/50 p-1.5 rounded-xl shadow-lg",
-        className
+        'relative inline-flex h-auto w-full sm:w-auto bg-white/70 dark:bg-neutral-800/70 backdrop-blur-xl border border-neutral-200 dark:border-neutral-700/50 p-1.5 rounded-xl shadow-lg',
+        className,
       )}
     >
       {/* Animated indicator */}
@@ -98,16 +98,16 @@ export const AnimatedTabsList: React.FC<AnimatedTabsListProps> = ({
             }}
             onClick={() => onChange(item.value)}
             className={cn(
-              "relative z-10 flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors data-[state=active]:text-white data-[state=inactive]:text-neutral-600 dark:data-[state=inactive]:text-neutral-400 hover:data-[state=inactive]:text-neutral-800 dark:hover:data-[state=inactive]:text-neutral-200",
-              "data-[state=active]:bg-transparent data-[state=inactive]:bg-transparent"
+              'relative z-10 flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors data-[state=active]:text-white data-[state=inactive]:text-neutral-600 dark:data-[state=inactive]:text-neutral-400 hover:data-[state=inactive]:text-neutral-800 dark:hover:data-[state=inactive]:text-neutral-200',
+              'data-[state=active]:bg-transparent data-[state=inactive]:bg-transparent',
             )}
             aria-label={item['aria-label']}
             aria-current={activeTab === item.value ? 'page' : undefined}
           >
             <i className={cn(
-              "ph text-lg",
-              activeTab === item.value ? 'ph-fill' : 'ph',
-              item.icon
+              'ph text-lg',
+              activeTab === item.value ? 'ph-fill' : '',
+              item.icon,
             )} />
             <span className="hidden sm:inline">{item.label}</span>
           </TabsTrigger>

@@ -41,5 +41,3 @@ export const SettingsTourControl: React.FC<SettingsTourControlProps> = ({
     </div>
   )
 }
-
-export default SettingsTourControl

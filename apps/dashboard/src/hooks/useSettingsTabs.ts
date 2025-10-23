@@ -13,26 +13,26 @@ export const useSettingsTabs = () => {
       value: 'profile',
       label: 'Perfil',
       icon: 'ph-user',
-      'aria-label': 'Aba de perfil'
+      'aria-label': 'Aba de perfil',
     },
     {
       value: 'preferences',
       label: 'Preferências',
       icon: 'ph-sliders',
-      'aria-label': 'Aba de preferências'
+      'aria-label': 'Aba de preferências',
     },
     {
       value: 'addresses',
       label: 'Endereços',
       icon: 'ph-map-pin',
-      'aria-label': 'Aba de endereços'
-    }
+      'aria-label': 'Aba de endereços',
+    },
   ], [])
 
   return {
     activeTab,
     tabItems,
-    handleTabChange
+    handleTabChange,
   }
 }
 

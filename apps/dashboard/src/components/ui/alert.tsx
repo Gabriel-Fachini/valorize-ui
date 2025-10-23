@@ -42,7 +42,7 @@ const AlertIcon = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & { variant?: VariantProps<typeof alertVariants>['variant'] }
 >(({ className, variant = 'default', ...props }, ref) => {
-  const iconMap = {
+  const iconMap: Record<NonNullable<typeof variant>, string> = {
     default: 'ph-info',
     success: 'ph-check-circle',
     error: 'ph-warning-circle',
@@ -50,16 +50,18 @@ const AlertIcon = React.forwardRef<
     info: 'ph-info',
   }
 
+  const currentVariant = variant ?? 'default'
+
   return (
     <div ref={ref} className={cn('flex items-center gap-2', className)} {...props}>
-      <i className={`ph-bold ${iconMap[variant]} text-lg`} />
+      <i className={`ph-bold ${iconMap[currentVariant]} text-lg`} />
     </div>
   )
 })
 AlertIcon.displayName = 'AlertIcon'
 
 const AlertTitle = React.forwardRef<
-  HTMLParagraphElement,
+  HTMLHeadingElement,
   React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
   <h5

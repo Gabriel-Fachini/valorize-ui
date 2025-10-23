@@ -94,5 +94,3 @@ export const PreferencesForm: React.FC = () => {
     </div>
   )
 }
-
-export default PreferencesForm
