@@ -27,6 +27,8 @@ export { FilterContainer } from './FilterContainer'
 export { FilterButtonGroup } from './FilterButtonGroup'
 export { LoadMoreButton } from './LoadMoreButton'
 export { EmptyState } from './EmptyState'
+export { ErrorState } from './ErrorState'
+export { SearchInput } from './SearchInput'
 export { AnimatedList } from './AnimatedList'
 export { AnimatedTabsList } from './AnimatedTabsList'
 

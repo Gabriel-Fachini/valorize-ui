@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
+import { SearchInput } from '@/components/ui'
 
 interface PrizeFiltersProps {
   filters: Filters
@@ -75,10 +76,10 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
     })
   }
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (value: string) => {
     onFiltersChange({
       ...filters,
-      search: e.target.value,
+      search: value,
     })
   }
 
@@ -116,16 +117,13 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
       {/* Top bar: Search + Sort + Results count */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         {/* Search Input */}
-        <div className="relative flex-1 max-w-md">
-          <input
-            type="text"
-            placeholder="Buscar prêmios..."
-            value={filters.search ?? ''}
-            onChange={handleSearchChange}
-            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 pl-10 text-sm text-gray-700 dark:text-white placeholder-gray-400 backdrop-blur-xl transition-all focus:border-green-500 dark:focus:border-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-500/20"
-          />
-          <i className="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-base text-gray-400"></i>
-        </div>
+        <SearchInput
+          value={filters.search ?? ''}
+          onChange={handleSearchChange}
+          placeholder="Buscar prêmios..."
+          className="flex-1 max-w-md"
+          debounceMs={300}
+        />
 
         <div className="flex items-center gap-3">
           {/* Sort Select */}
