@@ -137,7 +137,7 @@ export const SettingsPage = () => {
                         <button
                           type="button"
                           onClick={handleStartTour}
-                          className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-green-500/20 transition-all hover:bg-green-700 hover:shadow-xl active:scale-95"
+                          className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-green-500/20 hover:bg-green-700 hover:shadow-xl active:scale-95"
                         >
                           <i className={`ph ${hasCompletedOnboarding ? 'ph-arrow-clockwise' : 'ph-play'}`} />
                           {hasCompletedOnboarding ? 'Reiniciar Tour' : 'Iniciar Tour'}

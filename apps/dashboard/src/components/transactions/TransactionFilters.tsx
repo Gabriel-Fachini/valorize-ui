@@ -150,7 +150,7 @@ export const TransactionFilters = ({
               value={filters.customDateRange?.from ?? ''}
               onChange={(e) => handleCustomDateChange('from', e.target.value)}
               disabled={loading}
-              className="w-full px-3 py-2 text-sm bg-white/60 dark:bg-[#262626]/60 border border-gray-200 dark:border-gray-700 rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-green-500/50 text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full px-3 py-2 text-sm bg-white/60 dark:bg-[#262626]/60 border border-gray-200 dark:border-gray-700 rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-green-500/50 text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed "
             />
           </div>
           <div>
@@ -162,7 +162,7 @@ export const TransactionFilters = ({
               value={filters.customDateRange?.to ?? ''}
               onChange={(e) => handleCustomDateChange('to', e.target.value)}
               disabled={loading}
-              className="w-full px-3 py-2 text-sm bg-white/60 dark:bg-[#262626]/60 border border-gray-200 dark:border-gray-700 rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-green-500/50 text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full px-3 py-2 text-sm bg-white/60 dark:bg-[#262626]/60 border border-gray-200 dark:border-gray-700 rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-green-500/50 text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed "
             />
           </div>
         </animated.div>

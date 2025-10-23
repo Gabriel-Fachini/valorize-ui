@@ -214,7 +214,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
           </label>
           <select
             {...register('state')}
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#262626] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 transition-all"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#262626] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600"
           >
             <option value="">Selecione</option>
             {BRAZILIAN_STATES.map((state) => (

@@ -60,7 +60,7 @@ export const PraisesPage = () => {
           {/* Botão destacado de novo elogio */}
           <button
             onClick={handleNewPraise}
-            className="flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-primary-600 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:shadow-primary-500/30 transition-all duration-200 hover:bg-primary-700 hover:scale-105"
+            className="flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-primary-600 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:shadow-primary-500/30 hover:bg-primary-700 hover:scale-105"
           >
             <i className="ph-bold ph-plus-circle text-xl sm:text-2xl"></i>
             <span className="whitespace-nowrap">Novo Elogio</span>

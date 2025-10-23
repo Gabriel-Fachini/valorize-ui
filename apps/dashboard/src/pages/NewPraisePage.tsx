@@ -325,7 +325,7 @@ export const NewPraisePage = () => {
             <div>
               <button
                 onClick={cancelForm}
-                className="mb-6 flex items-center space-x-2 text-[#525252] dark:text-[#a3a3a3] hover:text-[#171717] dark:hover:text-[#f5f5f5] transition-colors"
+                className="mb-6 flex items-center space-x-2 text-[#525252] dark:text-[#a3a3a3] hover:text-[#171717] dark:hover:text-[#f5f5f5]"
               >
                 <i className="ph-bold ph-arrow-left text-xl"></i>
                 <span className="font-medium">Voltar para Elogios</span>

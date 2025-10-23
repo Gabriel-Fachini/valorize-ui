@@ -150,7 +150,7 @@ export const EmailInput = ({
               <button
                 key={domain}
                 type="button"
-                className={`w-full px-4 py-2 text-left transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg focus:outline-none ${
+                className={`w-full px-4 py-2 text-left first:rounded-t-lg last:rounded-b-lg focus:outline-none ${
                   isSelected 
                     ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-100' 
                     : 'hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700'

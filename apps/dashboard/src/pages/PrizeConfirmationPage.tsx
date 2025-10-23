@@ -288,7 +288,7 @@ export const PrizeConfirmationPage = () => {
                   <div
                     key={address.id}
                     onClick={() => setSelectedAddressId(address.id)}
-                    className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${
+                    className={`cursor-pointer rounded-lg border-2 p-4 ${
                       selectedAddressId === address.id
                         ? 'border-green-500 bg-green-50 dark:bg-green-500/10'
                         : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:border-gray-300 dark:hover:border-white/20'
