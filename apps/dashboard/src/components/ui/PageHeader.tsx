@@ -31,7 +31,7 @@ export const PageHeader = ({
             {title}
           </h1>
           {description && (
-            <p className="text-lg text-gray-600 dark:text-gray-400">
+            <p className="text-lg text-neutral-600 dark:text-neutral-400">
               {description}
             </p>
           )}

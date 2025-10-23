@@ -6,6 +6,7 @@ import { AddressForm } from '@/components/ui/AddressForm'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { SkeletonBase } from '@/components/ui/Skeleton'
+import { Alert, AlertIcon } from '@/components/ui/alert'
 
 export const AddressTab: React.FC = () => {
   const [addresses, setAddresses] = React.useState<Address[]>([])
@@ -105,27 +106,17 @@ export const AddressTab: React.FC = () => {
     <div className="space-y-6">
       {/* Success/Error Messages */}
       {success && (
-        <div
-          className="rounded-xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-200 px-4 py-3"
-          role="alert"
-        >
-          <div className="flex items-center gap-2">
-            <i className="ph-bold ph-check-circle text-lg"></i>
-            <span>{success}</span>
-          </div>
-        </div>
+        <Alert variant="success">
+          <AlertIcon variant="success" />
+          <span>{success}</span>
+        </Alert>
       )}
 
       {error && (
-        <div
-          className="rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-200 px-4 py-3"
-          role="alert"
-        >
-          <div className="flex items-center gap-2">
-            <i className="ph-bold ph-warning-circle text-lg"></i>
-            <span>{error}</span>
-          </div>
-        </div>
+        <Alert variant="error">
+          <AlertIcon variant="error" />
+          <span>{error}</span>
+        </Alert>
       )}
 
       {/* Header */}
@@ -274,5 +265,3 @@ export const AddressTab: React.FC = () => {
     </div>
   )
 }
-
-export default AddressTab

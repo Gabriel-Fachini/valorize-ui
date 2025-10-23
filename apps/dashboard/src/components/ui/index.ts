@@ -28,5 +28,12 @@ export { FilterButtonGroup } from './FilterButtonGroup'
 export { LoadMoreButton } from './LoadMoreButton'
 export { EmptyState } from './EmptyState'
 export { AnimatedList } from './AnimatedList'
+export { AnimatedTabsList } from './AnimatedTabsList'
+
+// Alert components
+export { Alert, AlertIcon, AlertTitle, AlertDescription } from './alert'
+
+// Section components
+export { SectionCardHeader } from './SectionCardHeader'
 
 export { ProtectedRoute } from '../ProtectedRoute'
