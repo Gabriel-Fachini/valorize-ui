@@ -10,6 +10,9 @@ export interface TabItem {
   'aria-label': string
 }
 
+// Delay for DOM to settle before measuring tab dimensions
+const MEASUREMENT_DELAY_MS = 50
+
 interface AnimatedTabsListProps {
   items: TabItem[]
   activeTab: string
@@ -66,7 +69,7 @@ export const AnimatedTabsList: React.FC<AnimatedTabsListProps> = ({
           measureTab(item.value, element)
         }
       })
-    }, 50)
+    }, MEASUREMENT_DELAY_MS)
 
     return () => clearTimeout(timeoutId)
   }, [items, measureTab])
@@ -106,8 +109,8 @@ export const AnimatedTabsList: React.FC<AnimatedTabsListProps> = ({
           >
             <i className={cn(
               'ph text-lg',
-              activeTab === item.value ? 'ph-fill' : '',
               item.icon,
+              activeTab === item.value ? 'ph-fill' : '',
             )} />
             <span className="hidden sm:inline">{item.label}</span>
           </TabsTrigger>
@@ -116,5 +119,3 @@ export const AnimatedTabsList: React.FC<AnimatedTabsListProps> = ({
     </div>
   )
 }
-
-export default AnimatedTabsList

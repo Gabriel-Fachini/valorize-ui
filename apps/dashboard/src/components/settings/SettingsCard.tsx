@@ -2,6 +2,7 @@ import React from 'react'
 import { animated } from '@react-spring/web'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { SectionCardHeader } from '@/components/ui/SectionCardHeader'
+import { cn } from '@/lib/utils'
 
 interface SettingsCardProps {
   icon: string
@@ -25,7 +26,10 @@ export const SettingsCard: React.FC<SettingsCardProps> = ({
 
   return (
     <CardComponent
-      className={`border-neutral-200 dark:border-neutral-700/50 bg-white/70 dark:bg-neutral-800/70 backdrop-blur-xl shadow-xl ${className ?? ''}`}
+      className={cn(
+        'border-neutral-200 dark:border-neutral-700/50 bg-white/70 dark:bg-neutral-800/70 backdrop-blur-xl shadow-xl',
+        className,
+      )}
       {...cardProps}
     >
       <CardHeader className="pb-4">
