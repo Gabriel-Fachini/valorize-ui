@@ -6,6 +6,11 @@ import { useOnboarding, type OnboardingStep } from '@/hooks/useOnboarding'
 import { useSidebar } from '@/hooks/useSidebar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { LottieAnimation } from '@/components/ui/LottieAnimation'
+
+// LocalStorage keys
+const ONBOARDING_COMPLETED_KEY = 'valorize_onboarding_completed'
+const ONBOARDING_SKIPPED_KEY = 'valorize_onboarding_skipped'
 
 interface OnboardingManagerProps {
   onComplete?: () => void
@@ -26,6 +31,17 @@ export const OnboardingManager: React.FC<OnboardingManagerProps> = ({
   const [isMobile, setIsMobile] = useState(false)
   const { isRunning, startTour, stopTour } = useOnboarding()
   const { setMobileSidebarOpen } = useSidebar()
+
+  // Check if onboarding was already completed on mount
+  useEffect(() => {
+    const isCompleted = localStorage.getItem(ONBOARDING_COMPLETED_KEY) === 'true'
+    const wasSkipped = localStorage.getItem(ONBOARDING_SKIPPED_KEY) === 'true'
+    
+    // If user completed or skipped onboarding before, don't show welcome message
+    if (isCompleted || wasSkipped) {
+      setShowWelcome(false)
+    }
+  }, [])
 
   // Detect mobile on mount and window resize
   useEffect(() => {
@@ -73,6 +89,10 @@ export const OnboardingManager: React.FC<OnboardingManagerProps> = ({
       setMobileSidebarOpen(false)
     }
     
+    // Save completion status to localStorage
+    localStorage.setItem(ONBOARDING_COMPLETED_KEY, 'true')
+    localStorage.removeItem(ONBOARDING_SKIPPED_KEY) // Remove skip flag if it exists
+    
     setShowSuccess(true)
     onComplete?.()
   }
@@ -86,11 +106,21 @@ export const OnboardingManager: React.FC<OnboardingManagerProps> = ({
       setMobileSidebarOpen(false)
     }
     
+    // Mark onboarding as completed when skipped
+    localStorage.setItem(ONBOARDING_COMPLETED_KEY, 'true')
+    localStorage.setItem(ONBOARDING_SKIPPED_KEY, 'true')
+    
     onSkip?.()
   }
 
   const handleCloseWelcome = () => {
     setShowWelcome(false)
+    
+    // Mark onboarding as completed when user closes welcome message
+    localStorage.setItem(ONBOARDING_COMPLETED_KEY, 'true')
+    localStorage.setItem(ONBOARDING_SKIPPED_KEY, 'true')
+    
+    onSkip?.()
   }
 
   const handleCloseSuccess = () => {
@@ -121,8 +151,14 @@ export const OnboardingManager: React.FC<OnboardingManagerProps> = ({
         >
           <Card className="bg-white dark:bg-neutral-800 rounded-2xl p-8 max-w-md mx-4 shadow-2xl border border-neutral-200 dark:border-neutral-700">
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <i className="ph ph-sparkle text-2xl text-white" />
+              <div className="w-32 h-32 mx-auto mb-4">
+                <LottieAnimation
+                  path="/animations/happy-face.json"
+                  loop={true}
+                  autoplay={true}
+                  speed={1}
+                  className="w-full h-full"
+                />
               </div>
               <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">
                 Bem-vindo ao Valorize!
@@ -135,7 +171,7 @@ export const OnboardingManager: React.FC<OnboardingManagerProps> = ({
                   onClick={handleStartSidebarTour}
                   className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
                 >
-                  <i className="ph ph-rocket-launch mr-2" />
+                  <i className="ph ph-rocket-launch" />
                   Iniciar Tour
                 </Button>
                 <Button
@@ -168,8 +204,15 @@ export const OnboardingManager: React.FC<OnboardingManagerProps> = ({
             </button>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <i className="ph ph-check-circle text-2xl text-white" />
+              <div className="w-32 h-32 mx-auto mb-4">
+                <LottieAnimation
+                  path="/animations/party.json"
+                  loop={true}
+                  autoplay={true}
+                  speed={1}
+                  scale={1.2}
+                  className="w-full h-full"
+                />
               </div>
               <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">
                 Tour Concluído!
@@ -182,7 +225,7 @@ export const OnboardingManager: React.FC<OnboardingManagerProps> = ({
                 onClick={handleCloseSuccess}
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
               >
-                <i className="ph ph-rocket-launch mr-2" />
+                <i className="ph ph-rocket-launch" />
                 Começar a Usar
               </Button>
             </div>
