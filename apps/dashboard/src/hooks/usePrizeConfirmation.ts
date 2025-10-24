@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useNavigate } from '@tanstack/react-router'
 import { usePrizeById, useRedeemPrize } from '@/hooks/usePrizes'
 import { useAddresses, useCreateAddress, useUpdateAddress, useDeleteAddress } from '@/hooks/useAddresses'
 import { useUser } from '@/hooks/useUser'
@@ -48,8 +47,6 @@ export const usePrizeConfirmation = ({
   prizeId,
   variantId,
 }: UsePrizeConfirmationProps): UsePrizeConfirmationReturn => {
-  const navigate = useNavigate()
-  
   // Data fetching
   const { data: prize, isLoading: prizeLoading } = usePrizeById(prizeId)
   const { data: addresses = [], isLoading: addressesLoading } = useAddresses()
@@ -155,8 +152,7 @@ export const usePrizeConfirmation = ({
   
   const handleCloseSuccessModal = useCallback(() => {
     setShowSuccessModal(false)
-    navigate({ to: '/resgates' })
-  }, [navigate])
+  }, [])
   
   return {
     // Data
