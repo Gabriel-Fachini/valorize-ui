@@ -51,13 +51,13 @@ export const AlertDialog: React.FC<AlertDialogProps> = ({
             'flex h-12 w-12 items-center justify-center rounded-full',
             variant === 'destructive' 
               ? 'bg-red-100 dark:bg-red-500/20' 
-              : 'bg-yellow-100 dark:bg-yellow-500/20'
+              : 'bg-yellow-100 dark:bg-yellow-500/20',
           )}>
             <i className={cn(
               'text-2xl',
               variant === 'destructive' 
                 ? 'ph-bold ph-warning-circle text-red-600 dark:text-red-400' 
-                : 'ph-bold ph-question text-yellow-600 dark:text-yellow-400'
+                : 'ph-bold ph-question text-yellow-600 dark:text-yellow-400',
             )} />
           </div>
           <ModalTitle>{title}</ModalTitle>

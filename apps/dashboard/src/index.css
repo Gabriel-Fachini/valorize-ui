@@ -50,7 +50,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Tour/Onboarding colors */
+  /* Tour colors - for future use */
   --tour-bg-color: #ffffff;
   --tour-text-color: #1f2937;
   --radius: 0.625rem;
@@ -94,7 +94,7 @@ html {
 
 html.dark {
   color-scheme: dark;
-  /* Tour/Onboarding colors for dark mode */
+  /* Tour colors for dark mode - for future use */
   --tour-bg-color: #1f2937;
   --tour-text-color: #f9fafb;
 }

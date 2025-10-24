@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useSidebar } from '@/hooks/useSidebar'
 import { useMobileSidebarScrollLock } from '@/hooks/useMobileSidebarScrollLock'
@@ -18,17 +17,7 @@ export const SidebarMobile = () => {
   // Aplicar lock de scroll quando sidebar mobile estiver aberta
   useMobileSidebarScrollLock()
 
-  useEffect(() => {
-    const handleCloseMobileSidebar = () => {
-      setMobileSidebarOpen(false)
-    }
-    
-    window.addEventListener('onboarding:close-mobile-sidebar', handleCloseMobileSidebar)
-    
-    return () => {
-      window.removeEventListener('onboarding:close-mobile-sidebar', handleCloseMobileSidebar)
-    }
-  }, [setMobileSidebarOpen])
+  // Removed onboarding event listeners - functionality to be implemented when needed
 
   return (
     <>

@@ -4,7 +4,7 @@ import { ThumbnailSidebarProps } from '../types'
 export const ThumbnailSidebar = memo<ThumbnailSidebarProps>(({ 
   images, 
   currentIndex, 
-  onImageSelect 
+  onImageSelect, 
 }) => {
   if (images.length <= 1) return null
 

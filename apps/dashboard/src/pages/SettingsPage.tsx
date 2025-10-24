@@ -7,7 +7,6 @@ import {
   SettingsCard,
 } from '@/components/settings'
 import { AnimatedTabsList, PageHeader } from '@/components/ui'
-import { useOnboarding } from '@/contexts/onboarding'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { usePageEntrance } from '@/hooks/useAnimations'
@@ -15,18 +14,16 @@ import { useSettingsTabs } from '@/hooks/useSettingsTabs'
 import { useCallback } from 'react'
 
 export const SettingsPage = () => {
-  const { startTour, resetTour, hasCompletedOnboarding } = useOnboarding()
   const { activeTab, tabItems, handleTabChange } = useSettingsTabs()
 
   // Animations
   const pageAnimation = usePageEntrance()
 
+  // Simple tour reset function for future use
   const handleStartTour = useCallback(() => {
-    if (hasCompletedOnboarding) {
-      resetTour()
-    }
-    startTour()
-  }, [hasCompletedOnboarding, resetTour, startTour])
+    // TODO: Implement tour functionality when needed
+    console.log('Tour reset requested - functionality to be implemented')
+  }, [])
 
   return (
     <PageLayout maxWidth="7xl">
@@ -67,7 +64,7 @@ export const SettingsPage = () => {
               <div className="space-y-6">
                 <PreferencesForm />
                 <SettingsTourControl
-                  hasCompletedOnboarding={hasCompletedOnboarding}
+                  hasCompletedOnboarding={false}
                   onStartTour={handleStartTour}
                 />
               </div>

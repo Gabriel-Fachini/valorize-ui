@@ -196,6 +196,6 @@ export const CancelRedemptionModal: React.FC<CancelRedemptionModalProps> = ({
         )}
       </animated.div>
     </div>,
-    document.body
+    document.body,
   )
 }

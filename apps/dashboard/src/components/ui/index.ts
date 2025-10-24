@@ -45,4 +45,13 @@ export { BackButton } from './BackButton'
 export { Modal, ModalHeader, ModalTitle, ModalContent, ModalFooter } from './modal'
 export { AlertDialog, useAlertDialog } from './alert-dialog'
 
+// Tour components
+export { TourPopover } from './TourPopover'
+export { TourContent } from './TourContent'
+export { TourBadge } from './TourBadge'
+export { TourClose } from './TourClose'
+export { TourNavigation } from './TourNavigation'
+export { TourArrow } from './TourArrow'
+export { tourComponents } from './TourComponents'
+
 export { ProtectedRoute } from '../ProtectedRoute'

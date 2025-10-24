@@ -3,7 +3,6 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { SidebarProvider } from '@/contexts/SidebarContext'
 import { AccessibilityProvider } from '@/contexts/AccessibilityContext'
-import { OnboardingProvider } from '@/contexts/onboarding'
 
 // Create a client with cache configuration
 const queryClient = new QueryClient({
@@ -28,9 +27,7 @@ export const AppProviders = ({ children }: AppProvidersProps) => {
         <AccessibilityProvider>
           <SidebarProvider>
             <AuthProvider>
-              <OnboardingProvider>
-                {children}
-              </OnboardingProvider>
+              {children}
             </AuthProvider>
           </SidebarProvider>
         </AccessibilityProvider>

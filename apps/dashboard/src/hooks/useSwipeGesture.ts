@@ -30,7 +30,7 @@ export const useSwipeGesture = (options: SwipeGestureOptions = {}) => {
     threshold = 50,
     preventDefaultTouchmoveEvent = false,
     trackMouse = false,
-    startArea
+    startArea,
   } = options
 
   const touchStart = useRef<TouchPosition | null>(null)
@@ -57,7 +57,7 @@ export const useSwipeGesture = (options: SwipeGestureOptions = {}) => {
     touchEnd.current = null
     touchStart.current = {
       x: touchX,
-      y: touchY
+      y: touchY,
     }
   }, [preventDefaultTouchmoveEvent, startArea])
 
@@ -67,7 +67,7 @@ export const useSwipeGesture = (options: SwipeGestureOptions = {}) => {
     }
     touchEnd.current = {
       x: e.targetTouches[0].clientX,
-      y: e.targetTouches[0].clientY
+      y: e.targetTouches[0].clientY,
     }
   }, [preventDefaultTouchmoveEvent])
 
@@ -105,7 +105,7 @@ export const useSwipeGesture = (options: SwipeGestureOptions = {}) => {
     touchEnd.current = null
     touchStart.current = {
       x: e.clientX,
-      y: e.clientY
+      y: e.clientY,
     }
   }, [trackMouse])
 
@@ -113,7 +113,7 @@ export const useSwipeGesture = (options: SwipeGestureOptions = {}) => {
     if (!trackMouse || !touchStart.current) return
     touchEnd.current = {
       x: e.clientX,
-      y: e.clientY
+      y: e.clientY,
     }
     handleTouchEnd()
   }, [trackMouse, handleTouchEnd])
