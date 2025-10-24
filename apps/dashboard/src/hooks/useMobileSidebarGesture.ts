@@ -13,7 +13,7 @@ export const useMobileSidebarGesture = (options: UseMobileSidebarGestureOptions 
     enabled = true, 
     swipeThreshold = 50, 
     edgeThreshold = 20,
-    enableHapticFeedback = true
+    enableHapticFeedback = true,
   } = options
   const { mobileSidebarOpen, setMobileSidebarOpen } = useSidebar()
 
@@ -43,13 +43,13 @@ export const useMobileSidebarGesture = (options: UseMobileSidebarGestureOptions 
       x: 0,
       y: 0,
       width: edgeThreshold,
-      height: window.innerHeight
-    }
+      height: window.innerHeight,
+    },
   })
 
   return {
     isEnabled: enabled,
     isOpen: mobileSidebarOpen,
-    enableHapticFeedback
+    enableHapticFeedback,
   }
 }

@@ -11,7 +11,7 @@ export const MobileContentBlur = () => {
       style={{
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
-        backgroundColor: 'rgba(0, 0, 0, 0.1)'
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
       }}
       aria-hidden="true"
     />

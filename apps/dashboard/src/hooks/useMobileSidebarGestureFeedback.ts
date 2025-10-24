@@ -35,6 +35,6 @@ export const useMobileSidebarGestureFeedback = (options: UseMobileSidebarGesture
     shouldShowFeedback,
     handleGestureStart,
     handleGestureMove,
-    handleGestureEnd
+    handleGestureEnd,
   }
 }

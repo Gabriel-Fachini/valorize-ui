@@ -9,12 +9,12 @@ interface MobileGestureAreaProps {
 export const MobileGestureArea = ({ 
   enabled = true, 
   swipeThreshold = 50,
-  edgeThreshold = 20
+  edgeThreshold = 20,
 }: MobileGestureAreaProps) => {
   useMobileSidebarGesture({
     enabled,
     swipeThreshold,
-    edgeThreshold
+    edgeThreshold,
   })
 
   if (!enabled) return null
@@ -28,7 +28,7 @@ export const MobileGestureArea = ({
         WebkitTouchCallout: 'none',
         WebkitUserSelect: 'none',
         userSelect: 'none',
-        pointerEvents: 'auto'
+        pointerEvents: 'auto',
       }}
       aria-hidden="true"
     />

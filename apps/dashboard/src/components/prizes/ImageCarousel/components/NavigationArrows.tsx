@@ -5,7 +5,7 @@ export const NavigationArrows = memo<NavigationArrowsProps>(({
   onPrevious, 
   onNext, 
   disabled = false,
-  className = ""
+  className = '',
 }) => {
   return (
     <>
