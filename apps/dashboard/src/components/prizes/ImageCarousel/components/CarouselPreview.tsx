@@ -92,20 +92,20 @@ export const CarouselPreview = memo<CarouselPreviewProps>(({
         <>
           <button
             onClick={() => onNavigate('prev')}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-gray-900 dark:bg-[#171717] text-white hover:bg-gray-800 dark:hover:bg-[#262626] opacity-0 group-hover:opacity-100 transition-all shadow-lg border border-gray-700 dark:border-gray-600 flex items-center justify-center"
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gray-100 dark:bg-[#171717] text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-[#262626] opacity-80 hover:opacity-100 transition-all shadow-xl border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center backdrop-blur-sm"
             aria-label="Imagem anterior"
             type="button"
           >
-            <i className="ph ph-caret-left text-lg sm:text-xl" />
+            <i className="ph ph-caret-left text-xl sm:text-2xl" />
           </button>
 
           <button
             onClick={() => onNavigate('next')}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-gray-900 dark:bg-[#171717] text-white hover:bg-gray-800 dark:hover:bg-[#262626] opacity-0 group-hover:opacity-100 transition-all shadow-lg border border-gray-700 dark:border-gray-600 flex items-center justify-center"
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gray-100 dark:bg-[#171717] text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-[#262626] opacity-80 hover:opacity-100 transition-all shadow-xl border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center backdrop-blur-sm"
             aria-label="Próxima imagem"
             type="button"
           >
-            <i className="ph ph-caret-right text-lg sm:text-xl" />
+            <i className="ph ph-caret-right text-xl sm:text-2xl" />
           </button>
         </>
       )}
@@ -113,7 +113,7 @@ export const CarouselPreview = memo<CarouselPreviewProps>(({
       {/* Expand Button */}
       <button
         onClick={onImageClick}
-        className="absolute right-3 top-3 w-10 h-10 rounded-full bg-gray-900 dark:bg-[#171717] text-white hover:bg-gray-800 dark:hover:bg-[#262626] opacity-0 group-hover:opacity-100 transition-all shadow-lg border border-gray-700 dark:border-gray-600 flex items-center justify-center"
+        className="absolute right-3 top-3 w-10 h-10 rounded-full bg-gray-100 dark:bg-[#171717] text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-[#262626] opacity-80 hover:opacity-100 transition-all shadow-lg border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center backdrop-blur-sm"
         aria-label="Ver em tela cheia"
         type="button"
       >
@@ -121,21 +121,21 @@ export const CarouselPreview = memo<CarouselPreviewProps>(({
       </button>
 
       {/* Image Counter */}
-      <div className="absolute left-3 top-3 rounded-full bg-gray-900/90 dark:bg-[#171717]/90 backdrop-blur-sm px-3 py-1.5 text-xs sm:text-sm font-medium text-white shadow-lg border border-gray-700 dark:border-gray-600">
+      <div className="absolute left-3 top-3 rounded-full bg-gray-100/90 dark:bg-[#171717]/90 backdrop-blur-sm px-3 py-1.5 text-xs sm:text-sm font-medium text-gray-700 dark:text-white shadow-lg border-2 border-gray-300 dark:border-gray-600">
         {currentIndex + 1} / {images.length}
       </div>
 
       {/* Dot Indicators */}
       {images.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2 bg-gray-900/80 dark:bg-[#171717]/80 backdrop-blur-sm rounded-full px-3 py-2 border border-gray-700 dark:border-gray-600">
+        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2 bg-gray-100/90 dark:bg-[#171717]/90 backdrop-blur-sm rounded-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 shadow-lg">
           {images.map((_, index) => (
             <button
               key={index}
               onClick={() => onGoToSlide(index)}
               className={`h-2 rounded-full transition-all ${
                 currentIndex === index
-                  ? 'w-8 bg-white'
-                  : 'w-2 bg-white/50 hover:bg-white/75'
+                  ? 'w-8 bg-gray-700 dark:bg-white'
+                  : 'w-2 bg-gray-400 dark:bg-white/50 hover:bg-gray-600 dark:hover:bg-white/75'
               }`}
               aria-label={`Ir para imagem ${index + 1}`}
             />

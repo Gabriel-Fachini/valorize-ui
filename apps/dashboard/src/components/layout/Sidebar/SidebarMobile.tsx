@@ -1,17 +1,22 @@
 import { useEffect } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useSidebar } from '@/hooks/useSidebar'
+import { useMobileSidebarScrollLock } from '@/hooks/useMobileSidebarScrollLock'
 import { useNavigation } from './hooks/useNavigation'
 import { useSidebarActions } from './hooks/useSidebarActions'
 import { UserProfile } from './components/UserProfile'
 import { Navigation } from './components/Navigation'
 import { BottomActions } from './components/BottomActions'
+import { MobileContentBlur } from './MobileContentBlur'
 
 export const SidebarMobile = () => {
   const { user, isLoading } = useAuth()
   const { mobileSidebarOpen, setMobileSidebarOpen } = useSidebar()
   const { currentPath, handleNavigation } = useNavigation()
   const { handleLogout } = useSidebarActions()
+
+  // Aplicar lock de scroll quando sidebar mobile estiver aberta
+  useMobileSidebarScrollLock()
 
   useEffect(() => {
     const handleCloseMobileSidebar = () => {
@@ -89,6 +94,9 @@ export const SidebarMobile = () => {
           onClick={() => setMobileSidebarOpen(false)}
         />
       )}
+
+      {/* Mobile Content Blur */}
+      <MobileContentBlur />
     </>
   )
 }
