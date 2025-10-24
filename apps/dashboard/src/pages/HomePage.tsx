@@ -135,7 +135,7 @@ export const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* Enviar Elogio - Com Saldo e Busca */}
-            <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 shadow-lg hover:shadow-xl transition-all duration-200 relative">
+            <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 shadow-lg hover:shadow-xl transition-all duration-200 relative z-10">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-4">
                   <div className="flex-shrink-0 w-14 h-14 bg-gray-100 dark:bg-[#3a3a3a] rounded-xl flex items-center justify-center shadow-lg">
@@ -231,7 +231,7 @@ export const HomePage = () => {
             </div>
 
             {/* Explorar Prêmios - Com Thumbnails */}
-            <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 shadow-lg hover:shadow-xl transition-all duration-200">
+            <div className="bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 shadow-lg hover:shadow-xl transition-all duration-200 relative z-0">
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-shrink-0 w-14 h-14 bg-gray-100 dark:bg-[#3a3a3a] rounded-xl flex items-center justify-center shadow-lg">
                   <i className="ph-duotone ph-gift text-gray-700 dark:text-red-400" style={{ fontSize: '28px' }}></i>

@@ -98,16 +98,12 @@ export const useNewPraiseForm = () => {
       onBalanceMovement()
       setShowSuccess(true)
       
-      setTimeout(() => {
-        navigate({ to: '/elogios' })
-      }, 2500)
-      
     } catch (err) {
       setIsSubmitting(false)
       const errorMessage = err instanceof Error ? err.message : 'Erro inesperado ao enviar elogio'
       setError(errorMessage)
     }
-  }, [isValid, formData, onBalanceMovement, navigate])
+  }, [isValid, formData, onBalanceMovement])
 
 
   const updateFormValue = useCallback((
@@ -117,6 +113,13 @@ export const useNewPraiseForm = () => {
     setValue(field, value as string | number)
     setError(null)
   }, [setValue])
+
+  const resetForm = useCallback(() => {
+    form.reset()
+    setCurrentStep(0)
+    setShowSuccess(false)
+    setError(null)
+  }, [form])
 
   return useMemo(() => ({
     currentStep,
@@ -134,6 +137,7 @@ export const useNewPraiseForm = () => {
     cancelForm,
     submitForm,
     updateFormValue,
+    resetForm,
     canProceed,
     
     setError,
@@ -151,6 +155,7 @@ export const useNewPraiseForm = () => {
     cancelForm,
     submitForm,
     updateFormValue,
+    resetForm,
     canProceed,
   ])
 }
