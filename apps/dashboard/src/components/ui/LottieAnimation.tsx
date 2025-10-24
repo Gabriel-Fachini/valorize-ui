@@ -68,6 +68,7 @@ export const LottieAnimation = ({
     } catch (err) {
       setError('Erro ao carregar animação')
       console.error('Lottie animation error:', err)
+      return undefined
     }
   }, [animationData, path, loop, autoplay, speed, scale, onComplete, onLoopComplete])
 

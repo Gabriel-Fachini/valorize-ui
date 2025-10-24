@@ -18,10 +18,9 @@ const RedemptionSuccessContent = memo(({
   title,
   description,
   prizeName,
-  prizeImage,
   onGoToPrizes,
   onGoToRedemptions,
-}: Omit<RedemptionSuccessOverlayProps, 'isVisible'>) => {
+}: Omit<RedemptionSuccessOverlayProps, 'isVisible' | 'prizeImage'>) => {
   const defaultDescription = 'Seu prêmio foi resgatado com sucesso. Acompanhe o status na página de resgates.'
 
   return (

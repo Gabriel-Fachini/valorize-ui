@@ -7,7 +7,7 @@ interface UseMobileSidebarGestureFeedbackOptions {
 }
 
 export const useMobileSidebarGestureFeedback = (options: UseMobileSidebarGestureFeedbackOptions = {}) => {
-  const { enabled = true, feedbackThreshold = 30 } = options
+  const { enabled = true } = options
   const { mobileSidebarOpen } = useSidebar()
   const [isGestureActive, setIsGestureActive] = useState(false)
   const [gestureProgress, setGestureProgress] = useState(0)
