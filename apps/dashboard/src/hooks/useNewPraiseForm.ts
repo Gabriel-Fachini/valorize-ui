@@ -62,7 +62,8 @@ export const useNewPraiseForm = () => {
       const isValidStep = await trigger(fieldsToValidate)
       
       if (isValidStep) {
-        setCurrentStep((prev) => (prev + 1) as PraiseStep)
+        const nextStep = (currentStep + 1) as PraiseStep
+        setCurrentStep(nextStep)
         setError(null)
       }
     }
@@ -70,7 +71,8 @@ export const useNewPraiseForm = () => {
 
   const goToPrevStep = useCallback(() => {
     if (currentStep > 0) {
-      setCurrentStep((prev) => (prev - 1) as PraiseStep)
+      const prevStep = (currentStep - 1) as PraiseStep
+      setCurrentStep(prevStep)
       setError(null)
     }
   }, [currentStep])

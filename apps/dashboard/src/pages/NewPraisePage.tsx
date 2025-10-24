@@ -155,7 +155,12 @@ export const NewPraisePage = () => {
   // Success modal handlers
   const handleNewPraise = useCallback(() => {
     resetForm()
-  }, [resetForm])
+    // Navigate to clear URL params to prevent re-triggering the useEffect
+    navigate({ 
+      to: '/elogios/novo',
+      search: {},
+    })
+  }, [resetForm, navigate])
 
   const handleGoHome = useCallback(() => {
     navigate({ to: '/' })
@@ -164,14 +169,21 @@ export const NewPraisePage = () => {
   // URL parameter handling for pre-selecting users
   // Automatically selects user and advances to next step if userId is in URL
   useEffect(() => {
-    if (searchParams?.userId && users.length > 0 && !formData.userId) {
+    // Only process URL params if:
+    // 1. userId exists in URL
+    // 2. Users are loaded
+    // 3. Form doesn't already have a userId selected
+    // 4. We're on step 0 (to prevent advancing from wrong steps)
+    if (searchParams?.userId && users.length > 0 && !formData.userId && currentStep === 0) {
       const preSelectedUser = users.find(u => u.id === searchParams.userId)
+      
       if (preSelectedUser) {
         updateFormValue('userId', preSelectedUser.id)
-        // Move to next step (Value selection)
-        if (currentStep === 0) {
+        
+        // Use a small delay to ensure state is updated before advancing
+        setTimeout(() => {
           goToNextStep()
-        }
+        }, 100)
       }
     }
   }, [searchParams?.userId, users, formData.userId, currentStep, updateFormValue, goToNextStep])
