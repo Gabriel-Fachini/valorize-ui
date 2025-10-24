@@ -16,14 +16,14 @@ export const SidebarDesktop = () => {
   return (
     <aside 
       data-tour="sidebar"
-      className={`hidden lg:flex fixed left-0 top-0 z-40 h-screen flex-col bg-[#1a1a1a] border-r border-gray-800 overflow-hidden shadow-2xl shadow-black/30 transition-all duration-300 ${
+      className={`hidden lg:flex fixed left-0 top-0 z-40 h-screen flex-col bg-white dark:bg-[#1a1a1a] border-r border-gray-200 dark:border-gray-800 overflow-hidden shadow-2xl shadow-black/10 dark:shadow-black/30 transition-all duration-300 ${
         desktopSidebarCollapsed ? 'w-20' : 'w-72'
       }`}
       role="complementary"
       aria-label="Barra lateral de navegação"
     >
       {/* Logo with toggle button */}
-      <div className="flex h-16 items-center justify-center border-b border-gray-800 bg-black/20 px-3">
+      <div className="flex h-16 items-center justify-center border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-black/20 px-3">
         <Logo 
           collapsed={desktopSidebarCollapsed} 
           onToggle={toggleDesktopSidebar} 

@@ -35,7 +35,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
       } rounded-xl text-left transition-colors ${
         isActive
           ? 'text-black font-semibold'
-          : 'text-gray-300 hover:text-white hover:bg-white/5'
+          : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
       }`}
       aria-current={isActive ? 'page' : undefined}
       aria-label={collapsed ? `Ir para ${label}` : undefined}

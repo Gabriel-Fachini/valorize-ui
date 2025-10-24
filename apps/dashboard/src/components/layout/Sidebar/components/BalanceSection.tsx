@@ -4,20 +4,20 @@ const BalanceCardsSkeleton = () => {
   return (
     <div className="grid grid-cols-2 gap-3">
       {/* Skeleton Card 1 - Moedas */}
-      <div className="rounded-xl bg-gray-800/40 border border-gray-700/50 p-3">
+      <div className="rounded-xl bg-gray-100 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700/50 p-3">
         <div className="flex flex-col gap-1 animate-pulse">
-          <div className="w-6 h-6 bg-gray-700/50 rounded" />
-          <div className="h-6 w-20 bg-gray-700/50 rounded" />
-          <div className="h-3 w-12 bg-gray-700/50 rounded" />
+          <div className="w-6 h-6 bg-gray-300 dark:bg-gray-700/50 rounded" />
+          <div className="h-6 w-20 bg-gray-300 dark:bg-gray-700/50 rounded" />
+          <div className="h-3 w-12 bg-gray-300 dark:bg-gray-700/50 rounded" />
         </div>
       </div>
 
       {/* Skeleton Card 2 - Elogios */}
-      <div className="rounded-xl bg-gray-800/40 border border-gray-700/50 p-3">
+      <div className="rounded-xl bg-gray-100 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700/50 p-3">
         <div className="flex flex-col gap-1 animate-pulse">
-          <div className="w-6 h-6 bg-gray-700/50 rounded" />
-          <div className="h-6 w-20 bg-gray-700/50 rounded" />
-          <div className="h-3 w-12 bg-gray-700/50 rounded" />
+          <div className="w-6 h-6 bg-gray-300 dark:bg-gray-700/50 rounded" />
+          <div className="h-6 w-20 bg-gray-300 dark:bg-gray-700/50 rounded" />
+          <div className="h-3 w-12 bg-gray-300 dark:bg-gray-700/50 rounded" />
         </div>
       </div>
     </div>
@@ -48,7 +48,7 @@ const BalanceCards = ({
     <div className="grid grid-cols-2 gap-3">
       {/* Saldo Acumulado (Moedas) - Esquerda */}
       <div 
-        className="group relative rounded-xl bg-gray-800/40 border border-gray-700/50 p-3 hover:bg-gray-800/60 transition-colors cursor-help"
+        className="group relative rounded-xl bg-gray-100 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700/50 p-3 hover:bg-gray-200 dark:hover:bg-gray-800/60 transition-colors cursor-help"
         title={`Saldo Acumulado: ${formattedRedeemable} moedas`}
       >
         <div className="flex flex-col gap-1">
@@ -57,10 +57,10 @@ const BalanceCards = ({
             style={{ fontSize: '1.5rem' }}
             aria-hidden="true"
           />
-          <p className={`${getFontSize(formattedRedeemable)} font-bold text-white leading-none`}>
+          <p className={`${getFontSize(formattedRedeemable)} font-bold text-gray-900 dark:text-white leading-none`}>
             {formattedRedeemable}
           </p>
-          <p className="text-xs text-gray-400 font-medium">
+          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
             Moedas
           </p>
         </div>
@@ -74,7 +74,7 @@ const BalanceCards = ({
 
       {/* Saldo de Elogios - Direita */}
       <div 
-        className="group relative rounded-xl bg-gray-800/40 border border-gray-700/50 p-3 hover:bg-gray-800/60 transition-colors cursor-help"
+        className="group relative rounded-xl bg-gray-100 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700/50 p-3 hover:bg-gray-200 dark:hover:bg-gray-800/60 transition-colors cursor-help"
         title={`Elogios Disponíveis: ${formattedCompliment}`}
       >
         <div className="flex flex-col gap-1">
@@ -83,10 +83,10 @@ const BalanceCards = ({
             style={{ fontSize: '1.5rem' }}
             aria-hidden="true"
           />
-          <p className={`${getFontSize(formattedCompliment)} font-bold text-white leading-none`}>
+          <p className={`${getFontSize(formattedCompliment)} font-bold text-gray-900 dark:text-white leading-none`}>
             {formattedCompliment}
           </p>
-          <p className="text-xs text-gray-400 font-medium">
+          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
             Elogios
           </p>
         </div>

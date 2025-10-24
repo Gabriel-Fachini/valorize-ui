@@ -19,8 +19,8 @@ export const BottomActions = ({
   return (
     <div className={
       collapsed 
-        ? 'border-t border-gray-800 p-3 bg-black/20 space-y-2'
-        : 'border-t border-gray-800 p-6 bg-black/20 space-y-2'
+        ? 'border-t border-gray-200 dark:border-gray-800 p-3 bg-gray-50 dark:bg-black/20 space-y-2'
+        : 'border-t border-gray-200 dark:border-gray-800 p-6 bg-gray-50 dark:bg-black/20 space-y-2'
     }>
       {/* Configurações com indicador verde */}
       <div className="relative">
@@ -52,7 +52,7 @@ export const BottomActions = ({
                 } py-3 rounded-xl transition-colors ${
                   isActive
                     ? 'text-black font-semibold'
-                    : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white'
                 }`}
                 title={collapsed ? link.label : undefined}
                 aria-label={collapsed ? link.label : undefined}
