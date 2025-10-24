@@ -12,26 +12,26 @@ const errorHeight = 40
 
 const labelStyles = {
   base: 'block text-sm font-semibold mb-2',
-  default: 'text-gray-200',
-  error: 'text-red-300',
-  success: 'text-green-300',
-  required: 'after:content-["*"] after:text-red-400 after:ml-1',
+  default: 'text-gray-700 dark:text-gray-200',
+  error: 'text-red-600 dark:text-red-300',
+  success: 'text-green-600 dark:text-green-300',
+  required: 'after:content-["*"] after:text-red-500 dark:after:text-red-400 after:ml-1',
 }
 
 const helperStyles = {
-  base: 'absolute z-0 w-full h-12 text-sm bg-red-900 px-3 pt-5 box-border rounded-lg overflow-hidden flex items-center',
-  default: 'text-gray-300',
-  error: 'text-red-200',
-  success: 'text-green-200',
+  base: 'absolute z-0 w-full h-12 text-sm bg-red-50 dark:bg-red-900 px-3 pt-5 box-border rounded-lg overflow-hidden flex items-center',
+  default: 'text-gray-600 dark:text-gray-300',
+  error: 'text-red-700 dark:text-red-200',
+  success: 'text-green-700 dark:text-green-200',
 }
 
 const inputDiv = [
-  'absolute bg-[#262626]',
-  'w-full px-4 py-3 rounded-lg border',
-  'relative z-10 text-white',
+  'absolute bg-white dark:bg-[#262626]',
+  'w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600',
+  'relative z-10 text-gray-900 dark:text-white',
 ].join(' ')
 
-const errorDiv = 'absolute text-white z-0 w-full h-14 text-sm bg-red-900 px-3 pb-1 box-content rounded-lg overflow-hidden flex items-center font-medium'
+const errorDiv = 'absolute text-red-700 dark:text-white z-0 w-full h-14 text-sm bg-red-50 dark:bg-red-900 px-3 pb-1 box-content rounded-lg overflow-hidden flex items-center font-medium'
 
 // InputProps extends HTML input props with our custom BaseInputProps
 export interface InputProps extends BaseInputProps {

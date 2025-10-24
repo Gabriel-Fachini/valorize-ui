@@ -37,7 +37,7 @@ export const PraiseFeed = ({
             className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 transition-all duration-200 ${
               currentFilter === 'all'
                 ? 'bg-primary-100 dark:bg-primary-900/40 border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300'
-                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-white/30 dark:border-neutral-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80'
+                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-gray-200 dark:border-neutral-500 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80 hover:border-gray-300 dark:hover:border-neutral-400'
             }`}
           >
             Todos
@@ -47,7 +47,7 @@ export const PraiseFeed = ({
             className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 transition-all duration-200 ${
               currentFilter === 'received'
                 ? 'bg-primary-100 dark:bg-primary-900/40 border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300'
-                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-white/30 dark:border-neutral-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80'
+                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-gray-200 dark:border-neutral-500 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80 hover:border-gray-300 dark:hover:border-neutral-400'
             }`}
           >
             Recebidos
@@ -57,7 +57,7 @@ export const PraiseFeed = ({
             className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 transition-all duration-200 ${
               currentFilter === 'sent'
                 ? 'bg-primary-100 dark:bg-primary-900/40 border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300'
-                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-white/30 dark:border-neutral-600/30 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80'
+                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-gray-200 dark:border-neutral-500 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80 hover:border-gray-300 dark:hover:border-neutral-400'
             }`}
           >
             Enviados

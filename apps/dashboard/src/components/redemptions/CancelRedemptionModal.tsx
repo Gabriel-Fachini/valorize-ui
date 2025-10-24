@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useSpring, animated } from '@react-spring/web'
 import { Button } from '@/components/ui/button'
 import { formatCoinsAmount } from '@/lib/redemptionUtils'
@@ -37,11 +38,22 @@ export const CancelRedemptionModal: React.FC<CancelRedemptionModalProps> = ({
     config: { tension: 300, friction: 20 },
   })
 
+  // Body overflow management
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   if (!isOpen) return null
 
-  return (
+  return createPortal(
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       aria-hidden="true"
     >
       <animated.div
@@ -183,6 +195,7 @@ export const CancelRedemptionModal: React.FC<CancelRedemptionModalProps> = ({
           </>
         )}
       </animated.div>
-    </div>
+    </div>,
+    document.body
   )
 }

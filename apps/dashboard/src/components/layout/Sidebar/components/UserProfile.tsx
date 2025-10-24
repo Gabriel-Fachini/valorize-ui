@@ -14,7 +14,7 @@ export const UserProfile = ({
   // Skeleton loading state for collapsed sidebar
   if (collapsed && isLoading) {
     return (
-      <div className="flex justify-center py-4 border-b border-neutral-800 bg-black/20">
+      <div className="flex justify-center py-4 border-b border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-black/20">
         <SkeletonAvatar size="lg" className="bg-neutral-700" />
       </div>
     )
@@ -23,7 +23,7 @@ export const UserProfile = ({
   // Skeleton loading state for expanded sidebar
   if (isLoading) {
     return (
-      <div className="p-6 border-b border-neutral-800 bg-black/20">
+      <div className="p-6 border-b border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-black/20">
         <div className="flex items-center gap-4 mb-6">
           <SkeletonAvatar size="xl" className="bg-neutral-700" />
           <div className="flex-1 min-w-0 space-y-2">
@@ -45,30 +45,30 @@ export const UserProfile = ({
   const avatar = avatarUrl
     ? <img src={avatarUrl} alt="User Avatar" className="h-16 w-16 rounded-full" />
     : (
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-gray-700 to-gray-600">
-        <span className="text-xl font-bold text-white">{initials}</span>
+      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-600">
+        <span className="text-xl font-bold text-gray-700 dark:text-white">{initials}</span>
       </div>
     )
 
   if (collapsed) {
     return (
-      <div className="flex justify-center py-4 border-b border-gray-800 bg-black/20">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-gray-700 to-gray-600">
-          {avatarUrl ? <img src={avatarUrl} alt="User Avatar" className="h-12 w-12 rounded-full" /> : <span className="text-lg font-bold text-white">{initials}</span>}
+      <div className="flex justify-center py-4 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-black/20">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-600">
+          {avatarUrl ? <img src={avatarUrl} alt="User Avatar" className="h-12 w-12 rounded-full" /> : <span className="text-lg font-bold text-gray-700 dark:text-white">{initials}</span>}
         </div>
       </div>
     )
   }
 
   return (
-    <div className="p-6 border-b border-gray-800 bg-black/20">
+    <div className="p-6 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-black/20">
       <div className="flex items-center gap-4 mb-6">
         {avatar}
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-white truncate">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
             {userName}
           </h3>
-          <p className="text-sm text-gray-400 truncate">
+          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
             {userEmail}
           </p>
         </div>

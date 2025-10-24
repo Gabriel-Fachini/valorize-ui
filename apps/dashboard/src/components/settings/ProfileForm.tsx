@@ -89,16 +89,16 @@ export const ProfileForm: React.FC = () => {
     return (
       <div className="space-y-5">
         <SkeletonBase>
-          <div className="h-12 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
+          <div className="h-12 rounded-lg bg-gray-200 dark:bg-neutral-700" />
         </SkeletonBase>
         <SkeletonBase>
-          <div className="h-12 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
+          <div className="h-12 rounded-lg bg-gray-200 dark:bg-neutral-700" />
         </SkeletonBase>
         <SkeletonBase>
-          <div className="h-12 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
+          <div className="h-12 rounded-lg bg-gray-200 dark:bg-neutral-700" />
         </SkeletonBase>
         <SkeletonBase>
-          <div className="h-10 w-40 rounded-xl bg-neutral-200 dark:bg-neutral-700" />
+          <div className="h-10 w-40 rounded-xl bg-gray-200 dark:bg-neutral-700" />
         </SkeletonBase>
       </div>
     )
@@ -108,10 +108,10 @@ export const ProfileForm: React.FC = () => {
     <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
       {/* Email (read-only) */}
       <div>
-        <label className="block text-sm font-semibold mb-2 text-neutral-600 dark:text-neutral-300">
+        <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-neutral-300">
           Email
         </label>
-        <div className="px-4 py-3 rounded-lg border border-neutral-200 dark:border-neutral-700/40 bg-neutral-50 dark:bg-neutral-800/60 text-neutral-700 dark:text-neutral-300">
+        <div className="px-4 py-3 rounded-lg border border-gray-200 dark:border-neutral-700/40 bg-gray-50 dark:bg-neutral-800/60 text-gray-700 dark:text-neutral-300">
           {profile?.email ?? user?.email ?? '—'}
         </div>
       </div>
@@ -139,10 +139,10 @@ export const ProfileForm: React.FC = () => {
       {/* Company (read-only) - if available */}
       {profile?.companyId && (
         <div>
-          <label className="block text-sm font-semibold mb-2 text-neutral-600 dark:text-neutral-300">
+          <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-neutral-300">
             Empresa
           </label>
-          <div className="px-4 py-3 rounded-lg border border-neutral-200 dark:border-neutral-700/40 bg-neutral-50 dark:bg-neutral-800/60 text-neutral-700 dark:text-neutral-300">
+          <div className="px-4 py-3 rounded-lg border border-gray-200 dark:border-neutral-700/40 bg-gray-50 dark:bg-neutral-800/60 text-gray-700 dark:text-neutral-300">
             {profile.companyId}
           </div>
         </div>

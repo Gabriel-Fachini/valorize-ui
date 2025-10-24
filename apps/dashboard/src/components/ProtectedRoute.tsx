@@ -29,7 +29,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   // Mostrar loading enquanto verifica autenticação
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1a1a1a]">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#1a1a1a]">
         <div className="flex flex-col items-center space-y-6">
           <div className="relative">
             {/* Círculo animado com gradiente verde */}
@@ -41,7 +41,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
             {/* Anel externo animado */}
             <div className="absolute inset-0 rounded-full border-4 border-green-400/30 animate-ping"></div>
           </div>
-          <p className="text-gray-300 font-medium text-lg">Verificando autenticação...</p>
+          <p className="text-gray-600 dark:text-gray-300 font-medium text-lg">Verificando autenticação...</p>
         </div>
       </div>
     )
@@ -57,13 +57,13 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     <>
       <Sidebar />
       <animated.div style={mainContentAnimation} className="lg:block hidden">
-        <main className="min-h-screen bg-[#1a1a1a]">
+        <main className="min-h-screen bg-white dark:bg-[#1a1a1a]">
           {children}
         </main>
       </animated.div>
       {/* Mobile version (no margin) */}
       <div className="lg:hidden">
-        <main className="min-h-screen bg-[#1a1a1a]">
+        <main className="min-h-screen bg-white dark:bg-[#1a1a1a]">
           {children}
         </main>
       </div>
