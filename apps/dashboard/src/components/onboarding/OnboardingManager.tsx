@@ -26,22 +26,17 @@ export const OnboardingManager: React.FC<OnboardingManagerProps> = ({
   showWelcomeMessage = true,
 }) => {
   const [currentTour, setCurrentTour] = useState<boolean>(false)
-  const [showWelcome, setShowWelcome] = useState(showWelcomeMessage)
+  // Initialize showWelcome based on localStorage to prevent flash
+  const [showWelcome, setShowWelcome] = useState(() => {
+    const isCompleted = localStorage.getItem(ONBOARDING_COMPLETED_KEY) === 'true'
+    const wasSkipped = localStorage.getItem(ONBOARDING_SKIPPED_KEY) === 'true'
+    // Only show welcome message if user hasn't completed or skipped AND prop is true
+    return showWelcomeMessage && !isCompleted && !wasSkipped
+  })
   const [showSuccess, setShowSuccess] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const { isRunning, startTour, stopTour } = useOnboarding()
   const { setMobileSidebarOpen } = useSidebar()
-
-  // Check if onboarding was already completed on mount
-  useEffect(() => {
-    const isCompleted = localStorage.getItem(ONBOARDING_COMPLETED_KEY) === 'true'
-    const wasSkipped = localStorage.getItem(ONBOARDING_SKIPPED_KEY) === 'true'
-    
-    // If user completed or skipped onboarding before, don't show welcome message
-    if (isCompleted || wasSkipped) {
-      setShowWelcome(false)
-    }
-  }, [])
 
   // Detect mobile on mount and window resize
   useEffect(() => {
@@ -129,10 +124,17 @@ export const OnboardingManager: React.FC<OnboardingManagerProps> = ({
 
   useEffect(() => {
     if (autoStart) {
-      const timer = setTimeout(() => {
-        handleStartSidebarTour()
-      }, 1000)
-      return () => clearTimeout(timer)
+      // Check if user already completed or skipped onboarding
+      const isCompleted = localStorage.getItem(ONBOARDING_COMPLETED_KEY) === 'true'
+      const wasSkipped = localStorage.getItem(ONBOARDING_SKIPPED_KEY) === 'true'
+      
+      // Only auto-start if user hasn't completed or skipped
+      if (!isCompleted && !wasSkipped) {
+        const timer = setTimeout(() => {
+          handleStartSidebarTour()
+        }, 1000)
+        return () => clearTimeout(timer)
+      }
     }
     return undefined
   }, [autoStart, handleStartSidebarTour])
