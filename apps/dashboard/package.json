@@ -33,6 +33,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.62.0",
+    "react-joyride": "^2.9.3",
     "tailwind-merge": "catalog:",
     "tailwindcss": "^4.1.11",
     "tailwindcss-animate": "^1.0.7",

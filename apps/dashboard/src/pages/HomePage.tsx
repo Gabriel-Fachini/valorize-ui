@@ -7,6 +7,7 @@ import {
   NewsCard,
   EventCard,
 } from '@/components/dashboard'
+import { OnboardingManager } from '@/components/onboarding/OnboardingManager'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { useUser } from '@/hooks/useUser'
 import { usePrizes } from '@/hooks/usePrizes'
@@ -110,8 +111,19 @@ export const HomePage = () => {
   }
 
   return (
-    <PageLayout maxWidth="7xl">
-      <animated.div style={pageAnimation} className="space-y-8">
+    <>
+      <OnboardingManager 
+        autoStart={false}
+        showWelcomeMessage={true}
+        onComplete={() => {
+          console.log('Onboarding completed!')
+        }}
+        onSkip={() => {
+          console.log('Onboarding skipped!')
+        }}
+      />
+      <PageLayout maxWidth="7xl">
+        <animated.div style={pageAnimation} className="space-y-8">
         
         {/* Welcome Header */}
         <animated.div style={sectionsTrail[0]}>
@@ -383,7 +395,8 @@ export const HomePage = () => {
           </div>
         </animated.div>
 
-      </animated.div>
-    </PageLayout>
+        </animated.div>
+      </PageLayout>
+    </>
   )
 }
