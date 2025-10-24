@@ -26,7 +26,7 @@ export const MobileHeader = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={handleMenuClick}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800/40 backdrop-blur-md text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700/50 transition-all duration-300 border border-gray-300 dark:border-gray-600/30 shadow-lg shadow-black/5 dark:shadow-black/20 hover:scale-105 active:scale-95"
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-gray-700 bg-gray-100 dark:bg-[#171717] dark:text-gray-200 hover:scale-105 active:scale-95 transition-all duration-300 border border-gray-200 dark:border-gray-600/30 shadow-lg shadow-black/5 dark:shadow-black/20"
             aria-label="Abrir menu de navegação"
             aria-expanded={mobileSidebarOpen}
             aria-controls="mobile-sidebar"
@@ -37,9 +37,14 @@ export const MobileHeader = () => {
           
           <div className="flex items-center gap-2" role="img" aria-label="Logo do Valorize">
             <img 
+              src="/logo4.svg" 
+              alt="Valorize Logo" 
+              className="w-8 h-8 object-contain dark:hidden"
+            />
+            <img 
               src="/logo2.svg" 
               alt="Valorize Logo" 
-              className="w-8 h-8 object-contain"
+              className="w-8 h-8 object-contain hidden dark:block"
             />
             <span className="text-lg font-bold text-gray-900 dark:text-white">
               Valorize
