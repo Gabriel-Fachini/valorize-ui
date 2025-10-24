@@ -11,6 +11,7 @@ import { PrizeSummaryCard } from '@/components/prizes/PrizeSummaryCard'
 import { AddressSelector } from '@/components/prizes/AddressSelector'
 import { ConfirmationPageSkeleton } from '@/components/prizes/ConfirmationPageSkeleton'
 import { AddressForm } from '@/components/ui/AddressForm'
+import { RedemptionSuccessOverlay } from '@/components/ui/RedemptionSuccessOverlay'
 import { animated } from '@react-spring/web'
 
 export const PrizeConfirmationPage = () => {
@@ -174,45 +175,18 @@ export const PrizeConfirmationPage = () => {
         </ModalContent>
       </Modal>
 
-      {/* Success Modal */}
-      <Modal
-        isOpen={showSuccessModal}
-        onClose={handleCloseSuccessModal}
-        size="md"
-        showCloseButton={false}
-      >
-        <div className="text-center">
-          <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-500/20 mx-auto">
-            <i className="ph-bold ph-check-circle text-green-600 dark:text-green-400 text-4xl" />
-          </div>
-
-          <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
-            Prêmio Resgatado!
-          </h2>
-
-          <p className="mb-6 text-gray-600 dark:text-gray-400">
-            Seu prêmio foi resgatado com sucesso. Acompanhe o status na página de resgates.
-          </p>
-
-          <div className="flex gap-3">
-            <Button
-              variant="outline"
-              onClick={() => navigate({ to: '/prizes' })}
-              className="flex-1"
-            >
-              <i className="ph ph-storefront" />
-              Voltar para a Loja
-            </Button>
-            <Button
-              onClick={handleCloseSuccessModal}
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-            >
-              <i className="ph-bold ph-package" />
-              Ver Resgates
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      {/* Success Overlay */}
+      <RedemptionSuccessOverlay
+        isVisible={showSuccessModal}
+        title="Prêmio Resgatado!"
+        description="Seu prêmio foi resgatado com sucesso. Acompanhe o status na página de resgates."
+        prizeName={prize?.name}
+        onGoToPrizes={() => navigate({ to: '/prizes' })}
+        onGoToRedemptions={() => {
+          handleCloseSuccessModal()
+          navigate({ to: '/resgates' })
+        }}
+      />
 
       {/* Alert Dialog */}
       {AlertDialogComponent}

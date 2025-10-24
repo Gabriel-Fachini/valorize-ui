@@ -139,7 +139,7 @@ export const EmailInput = ({
       
       {/* Domain Suggestions Dropdown */}
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-30 top-20 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-40 overflow-y-auto">
+        <div className="absolute z-30 top-20 w-full bg-white dark:bg-[#262626] border border-gray-300 dark:border-[#404040] rounded-lg shadow-lg max-h-40 overflow-y-auto">
           {suggestions.map((domain, index) => {
             const atIndex = inputValue.indexOf('@')
             const userPart = inputValue.slice(0, atIndex + 1)
@@ -152,8 +152,8 @@ export const EmailInput = ({
                 type="button"
                 className={`w-full px-4 py-2 text-left first:rounded-t-lg last:rounded-b-lg focus:outline-none ${
                   isSelected 
-                    ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-100' 
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700'
+                    ? 'bg-gray-100 dark:bg-[#171717] text-[#171717] dark:text-[#f5f5f5]' 
+                    : 'hover:bg-gray-50 dark:hover:bg-[#262626] focus:bg-gray-50 dark:focus:bg-[#262626]'
                 }`}
                 onClick={() => handleSuggestionClick(domain)}
                 onMouseDown={(e) => e.preventDefault()} // Prevent blur before click
@@ -162,15 +162,15 @@ export const EmailInput = ({
                 <div className="flex items-center">
                   <span className={`font-medium ${
                     isSelected 
-                      ? 'text-blue-900 dark:text-blue-100' 
-                      : 'text-gray-900 dark:text-gray-100'
+                      ? 'text-[#171717] dark:text-[#f5f5f5]' 
+                      : 'text-[#171717] dark:text-[#f5f5f5]'
                   }`}>
                     {fullSuggestion}
                   </span>
                   <span className={`ml-2 text-xs ${
                     isSelected 
-                      ? 'text-blue-700 dark:text-blue-300' 
-                      : 'text-gray-500 dark:text-gray-400'
+                      ? 'text-[#525252] dark:text-[#d4d4d4]' 
+                      : 'text-[#525252] dark:text-[#a3a3a3]'
                   }`}>
                     @{domain}
                   </span>

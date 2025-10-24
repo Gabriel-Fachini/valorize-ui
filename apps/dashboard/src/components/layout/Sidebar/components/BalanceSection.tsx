@@ -5,25 +5,23 @@ const BalanceCardsSkeleton = () => {
     <div className="grid grid-cols-2 gap-3">
       {/* Skeleton Card 1 - Moedas */}
       <div 
-        className="rounded-xl p-3 border dark:bg-[#171717] dark:border-[#262626]" 
-        style={{ backgroundColor: '#f5f5f5', borderColor: '#e5e5e5' }}
+        className="rounded-xl p-3 border bg-[#f5f5f5] border-[#e5e5e5] dark:bg-[#171717] dark:border-[#262626]" 
       >
         <div className="flex flex-col gap-1 animate-pulse">
-          <div className="w-6 h-6 rounded dark:bg-[#262626]" style={{ backgroundColor: '#d4d4d4' }} />
-          <div className="h-6 w-20 rounded dark:bg-[#262626]" style={{ backgroundColor: '#d4d4d4' }} />
-          <div className="h-3 w-12 rounded dark:bg-[#262626]" style={{ backgroundColor: '#d4d4d4' }} />
+          <div className="w-6 h-6 rounded bg-[#d4d4d4] dark:bg-[#262626]" />
+          <div className="h-6 w-20 rounded bg-[#d4d4d4] dark:bg-[#262626]" />
+          <div className="h-3 w-12 rounded bg-[#d4d4d4] dark:bg-[#262626]" />
         </div>
       </div>
 
       {/* Skeleton Card 2 - Elogios */}
       <div 
-        className="rounded-xl p-3 border dark:bg-[#171717] dark:border-[#262626]" 
-        style={{ backgroundColor: '#f5f5f5', borderColor: '#e5e5e5' }}
+        className="rounded-xl p-3 border bg-[#f5f5f5] border-[#e5e5e5] dark:bg-[#171717] dark:border-[#262626]" 
       >
         <div className="flex flex-col gap-1 animate-pulse">
-          <div className="w-6 h-6 rounded dark:bg-[#262626]" style={{ backgroundColor: '#d4d4d4' }} />
-          <div className="h-6 w-20 rounded dark:bg-[#262626]" style={{ backgroundColor: '#d4d4d4' }} />
-          <div className="h-3 w-12 rounded dark:bg-[#262626]" style={{ backgroundColor: '#d4d4d4' }} />
+          <div className="w-6 h-6 rounded bg-[#d4d4d4] dark:bg-[#262626]" />
+          <div className="h-6 w-20 rounded bg-[#d4d4d4] dark:bg-[#262626]" />
+          <div className="h-3 w-12 rounded bg-[#d4d4d4] dark:bg-[#262626]" />
         </div>
       </div>
     </div>
