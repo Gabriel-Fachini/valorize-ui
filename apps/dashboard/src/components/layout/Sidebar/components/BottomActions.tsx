@@ -19,8 +19,8 @@ export const BottomActions = ({
   return (
     <div className={
       collapsed 
-        ? 'border-t border-gray-200 dark:border-gray-800 p-3 bg-gray-50 dark:bg-black/20 space-y-2'
-        : 'border-t border-gray-200 dark:border-gray-800 p-6 bg-gray-50 dark:bg-black/20 space-y-2'
+        ? 'border-t border-gray-200 dark:border-[#242424] p-3 bg-gray-50 dark:bg-black/20 space-y-2'
+        : 'border-t border-gray-200 dark:border-[#242424] p-6 bg-gray-50 dark:bg-black/20 space-y-2'
     }>
       {/* Configurações com indicador verde */}
       <div className="relative">
