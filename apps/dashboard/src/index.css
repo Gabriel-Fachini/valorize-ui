@@ -1,12 +1,5 @@
 @import "tailwindcss";
 
-@plugin "tailwindcss-animate";
-@import "@phosphor-icons/web/bold";
-@import "@phosphor-icons/web/fill";
-@import "@phosphor-icons/web/regular";
-@import "@phosphor-icons/web/duotone";
-@import "tw-animate-css";
-
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

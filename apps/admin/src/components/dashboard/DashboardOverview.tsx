@@ -1,33 +1,31 @@
-import { Users, TrendingUp, DollarSign, Activity } from 'lucide-react'
-
 const stats = [
   {
     name: 'Total de Usuários',
     value: '2,345',
     change: '+12%',
     changeType: 'positive' as const,
-    icon: Users,
+    icon: 'ph-users',
   },
   {
     name: 'Receita Total',
     value: 'R$ 45,678',
     change: '+8%',
     changeType: 'positive' as const,
-    icon: DollarSign,
+    icon: 'ph-currency-dollar',
   },
   {
     name: 'Transações',
     value: '1,234',
     change: '+15%',
     changeType: 'positive' as const,
-    icon: Activity,
+    icon: 'ph-activity',
   },
   {
     name: 'Crescimento',
     value: '23%',
     change: '+3%',
     changeType: 'positive' as const,
-    icon: TrendingUp,
+    icon: 'ph-trending-up',
   },
 ]
 
@@ -58,7 +56,7 @@ export function DashboardOverview() {
                 </p>
               </div>
               <div className="flex items-center space-x-2">
-                <stat.icon className="h-8 w-8 text-primary" />
+                <i className={`${stat.icon} h-8 w-8 text-primary`} />
                 <span
                   className={`text-sm font-medium ${
                     stat.changeType === 'positive'

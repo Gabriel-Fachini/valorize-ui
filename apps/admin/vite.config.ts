@@ -74,6 +74,7 @@ export default defineConfig({
       "@assets": path.resolve(__dirname, "./src/assets"),          // Static assets
       "@translations": path.resolve(__dirname, "./src/translations"), // i18n files
       "@types": path.resolve(__dirname, "./src/types"),            // TypeScript types
+      "@valorize/shared": path.resolve(__dirname, "../../packages/shared/src"), // Shared package
     },
   },
 
@@ -115,6 +116,7 @@ export default defineConfig({
       'react-dom',                 // React DOM renderer
       '@tanstack/react-query',     // Server state management
       '@tanstack/react-router',    // Client-side routing
+      '@valorize/shared',          // Shared components package
     ],
   },
 })

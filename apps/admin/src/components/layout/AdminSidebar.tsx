@@ -1,18 +1,10 @@
-import { 
-  Users, 
-  BarChart3, 
-  Settings, 
-  Shield, 
-  FileText,
-  LogOut
-} from 'lucide-react'
-
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: BarChart3 },
-  { name: 'Usuários', href: '/users', icon: Users },
-  { name: 'Relatórios', href: '/reports', icon: FileText },
-  { name: 'Configurações', href: '/settings', icon: Settings },
-  { name: 'Permissões', href: '/permissions', icon: Shield },
+  
+  { name: 'Dashboard', href: '/', icon: 'ph ph-chart-bar' },
+  { name: 'Usuários', href: '/users', icon: 'ph-users' },
+  { name: 'Relatórios', href: '/reports', icon: 'ph-file-text' },
+  { name: 'Configurações', href: '/settings', icon: 'ph-gear' },
+  { name: 'Permissões', href: '/permissions', icon: 'ph-shield' },
 ]
 
 export function AdminSidebar() {
@@ -32,7 +24,7 @@ export function AdminSidebar() {
                 href={item.href}
                 className="flex items-center px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
               >
-                <item.icon className="mr-3 h-5 w-5" />
+                <i className={`${item.icon} mr-3 text-lg`} />
                 {item.name}
               </a>
             </li>
@@ -42,7 +34,7 @@ export function AdminSidebar() {
       
       <div className="absolute bottom-0 w-64 p-6">
         <button className="flex items-center w-full px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
-          <LogOut className="mr-3 h-5 w-5" />
+          <i className="ph-sign-out mr-3 text-lg" />
           Sair
         </button>
       </div>
