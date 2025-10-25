@@ -118,6 +118,5 @@ export default defineConfig({
       '@tanstack/react-router',    // Client-side routing
       '@valorize/shared',          // Shared components package
     ],
-    force: true,
   },
 })
