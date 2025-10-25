@@ -13,7 +13,8 @@ import { RedemptionDetailsSkeleton } from '@/components/redemptions/RedemptionDe
 
 
 export const RedemptionDetailsPage: React.FC = () => {
-  const { redemptionId } = useParams({ strict: false })
+  const params = useParams({ strict: false })
+  const redemptionId = params.redemptionId as string | undefined
   const navigate = useNavigate()
   const { data: redemption, isLoading, error } = useRedemptionById(redemptionId)
   
@@ -33,6 +34,32 @@ export const RedemptionDetailsPage: React.FC = () => {
     from: { opacity: 0, transform: 'translateY(20px)' }, 
     to: { opacity: 1, transform: 'translateY(0px)' }, 
   })
+
+  // Check if redemptionId exists
+  if (!redemptionId) {
+    return (
+      <PageLayout maxWidth="6xl">
+        <div className="relative z-10 flex min-h-[60vh] items-center justify-center px-4 py-8">
+          <div className="w-full max-w-lg">
+            <ErrorState
+              title="Resgate não encontrado"
+              message="Não foi possível identificar o resgate. Por favor, tente acessar novamente pela lista de resgates."
+              icon="ph-bold ph-warning"
+            />
+            <div className="mt-4">
+              <Button
+                onClick={() => navigate({ to: '/resgates' })}
+                variant="outline"
+                className="w-full"
+              >
+                Voltar aos resgates
+              </Button>
+            </div>
+          </div>
+        </div>
+      </PageLayout>
+    )
+  }
 
   if (isLoading) {
     return <RedemptionDetailsSkeleton />
