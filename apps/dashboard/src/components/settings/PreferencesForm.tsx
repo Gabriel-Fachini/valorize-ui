@@ -30,7 +30,7 @@ export const PreferencesForm: React.FC = () => {
         <h3 className="text-md font-semibold mb-3 text-gray-900 dark:text-white">Acessibilidade</h3>
         <div className="grid sm:grid-cols-2 gap-4">
           {/* Tamanho da Fonte */}
-          <div className="p-4 rounded-xl border border-neutral-200 dark:border-neutral-700/40 bg-white/60 dark:bg-neutral-800/50">
+          <div className="p-4 rounded-xl border border-[#4a4a4a] dark:border-[#424242] bg-white/60 dark:bg-neutral-800/50">
             <div className="mb-2 font-medium text-gray-900 dark:text-white">Tamanho da fonte</div>
             <div className="flex flex-wrap gap-2">
               {(['sm', 'md', 'lg', 'xl'] as const).map(scale => (
@@ -38,9 +38,13 @@ export const PreferencesForm: React.FC = () => {
                   key={scale}
                   type="button"
                   onClick={() => setFontScale(scale)}
-                  variant={fontScale === scale ? 'default' : 'outline'}
+                  variant="ghost"
                   size="sm"
-                  className={fontScale === scale ? 'bg-green-600 hover:bg-green-700 text-white' : ''}
+                  className={
+                    fontScale === scale 
+                      ? 'bg-white dark:bg-neutral-900 text-gray-900 dark:text-white border border-[#4a4a4a] dark:border-[#424242] shadow-lg hover:bg-white/90 dark:hover:bg-neutral-900/90' 
+                      : 'bg-white/50 dark:bg-neutral-800/50 text-gray-700 dark:text-gray-300 border border-[#5a5a5a] dark:border-[#3a3a3a] hover:bg-white/70 dark:hover:bg-neutral-800/70'
+                  }
                   aria-pressed={fontScale === scale}
                   aria-current={fontScale === scale ? 'true' : 'false'}
                 >
@@ -51,14 +55,18 @@ export const PreferencesForm: React.FC = () => {
           </div>
 
           {/* Alto contraste */}
-          <div className="p-4 rounded-xl border border-neutral-200 dark:border-neutral-700/40 bg-white/60 dark:bg-neutral-800/50">
+          <div className="p-4 rounded-xl border border-[#4a4a4a] dark:border-[#3a3a3a] bg-white/60 dark:bg-neutral-800/50">
             <div className="mb-2 font-medium text-gray-900 dark:text-white">Alto contraste</div>
             <Button
               type="button"
               onClick={toggleHighContrast}
-              variant={highContrast ? 'default' : 'outline'}
+              variant="ghost"
               size="sm"
-              className={highContrast ? 'bg-green-600 hover:bg-green-700 text-white' : ''}
+              className={
+                highContrast 
+                  ? 'bg-white dark:bg-neutral-900 text-gray-900 dark:text-white border border-[#4a4a4a] dark:border-[#424242] shadow-lg hover:bg-white/90 dark:hover:bg-neutral-900/90' 
+                  : 'bg-white/50 dark:bg-neutral-800/50 text-gray-700 dark:text-gray-300 border border-[#5a5a5a] dark:border-[#3a3a3a] hover:bg-white/70 dark:hover:bg-neutral-800/70'
+              }
               aria-pressed={highContrast}
             >
               {highContrast ? 'Ativado' : 'Desativado'}
@@ -66,14 +74,18 @@ export const PreferencesForm: React.FC = () => {
           </div>
 
           {/* Reduzir animações */}
-          <div className="p-4 rounded-xl border border-neutral-200 dark:border-neutral-700/40 bg-white/60 dark:bg-neutral-800/50">
+          <div className="p-4 rounded-xl border border-[#4a4a4a] dark:border-[#3a3a3a] bg-white/60 dark:bg-neutral-800/50">
             <div className="mb-2 font-medium text-gray-900 dark:text-white">Reduzir animações</div>
             <Button
               type="button"
               onClick={toggleReduceMotion}
-              variant={reduceMotion ? 'default' : 'outline'}
+              variant="ghost"
               size="sm"
-              className={reduceMotion ? 'bg-green-600 hover:bg-green-700 text-white' : ''}
+              className={
+                reduceMotion 
+                  ? 'bg-white dark:bg-neutral-900 text-gray-900 dark:text-white border border-[#4a4a4a] dark:border-[#424242] shadow-lg hover:bg-white/90 dark:hover:bg-neutral-900/90' 
+                  : 'bg-white/50 dark:bg-neutral-800/50 text-gray-700 dark:text-gray-300 border border-[#5a5a5a] dark:border-[#3a3a3a] hover:bg-white/70 dark:hover:bg-neutral-800/70'
+              }
               aria-pressed={reduceMotion}
             >
               {reduceMotion ? 'Ativado' : 'Desativado'}
@@ -81,11 +93,13 @@ export const PreferencesForm: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-3">
+        <div className="mt-4">
           <Button
             type="button"
             onClick={resetDefaults}
-            variant="outline"
+            variant="ghost"
+            size="sm"
+            className="bg-white dark:bg-neutral-900 text-gray-900 dark:text-white border border-[#4a4a4a] dark:border-[#424242] shadow-lg hover:bg-white/90 dark:hover:bg-neutral-900/90"
           >
             Restaurar padrão
           </Button>

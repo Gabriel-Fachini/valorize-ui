@@ -3,7 +3,6 @@ import {
   ProfileForm, 
   PreferencesForm, 
   AddressTab, 
-  SettingsTourControl, 
   SettingsCard,
 } from '@/components/settings'
 import { AnimatedTabsList, PageHeader } from '@/components/ui'
@@ -11,19 +10,12 @@ import { PageLayout } from '@/components/layout/PageLayout'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { usePageEntrance } from '@/hooks/useAnimations'
 import { useSettingsTabs } from '@/hooks/useSettingsTabs'
-import { useCallback } from 'react'
 
 export const SettingsPage = () => {
   const { activeTab, tabItems, handleTabChange } = useSettingsTabs()
 
   // Animations
   const pageAnimation = usePageEntrance()
-
-  // Simple tour reset function for future use
-  const handleStartTour = useCallback(() => {
-    // TODO: Implement tour functionality when needed
-    console.log('Tour reset requested - functionality to be implemented')
-  }, [])
 
   return (
     <PageLayout maxWidth="7xl">
@@ -61,13 +53,7 @@ export const SettingsPage = () => {
               title="Preferências do Sistema"
               description="Personalize sua experiência no Valorize"
             >
-              <div className="space-y-6">
-                <PreferencesForm />
-                <SettingsTourControl
-                  hasCompletedOnboarding={false}
-                  onStartTour={handleStartTour}
-                />
-              </div>
+              <PreferencesForm />
             </SettingsCard>
           </TabsContent>
 

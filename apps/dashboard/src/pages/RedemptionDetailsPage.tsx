@@ -4,6 +4,7 @@ import { useRedemptionById } from '@/hooks/useRedemptions'
 import { useSpring, animated } from '@react-spring/web'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { Button } from '@/components/ui/button'
+import { BackButton } from '@/components/ui/BackButton'
 import { ErrorState } from '@/components/ui'
 import { useRedemptionCancellation } from '@/hooks/useRedemptionCancellation'
 import { RedemptionDetailsHero } from '@/components/redemptions/RedemptionDetailsHero'
@@ -99,17 +100,11 @@ export const RedemptionDetailsPage: React.FC = () => {
     <PageLayout maxWidth="6xl">
       <div className="relative z-10">
         <animated.div style={fadeIn} className="space-y-6">
-          {/* Back Button - React 19: Improved accessibility */}
-          <Button
-            onClick={() => navigate({ to: '/resgates' })}
-            size="lg"
-            variant="outline"
-            className="flex items-center gap-2"
-            aria-label="Voltar para a página de resgates"
-          >
-            <i className="ph-bold ph-arrow-left text-lg" aria-hidden="true" />
-            <span className="font-semibold">Voltar aos resgates</span>
-          </Button>
+          {/* Back Button */}
+          <BackButton 
+            onClick={() => navigate({ to: '/resgates' })} 
+            label="Voltar aos resgates"
+          />
 
           {/* Hero Card - Prize Information */}
           <RedemptionDetailsHero redemption={redemption} />
@@ -161,8 +156,8 @@ export const RedemptionDetailsPage: React.FC = () => {
                 disabled={!canCancel}
                 className={`w-full font-semibold ${
                   canCancel 
-                    ? 'text-red-600 dark:text-red-400 border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-950/30' 
-                    : 'text-gray-400 dark:text-gray-500 border-gray-300 dark:border-gray-600 cursor-not-allowed'
+                    ? 'bg-red-800/80 dark:bg-red-900/60 text-white border-red-800/80 dark:border-red-900/60 hover:bg-red-800 dark:hover:bg-red-900/80' 
+                    : 'bg-gray-100 dark:bg-neutral-800 text-gray-400 dark:text-gray-500 border-gray-300 dark:border-gray-600 cursor-not-allowed'
                 }`}
               >
                 <i className={`ph-bold ph-x-circle text-lg mr-2 ${canCancel ? '' : 'opacity-50'}`} />
