@@ -4,6 +4,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { useSidebar } from '@/hooks/useSidebar'
 import { useSpring, animated, config } from '@react-spring/web'
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -29,20 +30,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   // Mostrar loading enquanto verifica autenticação
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#1a1a1a]">
-        <div className="flex flex-col items-center space-y-6">
-          <div className="relative">
-            {/* Círculo animado com gradiente verde */}
-            <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
-            {/* Logo V centralizado */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-white font-bold text-4xl drop-shadow-lg">V</span>
-            </div>
-            {/* Anel externo animado */}
-            <div className="absolute inset-0 rounded-full border-4 border-green-400/30 animate-ping"></div>
-          </div>
-          <p className="text-gray-600 dark:text-gray-300 font-medium text-lg">Verificando autenticação...</p>
-        </div>
+      <div className="min-h-screen relative bg-white dark:bg-[#1a1a1a]">
+        <LoadingOverlay />
       </div>
     )
   }

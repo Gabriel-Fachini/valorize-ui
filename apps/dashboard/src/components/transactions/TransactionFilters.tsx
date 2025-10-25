@@ -6,13 +6,14 @@
 import { useState, useCallback } from 'react'
 import { animated, useSpring } from '@react-spring/web'
 import { Button } from '@/components/ui/button'
-import { FilterButtonGroup } from '@/components/ui/FilterButtonGroup'
+import { GenericTabsNavigation, useGenericTabs } from '@/components/ui'
 import type { 
   TransactionUIFilters, 
   ActivityFilter, 
   DirectionFilter, 
   TimePeriodFilter,
 } from '@/types'
+import type { TabItem } from '@/components/ui/GenericTabsNavigation'
 
 interface TransactionFiltersProps {
   filters: TransactionUIFilters
@@ -21,26 +22,7 @@ interface TransactionFiltersProps {
   className?: string
 }
 
-// Filter options
-const ACTIVITY_OPTIONS = [
-  { label: 'Todas', value: 'all' as ActivityFilter, icon: 'ph-bold ph-stack' },
-  { label: 'Elogios', value: 'praises' as ActivityFilter, icon: 'ph-bold ph-chat-circle-dots' },
-  { label: 'Prêmios', value: 'prizes' as ActivityFilter, icon: 'ph-bold ph-gift' },
-  { label: 'Sistema', value: 'system' as ActivityFilter, icon: 'ph-bold ph-gear' },
-]
-
-const DIRECTION_OPTIONS = [
-  { label: 'Ambos', value: 'both' as DirectionFilter, icon: 'ph-bold ph-swap' },
-  { label: 'Entrada', value: 'in' as DirectionFilter, icon: 'ph-bold ph-arrow-down-left' },
-  { label: 'Saída', value: 'out' as DirectionFilter, icon: 'ph-bold ph-arrow-up-right' },
-]
-
-const PERIOD_OPTIONS = [
-  { label: 'Hoje', value: 'today' as TimePeriodFilter, icon: 'ph-bold ph-calendar-blank' },
-  { label: 'Esta Semana', value: 'week' as TimePeriodFilter, icon: 'ph-bold ph-calendar-check' },
-  { label: 'Este Mês', value: 'month' as TimePeriodFilter, icon: 'ph-bold ph-calendar' },
-  { label: 'Personalizado', value: 'custom' as TimePeriodFilter, icon: 'ph-bold ph-calendar-dots' },
-]
+// Filter options (all converted to tabs)
 
 export const TransactionFilters = ({
   filters,
@@ -50,6 +32,100 @@ export const TransactionFilters = ({
 }: TransactionFiltersProps) => {
   const [showCustomDates, setShowCustomDates] = useState(filters.timePeriod === 'custom')
 
+  // Configuração das abas de Tipo de Atividade
+  const activityTabs: TabItem[] = [
+    {
+      value: 'all',
+      label: 'Todas',
+      icon: 'ph-stack',
+      'aria-label': 'Ver todas as atividades',
+    },
+    {
+      value: 'praises',
+      label: 'Elogios',
+      icon: 'ph-chat-circle-dots',
+      'aria-label': 'Ver apenas elogios',
+    },
+    {
+      value: 'prizes',
+      label: 'Prêmios',
+      icon: 'ph-gift',
+      'aria-label': 'Ver apenas prêmios',
+    },
+    {
+      value: 'system',
+      label: 'Sistema',
+      icon: 'ph-gear',
+      'aria-label': 'Ver apenas sistema',
+    },
+  ]
+
+  // Configuração das abas de Direção
+  const directionTabs: TabItem[] = [
+    {
+      value: 'both',
+      label: 'Ambos',
+      icon: 'ph-swap',
+      'aria-label': 'Ver entrada e saída',
+    },
+    {
+      value: 'in',
+      label: 'Entrada',
+      icon: 'ph-arrow-down-left',
+      'aria-label': 'Ver apenas entradas',
+    },
+    {
+      value: 'out',
+      label: 'Saída',
+      icon: 'ph-arrow-up-right',
+      'aria-label': 'Ver apenas saídas',
+    },
+  ]
+
+  // Configuração das abas de Período
+  const periodTabs: TabItem[] = [
+    {
+      value: 'today',
+      label: 'Hoje',
+      icon: 'ph-calendar-blank',
+      'aria-label': 'Ver transações de hoje',
+    },
+    {
+      value: 'week',
+      label: 'Esta Semana',
+      icon: 'ph-calendar-check',
+      'aria-label': 'Ver transações desta semana',
+    },
+    {
+      value: 'month',
+      label: 'Este Mês',
+      icon: 'ph-calendar',
+      'aria-label': 'Ver transações deste mês',
+    },
+    {
+      value: 'custom',
+      label: 'Personalizado',
+      icon: 'ph-calendar-dots',
+      'aria-label': 'Definir período personalizado',
+    },
+  ]
+
+  // Hooks para gerenciar as abas
+  const { activeTab: activeActivityTab, tabItems: activityTabItems, handleTabChange: handleActivityTabChange } = useGenericTabs({
+    tabs: activityTabs,
+    defaultTab: filters.activity,
+  })
+
+  const { activeTab: activeDirectionTab, tabItems: directionTabItems, handleTabChange: handleDirectionTabChange } = useGenericTabs({
+    tabs: directionTabs,
+    defaultTab: filters.direction,
+  })
+
+  const { activeTab: activePeriodTab, tabItems: periodTabItems, handleTabChange: handlePeriodTabChange } = useGenericTabs({
+    tabs: periodTabs,
+    defaultTab: filters.timePeriod,
+  })
+
   // Animation for custom date fields
   const customDateAnimation = useSpring({
     opacity: showCustomDates ? 1 : 0,
@@ -57,18 +133,24 @@ export const TransactionFilters = ({
     config: { tension: 300, friction: 30 },
   })
 
-  // Handle activity filter change
-  const handleActivityChange = useCallback((activity: ActivityFilter) => {
-    onFiltersChange({ ...filters, activity })
-  }, [filters, onFiltersChange])
 
-  // Handle direction filter change
-  const handleDirectionChange = useCallback((direction: DirectionFilter) => {
-    onFiltersChange({ ...filters, direction })
-  }, [filters, onFiltersChange])
+  // Handle activity tab change
+  const handleActivityTabChangeWithCallback = useCallback((value: string) => {
+    handleActivityTabChange(value)
+    onFiltersChange({ ...filters, activity: value as ActivityFilter })
+  }, [filters, onFiltersChange, handleActivityTabChange])
 
-  // Handle time period change
-  const handleTimePeriodChange = useCallback((timePeriod: TimePeriodFilter) => {
+  // Handle direction tab change
+  const handleDirectionTabChangeWithCallback = useCallback((value: string) => {
+    handleDirectionTabChange(value)
+    onFiltersChange({ ...filters, direction: value as DirectionFilter })
+  }, [filters, onFiltersChange, handleDirectionTabChange])
+
+  // Handle period tab change
+  const handlePeriodTabChangeWithCallback = useCallback((value: string) => {
+    handlePeriodTabChange(value)
+    const timePeriod = value as TimePeriodFilter
+    
     if (timePeriod === 'custom') {
       setShowCustomDates(true)
     } else {
@@ -79,7 +161,8 @@ export const TransactionFilters = ({
         customDateRange: undefined,
       })
     }
-  }, [filters, onFiltersChange])
+  }, [filters, onFiltersChange, handlePeriodTabChange])
+
 
   // Handle custom date range change
   const handleCustomDateChange = useCallback((field: 'from' | 'to', value: string) => {
@@ -111,32 +194,47 @@ export const TransactionFilters = ({
 
   return (
     <div className={`space-y-6 ${className}`}>
-      {/* Activity Filter */}
-      <FilterButtonGroup
-        label="Tipo de Atividade"
-        options={ACTIVITY_OPTIONS}
-        value={filters.activity}
-        onChange={handleActivityChange}
-        disabled={loading}
-      />
+      {/* Activity Filter Tabs */}
+      <div className="space-y-3">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Tipo de Atividade
+        </label>
+        <GenericTabsNavigation
+          items={activityTabItems}
+          activeTab={activeActivityTab}
+          onChange={handleActivityTabChangeWithCallback}
+          variant="compact"
+          data-tour="transaction-activity-tabs"
+        />
+      </div>
 
-      {/* Direction Filter */}
-      <FilterButtonGroup
-        label="Direção do Fluxo"
-        options={DIRECTION_OPTIONS}
-        value={filters.direction}
-        onChange={handleDirectionChange}
-        disabled={loading}
-      />
+      {/* Direction Filter Tabs */}
+      <div className="space-y-3">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Direção do Fluxo
+        </label>
+        <GenericTabsNavigation
+          items={directionTabItems}
+          activeTab={activeDirectionTab}
+          onChange={handleDirectionTabChangeWithCallback}
+          variant="compact"
+          data-tour="transaction-direction-tabs"
+        />
+      </div>
 
-      {/* Period Filter */}
-      <FilterButtonGroup
-        label="Período"
-        options={PERIOD_OPTIONS}
-        value={filters.timePeriod}
-        onChange={handleTimePeriodChange}
-        disabled={loading}
-      />
+      {/* Period Filter Tabs */}
+      <div className="space-y-3">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Período
+        </label>
+        <GenericTabsNavigation
+          items={periodTabItems}
+          activeTab={activePeriodTab}
+          onChange={handlePeriodTabChangeWithCallback}
+          variant="compact"
+          data-tour="transaction-period-tabs"
+        />
+      </div>
 
       {/* Custom Date Range */}
       {showCustomDates && (

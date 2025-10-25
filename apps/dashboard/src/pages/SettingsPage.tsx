@@ -3,27 +3,44 @@ import {
   ProfileForm, 
   PreferencesForm, 
   AddressTab, 
-  SettingsTourControl, 
   SettingsCard,
 } from '@/components/settings'
-import { AnimatedTabsList, PageHeader } from '@/components/ui'
+import { GenericTabsNavigation, PageHeader, useGenericTabs } from '@/components/ui'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { usePageEntrance } from '@/hooks/useAnimations'
-import { useSettingsTabs } from '@/hooks/useSettingsTabs'
-import { useCallback } from 'react'
+import type { TabItem } from '@/components/ui/GenericTabsNavigation'
 
 export const SettingsPage = () => {
-  const { activeTab, tabItems, handleTabChange } = useSettingsTabs()
+  // Define tabs configuration
+  const settingsTabs: TabItem[] = [
+    {
+      value: 'profile',
+      label: 'Perfil',
+      icon: 'ph-user',
+      'aria-label': 'Aba de perfil',
+    },
+    {
+      value: 'preferences',
+      label: 'Preferências',
+      icon: 'ph-sliders',
+      'aria-label': 'Aba de preferências',
+    },
+    {
+      value: 'addresses',
+      label: 'Endereços',
+      icon: 'ph-map-pin',
+      'aria-label': 'Aba de endereços',
+    },
+  ]
+
+  const { activeTab, tabItems, handleTabChange } = useGenericTabs({
+    tabs: settingsTabs,
+    defaultTab: 'profile',
+  })
 
   // Animations
   const pageAnimation = usePageEntrance()
-
-  // Simple tour reset function for future use
-  const handleStartTour = useCallback(() => {
-    // TODO: Implement tour functionality when needed
-    console.log('Tour reset requested - functionality to be implemented')
-  }, [])
 
   return (
     <PageLayout maxWidth="7xl">
@@ -36,7 +53,7 @@ export const SettingsPage = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <AnimatedTabsList
+          <GenericTabsNavigation
             items={tabItems}
             activeTab={activeTab}
             onChange={handleTabChange}
@@ -61,13 +78,7 @@ export const SettingsPage = () => {
               title="Preferências do Sistema"
               description="Personalize sua experiência no Valorize"
             >
-              <div className="space-y-6">
-                <PreferencesForm />
-                <SettingsTourControl
-                  hasCompletedOnboarding={false}
-                  onStartTour={handleStartTour}
-                />
-              </div>
+              <PreferencesForm />
             </SettingsCard>
           </TabsContent>
 

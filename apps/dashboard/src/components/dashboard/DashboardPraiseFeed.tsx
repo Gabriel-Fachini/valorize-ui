@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
+import { GenericTabsNavigation, useGenericTabs } from '@/components/ui'
 import { SkeletonPraiseCard } from '@/components/praises/SkeletonPraiseCard'
 import { PraiseCard } from '@/components/praises/PraiseCard'
 import { usePraisesData } from '@/hooks/usePraisesData'
+import type { TabItem } from '@/components/ui/GenericTabsNavigation'
 
 interface DashboardPraiseFeedProps {
   limit?: number
@@ -15,9 +17,41 @@ export const DashboardPraiseFeed = ({ limit = 10, className = '' }: DashboardPra
   const { praises, loading, actions } = usePraisesData()
   const [localFilter, setLocalFilter] = useState<'all' | 'sent' | 'received'>('all')
 
+  // Configuração das abas de filtro
+  const praiseFilterTabs: TabItem[] = [
+    {
+      value: 'all',
+      label: 'Todos',
+      icon: 'ph-list',
+      'aria-label': 'Ver todos os elogios',
+    },
+    {
+      value: 'sent',
+      label: 'Enviados',
+      icon: 'ph-arrow-up',
+      'aria-label': 'Ver elogios enviados',
+    },
+    {
+      value: 'received',
+      label: 'Recebidos',
+      icon: 'ph-arrow-down',
+      'aria-label': 'Ver elogios recebidos',
+    },
+  ]
+
+  const { activeTab, tabItems, handleTabChange } = useGenericTabs({
+    tabs: praiseFilterTabs,
+    defaultTab: localFilter,
+  })
+
   const handleFilterChange = (filter: 'all' | 'sent' | 'received') => {
     setLocalFilter(filter)
     actions.setFilter(filter)
+  }
+
+  const handleTabChangeWithCallback = (value: string) => {
+    handleTabChange(value)
+    handleFilterChange(value as 'all' | 'sent' | 'received')
   }
 
   const filteredPraises = praises.slice(0, limit)
@@ -53,32 +87,15 @@ export const DashboardPraiseFeed = ({ limit = 10, className = '' }: DashboardPra
 
   return (
     <div className={className}>
-      {/* Filter Buttons */}
-      <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
-        <Button
-          variant={localFilter === 'all' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => handleFilterChange('all')}
-          className="whitespace-nowrap"
-        >
-          Todos
-        </Button>
-        <Button
-          variant={localFilter === 'sent' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => handleFilterChange('sent')}
-          className="whitespace-nowrap"
-        >
-          Enviados
-        </Button>
-        <Button
-          variant={localFilter === 'received' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => handleFilterChange('received')}
-          className="whitespace-nowrap"
-        >
-          Recebidos
-        </Button>
+      {/* Filter Tabs */}
+      <div className="mb-6">
+        <GenericTabsNavigation
+          items={tabItems}
+          activeTab={activeTab}
+          onChange={handleTabChangeWithCallback}
+          variant="compact"
+          data-tour="dashboard-praises-filter-tabs"
+        />
       </div>
 
       {/* Praises Feed */}

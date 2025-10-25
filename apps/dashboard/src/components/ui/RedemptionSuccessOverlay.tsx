@@ -25,32 +25,30 @@ const RedemptionSuccessContent = memo(({
 
   return (
     <div className="flex flex-col items-center bg-white/90 dark:bg-[#262626]/90 backdrop-blur-sm rounded-2xl p-8 shadow-lg space-y-8 py-8 max-w-xl w-full">
-      {/* Animation Section - Gigantic Center */}
-      <div className="w-96 h-96 flex items-center justify-center">
-        <div className="relative w-full h-full">
-          {/* Confetti Animation - Background */}
-          <div className="absolute inset-0 z-10">
-            <LottieAnimation
-              path="/animations/confetti.json"
-              loop={true}
-              autoplay={true}
-              speed={1}
-              scale={1.2}
-              className="w-full h-full"
-            />
-          </div>
-          
-          {/* Gift Animation - Center, Gigantic */}
-          <div className="absolute inset-0 z-20 flex items-center justify-center">
-            <LottieAnimation
-              path="/animations/gift.json"
-              loop={true}
-              autoplay={true}
-              speed={1}
-              scale={8.2}
-              className="w-full h-full"
-            />
-          </div>
+      {/* Animation Section - 8x Larger Gift */}
+      <div className="w-[312px] h-[312px] flex items-center justify-center relative">
+        {/* Confetti Animation - Full Background Coverage */}
+        <div className="absolute inset-0 z-10">
+          <LottieAnimation
+            path="/animations/confetti.json"
+            loop={true}
+            autoplay={true}
+            speed={1}
+            scale={1.4}
+            className="w-full h-full"
+          />
+        </div>
+        
+        {/* Gift Animation - 8x Larger (768px = 96px base * 8) */}
+        <div className="absolute inset-0 z-20 flex items-center justify-center">
+          <LottieAnimation
+            path="/animations/gift.json"
+            loop={true}
+            autoplay={true}
+            speed={1}
+            scale={1}
+            className="w-full h-full"
+          />
         </div>
       </div>
       

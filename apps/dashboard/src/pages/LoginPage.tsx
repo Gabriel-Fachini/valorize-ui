@@ -16,7 +16,7 @@ export const LoginPage = () => {
       <LoginIllustrationPanel />
       
       {states.isLoading && (
-        <LoadingOverlay message="Autenticando..." />
+        <LoadingOverlay />
       )}
     </div>
   )

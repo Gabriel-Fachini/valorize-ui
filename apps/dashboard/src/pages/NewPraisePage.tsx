@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect, useMemo, useCallback, memo } from 'react'
-import { useSearch, Navigate } from '@tanstack/react-router'
+import { useSearch, Navigate, useNavigate } from '@tanstack/react-router'
 import { animated } from '@react-spring/web'
 import { useAuth } from '@/hooks/useAuth'
 import { usePraisesData, type PraiseUser, type PraiseCompanyValue } from '@/hooks/usePraisesData'
@@ -41,7 +41,8 @@ const MemoizedConfirmationStep = memo(ConfirmationStep)
 
 export const NewPraisePage = () => {
   // URL search parameters for pre-selecting users
-  const searchParams = useSearch({ strict: false }) as { userId?: string }
+  const searchParams = useSearch({ from: '/elogios/novo' }) as { userId?: string }
+  const navigate = useNavigate()
   
   // Authentication state - critical for preventing race conditions
   const { user, isLoading: authLoading } = useAuth()
@@ -62,6 +63,7 @@ export const NewPraisePage = () => {
     cancelForm,
     submitForm,
     updateFormValue,
+    resetForm,
   } = useNewPraiseForm()
 
   // Step information for progress tracking
@@ -150,17 +152,38 @@ export const NewPraisePage = () => {
     setSearchQuery(query)
   }, [])
 
+  // Success modal handlers
+  const handleNewPraise = useCallback(() => {
+    resetForm()
+    // Navigate to clear URL params to prevent re-triggering the useEffect
+    navigate({ 
+      to: '/elogios/novo',
+      search: {},
+    })
+  }, [resetForm, navigate])
+
+  const handleGoHome = useCallback(() => {
+    navigate({ to: '/' })
+  }, [navigate])
+
   // URL parameter handling for pre-selecting users
   // Automatically selects user and advances to next step if userId is in URL
   useEffect(() => {
-    if (searchParams?.userId && users.length > 0 && !formData.userId) {
+    // Only process URL params if:
+    // 1. userId exists in URL
+    // 2. Users are loaded
+    // 3. Form doesn't already have a userId selected
+    // 4. We're on step 0 (to prevent advancing from wrong steps)
+    if (searchParams?.userId && users.length > 0 && !formData.userId && currentStep === 0) {
       const preSelectedUser = users.find(u => u.id === searchParams.userId)
+      
       if (preSelectedUser) {
         updateFormValue('userId', preSelectedUser.id)
-        // Move to next step (Value selection)
-        if (currentStep === 0) {
+        
+        // Use a small delay to ensure state is updated before advancing
+        setTimeout(() => {
           goToNextStep()
-        }
+        }, 100)
       }
     }
   }, [searchParams?.userId, users, formData.userId, currentStep, updateFormValue, goToNextStep])
@@ -382,6 +405,8 @@ export const NewPraisePage = () => {
           valueName={selectedValue?.name}
           valueIcon={selectedValue?.icon}
           valueColor={selectedValue?.color}
+          onNewPraise={handleNewPraise}
+          onGoHome={handleGoHome}
         />
       </animated.div>
     </PageLayout>

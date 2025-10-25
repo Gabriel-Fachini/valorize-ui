@@ -20,13 +20,13 @@ export const MobileHeader = () => {
 
       {/* Mobile Header */}
       <header 
-        className="sticky top-0 z-50 flex h-16 items-center justify-between bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-xl backdrop-saturate-150 border-b border-gray-200 dark:border-gray-900/50 px-4 lg:hidden shadow-lg shadow-black/5 dark:shadow-black/20"
+        className="sticky top-0 z-50 flex h-16 items-center justify-between bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-xl backdrop-saturate-150 border-b border-gray-200 dark:border-[#242424] px-4 lg:hidden shadow-lg shadow-black/5 dark:shadow-black/20"
         role="banner"
       >
         <div className="flex items-center gap-3">
           <button
             onClick={handleMenuClick}
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-gray-700 bg-gray-100 dark:bg-[#171717] dark:text-gray-200 hover:scale-105 active:scale-95 transition-all duration-300 border border-gray-200 dark:border-gray-600/30 shadow-lg shadow-black/5 dark:shadow-black/20"
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-gray-700 bg-gray-100 dark:bg-[#171717] dark:text-gray-200 hover:scale-105 active:scale-95 transition-all duration-300 border border-gray-200 dark:border-[#242424] shadow-lg shadow-black/5 dark:shadow-black/20"
             aria-label="Abrir menu de navegação"
             aria-expanded={mobileSidebarOpen}
             aria-controls="mobile-sidebar"

@@ -4,8 +4,9 @@
  */
 
 import { useMemo, useState } from 'react'
-import { animated } from '@react-spring/web'
+import { animated, useSpring, config } from '@react-spring/web'
 import type { Transaction, TransactionDisplayInfo } from '@/types'
+import { mapTransactionReason } from '@helpers/transactionReasonMapper'
 
 interface TransactionCardProps {
   transaction: Transaction
@@ -15,7 +16,7 @@ interface TransactionCardProps {
 
 // Transaction type configuration with Phosphor icons
 const getTransactionDisplayInfo = (transaction: Transaction): TransactionDisplayInfo => {
-  const { transactionType, balanceType, reason } = transaction
+  const { transactionType, balanceType, reason, metadata } = transaction
 
   // Determine icon and color based on transaction type
   const baseInfo = {
@@ -47,56 +48,19 @@ const getTransactionDisplayInfo = (transaction: Transaction): TransactionDisplay
 
   const typeInfo = baseInfo[transactionType]
   
-  // Determine transaction source based on reason and balance type
-  let sourceIcon = 'ph-circle'
-  let sourceLabel = 'Sistema'
-  let sourceBgColor = 'bg-gray-100 dark:bg-gray-800/50'
-  let sourceIconColor = 'text-gray-600 dark:text-gray-400'
-  
-  const reasonLower = (reason || '').toLowerCase()
-  
-  // Check for prize-related transactions
-  if (reasonLower.includes('prize') || reasonLower.includes('prêmio') || reasonLower.includes('redemption') || reasonLower.includes('resgate')) {
-    sourceIcon = 'ph-gift'
-    sourceLabel = 'Prêmio'
-    sourceBgColor = 'bg-purple-100 dark:bg-purple-900/20'
-    sourceIconColor = 'text-purple-600 dark:text-purple-400'
-  }
-  // Check for compliment-related transactions
-  else if (reasonLower.includes('compliment') || reasonLower.includes('elogio') || balanceType === 'COMPLIMENT') {
-    sourceIcon = 'ph-heart'
-    sourceLabel = 'Elogio'
-    sourceBgColor = 'bg-pink-100 dark:bg-pink-900/20'
-    sourceIconColor = 'text-pink-600 dark:text-pink-400'
-  }
-  // System transactions (admin, monthly allowance, reset, etc.)
-  else {
-    sourceIcon = 'ph-gear'
-    sourceLabel = 'Sistema'
-    sourceBgColor = 'bg-blue-100 dark:bg-blue-900/20'
-    sourceIconColor = 'text-blue-600 dark:text-blue-400'
-  }
-  
-  // Generate title based on transaction type and reason
-  let title = reason || 'Transação'
-  if (transactionType === 'CREDIT') {
-    title = reason || (balanceType === 'COMPLIMENT' ? 'Moedas Recebidas' : 'Saldo Adicionado')
-  } else if (transactionType === 'DEBIT') {
-    title = reason || (balanceType === 'COMPLIMENT' ? 'Elogio Enviado' : 'Resgate Realizado')
-  } else if (transactionType === 'RESET') {
-    title = reason || 'Reset Semanal'
-  }
+  // Use the mapper to get translated and simplified reason with contextual details
+  const reasonInfo = mapTransactionReason(reason, transactionType, balanceType, metadata)
 
   const balanceTypeLabel = balanceType === 'COMPLIMENT' ? 'Moedas para Elogiar' : 'Moedas para Resgatar'
   
   return {
     ...typeInfo,
-    title,
+    title: reasonInfo.title,
     description: balanceTypeLabel,
-    sourceIcon,
-    sourceLabel,
-    sourceBgColor,
-    sourceIconColor,
+    sourceIcon: reasonInfo.sourceIcon,
+    sourceLabel: reasonInfo.sourceLabel,
+    sourceBgColor: reasonInfo.sourceBgColor,
+    sourceIconColor: reasonInfo.sourceIconColor,
   }
 }
 
@@ -107,6 +71,34 @@ export const TransactionCard = ({
 }: TransactionCardProps) => {
   const [showDetails, setShowDetails] = useState(false)
   const displayInfo = useMemo(() => getTransactionDisplayInfo(transaction), [transaction])
+  
+  // Animação complexa de abertura/fechamento dos detalhes
+  // Solução para animação 100% fluída: combinar maxHeight + opacity
+  const detailsAnimation = useSpring({
+    maxHeight: showDetails ? '150px' : '0px',
+    opacity: showDetails ? 1 : 0,
+    marginTop: showDetails ? '16px' : '0px',
+    paddingTop: showDetails ? '16px' : '0px',
+    config: {
+      ...config.gentle,
+      clamp: true, // Previne overshoot
+    },
+  })
+  
+  // Animação do ícone de expansão
+  const iconAnimation = useSpring({
+    transform: showDetails ? 'rotate(180deg)' : 'rotate(0deg)',
+    config: config.gentle,
+  })
+  
+  // Animação do container principal ao expandir
+  const cardAnimation = useSpring({
+    transform: showDetails ? 'scale(1.02)' : 'scale(1)',
+    boxShadow: showDetails 
+      ? '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+      : '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+    config: config.gentle,
+  })
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -124,7 +116,7 @@ export const TransactionCard = ({
 
   return (
     <animated.div 
-      style={style}
+      style={{ ...cardAnimation, ...style }}
       className={`
         group
         bg-white dark:bg-[#262626] 
@@ -195,8 +187,13 @@ export const TransactionCard = ({
       </div>
       
       {/* Expandable Balance Details */}
-      {showDetails && (
-        <div className="mt-4 pt-4 border-t border-gray-200/50 dark:border-gray-700/50 space-y-2">
+      <animated.div 
+        style={{
+          ...detailsAnimation,
+          overflow: 'hidden',
+        }}
+      >
+        <div className="border-t border-gray-200/50 dark:border-gray-700/50 space-y-2 pt-4">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2">
               <i className="ph-bold ph-arrow-bend-left-up text-base"></i>
@@ -217,14 +214,14 @@ export const TransactionCard = ({
             </span>
           </div>
         </div>
-      )}
+      </animated.div>
       
       {/* Expand indicator */}
       <div className="flex justify-center mt-3">
-        <i className={`
-          ph-bold ${showDetails ? 'ph-caret-up' : 'ph-caret-down'} 
-          text-gray-400 dark:text-gray-500 text-sm
-        `}></i>
+        <animated.i 
+          style={iconAnimation}
+          className="ph-bold ph-caret-down text-gray-400 dark:text-gray-500 text-sm"
+        />
       </div>
     </animated.div>
   )
