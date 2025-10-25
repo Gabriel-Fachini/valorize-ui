@@ -2,7 +2,9 @@ import { animated } from '@react-spring/web'
 import { PraiseCard } from './PraiseCard'
 import { SkeletonPraiseCard } from './SkeletonPraiseCard'
 import { EmptyState } from './EmptyState'
+import { GenericTabsNavigation, useGenericTabs } from '@/components/ui'
 import type { PraiseData } from '@/hooks/usePraisesData'
+import type { TabItem } from '@/components/ui/GenericTabsNavigation'
 
 interface PraiseFeedProps {
   praises: PraiseData[]
@@ -25,43 +27,53 @@ export const PraiseFeed = ({
   onFilterChange,
   loading = false,
 }: PraiseFeedProps) => {
+  // Configuração das abas de filtro
+  const praiseFilterTabs: TabItem[] = [
+    {
+      value: 'all',
+      label: 'Todos',
+      icon: 'ph-list',
+      'aria-label': 'Ver todos os elogios',
+    },
+    {
+      value: 'received',
+      label: 'Recebidos',
+      icon: 'ph-arrow-down',
+      'aria-label': 'Ver elogios recebidos',
+    },
+    {
+      value: 'sent',
+      label: 'Enviados',
+      icon: 'ph-arrow-up',
+      'aria-label': 'Ver elogios enviados',
+    },
+  ]
+
+  const { activeTab, tabItems, handleTabChange } = useGenericTabs({
+    tabs: praiseFilterTabs,
+    defaultTab: currentFilter,
+  })
+
+  // Sincronizar com o filtro externo
+  const handleTabChangeWithCallback = (value: string) => {
+    handleTabChange(value)
+    onFilterChange?.(value as 'all' | 'sent' | 'received')
+  }
+
   return (
     <animated.div style={feedSectionAnimation} className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
         <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
           Feed de Reconhecimentos
         </h2>
-        <animated.div style={filterAnimation} className="flex flex-wrap gap-2 sm:space-x-2">
-          <button 
-            onClick={() => onFilterChange?.('all')}
-            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 transition-all duration-200 ${
-              currentFilter === 'all'
-                ? 'bg-primary-100 dark:bg-primary-900/40 border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300'
-                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-gray-200 dark:border-neutral-500 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80 hover:border-gray-300 dark:hover:border-neutral-400'
-            }`}
-          >
-            Todos
-          </button>
-          <button 
-            onClick={() => onFilterChange?.('received')}
-            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 transition-all duration-200 ${
-              currentFilter === 'received'
-                ? 'bg-primary-100 dark:bg-primary-900/40 border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300'
-                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-gray-200 dark:border-neutral-500 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80 hover:border-gray-300 dark:hover:border-neutral-400'
-            }`}
-          >
-            Recebidos
-          </button>
-          <button 
-            onClick={() => onFilterChange?.('sent')}
-            className={`px-3 py-2 sm:px-4 sm:py-2 backdrop-blur-sm border rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium hover:scale-105 transition-all duration-200 ${
-              currentFilter === 'sent'
-                ? 'bg-primary-100 dark:bg-primary-900/40 border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300'
-                : 'bg-white/60 dark:bg-[#2a2a2a]/60 border-gray-200 dark:border-neutral-500 text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-[#353535]/80 hover:border-gray-300 dark:hover:border-neutral-400'
-            }`}
-          >
-            Enviados
-          </button>
+        <animated.div style={filterAnimation}>
+          <GenericTabsNavigation
+            items={tabItems}
+            activeTab={activeTab}
+            onChange={handleTabChangeWithCallback}
+            variant="compact"
+            data-tour="praises-filter-tabs"
+          />
         </animated.div>
       </div>
 

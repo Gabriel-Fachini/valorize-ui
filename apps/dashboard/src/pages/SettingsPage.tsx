@@ -5,14 +5,39 @@ import {
   AddressTab, 
   SettingsCard,
 } from '@/components/settings'
-import { AnimatedTabsList, PageHeader } from '@/components/ui'
+import { GenericTabsNavigation, PageHeader, useGenericTabs } from '@/components/ui'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { usePageEntrance } from '@/hooks/useAnimations'
-import { useSettingsTabs } from '@/hooks/useSettingsTabs'
+import type { TabItem } from '@/components/ui/GenericTabsNavigation'
 
 export const SettingsPage = () => {
-  const { activeTab, tabItems, handleTabChange } = useSettingsTabs()
+  // Define tabs configuration
+  const settingsTabs: TabItem[] = [
+    {
+      value: 'profile',
+      label: 'Perfil',
+      icon: 'ph-user',
+      'aria-label': 'Aba de perfil',
+    },
+    {
+      value: 'preferences',
+      label: 'Preferências',
+      icon: 'ph-sliders',
+      'aria-label': 'Aba de preferências',
+    },
+    {
+      value: 'addresses',
+      label: 'Endereços',
+      icon: 'ph-map-pin',
+      'aria-label': 'Aba de endereços',
+    },
+  ]
+
+  const { activeTab, tabItems, handleTabChange } = useGenericTabs({
+    tabs: settingsTabs,
+    defaultTab: 'profile',
+  })
 
   // Animations
   const pageAnimation = usePageEntrance()
@@ -28,7 +53,7 @@ export const SettingsPage = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <AnimatedTabsList
+          <GenericTabsNavigation
             items={tabItems}
             activeTab={activeTab}
             onChange={handleTabChange}

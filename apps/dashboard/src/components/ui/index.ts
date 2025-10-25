@@ -31,6 +31,8 @@ export { ErrorState } from './ErrorState'
 export { SearchInput } from './SearchInput'
 export { AnimatedList } from './AnimatedList'
 export { AnimatedTabsList } from './AnimatedTabsList'
+export { GenericTabsNavigation } from './GenericTabsNavigation'
+export { useGenericTabs } from '../../hooks/useGenericTabs'
 
 // Alert components
 export { Alert, AlertIcon, AlertTitle, AlertDescription } from './alert'
