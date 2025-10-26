@@ -3,6 +3,7 @@ import { createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/re
 import { DashboardOverview } from '@components/dashboard/DashboardOverview'
 import { RootComponent } from '@components/RootComponent'
 import { ProtectedRoute } from '@components/ProtectedRoute'
+import { LoginPage } from '@pages/LoginPage'
 
 // Create a root route
 const rootRoute = createRootRoute({
@@ -20,7 +21,14 @@ const protectedLayoutRoute = createRoute({
   ),
 })
 
-// Create an index route (dashboard)
+// Login route (not protected)
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/login',
+  component: LoginPage,
+})
+
+// Create an index route (dashboard) - protected
 const indexRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/',
@@ -29,12 +37,13 @@ const indexRoute = createRoute({
 
 // Create the route tree
 const routeTree = rootRoute.addChildren([
+  loginRoute,
   protectedLayoutRoute.addChildren([
     indexRoute,
   ]),
 ])
 
-// Create a new router instance
+// Create the router
 export const router = createRouter({ routeTree })
 
 // Register the router instance for type safety
