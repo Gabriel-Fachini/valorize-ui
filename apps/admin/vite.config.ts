@@ -4,7 +4,7 @@ import compression from 'vite-plugin-compression'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
-// Vite configuration - https://vite.dev/config/
+// Vite configuration for Admin Dashboard - https://vite.dev/config/
 export default defineConfig({
   // ============================
   // PLUGINS CONFIGURATION
@@ -40,7 +40,7 @@ export default defineConfig({
   // DEVELOPMENT SERVER CONFIG
   // ============================
   server: {
-    port: 3000,                    // Development server port (React standard)
+    port: 3001,                    // Admin dashboard port (different from dashboard)
     open: true,                    // Automatically open browser on server start
     cors: true,                    // Enable CORS for cross-origin requests
     

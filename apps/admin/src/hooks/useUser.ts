@@ -5,8 +5,18 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from './useAuth'
-import { getUserBalance } from '@/services/compliments'
-import type { UserBalance } from '@/types'
+
+// Mock types for admin app - these should be replaced with actual types
+interface UserBalance {
+  complimentBalance: number
+  redeemableBalance: number
+}
+
+// Mock service function - this should be replaced with actual service
+const getUserBalance = async (): Promise<UserBalance> => {
+  // Mock implementation for admin app
+  return { complimentBalance: 0, redeemableBalance: 0 }
+}
 
 /**
  * Hook para gerenciar dados do usuário
@@ -26,8 +36,8 @@ export const useUser = () => {
       return await getUserBalance()
     },
     enabled: !!user,
-    staleTime: 2 * 60 * 1000, // 2 minutes
-    gcTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 2 * 60 * 1000, // 2 minutos - mais agressivo para saldos
+    gcTime: 5 * 60 * 1000, // 5 minutos
     refetchOnWindowFocus: false,
     retry: 2,
   })
