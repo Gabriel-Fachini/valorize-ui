@@ -1,31 +1,38 @@
 import { createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router'
 // import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { AdminLayout } from '@components/layout/AdminLayout'
 import { DashboardOverview } from '@components/dashboard/DashboardOverview'
+import { RootComponent } from '@components/RootComponent'
+import { ProtectedRoute } from '@components/ProtectedRoute'
 
 // Create a root route
 const rootRoute = createRootRoute({
+  component: RootComponent,
+})
+
+// Protected layout route that persists across protected pages
+const protectedLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: 'protected',
   component: () => (
-    <>
-      <div className="min-h-screen bg-background">
-        <AdminLayout>
-          <Outlet />
-        </AdminLayout>
-      </div>
-      {/* <TanStackRouterDevtools /> */}
-    </>
+    <ProtectedRoute>
+      <Outlet />
+    </ProtectedRoute>
   ),
 })
 
-// Create an index route
+// Create an index route (dashboard)
 const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => protectedLayoutRoute,
   path: '/',
   component: DashboardOverview,
 })
 
 // Create the route tree
-const routeTree = rootRoute.addChildren([indexRoute])
+const routeTree = rootRoute.addChildren([
+  protectedLayoutRoute.addChildren([
+    indexRoute,
+  ]),
+])
 
 // Create a new router instance
 export const router = createRouter({ routeTree })

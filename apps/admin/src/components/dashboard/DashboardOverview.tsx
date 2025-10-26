@@ -1,3 +1,5 @@
+import { ThemeToggle } from '@/components/ThemeToggle'
+
 const stats = [
   {
     name: 'Total de Usuários',
@@ -32,11 +34,14 @@ const stats = [
 export function DashboardOverview() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Visão geral do sistema Valorize
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard Admin</h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Visão geral do sistema Valorize
+          </p>
+        </div>
+        <ThemeToggle />
       </div>
 
       {/* Stats Grid */}
@@ -44,24 +49,24 @@ export function DashboardOverview() {
         {stats.map((stat) => (
           <div
             key={stat.name}
-            className="bg-card border border-border rounded-lg p-6"
+            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   {stat.name}
                 </p>
-                <p className="text-2xl font-bold text-foreground">
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
                   {stat.value}
                 </p>
               </div>
               <div className="flex items-center space-x-2">
-                <i className={`${stat.icon} h-8 w-8 text-primary`} />
+                <i className={`ph-bold ${stat.icon} h-8 w-8 text-primary-500`} />
                 <span
                   className={`text-sm font-medium ${
                     stat.changeType === 'positive'
-                      ? 'text-green-600'
-                      : 'text-red-600'
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-red-600 dark:text-red-400'
                   }`}
                 >
                   {stat.change}
@@ -74,18 +79,18 @@ export function DashboardOverview() {
 
       {/* Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card border border-border rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Atividade Recente
           </h3>
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
               <div className="flex-1">
-                <p className="text-sm text-foreground">
+                <p className="text-sm text-gray-900 dark:text-white">
                   Novo usuário cadastrado
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   há 2 minutos
                 </p>
               </div>
@@ -93,10 +98,10 @@ export function DashboardOverview() {
             <div className="flex items-center space-x-3">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               <div className="flex-1">
-                <p className="text-sm text-foreground">
+                <p className="text-sm text-gray-900 dark:text-white">
                   Transação processada
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   há 5 minutos
                 </p>
               </div>
@@ -104,10 +109,10 @@ export function DashboardOverview() {
             <div className="flex items-center space-x-3">
               <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
               <div className="flex-1">
-                <p className="text-sm text-foreground">
+                <p className="text-sm text-gray-900 dark:text-white">
                   Sistema atualizado
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   há 1 hora
                 </p>
               </div>
@@ -115,32 +120,32 @@ export function DashboardOverview() {
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Estatísticas Rápidas
           </h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 Usuários Ativos Hoje
               </span>
-              <span className="text-sm font-medium text-foreground">
+              <span className="text-sm font-medium text-gray-900 dark:text-white">
                 1,234
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 Transações Hoje
               </span>
-              <span className="text-sm font-medium text-foreground">
+              <span className="text-sm font-medium text-gray-900 dark:text-white">
                 567
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 Receita Hoje
               </span>
-              <span className="text-sm font-medium text-foreground">
+              <span className="text-sm font-medium text-gray-900 dark:text-white">
                 R$ 12,345
               </span>
             </div>
