@@ -1,4 +1,8 @@
-export const LoginHeader = () => {
+interface LoginHeaderProps {
+  isRegisterMode?: boolean
+}
+
+export const LoginHeader = ({ isRegisterMode = false }: LoginHeaderProps) => {
   return (
     <>
       {/* Logo */}
@@ -20,13 +24,27 @@ export const LoginHeader = () => {
       {/* Header */}
       <div>
         <h2 className="text-4xl font-bold text-gray-900 dark:text-white leading-tight">
-          Olá,<br />
-          <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
-            Bem-vindo de volta
-          </span>
+          {isRegisterMode ? (
+            <>
+              Olá,<br />
+              <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+                Vamos começar
+              </span>
+            </>
+          ) : (
+            <>
+              Olá,<br />
+              <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+                Bem-vindo de volta
+              </span>
+            </>
+          )}
         </h2>
         <p className="mt-3 text-gray-600 dark:text-gray-400 text-lg">
-          Ei, bem-vindo de volta ao seu lugar especial
+          {isRegisterMode 
+            ? 'Crie sua conta e comece sua jornada conosco'
+            : 'Ei, bem-vindo de volta ao seu lugar especial'
+          }
         </p>
       </div>
     </>

@@ -19,8 +19,14 @@ export const loginFormSchema = z.object({
   password: passwordSchema,
 })
 
+export const registerFormSchema = z.object({
+  name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
+  email: emailSchema,
+})
+
 // Inferred types for TypeScript
 export type LoginFormData = z.infer<typeof loginFormSchema>
+export type RegisterFormData = z.infer<typeof registerFormSchema>
 
 // Input validation states
 export interface InputValidationState {

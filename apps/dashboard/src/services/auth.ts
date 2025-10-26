@@ -5,6 +5,7 @@ import type {
   RefreshData,
   VerifyMinimalData,
   VerifyFullData,
+  RegisterFormData,
 } from '@types'
 import { TokenManager } from '@/lib'
 
@@ -20,6 +21,23 @@ export async function loginWithEmailPassword(email: string, password: string): P
       success: false,
       error: 'Login Error',
       message: error instanceof Error ? error.message : 'Failed to login',
+      statusCode: 0,
+    }
+  }
+}
+
+export async function registerUser(userData: RegisterFormData): Promise<ApiResponse<{ message: string }>> {
+  try {
+    const response = await api.post<ApiResponse<{ message: string }>>('/auth/signup', {
+      name: userData.name,
+      email: userData.email,
+    })
+    return response.data
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Register Error',
+      message: error instanceof Error ? error.message : 'Failed to register user',
       statusCode: 0,
     }
   }
