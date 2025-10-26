@@ -41,7 +41,8 @@ const MemoizedConfirmationStep = memo(ConfirmationStep)
 
 export const NewPraisePage = () => {
   // URL search parameters for pre-selecting users
-  const searchParams = useSearch({ from: '/elogios/novo' }) as { userId?: string }
+  const search = useSearch({ strict: false })
+  const searchParams = search as { userId?: string }
   const navigate = useNavigate()
   
   // Authentication state - critical for preventing race conditions

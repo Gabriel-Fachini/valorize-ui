@@ -26,6 +26,7 @@ export type { BaseProps, ProviderProps, FormField, LoadingState } from './common
 // Form Types
 export type {
   LoginFormData,
+  RegisterFormData,
   BaseInputProps,
   EmailInputProps,
   PasswordInputProps,
@@ -34,6 +35,7 @@ export type {
 
 export {
   loginFormSchema,
+  registerFormSchema,
   emailSchema,
   passwordSchema,
 } from './forms'
