@@ -49,7 +49,12 @@ export const PrizesPage = () => {
       if (page === 1) {
         setAllPrizes(data.prizes)
       } else {
-        setAllPrizes(prev => [...prev, ...data.prizes])
+        // Verificar se os prêmios já existem para evitar duplicação
+        setAllPrizes(prev => {
+          const existingIds = new Set(prev.map(prize => prize.id))
+          const newPrizes = data.prizes.filter(prize => !existingIds.has(prize.id))
+          return [...prev, ...newPrizes]
+        })
       }
     }
   }, [data?.prizes, page])
