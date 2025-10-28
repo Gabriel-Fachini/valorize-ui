@@ -5,6 +5,7 @@ interface SectionHeaderProps {
   icon?: React.ReactNode
   actionLabel?: string
   onActionClick?: () => void
+  onViewAll?: () => void
 }
 
 export const SectionHeader = ({
@@ -12,6 +13,7 @@ export const SectionHeader = ({
   icon,
   actionLabel,
   onActionClick,
+  onViewAll,
 }: SectionHeaderProps) => {
   return (
     <div className="flex items-center justify-between mb-6">
@@ -26,16 +28,16 @@ export const SectionHeader = ({
         </h2>
       </div>
 
-      {actionLabel && onActionClick && (
+      {(actionLabel && onActionClick) || onViewAll ? (
         <Button
           variant="outline"
           size="sm"
-          onClick={onActionClick}
+          onClick={onViewAll ?? onActionClick}
           className="text-sm font-medium"
         >
-          {actionLabel}
+          {actionLabel ?? 'Ver todos'}
         </Button>
-      )}
+      ) : null}
     </div>
   )
 }

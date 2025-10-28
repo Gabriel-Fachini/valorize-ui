@@ -16,6 +16,9 @@ import { RedemptionsPage } from '@/pages/RedemptionsPage'
 import { RedemptionDetailsPage } from '@/pages/RedemptionDetailsPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { TransactionsPage } from '@/pages/TransactionsPage'
+import { NewsPage } from '@/pages/NewsPage'
+import { EventsPage } from '@/pages/EventsPage'
+import { TrainingPage } from '@/pages/TrainingPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useTheme } from '@hooks/useTheme'
@@ -121,6 +124,24 @@ const transactionsRoute = createRoute({
   component: TransactionsPage,
 })
 
+const newsRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/noticias',
+  component: NewsPage,
+})
+
+const eventsRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/eventos',
+  component: EventsPage,
+})
+
+const trainingRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/treinamentos',
+  component: TrainingPage,
+})
+
 // Create route tree with nested protected routes
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -136,6 +157,9 @@ const routeTree = rootRoute.addChildren([
     redemptionDetailsRoute,
     settingsRoute,
     transactionsRoute,
+    newsRoute,
+    eventsRoute,
+    trainingRoute,
   ]),
 ])
 

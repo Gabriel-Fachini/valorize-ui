@@ -295,10 +295,13 @@ export const HomePage = () => {
             <SectionHeader
               title="Notícias da Empresa"
               icon={<i className="ph-duotone ph-newspaper" style={{ fontSize: '24px' }}></i>}
+              onViewAll={() => navigate({ to: '/noticias' })}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               {news.slice(0, 4).map((item) => (
-                <NewsCard key={item.id} news={item} />
+                <div key={item.id} onClick={() => navigate({ to: '/noticias' })}>
+                  <NewsCard news={item} />
+                </div>
               ))}
             </div>
           </animated.div>
@@ -310,10 +313,13 @@ export const HomePage = () => {
             <SectionHeader
               title="Próximos Eventos"
               icon={<i className="ph-duotone ph-calendar-blank" style={{ fontSize: '24px' }}></i>}
+              onViewAll={() => navigate({ to: '/eventos' })}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
               {events.slice(0, 3).map((item) => (
-                <EventCard key={item.id} event={item} />
+                <div key={item.id} onClick={() => navigate({ to: '/eventos' })}>
+                  <EventCard event={item} />
+                </div>
               ))}
             </div>
           </animated.div>
@@ -324,11 +330,13 @@ export const HomePage = () => {
           <SectionHeader
             title="Cursos e Treinamentos"
             icon={<i className="ph-duotone ph-graduation-cap" style={{ fontSize: '24px' }}></i>}
+            onViewAll={() => navigate({ to: '/treinamentos' })}
           />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
             {courses.map((course) => (
               <div
                 key={course.id}
+                onClick={() => navigate({ to: '/treinamentos' })}
                 className="group bg-white/70 dark:bg-[#2a2a2a]/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-200/50 dark:border-neutral-700/50 hover:border-gray-300 dark:hover:border-neutral-600 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
               >
                 {/* Thumbnail */}
