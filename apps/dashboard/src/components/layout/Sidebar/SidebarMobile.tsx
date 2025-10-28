@@ -60,14 +60,16 @@ export const SidebarMobile = () => {
           isLoading={isLoading}
         />
 
-        {/* Mobile Navigation */}
-        <Navigation 
-          currentPath={currentPath}
-          onNavigate={handleNavigation}
-        />
+        {/* Mobile Navigation - Scrollable area */}
+        <div className="flex-1 overflow-y-auto">
+          <Navigation 
+            currentPath={currentPath}
+            onNavigate={handleNavigation}
+          />
+        </div>
 
         {/* Mobile Bottom Actions - Fixed at bottom */}
-        <div className="mt-auto">
+        <div className="flex-shrink-0">
           <BottomActions 
             currentPath={currentPath}
             onNavigate={handleNavigation}
