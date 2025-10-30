@@ -34,3 +34,6 @@ tsconfig.tsbuildinfo
 scripts/profiling/*
 
 **/.env*
+
+.claude
+**/.claude

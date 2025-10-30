@@ -10,6 +10,8 @@ export interface UserProfileProps {
   userName?: string
   userEmail?: string
   avatarUrl?: string
+  userRole?: string
+  userDepartment?: string
   isLoading?: boolean
 }
 

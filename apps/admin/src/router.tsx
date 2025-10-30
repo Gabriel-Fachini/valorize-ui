@@ -1,9 +1,9 @@
 import { createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router'
 // import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { DashboardOverview } from '@components/dashboard/DashboardOverview'
 import { RootComponent } from '@components/RootComponent'
 import { ProtectedRoute } from '@components/ProtectedRoute'
 import { LoginPage } from '@pages/LoginPage'
+import { HomePage } from '@pages/HomePage'
 
 // Create a root route
 const rootRoute = createRootRoute({
@@ -28,18 +28,18 @@ const loginRoute = createRoute({
   component: LoginPage,
 })
 
-// Create an index route (dashboard) - protected
-const indexRoute = createRoute({
+// Home route (dashboard) - protected
+const homeRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/',
-  component: DashboardOverview,
+  component: HomePage,
 })
 
 // Create the route tree
 const routeTree = rootRoute.addChildren([
   loginRoute,
   protectedLayoutRoute.addChildren([
-    indexRoute,
+    homeRoute,
   ]),
 ])
 

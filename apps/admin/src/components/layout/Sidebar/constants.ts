@@ -1,12 +1,11 @@
+import type { NavLink } from './types'
+
 export const NAV_LINKS = [
   { path: '/home', label: 'Início', icon: 'house', dataTour: 'home' },
-  { path: '/elogios', label: 'Elogios', icon: 'users', dataTour: 'praises' },
-  { path: '/transacoes', label: 'Transações', icon: 'chart-line', dataTour: 'transactions' },
-  { path: '/prizes', label: 'Prêmios', icon: 'gift', dataTour: 'prizes' },
-  { path: '/resgates', label: 'Resgates', icon: 'package', dataTour: 'redemptions' },
+  { path : '/compliments', label: 'Elogios', icon: 'chat-circle', dataTour: 'compliments' },
 ] as const
 
-export const BOTTOM_NAV_LINKS = [
-  { path: '/settings', label: 'Configurações', icon: 'gear', dataTour: 'profile' },
-] as const
+export const BOTTOM_NAV_LINKS: readonly NavLink[] = [
+  // { path: '/settings', label: 'Configurações', icon: 'gear', dataTour: 'profile' },
+]
 
