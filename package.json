@@ -7,6 +7,7 @@
     "dev": "turbo run dev --parallel",
     "dev:landing": "turbo run dev --filter=landing",
     "preview:landing": "turbo run preview --filter=landing",
+    "preview:admin": "turbo run preview --filter=admin",
     "dev:dashboard": "turbo run dev --filter=dashboard",
     "dev:admin": "turbo run dev --filter=admin",
     "dev:shared": "turbo run dev --filter=@valorize/shared",

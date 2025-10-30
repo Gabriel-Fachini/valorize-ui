@@ -5,13 +5,18 @@ import { MetricsGrid } from './MetricsGrid'
 import { ComplimentsChart } from './ComplimentsChart'
 import { TopValuesRanking } from './TopValuesRanking'
 import { AlertsSection } from './AlertsSection'
-import { FiltersBar } from './FiltersBar'
+import { Filters } from './Filters'
 import { useState } from 'react'
 import type { DashboardFilters } from '@/types/dashboard'
+import { animated } from '@react-spring/web'
+import { usePageEntrance, usePageHeaderEntrance } from '@valorize/shared/hooks'
 
 export const DashboardOverview: FC = () => {
-  const [filters, setFilters] = useState<DashboardFilters | undefined>(undefined)
+  const [filters, setFilters] = useState<DashboardFilters>({})
   const { data, isLoading, error } = useDashboardData(filters)
+
+  const pageAnimation = usePageEntrance()
+  const headerAnimation = usePageHeaderEntrance()
 
   // Error state
   if (error) {
@@ -35,9 +40,9 @@ export const DashboardOverview: FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <animated.div style={pageAnimation as any} className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <animated.div style={headerAnimation as any} className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Dashboard Executivo</h1>
           <p className="text-muted-foreground">
@@ -45,15 +50,10 @@ export const DashboardOverview: FC = () => {
           </p>
         </div>
         <ThemeToggle />
-      </div>
+      </animated.div>
 
-        {/* Filters */}
-        <FiltersBar
-          initialFilters={filters}
-          onApply={(f) => {
-            setFilters(f)
-          }}
-        />
+      {/* Filters */}
+      <Filters filters={filters} onFiltersChange={setFilters} />
 
       {/* Main Metrics Cards */}
       <MetricsGrid
@@ -84,6 +84,6 @@ export const DashboardOverview: FC = () => {
 
       {/* Alerts Section */}
       <AlertsSection alerts={[]} isLoading={isLoading} />
-    </div>
+    </animated.div>
   )
 }
