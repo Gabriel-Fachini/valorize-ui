@@ -80,7 +80,7 @@ export const ComplimentsChart: FC<ComplimentsChartProps> = ({ data, isLoading = 
 
   if (isLoading) {
     return (
-      <div className="rounded-lg border bg-card p-6 shadow-sm">
+      <div className="rounded-3xl border bg-card p-6 shadow-sm">
         <div className="space-y-6">
           {/* Header skeleton */}
           <div className="space-y-2">
@@ -117,7 +117,7 @@ export const ComplimentsChart: FC<ComplimentsChartProps> = ({ data, isLoading = 
 
   // Transform data for chart
   const chartData = data.map(item => ({
-    week: item.week,
+    week: item.weekStart,
     elogios: item.count,
   }))
 
@@ -131,7 +131,7 @@ export const ComplimentsChart: FC<ComplimentsChartProps> = ({ data, isLoading = 
   }
 
   return (
-    <div className="rounded-lg border bg-card p-6 shadow-sm">
+    <div className="rounded-3xl border bg-card p-6 shadow-sm">
       <div className="mb-6">
         <h3 className="text-lg font-semibold">Evolução de Elogios</h3>
         <p className="text-sm text-muted-foreground">

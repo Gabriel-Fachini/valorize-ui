@@ -5,15 +5,19 @@ import { MetricsGrid } from './MetricsGrid'
 import { ComplimentsChart } from './ComplimentsChart'
 import { TopValuesRanking } from './TopValuesRanking'
 import { AlertsSection } from './AlertsSection'
+import { FiltersBar } from './FiltersBar'
+import { useState } from 'react'
+import type { DashboardFilters } from '@/types/dashboard'
 
 export const DashboardOverview: FC = () => {
-  const { data, isLoading, error } = useDashboardData()
+  const [filters, setFilters] = useState<DashboardFilters | undefined>(undefined)
+  const { data, isLoading, error } = useDashboardData(filters)
 
   // Error state
   if (error) {
     return (
       <div className="space-y-6">
-        <div className="rounded-lg border bg-card p-8 text-center">
+        <div className="rounded-3xl border bg-card p-8 text-center">
           <i className="ph ph-warning-circle text-4xl text-destructive mb-4" />
           <h3 className="text-lg font-semibold mb-2">Erro ao carregar dados</h3>
           <p className="text-sm text-muted-foreground mb-4">
@@ -43,14 +47,22 @@ export const DashboardOverview: FC = () => {
         <ThemeToggle />
       </div>
 
+        {/* Filters */}
+        <FiltersBar
+          initialFilters={filters}
+          onApply={(f) => {
+            setFilters(f)
+          }}
+        />
+
       {/* Main Metrics Cards */}
       <MetricsGrid
         metrics={data?.metrics ?? {
           totalCompliments: 0,
-          coinsMovement: 0,
+          coinsDistributed: 0,
           activeUsers: { count: 0, percentage: 0 },
           prizesRedeemed: 0,
-          platformEngagement: 0,
+          engagementRate: 0,
         }}
         isLoading={isLoading}
       />
@@ -59,7 +71,7 @@ export const DashboardOverview: FC = () => {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Compliments Evolution Chart */}
         <ComplimentsChart
-          data={data?.complimentsByWeek ?? []}
+          data={data?.weeklyCompliments ?? []}
           isLoading={isLoading}
         />
 

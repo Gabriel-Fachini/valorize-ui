@@ -9,6 +9,8 @@ export interface User {
   avatar?: string
   name: string
   companyId?: string
+  department?: string
+  role?: string
 }
 
 export interface UserInfo {
@@ -19,6 +21,8 @@ export interface UserInfo {
   avatar?: string
   companyId?: string
   isActive?: boolean
+  department?: string
+  role?: string
 }
 
 export interface LoginData {

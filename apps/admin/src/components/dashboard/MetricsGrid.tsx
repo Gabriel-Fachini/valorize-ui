@@ -51,7 +51,7 @@ export const MetricsGrid: FC<MetricsGridProps> = ({ metrics, isLoading = false }
 
       <MetricCard
         title="Moedas Movimentadas"
-        value={formatNumber(metrics.coinsMovement)}
+        value={formatNumber(metrics.coinsDistributed)}
         subtitle="Últimos 30 dias"
         icon={<CoinsIcon />}
         isLoading={isLoading}
@@ -75,7 +75,7 @@ export const MetricsGrid: FC<MetricsGridProps> = ({ metrics, isLoading = false }
 
       <MetricCard
         title="Engajamento"
-        value={`${metrics.platformEngagement.toFixed(1)}%`}
+        value={`${metrics.engagementRate.toFixed(1)}%`}
         subtitle="Taxa de participação"
         icon={<ChartLineIcon />}
         isLoading={isLoading}

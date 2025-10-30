@@ -2,17 +2,17 @@
 
 export interface DashboardMetrics {
   totalCompliments: number
-  coinsMovement: number
+  coinsDistributed: number
   activeUsers: {
     count: number
     percentage: number
   }
   prizesRedeemed: number
-  platformEngagement: number
+  engagementRate: number
 }
 
 export interface ComplimentsByWeek {
-  week: string // ISO date string
+  weekStart: string // ISO date string
   count: number
 }
 
@@ -23,10 +23,25 @@ export interface ValueRanking {
   percentage: number
 }
 
+export interface DashboardPeriod {
+  days: number
+  startDate: string // ISO date string
+  endDate: string // ISO date string
+}
+
 export interface DashboardData {
+  period: DashboardPeriod
   metrics: DashboardMetrics
-  complimentsByWeek: ComplimentsByWeek[]
+  weeklyCompliments: ComplimentsByWeek[]
   topValues: ValueRanking[]
+}
+
+// Filters used by the dashboard UI
+export interface DashboardFilters {
+  startDate?: string // ISO string
+  endDate?: string // ISO string
+  departmentId?: string
+  role?: string
 }
 
 // API Response types

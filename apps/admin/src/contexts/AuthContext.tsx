@@ -33,6 +33,8 @@ export const AuthProvider = ({ children }: ProviderProps) => {
             avatar: stored.avatar,
             name: stored.name ?? '',
             companyId: stored.companyId,
+            department: stored.department,
+            role: stored.role,
           })
         }
 
@@ -71,6 +73,8 @@ export const AuthProvider = ({ children }: ProviderProps) => {
           email: res.data.user_info.email, 
           name: res.data.user_info.name ?? '',
           companyId: res.data.user_info.companyId,
+          department: res.data.user_info.department,
+          role: res.data.user_info.role,
         })
         return { success: true as const }
       }

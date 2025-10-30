@@ -1,8 +1,15 @@
 import { api } from './api'
-import type {
-  DashboardData,
-  DashboardDataResponse,
-} from '../types/dashboard'
+import type { DashboardData, DashboardFilters } from '../types/dashboard'
+
+export interface DepartmentOption {
+  id: string
+  name: string
+}
+
+export interface RoleOption {
+  id: string
+  name: string
+}
 
 /**
  * Dashboard service for fetching executive metrics
@@ -27,13 +34,26 @@ export const dashboardService = {
    * - Lower latency
    * - Better UX (single loading state)
    */
-  async getDashboardData(): Promise<DashboardData> {
-    const response = await api.get<DashboardDataResponse>('/admin/dashboard')
+  async getDashboardData(filters?: DashboardFilters): Promise<DashboardData> {
+    // Pass filters as query params. Backend should accept startDate, endDate, departmentId, role
+    const response = (
+      await api.get<DashboardData>('/admin/dashboard/stats', {
+        params: filters,
+      })
+    ).data
 
-    if (!response.data.success) {
-      throw new Error(response.data.message || 'Failed to fetch dashboard data')
-    }
+    return response
+  },
 
-    return response.data.data
+  async getDepartments(): Promise<DepartmentOption[]> {
+    // Assumption: backend exposes /admin/departments returning array of { id, name }
+    const response = (await api.get<DepartmentOption[]>('/admin/departments')).data
+    return response
+  },
+
+  async getRoles(): Promise<RoleOption[]> {
+    // Assumption: backend exposes /admin/roles returning array of { id, name }
+    const response = (await api.get<RoleOption[]>('/admin/roles')).data
+    return response
   },
 }

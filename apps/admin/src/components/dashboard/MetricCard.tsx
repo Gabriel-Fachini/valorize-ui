@@ -42,7 +42,7 @@ export const MetricCard: FC<MetricCardProps> = ({
   }
 
   return (
-    <div className="rounded-lg border bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
+    <div className="rounded-3xl border bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between">
         <div className="space-y-1 flex-1">
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
@@ -64,7 +64,7 @@ export const MetricCard: FC<MetricCardProps> = ({
           )}
         </div>
         {icon && (
-          <div className="rounded-full bg-primary/10 p-3 text-primary">
+          <div className="size-12 rounded-full bg-primary/10 p-3 text-primary">
             {icon}
           </div>
         )}

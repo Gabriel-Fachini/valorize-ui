@@ -37,6 +37,8 @@ export const SidebarDesktop = () => {
         userName={user?.name}
         userEmail={user?.email}
         avatarUrl={user?.avatar}
+        userRole={user?.role}
+        userDepartment={user?.department}
         isLoading={isLoading}
       />
 

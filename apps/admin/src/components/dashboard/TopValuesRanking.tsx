@@ -37,7 +37,7 @@ const ValueRankingItem: FC<{
   }
 
   return (
-    <div className="flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
+    <div className="flex items-center gap-4 p-4 rounded-xl border bg-card hover:bg-accent/50 transition-colors">
       <div
         className={`flex items-center justify-center w-10 h-10 rounded-full border-2 font-bold ${getRankColor(rank)}`}
       >
@@ -102,7 +102,7 @@ const LoadingSkeleton: FC = () => (
 export const TopValuesRanking: FC<TopValuesRankingProps> = ({ values, isLoading = false }) => {
   if (isLoading) {
     return (
-      <div className="rounded-lg border bg-card p-6 shadow-sm">
+      <div className="rounded-3xl border bg-card p-6 shadow-sm">
         <div className="mb-6">
           <div className="h-5 w-48 bg-muted animate-pulse rounded mb-2" />
           <div className="h-4 w-64 bg-muted animate-pulse rounded" />
@@ -113,7 +113,7 @@ export const TopValuesRanking: FC<TopValuesRankingProps> = ({ values, isLoading 
   }
 
   return (
-    <div className="rounded-lg border bg-card p-6 shadow-sm">
+    <div className="rounded-3xl border bg-card p-6 shadow-sm">
       <div className="mb-6">
         <h3 className="text-lg font-semibold">Top 5 Valores Mais Praticados</h3>
         <p className="text-sm text-muted-foreground">

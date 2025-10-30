@@ -128,7 +128,7 @@ export const AlertsSection: FC<AlertsSectionProps> = ({ alerts = [], isLoading =
   }
 
   return (
-    <div className="rounded-lg border bg-card p-6 shadow-sm">
+    <div className="rounded-3xl border bg-card p-6 shadow-sm">
       <div className="mb-6">
         <div className="flex items-center gap-2">
           <i className="ph ph-bell text-xl" />
