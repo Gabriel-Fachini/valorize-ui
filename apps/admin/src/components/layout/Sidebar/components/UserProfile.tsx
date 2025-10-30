@@ -1,5 +1,4 @@
 import type { UserProfileProps } from '../types'
-import { BalanceSection } from './BalanceSection'
 import { SkeletonAvatar, SkeletonBase } from '@/components/ui/Skeleton'
 
 export const UserProfile = ({ 
@@ -35,9 +34,10 @@ export const UserProfile = ({
             </SkeletonBase>
           </div>
         </div>
-        <div data-tour="balance-cards">
+        {/* TODO: Add BalanceSection component */}
+        {/* <div data-tour="balance-cards">
           <BalanceSection />
-        </div>
+        </div> */}
       </div>
     )
   }
@@ -62,7 +62,7 @@ export const UserProfile = ({
 
   return (
     <div className="p-6 border-b border-gray-200 dark:border-[#242424] bg-gray-50 dark:bg-black/20">
-      <div className="flex items-center gap-4 mb-6" data-tour="user-profile">
+      <div className="flex items-center gap-4" data-tour="user-profile">
         {avatar}
         <div className="flex-1 min-w-0">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
@@ -72,10 +72,6 @@ export const UserProfile = ({
             {userEmail}
           </p>
         </div>
-      </div>
-
-      <div data-tour="balance-cards">
-        <BalanceSection />
       </div>
     </div>
   )
