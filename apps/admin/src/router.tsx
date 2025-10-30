@@ -4,6 +4,7 @@ import { RootComponent } from '@components/RootComponent'
 import { ProtectedRoute } from '@components/ProtectedRoute'
 import { LoginPage } from '@pages/LoginPage'
 import { HomePage } from '@pages/HomePage'
+import { ComplimentsAnalyticsPage } from '@pages/ComplimentsAnalyticsPage'
 
 // Create a root route
 const rootRoute = createRootRoute({
@@ -31,8 +32,15 @@ const loginRoute = createRoute({
 // Home route (dashboard) - protected
 const homeRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
-  path: '/',
+  path: '/home',
   component: HomePage,
+})
+
+// Compliments analytics route - protected
+const complimentsRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/compliments',
+  component: ComplimentsAnalyticsPage,
 })
 
 // Create the route tree
@@ -40,6 +48,7 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   protectedLayoutRoute.addChildren([
     homeRoute,
+    complimentsRoute,
   ]),
 ])
 

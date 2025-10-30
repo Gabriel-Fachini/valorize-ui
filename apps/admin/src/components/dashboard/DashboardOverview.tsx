@@ -1,5 +1,6 @@
 import type { FC } from 'react'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { PageHeader } from '@/components/layout/PageHeader'
 import { useDashboardData } from '@/hooks/useDashboard'
 import { MetricsGrid } from './MetricsGrid'
 import { ComplimentsChart } from './ComplimentsChart'
@@ -42,14 +43,12 @@ export const DashboardOverview: FC = () => {
   return (
     <animated.div style={pageAnimation as any} className="space-y-6">
       {/* Header */}
-      <animated.div style={headerAnimation as any} className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard Executivo</h1>
-          <p className="text-muted-foreground">
-            Visão geral das métricas dos últimos 30 dias
-          </p>
-        </div>
-        <ThemeToggle />
+      <animated.div style={headerAnimation as any}>
+        <PageHeader
+          title="Dashboard Executivo"
+          description="Visão geral das métricas dos últimos 30 dias"
+          right={<ThemeToggle />}
+        />
       </animated.div>
 
       {/* Filters */}

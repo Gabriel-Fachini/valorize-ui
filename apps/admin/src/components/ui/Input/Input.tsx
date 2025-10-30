@@ -7,7 +7,8 @@ import { useSpring, animated, config } from '@react-spring/web'
 import { BaseInputProps } from '@/types'
 
 const labelHeight = 28
-const inputHeight = 48
+const defaultInputHeight = 48
+const compactInputHeight = 40
 const errorHeight = 40
 
 const labelStyles = {
@@ -25,10 +26,16 @@ const helperStyles = {
   success: 'text-green-700 dark:text-green-200',
 }
 
-const inputDiv = [
+const inputDivMd = [
   'absolute bg-white dark:bg-[#262626]',
   'w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600',
   'relative z-10 text-gray-900 dark:text-white',
+].join(' ')
+
+const inputDivSm = [
+  'absolute bg-white dark:bg-[#262626]',
+  'w-full h-10 px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600',
+  'relative z-10 text-gray-900 dark:text-white text-sm',
 ].join(' ')
 
 const errorDiv = 'absolute text-red-700 dark:text-white z-0 w-full h-14 text-sm bg-red-50 dark:bg-red-900 px-3 pb-1 box-content rounded-lg overflow-hidden flex items-center font-medium'
@@ -44,6 +51,7 @@ export interface InputProps extends BaseInputProps {
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
   'aria-describedby'?: string
   'aria-invalid'?: boolean
+  size?: 'sm' | 'md'
 }
 
 // Base Input Component - React 19 não precisa de forwardRef
@@ -66,6 +74,7 @@ export const Input = ({
   ref,
   onChange,
   onBlur,
+  size = 'md',
   ...rest
 }: InputProps) => {
   // Determine input state
@@ -77,6 +86,8 @@ export const Input = ({
   const errorId = `${inputId}-error`
   const helperId = `${inputId}-helper`
   
+  const inputHeight = size === 'sm' ? compactInputHeight : defaultInputHeight
+
   const heights = {
     label: labelHeight,
     input: inputHeight,
@@ -119,6 +130,8 @@ export const Input = ({
     helperStyles.base,
     hasError ? helperStyles.error : helperStyles.default,
   ].join(' ')
+
+  const inputDivClass = size === 'sm' ? inputDivSm : inputDivMd
   
   return (
     <animated.div style={containerAnimation}>
@@ -145,7 +158,7 @@ export const Input = ({
           disabled={disabled}
           autoComplete={autoComplete}
           autoFocus={autoFocus}
-          className={inputDiv}
+          className={inputDivClass}
           style={inputAnimation}
           onChange={onChange}
           onBlur={onBlur}
