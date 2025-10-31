@@ -2,6 +2,7 @@ import { type FC, useState, useEffect, useMemo, useRef } from 'react'
 import { companyValuesService } from '@/services/companyValues'
 import type { CompanyValue } from '@/types/companyValues'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -221,19 +222,212 @@ export const ValuesTab: FC = () => {
 
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <h2 className="text-2xl font-bold">Valores da Empresa</h2>
-          <p className="text-muted-foreground">
-            Gerencie os valores que serão usados nos elogios.
-          </p>
-        </div>
-        <Button onClick={() => { setSelectedValue(null); setIsFormOpen(true) }}>
-          <i className="ph ph-plus mr-2" />
-          Adicionar Valor
-        </Button>
-      </div>
+    <>
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <i className="ph ph-sparkle text-xl" />
+                Valores da Empresa
+              </CardTitle>
+              <CardDescription>
+                Gerencie os valores que serão usados nos elogios.
+              </CardDescription>
+            </div>
+            <Button onClick={() => { setSelectedValue(null); setIsFormOpen(true) }}>
+              <i className="ph ph-plus mr-2" />
+              Adicionar Valor
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {isLoading && (
+            <div className="flex items-center justify-center py-8">
+              <i className="ph ph-circle-notch animate-spin text-4xl text-primary" />
+            </div>
+          )}
+          {error && (
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 flex items-center gap-2">
+              <i className="ph ph-warning text-xl" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {!isLoading && values.length === 0 && !error && (
+            <div className="rounded-lg border p-6 text-center text-muted-foreground">
+              <p className="mb-2">Nenhum valor cadastrado ainda</p>
+              <p className="text-sm">Clique em "Adicionar Valor" para criar o primeiro</p>
+            </div>
+          )}
+
+          {!isLoading && activeValues.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Valores Ativos</h3>
+              <div
+                className="relative"
+                style={{
+                  height:
+                    activeValues.length > 0
+                      ? (activeValues.length - 1) * ITEM_HEIGHT + CARD_HEIGHT
+                      : 0
+                }}
+              >
+                {springs.map(({ zIndex, shadow, y, scale }, i) => {
+                  const value = activeValues[i]
+                  return (
+                    <a.div
+                      key={value.id}
+                      className="absolute left-0 right-0 will-change-transform"
+                      style={{
+                        zIndex,
+                        boxShadow: shadow.to(
+                          (s) => `rgba(0, 0, 0, 0.15) 0px ${s}px ${2 * s}px 0px`
+                        ),
+                        y,
+                        scale,
+                        touchAction: 'none'
+                      }}
+                    >
+                      <div
+                        className="p-4 border rounded-lg flex justify-between items-center hover:bg-muted/30 transition-colors bg-white dark:bg-gray-800"
+                        style={{ height: CARD_HEIGHT }}
+                      >
+                        <div
+                          {...bind(i)}
+                          className="flex items-center gap-4 flex-1 cursor-grab active:cursor-grabbing select-none"
+                        >
+                          <div className="text-muted-foreground">
+                            <i className="ph ph-dots-six-vertical text-xl" />
+                          </div>
+                          {/* Renderizar ícone Phosphor */}
+                          <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
+                            <i
+                              className={`ph-duotone ph-${value.iconName || 'lightbulb'}`}
+                              style={{ color: value.iconColor || '#00D959', fontSize: '40px' }}
+                            />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold flex items-center gap-2">
+                              {value.title}
+                            </h3>
+                            {value.description && (
+                              <p className="text-sm text-muted-foreground">
+                                {value.description}
+                              </p>
+                            )}
+                            {value.example && (
+                              <p className="text-sm text-muted-foreground italic">
+                                Ex: "{value.example}"
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setSelectedValue(value)
+                              setIsFormOpen(true)
+                            }}
+                            className="h-10 w-10 border-2"
+                            title="Editar valor"
+                          >
+                            <i className="ph ph-pencil-simple text-lg" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDeleteClick(value)
+                            }}
+                            className="h-10 w-10 border-2 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300 hover:border-red-400"
+                            title="Desativar valor"
+                          >
+                            <i className="ph ph-eye-slash text-lg" />
+                          </Button>
+                        </div>
+                      </div>
+                    </a.div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className="mt-8">
+            <h3 className="text-lg font-semibold mb-4">Valores Desativados</h3>
+            {inactiveValues.length === 0 ? (
+              <div className="rounded-lg border p-6 text-center text-muted-foreground">
+                Nenhum valor desativado no momento
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {inactiveTransitions((style, value) => (
+                  <a.div
+                    key={value.id}
+                    style={style}
+                    className="p-4 border rounded-lg flex justify-between items-center hover:bg-muted/30 transition-colors bg-white dark:bg-gray-800"
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Renderizar ícone Phosphor */}
+                      <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
+                        <i
+                          className={`ph-duotone ph-${value.iconName || 'lightbulb'}`}
+                          style={{
+                            color: value.iconColor || '#00D959',
+                            fontSize: '40px'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold flex items-center gap-2">
+                          {value.title}
+                        </h3>
+                        {value.description && (
+                          <p className="text-sm text-muted-foreground">
+                            {value.description}
+                          </p>
+                        )}
+                        {value.example && (
+                          <p className="text-sm text-muted-foreground italic">
+                            Ex: "{value.example}"
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          setSelectedValue(value)
+                          setIsFormOpen(true)
+                        }}
+                        className="h-10 w-10 border-2"
+                        title="Editar valor"
+                      >
+                        <i className="ph ph-pencil-simple text-lg" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => handleReactivate(value)}
+                        className="text-green-600 hover:text-green-700 hover:bg-green-50 border-2 border-green-300 hover:border-green-400"
+                      >
+                        <i className="ph ph-arrow-counter-clockwise mr-2" />
+                        Reativar
+                      </Button>
+                    </div>
+                  </a.div>
+                ))}
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       <ValueForm
         open={isFormOpen}
@@ -284,182 +478,6 @@ export const ValuesTab: FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {isLoading && <p>Carregando...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
-      {!isLoading && values.length === 0 && !error && (
-        <div className="mt-6 rounded-lg border p-6 text-center text-muted-foreground">
-          <p className="mb-2">Nenhum valor cadastrado ainda</p>
-          <p className="text-sm">Clique em "Adicionar Valor" para criar o primeiro</p>
-        </div>
-      )}
-
-      {!isLoading && activeValues.length > 0 && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-4">Valores Ativos</h3>
-          <div
-            className="relative"
-            style={{
-              height:
-                activeValues.length > 0
-                  ? (activeValues.length - 1) * ITEM_HEIGHT + CARD_HEIGHT
-                  : 0
-            }}
-          >
-            {springs.map(({ zIndex, shadow, y, scale }, i) => {
-              const value = activeValues[i]
-              return (
-                <a.div
-                  key={value.id}
-                  className="absolute left-0 right-0 will-change-transform"
-                  style={{
-                    zIndex,
-                    boxShadow: shadow.to(
-                      (s) => `rgba(0, 0, 0, 0.15) 0px ${s}px ${2 * s}px 0px`
-                    ),
-                    y,
-                    scale,
-                    touchAction: 'none'
-                  }}
-                >
-                  <div
-                    className="p-4 border rounded-lg flex justify-between items-center hover:bg-muted/30 transition-colors bg-white dark:bg-gray-800"
-                    style={{ height: CARD_HEIGHT }}
-                  >
-                    <div
-                      {...bind(i)}
-                      className="flex items-center gap-4 flex-1 cursor-grab active:cursor-grabbing select-none"
-                    >
-                      <div className="text-muted-foreground">
-                        <i className="ph ph-dots-six-vertical text-xl" />
-                      </div>
-                      {/* Renderizar ícone Phosphor */}
-                      <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
-                        <i
-                          className={`ph-duotone ph-${value.iconName || 'lightbulb'}`}
-                          style={{ color: value.iconColor || '#00D959', fontSize: '40px' }}
-                        />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold flex items-center gap-2">
-                          {value.title}
-                        </h3>
-                        {value.description && (
-                          <p className="text-sm text-muted-foreground">
-                            {value.description}
-                          </p>
-                        )}
-                        {value.example && (
-                          <p className="text-sm text-muted-foreground italic">
-                            Ex: "{value.example}"
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedValue(value)
-                          setIsFormOpen(true)
-                        }}
-                        className="h-10 w-10 border-2"
-                        title="Editar valor"
-                      >
-                        <i className="ph ph-pencil-simple text-lg" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleDeleteClick(value)
-                        }}
-                        className="h-10 w-10 border-2 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300 hover:border-red-400"
-                        title="Desativar valor"
-                      >
-                        <i className="ph ph-eye-slash text-lg" />
-                      </Button>
-                    </div>
-                  </div>
-                </a.div>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
-      <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-4">Valores Desativados</h3>
-        {inactiveValues.length === 0 ? (
-          <div className="rounded-lg border p-6 text-center text-muted-foreground">
-            Nenhum valor desativado no momento
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {inactiveTransitions((style, value) => (
-              <a.div
-                key={value.id}
-                style={style}
-                className="p-4 border rounded-lg flex justify-between items-center hover:bg-muted/30 transition-colors bg-white dark:bg-gray-800"
-              >
-                <div className="flex items-center gap-4">
-                  {/* Renderizar ícone Phosphor */}
-                  <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
-                    <i
-                      className={`ph-duotone ph-${value.iconName || 'lightbulb'}`}
-                      style={{
-                        color: value.iconColor || '#00D959',
-                        fontSize: '40px'
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold flex items-center gap-2">
-                      {value.title}
-                    </h3>
-                    {value.description && (
-                      <p className="text-sm text-muted-foreground">
-                        {value.description}
-                      </p>
-                    )}
-                    {value.example && (
-                      <p className="text-sm text-muted-foreground italic">
-                        Ex: "{value.example}"
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => {
-                      setSelectedValue(value)
-                      setIsFormOpen(true)
-                    }}
-                    className="h-10 w-10 border-2"
-                    title="Editar valor"
-                  >
-                    <i className="ph ph-pencil-simple text-lg" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => handleReactivate(value)}
-                    className="text-green-600 hover:text-green-700 hover:bg-green-50 border-2 border-green-300 hover:border-green-400"
-                  >
-                    <i className="ph ph-arrow-counter-clockwise mr-2" />
-                    Reativar
-                  </Button>
-                </div>
-              </a.div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    </>
   )
 }
