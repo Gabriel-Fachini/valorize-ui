@@ -7,6 +7,7 @@ import { DomainList } from '../DomainList'
 import { ErrorModal } from '@/components/ui/ErrorModal'
 import { domainSchema, type CompanyDomain } from '@/types/company'
 import { companyService } from '@/services/company'
+import { SkeletonText, SkeletonBase } from '@/components/ui/Skeleton'
 
 export const DomainsTab: FC = () => {
   const [domains, setDomains] = useState<CompanyDomain[]>([])
@@ -156,36 +157,6 @@ export const DomainsTab: FC = () => {
     }
   }
 
-  const handleSaveAll = async () => {
-    setIsLoading(true)
-    setSuccessMessage(undefined)
-    setErrorModalMessage(undefined)
-    setIsErrorModalOpen(false)
-
-    // Validate at least one domain
-    if (domains.length === 0) {
-      setDomainError('Pelo menos um domínio é obrigatório')
-      setIsLoading(false)
-      return
-    }
-
-    try {
-      const domainStrings = domains.map((d) => d.domain)
-      const updatedDomains = await companyService.updateDomains(domainStrings)
-      setDomains(updatedDomains)
-      setSuccessMessage('Domínios atualizados com sucesso!')
-
-      // Clear success message after 3 seconds
-      setTimeout(() => setSuccessMessage(undefined), 3000)
-    } catch (error) {
-      console.error('Error updating domains:', error)
-      setErrorModalMessage('Erro ao atualizar domínios. Tente novamente.')
-      setIsErrorModalOpen(true)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   const handleCloseModal = () => {
     setIsErrorModalOpen(false)
     setErrorModalMessage(undefined)
@@ -205,8 +176,53 @@ export const DomainsTab: FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-center py-8">
-            <i className="ph ph-circle-notch animate-spin text-4xl text-primary" />
+          <div className="space-y-6">
+            {/* Info Box Skeleton */}
+            <SkeletonBase>
+              <div className="p-4 bg-neutral-200 dark:bg-neutral-700 rounded-lg">
+                <div className="space-y-2">
+                  <SkeletonText width="md" height="sm" />
+                  <SkeletonText width="full" height="sm" />
+                  <SkeletonText width="xl" height="sm" />
+                </div>
+              </div>
+            </SkeletonBase>
+
+            {/* Add Domain Input Skeleton */}
+            <div className="space-y-2">
+              <SkeletonText width="lg" height="sm" />
+              <div className="flex gap-2">
+                <SkeletonText width="full" height="md" className="h-10" />
+                <SkeletonText width="xl" height="md" className="h-10" />
+              </div>
+            </div>
+
+            {/* Domain List Skeleton */}
+            <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-900/50">
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                    <div className="flex items-center gap-3">
+                      <SkeletonBase>
+                        <div className="h-5 w-5 bg-neutral-300 dark:bg-neutral-600 rounded" />
+                      </SkeletonBase>
+                      <SkeletonText width="xl" height="sm" />
+                    </div>
+                    <SkeletonText width="md" height="md" className="h-8 w-8" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Info Card Skeleton */}
+            <SkeletonBase>
+              <div className="p-4 bg-neutral-200 dark:bg-neutral-700 rounded-lg">
+                <div className="space-y-2">
+                  <SkeletonText width="lg" height="sm" />
+                  <SkeletonText width="full" height="sm" />
+                </div>
+              </div>
+            </SkeletonBase>
           </div>
         </CardContent>
       </Card>

@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select'
 import { coinEconomySchema, type CoinEconomyFormData, type CoinEconomy, WEEKDAY_OPTIONS } from '@/types/company'
 import { companyService } from '@/services/company'
+import { SkeletonText, SkeletonBase } from '@/components/ui/Skeleton'
 
 import { ErrorModal } from '@/components/ui/ErrorModal'
 
@@ -123,8 +124,49 @@ export const CoinEconomyTab: FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-center py-8">
-            <i className="ph ph-circle-notch animate-spin text-4xl text-primary" />
+          <div className="space-y-6">
+            {/* Info Box Skeleton */}
+            <SkeletonBase>
+              <div className="p-4 bg-neutral-200 dark:bg-neutral-700 rounded-lg">
+                <div className="space-y-2">
+                  <SkeletonText width="md" height="sm" />
+                  <SkeletonText width="full" height="sm" />
+                  <SkeletonText width="xl" height="sm" />
+                </div>
+              </div>
+            </SkeletonBase>
+
+            {/* Quantidade de Renovação Skeleton */}
+            <div className="space-y-2">
+              <SkeletonText width="xl" height="sm" />
+              <div className="flex items-center gap-4">
+                <SkeletonText width="full" height="md" className="h-10" />
+                <SkeletonText width="md" height="sm" />
+              </div>
+              <SkeletonText width="lg" height="sm" />
+            </div>
+
+            {/* Dia da Renovação Skeleton */}
+            <div className="space-y-2">
+              <SkeletonText width="lg" height="sm" />
+              <SkeletonText width="full" height="md" className="h-10" />
+              <SkeletonText width="xl" height="sm" />
+            </div>
+
+            {/* Resumo Skeleton */}
+            <SkeletonBase>
+              <div className="p-4 bg-neutral-200 dark:bg-neutral-700 rounded-lg">
+                <div className="space-y-2">
+                  <SkeletonText width="md" height="sm" />
+                  <SkeletonText width="full" height="sm" />
+                </div>
+              </div>
+            </SkeletonBase>
+
+            {/* Botão Skeleton */}
+            <div className="flex justify-end pt-4 border-t">
+              <SkeletonText width="xl" height="md" className="h-10" />
+            </div>
           </div>
         </CardContent>
       </Card>

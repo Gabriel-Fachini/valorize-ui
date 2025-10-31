@@ -49,10 +49,36 @@ const complimentsRoute = createRoute({
   component: ComplimentsAnalyticsPage,
 })
 
-// Settings route - protected
-const settingsRoute = createRoute({
+// Settings layout route - protected
+const settingsLayoutRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/settings',
+  component: SettingsPage,
+})
+
+// Settings routes - protected
+// Note: Paths are relative to parent route (/settings)
+const settingsBasicInfoRoute = createRoute({
+  getParentRoute: () => settingsLayoutRoute,
+  path: 'basic-info',
+  component: SettingsPage,
+})
+
+const settingsValuesRoute = createRoute({
+  getParentRoute: () => settingsLayoutRoute,
+  path: 'values',
+  component: SettingsPage,
+})
+
+const settingsDomainsRoute = createRoute({
+  getParentRoute: () => settingsLayoutRoute,
+  path: 'domains',
+  component: SettingsPage,
+})
+
+const settingsCoinEconomyRoute = createRoute({
+  getParentRoute: () => settingsLayoutRoute,
+  path: 'coin-economy',
   component: SettingsPage,
 })
 
@@ -63,7 +89,12 @@ const routeTree = rootRoute.addChildren([
     defaultRoute,
     homeRoute,
     complimentsRoute,
-    settingsRoute,
+    settingsLayoutRoute.addChildren([
+      settingsBasicInfoRoute,
+      settingsValuesRoute,
+      settingsDomainsRoute,
+      settingsCoinEconomyRoute,
+    ]),
   ]),
 ])
 

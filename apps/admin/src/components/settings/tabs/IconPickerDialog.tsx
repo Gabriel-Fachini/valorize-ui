@@ -65,15 +65,15 @@ export const IconPickerDialog: FC<IconPickerDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="max-w-4xl max-h-[80vh] flex flex-col p-0">
+        <DialogHeader className="px-6 pt-6 pb-4">
           <DialogTitle>Selecionar Ícone</DialogTitle>
           <DialogDescription>
             Escolha um ícone e uma cor para representar este valor
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="flex-1 overflow-y-auto px-6 space-y-6">
           {/* Preview do ícone selecionado */}
           <div className="flex items-center gap-4 p-4 border rounded-lg bg-muted/30">
             <div className="flex items-center justify-center w-20 h-20 bg-background rounded-lg border">
@@ -178,16 +178,16 @@ export const IconPickerDialog: FC<IconPickerDialogProps> = ({
               </div>
             )}
           </div>
+        </div>
 
-          {/* Botões de Ação */}
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={handleCancel}>
-              Cancelar
-            </Button>
-            <Button type="button" onClick={handleConfirm}>
-              Confirmar
-            </Button>
-          </div>
+        {/* Botões de Ação - Sticky no rodapé */}
+        <div className="sticky bg-background border-t px-6 py-4 flex justify-end gap-2">
+          <Button type="button" variant="outline" onClick={handleCancel}>
+            Cancelar
+          </Button>
+          <Button type="button" onClick={handleConfirm}>
+            Confirmar
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

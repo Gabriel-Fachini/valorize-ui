@@ -92,7 +92,7 @@ export const phosphorIcons: PhosphorIcon[] = [
   { name: 'fire', label: 'Fogo', category: 'acao', keywords: ['fogo', 'paixão', 'energia', 'fire', 'passion', 'energy'] },
   { name: 'battery-charging', label: 'Bateria Carregando', category: 'acao', keywords: ['energia', 'motivação', 'bateria', 'battery', 'energy'] },
   { name: 'lightning-slash', label: 'Energia', category: 'acao', keywords: ['energia', 'poder', 'força', 'energy', 'power'] },
-  { name: 'fist', label: 'Punho', category: 'acao', keywords: ['força', 'determinação', 'poder', 'fist', 'strength'] },
+  { name: 'hand-fist', label: 'Punho', category: 'acao', keywords: ['força', 'determinação', 'poder', 'fist', 'strength', 'punho'] },
   { name: 'flame', label: 'Chama', category: 'acao', keywords: ['chama', 'paixão', 'intensidade', 'flame', 'passion'] },
 
   // Negócios e Estratégia

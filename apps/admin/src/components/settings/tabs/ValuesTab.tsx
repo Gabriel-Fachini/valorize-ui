@@ -16,6 +16,7 @@ import { useSprings, useTransition, a } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 import clamp from 'lodash.clamp'
 import swap from 'lodash-move'
+import { SkeletonText, SkeletonBase } from '@/components/ui/Skeleton'
 
 // Função pura para calcular os estilos dos itens durante drag
 const fn =
@@ -243,8 +244,38 @@ export const ValuesTab: FC = () => {
         </CardHeader>
         <CardContent className="space-y-6">
           {isLoading && (
-            <div className="flex items-center justify-center py-8">
-              <i className="ph ph-circle-notch animate-spin text-4xl text-primary" />
+            <div className="space-y-6">
+              {/* Valores Ativos Skeleton */}
+              <div>
+                <SkeletonText width="lg" height="md" className="mb-4" />
+                <div className="space-y-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="p-4 border rounded-lg flex justify-between items-center bg-white dark:bg-gray-800"
+                      style={{ height: 96 }}
+                    >
+                      <div className="flex items-center gap-4 flex-1">
+                        <SkeletonBase>
+                          <div className="h-6 w-6 bg-neutral-300 dark:bg-neutral-600 rounded" />
+                        </SkeletonBase>
+                        <div className="flex-1 space-y-2">
+                          <SkeletonText width="xl" height="sm" />
+                          <SkeletonText width="lg" height="sm" />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <SkeletonBase>
+                          <div className="h-8 w-8 bg-neutral-300 dark:bg-neutral-600 rounded" />
+                        </SkeletonBase>
+                        <SkeletonBase>
+                          <div className="h-8 w-8 bg-neutral-300 dark:bg-neutral-600 rounded" />
+                        </SkeletonBase>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
           {error && (

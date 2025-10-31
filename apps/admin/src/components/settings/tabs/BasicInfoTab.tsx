@@ -1,4 +1,4 @@
-import { type FC, useState, useEffect } from 'react'
+import { type FC, useState, useEffect, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { LogoUpload } from '../LogoUpload'
 import { basicInfoSchema, type BasicInfoFormData, type CompanyInfo } from '@/types/company'
 import { companyService } from '@/services/company'
+import { SkeletonText, SkeletonBase } from '@/components/ui/Skeleton'
 
 import { ErrorModal } from '@/components/ui/ErrorModal'
 
@@ -34,18 +35,15 @@ export const BasicInfoTab: FC = () => {
     },
   })
 
-  // Load company info on mount
-  useEffect(() => {
-    loadCompanyInfo()
-  }, [])
-
-  const loadCompanyInfo = async () => {
+  const loadCompanyInfo = useCallback(async () => {
     setIsFetching(true)
     setError(undefined)
 
     try {
       const data = await companyService.getCompanyInfo()
       setCompanyInfo(data)
+      // Reset logoUrl state when loading
+      setLogoUrl('')
       reset({
         name: data.name,
         logo_url: data.logo_url || '',
@@ -57,11 +55,18 @@ export const BasicInfoTab: FC = () => {
     } finally {
       setIsFetching(false)
     }
-  }
+  }, [reset])
+
+  // Load company info on mount
+  useEffect(() => {
+    loadCompanyInfo()
+  }, [loadCompanyInfo])
 
   // Update form when companyInfo changes
   useEffect(() => {
     if (companyInfo) {
+      // Reset logoUrl state when companyInfo changes
+      setLogoUrl('')
       reset({
         name: companyInfo.name,
         logo_url: companyInfo.logo_url || '',
@@ -75,14 +80,22 @@ export const BasicInfoTab: FC = () => {
     setError(undefined)
 
     try {
-      let finalLogoUrl = data.logo_url
+      let finalLogoUrl = companyInfo?.logo_url || ''
 
-      // Upload logo if a new URL was provided (mock upload)
-      if (logoUrl && logoUrl !== companyInfo?.logo_url) {
-        setIsUploadingLogo(true)
-        const uploadResult = await companyService.uploadLogo({ logo_url: logoUrl })
-        finalLogoUrl = uploadResult.logo_url
-        setIsUploadingLogo(false)
+      // Check if logo was changed (either new upload or removal)
+      const hasLogoChange = logoUrl !== (companyInfo?.logo_url || '')
+
+      if (hasLogoChange) {
+        if (logoUrl && logoUrl.trim() !== '') {
+          // New logo uploaded
+          setIsUploadingLogo(true)
+          const uploadResult = await companyService.uploadLogo({ logo_url: logoUrl })
+          finalLogoUrl = uploadResult.logo_url
+          setIsUploadingLogo(false)
+        } else {
+          // Logo was removed - send empty string
+          finalLogoUrl = ''
+        }
       }
 
       // Update basic info
@@ -92,6 +105,8 @@ export const BasicInfoTab: FC = () => {
       })
 
       setCompanyInfo(updatedInfo)
+      // Reset logoUrl state after successful save
+      setLogoUrl('')
       setSuccessMessage('Informações básicas atualizadas com sucesso!')
 
       // Clear success message after 3 seconds
@@ -106,8 +121,19 @@ export const BasicInfoTab: FC = () => {
     }
   }
 
-  const handleLogoChange = (url: string) => {
-    setLogoUrl(url)
+  const handleLogoChange = (fileOrUrl: string | File) => {
+    if (fileOrUrl instanceof File) {
+      // If it's a File, convert to data URL (shouldn't happen with current implementation)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const dataUrl = reader.result as string
+        setLogoUrl(dataUrl)
+      }
+      reader.readAsDataURL(fileOrUrl)
+    } else {
+      // It's a string (URL or empty string for removal)
+      setLogoUrl(fileOrUrl)
+    }
   }
 
   const handleCloseModal = () => {
@@ -128,8 +154,31 @@ export const BasicInfoTab: FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-center py-8">
-            <i className="ph ph-circle-notch animate-spin text-4xl text-primary" />
+          <div className="space-y-6">
+            {/* Nome da Empresa Skeleton */}
+            <div className="space-y-2">
+              <SkeletonText width="lg" height="sm" />
+              <SkeletonText width="full" height="md" className="h-10" />
+            </div>
+
+            {/* Logo Upload Skeleton */}
+            <div className="space-y-2">
+              <SkeletonText width="md" height="sm" />
+              <div className="flex items-center gap-4">
+                <SkeletonBase>
+                  <div className="h-20 w-20 rounded-lg bg-neutral-300 dark:bg-neutral-600" />
+                </SkeletonBase>
+                <div className="space-y-2 flex-1">
+                  <SkeletonText width="full" height="sm" className="h-8" />
+                  <SkeletonText width="xl" height="sm" />
+                </div>
+              </div>
+            </div>
+
+            {/* Botão Skeleton */}
+            <div className="flex justify-end pt-4 border-t">
+              <SkeletonText width="xl" height="md" className="h-10" />
+            </div>
           </div>
         </CardContent>
       </Card>

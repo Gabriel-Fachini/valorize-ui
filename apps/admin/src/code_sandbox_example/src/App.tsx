@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { useSprings, animated } from '@react-spring/web'
 import { useDrag } from 'react-use-gesture'
 import clamp from 'lodash.clamp'

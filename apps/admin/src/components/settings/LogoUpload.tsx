@@ -20,9 +20,11 @@ export const LogoUpload: FC<LogoUploadProps> = ({
 
   // Update preview when currentLogoUrl prop changes
   useEffect(() => {
-    if (currentLogoUrl) {
+    if (currentLogoUrl && currentLogoUrl.trim() !== '') {
       console.log('🖼️ LogoUpload: Setting preview URL:', currentLogoUrl)
       setPreviewUrl(currentLogoUrl)
+    } else {
+      setPreviewUrl(undefined)
     }
   }, [currentLogoUrl])
 
@@ -66,6 +68,8 @@ export const LogoUpload: FC<LogoUploadProps> = ({
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
+    // Notify parent component that logo was removed
+    onLogoChange('')
   }
 
   return (
@@ -91,7 +95,7 @@ export const LogoUpload: FC<LogoUploadProps> = ({
         {/* Preview */}
         {previewUrl && (
           <div className="relative">
-            <div className="w-32 h-32 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 overflow-hidden bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+            <div className="w-64 h-32 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 overflow-hidden bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
               <img
                 src={previewUrl}
                 alt="Preview da logo"
@@ -101,10 +105,10 @@ export const LogoUpload: FC<LogoUploadProps> = ({
             <button
               type="button"
               onClick={handleRemoveLogo}
-              className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-md transition-colors"
+              className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-md transition-colors cursor-pointer flex items-center justify-center"
               aria-label="Remover logo"
             >
-              <i className="ph ph-x text-sm" />
+              <i className="ph ph-x text-lg" />
             </button>
           </div>
         )}

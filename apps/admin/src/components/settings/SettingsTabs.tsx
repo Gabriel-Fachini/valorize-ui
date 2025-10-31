@@ -1,4 +1,5 @@
-import { type FC } from 'react'
+import { type FC, useEffect } from 'react'
+import { useNavigate, useLocation } from '@tanstack/react-router'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { BasicInfoTab } from './tabs/BasicInfoTab'
 import { DomainsTab } from './tabs/DomainsTab'
@@ -10,10 +11,62 @@ import { ValuesTab } from './tabs/ValuesTab'
  *
  * Each tab loads and manages its own data independently.
  * This provides better modularity and performance.
+ * 
+ * Tabs are now synced with the URL route for persistence across page reloads.
  */
 export const SettingsTabs: FC = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  // Map URL path to tab value
+  const getTabValueFromPath = (pathname: string): string => {
+    if (pathname === '/settings' || pathname === '/settings/basic-info') {
+      return 'basic-info'
+    }
+    if (pathname === '/settings/values') {
+      return 'values'
+    }
+    if (pathname === '/settings/domains') {
+      return 'domains'
+    }
+    if (pathname === '/settings/coin-economy') {
+      return 'coin-economy'
+    }
+    return 'basic-info'
+  }
+
+  // Map tab value to URL path
+  const getPathFromTabValue = (value: string): string => {
+    switch (value) {
+      case 'basic-info':
+        return '/settings/basic-info'
+      case 'values':
+        return '/settings/values'
+      case 'domains':
+        return '/settings/domains'
+      case 'coin-economy':
+        return '/settings/coin-economy'
+      default:
+        return '/settings/basic-info'
+    }
+  }
+
+  const currentTab = getTabValueFromPath(location.pathname)
+
+  const handleTabChange = (value: string) => {
+    const path = getPathFromTabValue(value)
+    navigate({ to: path })
+  }
+
+  // Ensure URL is correct when component mounts
+  useEffect(() => {
+    if (location.pathname === '/settings') {
+      navigate({ to: '/settings/basic-info', replace: true })
+    }
+  }, [location.pathname, navigate])
+
   return (
-    <Tabs defaultValue="basic-info" className="w-full">
+    <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full">
       <TabsList className="grid w-full grid-cols-4 mb-8">
         <TabsTrigger value="basic-info" className="flex items-center gap-2">
           <i className="ph ph-info text-lg" />
