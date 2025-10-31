@@ -12,7 +12,9 @@ interface SuccessOverlayProps {
   userName?: string
   valueName?: string
   valueIcon?: string
+  valueIconName?: string
   valueColor?: string
+  valueIconColor?: string
   onNewPraise?: () => void
   onGoHome?: () => void
 }
@@ -24,7 +26,9 @@ const SuccessContent = memo(({
   userName,
   valueName,
   valueIcon,
+  valueIconName,
   valueColor,
+  valueIconColor,
   onNewPraise,
   onGoHome,
 }: Omit<SuccessOverlayProps, 'isVisible'>) => {
@@ -74,10 +78,19 @@ const SuccessContent = memo(({
         </p>
         
         {/* Value Badge */}
-        {valueName && valueIcon && valueColor && (
+        {valueName && (valueIcon || valueIconName) && (
           <div>
-            <div className={`inline-flex items-center px-4 py-2 bg-gradient-to-r ${valueColor} rounded-full shadow-lg`}>
-              <span className="text-white text-sm font-semibold mr-2">{valueIcon}</span>
+            <div
+              className={`inline-flex items-center px-4 py-2 rounded-full shadow-lg ${
+                valueIconColor ? '' : `bg-gradient-to-r ${valueColor}`
+              }`}
+              style={valueIconColor ? { backgroundColor: valueIconColor } : undefined}
+            >
+              {valueIconName ? (
+                <i className={`ph-bold ph-${valueIconName} text-white text-sm mr-2`}></i>
+              ) : (
+                <span className="text-white text-sm font-semibold mr-2">{valueIcon}</span>
+              )}
               <span className="text-white text-sm font-semibold">{valueName}</span>
             </div>
           </div>
@@ -123,7 +136,9 @@ export const SuccessOverlay = memo(({
   userName,
   valueName,
   valueIcon,
+  valueIconName,
   valueColor,
+  valueIconColor,
   onNewPraise,
   onGoHome,
 }: SuccessOverlayProps) => {
@@ -136,10 +151,12 @@ export const SuccessOverlay = memo(({
     userName,
     valueName,
     valueIcon,
+    valueIconName,
     valueColor,
+    valueIconColor,
     onNewPraise,
     onGoHome,
-  }), [title, description, coinAmount, userName, valueName, valueIcon, valueColor, onNewPraise, onGoHome])
+  }), [title, description, coinAmount, userName, valueName, valueIcon, valueIconName, valueColor, valueIconColor, onNewPraise, onGoHome])
 
   return (
     <>
