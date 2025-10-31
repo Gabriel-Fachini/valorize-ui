@@ -6,6 +6,6 @@ export const NAV_LINKS = [
 ] as const
 
 export const BOTTOM_NAV_LINKS: readonly NavLink[] = [
-  // { path: '/settings', label: 'Configurações', icon: 'gear', dataTour: 'profile' },
+  { path: '/settings', label: 'Configurações', icon: 'gear', dataTour: 'profile' },
 ]
 
