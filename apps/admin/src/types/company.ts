@@ -1,8 +1,44 @@
 import { z } from 'zod'
 
 /**
- * Company interface representing company settings
- * Matches the model described in FAC-82
+ * Company Info - Basic company information
+ * Endpoint: GET/PATCH /admin/company/info
+ */
+export interface CompanyInfo {
+  id: string
+  name: string
+  logo_url?: string
+  country?: string
+  timezone?: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+/**
+ * Company Domain - Allowed domains for SSO
+ * Endpoint: GET/POST/DELETE /admin/company/domains
+ */
+export interface CompanyDomain {
+  id: string
+  domain: string
+  created_at: string
+}
+
+/**
+ * Coin Economy Settings
+ * Endpoint: GET/PATCH /admin/company/coin-economy
+ */
+export interface CoinEconomy {
+  weekly_renewal_amount: number // 50-500
+  renewal_day: number // 1=Monday, 7=Sunday
+  created_at: string
+  updated_at: string
+}
+
+/**
+ * Legacy Company interface for backward compatibility
+ * @deprecated Use CompanyInfo, CompanyDomain, and CoinEconomy instead
  */
 export interface Company {
   id: string
@@ -18,6 +54,7 @@ export interface Company {
 
 /**
  * Partial company settings for updates
+ * @deprecated Use specific update types instead
  */
 export interface CompanySettings {
   name: string
@@ -30,8 +67,15 @@ export interface CompanySettings {
 /**
  * Domain validation regex
  * Validates domain format like: empresa.com.br, empresa.com
+ * Rules:
+ * - Must have at least one dot (e.g., empresa.com)
+ * - Cannot start or end with dot or hyphen
+ * - Cannot have consecutive dots
+ * - Each label must be 1-63 characters
+ * - Must have valid TLD (at least 2 characters after last dot)
+ * - Cannot be only numbers
  */
-const domainRegex = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/i
+const domainRegex = /^(?!-)[a-z0-9-]{1,63}(?<!-)(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)+$/i
 
 /**
  * Schema for basic info form validation
@@ -53,7 +97,45 @@ export type BasicInfoFormData = z.infer<typeof basicInfoSchema>
 export const domainSchema = z
   .string()
   .min(1, 'Domínio é obrigatório')
-  .regex(domainRegex, 'Formato de domínio inválido (ex: empresa.com.br)')
+  .trim()
+  .refine((val) => {
+    const trimmed = val.trim()
+    if (!trimmed) return false
+    
+    // Must have at least one dot
+    if (!trimmed.includes('.')) {
+      return false
+    }
+    
+    // Cannot start or end with dot or hyphen
+    if (trimmed.startsWith('.') || trimmed.endsWith('.') || 
+        trimmed.startsWith('-') || trimmed.endsWith('-')) {
+      return false
+    }
+    
+    // Cannot have consecutive dots
+    if (trimmed.includes('..')) {
+      return false
+    }
+    
+    // Must have valid TLD (at least 2 characters after last dot)
+    const parts = trimmed.split('.')
+    if (parts.length < 2) return false
+    const tld = parts[parts.length - 1]
+    if (tld.length < 2 || !/^[a-z]+$/i.test(tld)) {
+      return false
+    }
+    
+    // Cannot be only numbers
+    if (/^\d+$/.test(parts[0])) {
+      return false
+    }
+    
+    // Apply regex validation
+    return domainRegex.test(trimmed)
+  }, {
+    message: 'Formato de domínio inválido. Use o formato: empresa.com.br (sem www, sem http, sem @)'
+  })
   .toLowerCase()
 
 /**

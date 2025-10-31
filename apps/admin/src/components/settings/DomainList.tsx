@@ -1,9 +1,10 @@
 import { type FC } from 'react'
 import { Badge } from '@/components/ui/badge'
+import type { CompanyDomain } from '@/types/company'
 
 interface DomainListProps {
-  domains: string[]
-  onRemove: (domain: string) => void
+  domains: CompanyDomain[]
+  onRemove: (domainId: string) => void
   isDisabled?: boolean
 }
 
@@ -28,20 +29,20 @@ export const DomainList: FC<DomainListProps> = ({
         Domínios cadastrados ({domains.length})
       </div>
       <div className="flex flex-wrap gap-2">
-        {domains.map((domain) => (
+        {domains.map((domainObj) => (
           <Badge
-            key={domain}
+            key={domainObj.id}
             variant="secondary"
             className="px-3 py-2 text-sm flex items-center gap-2 hover:bg-secondary/80 transition-colors"
           >
             <i className="ph ph-globe text-base" />
-            <span className="font-mono">{domain}</span>
+            <span className="font-mono">{domainObj.domain}</span>
             <button
               type="button"
-              onClick={() => onRemove(domain)}
+              onClick={() => onRemove(domainObj.id)}
               disabled={isDisabled}
               className="ml-1 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label={`Remover domínio ${domain}`}
+              aria-label={`Remover domínio ${domainObj.domain}`}
             >
               <i className="ph ph-x text-base" />
             </button>

@@ -5,7 +5,7 @@ import { LOGO_CONSTRAINTS } from '@/types/company'
 
 interface LogoUploadProps {
   currentLogoUrl?: string
-  onLogoChange: (file: File) => void
+  onLogoChange: (fileOrUrl: File | string) => void
   isUploading?: boolean
 }
 
@@ -48,12 +48,12 @@ export const LogoUpload: FC<LogoUploadProps> = ({
     // Create preview
     const reader = new FileReader()
     reader.onloadend = () => {
-      setPreviewUrl(reader.result as string)
+      const dataUrl = reader.result as string
+      setPreviewUrl(dataUrl)
+      // Call parent callback with data URL (for mock upload)
+      onLogoChange(dataUrl)
     }
     reader.readAsDataURL(file)
-
-    // Call parent callback
-    onLogoChange(file)
   }
 
   const handleButtonClick = () => {

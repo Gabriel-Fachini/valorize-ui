@@ -2,36 +2,77 @@ import { api } from './api'
 import type { CompanyValue } from '@/types/companyValues'
 
 const companyValuesService = {
+  /**
+   * Get all company values
+   *
+   * Endpoint: GET /admin/company/values
+   */
   list: async (): Promise<CompanyValue[]> => {
     const { data } = await api.get('/admin/company/values')
     return data
   },
 
-  get: async (id: string): Promise<CompanyValue> => {
+  /**
+   * Get a specific company value
+   *
+   * Endpoint: GET /admin/company/values/{id}
+   */
+  get: async (id: number): Promise<CompanyValue> => {
     const { data } = await api.get(`/admin/company/values/${id}`)
     return data
   },
 
+  /**
+   * Create a new company value
+   *
+   * Endpoint: POST /admin/company/values
+   *
+   * Max 8 active values per company
+   */
   create: async (value: Partial<CompanyValue>): Promise<CompanyValue> => {
     const { data } = await api.post('/admin/company/values', value)
     return data
   },
 
-  update: async (id: string, value: Partial<CompanyValue>): Promise<CompanyValue> => {
+  /**
+   * Update an existing company value
+   *
+   * Endpoint: PATCH /admin/company/values/{id}
+   */
+  update: async (id: number, value: Partial<CompanyValue>): Promise<CompanyValue> => {
     const { data } = await api.patch(`/admin/company/values/${id}`, value)
     return data
   },
 
-  reorder: async (ids: string[]): Promise<void> => {
-    await api.patch('/admin/company/values/reorder', { ordered_ids: ids })
+  /**
+   * Delete a company value (soft delete)
+   *
+   * Endpoint: DELETE /admin/company/values/{id}
+   *
+   * Marks is_active = false instead of permanent deletion
+   */
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/admin/company/values/${id}`)
   },
 
-  deactivate: async (id: string): Promise<void> => {
-    // Mock implementation - API was implemented incorrectly
-    console.log('[MOCK] Deactivating value:', id)
-    // In real implementation, this should be:
-    // await api.patch(`/admin/company/values/${id}/deactivate`)
-    await new Promise(resolve => setTimeout(resolve, 300))
+  /**
+   * Reorder company values
+   *
+   * Endpoint: PATCH /admin/company/values/reorder
+   */
+  reorder: async (ids: number[]): Promise<{ message: string; values: CompanyValue[] }> => {
+    const { data } = await api.patch('/admin/company/values/reorder', { ordered_ids: ids })
+    return data
+  },
+
+  // ==================== Legacy Methods (Deprecated) ====================
+
+  /**
+   * @deprecated Use delete() instead - real soft delete implementation
+   */
+  deactivate: async (id: number): Promise<void> => {
+    console.warn('[DEPRECATED] Use companyValuesService.delete() instead')
+    await api.delete(`/admin/company/values/${id}`)
   },
 }
 

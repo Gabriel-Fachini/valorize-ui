@@ -2,7 +2,14 @@ import { type FC, useState, useEffect, useMemo, useRef } from 'react'
 import { companyValuesService } from '@/services/companyValues'
 import type { CompanyValue } from '@/types/companyValues'
 import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { ValueForm } from './ValueForm'
 import { useSprings, useTransition, a } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
@@ -43,6 +50,8 @@ export const ValuesTab: FC = () => {
   const [error, setError] = useState<string | undefined>()
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [selectedValue, setSelectedValue] = useState<CompanyValue | null>(null)
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
+  const [valueToDelete, setValueToDelete] = useState<CompanyValue | null>(null)
   const CARD_HEIGHT = 96
   const GAP = 20
   const ITEM_HEIGHT = CARD_HEIGHT + GAP
@@ -52,7 +61,7 @@ export const ValuesTab: FC = () => {
 
   // Inicializar order - mesma abordagem do TestTab
   const order = useRef<number[]>([])
-  const prevActiveValuesIds = useRef<string[]>([])
+  const prevActiveValuesIds = useRef<number[]>([])
 
   useEffect(() => {
     loadValues()
@@ -64,8 +73,10 @@ export const ValuesTab: FC = () => {
     try {
       const data = await companyValuesService.list()
       const sorted = [...data].sort((a, b) => {
-        if (a.position === b.position) return 0
-        return a.position < b.position ? -1 : 1
+        const aOrder = a.order ?? a.position ?? 0
+        const bOrder = b.order ?? b.position ?? 0
+        if (aOrder === bOrder) return 0
+        return aOrder < bOrder ? -1 : 1
       })
       setValues(sorted)
     } catch (err) {
@@ -93,26 +104,43 @@ export const ValuesTab: FC = () => {
     }
   }
 
-  const handleToggleActive = async (value: CompanyValue) => {
+  const handleDeleteClick = (value: CompanyValue) => {
+    setValueToDelete(value)
+    setIsConfirmationModalOpen(true)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!valueToDelete) return
+
     try {
-      await companyValuesService.update(value.id, { is_active: !value.is_active })
-      setValues((prev) => {
-        const updated = prev.map((v) =>
-          v.id === value.id ? { ...v, is_active: !v.is_active } : v
-        )
-        return updated.sort((a, b) => {
-          if (a.is_active !== b.is_active) return a.is_active ? -1 : 1
-          if (a.position === b.position) return 0
-          return a.position < b.position ? -1 : 1
-        })
-      })
+      await companyValuesService.delete(valueToDelete.id)
+      setIsConfirmationModalOpen(false)
+      setValueToDelete(null)
+      loadValues()
     } catch (err) {
-      console.error('Error toggling active state:', err)
-      setError('Erro ao atualizar status do valor. Tente novamente.')
+      console.error('Error deleting value:', err)
+      setError('Erro ao deletar valor. Tente novamente.')
+      setIsConfirmationModalOpen(false)
+      setValueToDelete(null)
     }
   }
 
-  const handleReorder = async (orderedIds: string[]) => {
+  const handleDeleteCancel = () => {
+    setIsConfirmationModalOpen(false)
+    setValueToDelete(null)
+  }
+
+  const handleReactivate = async (value: CompanyValue) => {
+    try {
+      await companyValuesService.update(value.id, { is_active: true })
+      loadValues()
+    } catch (err) {
+      console.error('Error reactivating value:', err)
+      setError('Erro ao reativar valor. Tente novamente.')
+    }
+  }
+
+  const handleReorder = async (orderedIds: number[]) => {
     try {
       // Update otimista: atualiza o estado local primeiro
       setValues((prev) => {
@@ -120,7 +148,7 @@ export const ValuesTab: FC = () => {
         const activeReordered = orderedIds
           .map((id) => byId.get(id)!)
           .filter((v) => v !== undefined)
-          .map((v, idx) => ({ ...v, position: idx }))
+          .map((v, idx) => ({ ...v, order: idx, position: idx }))
         const inactive = prev.filter((v) => !v.is_active)
         return [...activeReordered, ...inactive]
       })
@@ -150,8 +178,8 @@ export const ValuesTab: FC = () => {
 
   // Sincroniza order.current quando activeValues muda (após load ou reorder)
   useEffect(() => {
-    const currentIds = activeValues.map(v => v.id).join(',')
-    const prevIds = prevActiveValuesIds.current.join(',')
+    const currentIds = activeValues.map(v => v.id.toString()).join(',')
+    const prevIds = prevActiveValuesIds.current.map(id => id.toString()).join(',')
 
     // Se a lista mudou (diferente ordem de IDs ou tamanho diferente), reseta order
     if (currentIds !== prevIds && activeValues.length > 0) {
@@ -214,6 +242,48 @@ export const ValuesTab: FC = () => {
         onSave={handleSave}
         onCancel={() => { setIsFormOpen(false); setSelectedValue(null) }}
       />
+
+      <Dialog
+        open={isConfirmationModalOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            handleDeleteCancel()
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <div className="flex flex-col items-center justify-center text-orange-500 dark:text-orange-400 mb-2">
+              <i className="ph ph-warning text-5xl" />
+            </div>
+            <DialogTitle className="text-center text-xl font-bold text-foreground">
+              Desativar Valor
+            </DialogTitle>
+            <DialogDescription className="text-center text-foreground">
+              Tem certeza que deseja desativar o valor{' '}
+              <strong className="font-semibold text-foreground">
+                "{valueToDelete?.title}"
+              </strong>?
+              <br />
+              <br />
+              <span className="text-muted-foreground">
+                Este valor não será mais exibido nos elogios, mas poderá ser reativado posteriormente.
+              </span>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-col sm:flex-row sm:justify-center gap-2">
+            <Button onClick={handleDeleteCancel} variant="outline">
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleDeleteConfirm}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Desativar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {isLoading && <p>Carregando...</p>}
       {error && <p className="text-red-500">{error}</p>}
@@ -287,23 +357,32 @@ export const ValuesTab: FC = () => {
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
-                        size="sm"
+                        size="icon"
                         onClick={(e) => {
                           e.stopPropagation()
                           setSelectedValue(value)
                           setIsFormOpen(true)
                         }}
+                        className="h-10 w-10 border-2"
+                        title="Editar valor"
                       >
-                        <i className="ph ph-pencil-simple" />
+                        <i className="ph ph-pencil-simple text-lg" />
                       </Button>
-                      <Switch
-                        checked={true}
-                        onCheckedChange={() => handleToggleActive(value)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeleteClick(value)
+                        }}
+                        className="h-10 w-10 border-2 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300 hover:border-red-400"
+                        title="Desativar valor"
+                      >
+                        <i className="ph ph-eye-slash text-lg" />
+                      </Button>
                     </div>
                   </div>
                 </a.div>
@@ -354,21 +433,27 @@ export const ValuesTab: FC = () => {
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="icon"
                     onClick={() => {
                       setSelectedValue(value)
                       setIsFormOpen(true)
                     }}
+                    className="h-10 w-10 border-2"
+                    title="Editar valor"
                   >
-                    <i className="ph ph-pencil-simple" />
+                    <i className="ph ph-pencil-simple text-lg" />
                   </Button>
-                  <Switch
-                    checked={false}
-                    onCheckedChange={() => handleToggleActive(value)}
-                  />
+                  <Button
+                    variant="outline"
+                    onClick={() => handleReactivate(value)}
+                    className="text-green-600 hover:text-green-700 hover:bg-green-50 border-2 border-green-300 hover:border-green-400"
+                  >
+                    <i className="ph ph-arrow-counter-clockwise mr-2" />
+                    Reativar
+                  </Button>
                 </div>
               </a.div>
             ))}

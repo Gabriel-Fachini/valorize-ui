@@ -1,20 +1,122 @@
 import { api } from './api'
-import type { Company, CompanySettings } from '../types/company'
+import type { Company, CompanySettings, CompanyInfo, CompanyDomain, CoinEconomy } from '../types/company'
 
 /**
  * Company service for managing company settings
- * Implements endpoints for FAC-82
+ * Updated to match new API endpoints structure
  */
 export const companyService = {
+  // ==================== Company Info ====================
+
   /**
-   * Fetch current company settings
+   * Get company basic information
    *
-   * Endpoint: GET /admin/company/settings
+   * Endpoint: GET /admin/company/info
+   */
+  async getCompanyInfo(): Promise<CompanyInfo> {
+    const response = await api.get<CompanyInfo>('/admin/company/info')
+    return response.data
+  },
+
+  /**
+   * Update company basic info (name and/or logo)
    *
-   * Returns company configuration including:
-   * - Basic info (name, logo)
-   * - Allowed domains for SSO
-   * - Coin economy settings
+   * Endpoint: PATCH /admin/company/info
+   */
+  async updateCompanyInfo(data: { name?: string; logo_url?: string }): Promise<CompanyInfo> {
+    const response = await api.patch<CompanyInfo>('/admin/company/info', data)
+    return response.data
+  },
+
+  /**
+   * Upload company logo (currently MOCK)
+   *
+   * Endpoint: POST /admin/company/info/logo
+   *
+   * Note: Currently receives URL and returns same URL
+   * Real multipart/form-data implementation coming later
+   */
+  async uploadLogo(data: { logo_url: string }): Promise<{ logo_url: string }> {
+    const response = await api.post<{ logo_url: string }>('/admin/company/info/logo', data)
+    return response.data
+  },
+
+  // ==================== Company Domains ====================
+
+  /**
+   * Get all allowed domains for SSO
+   *
+   * Endpoint: GET /admin/company/domains
+   */
+  async getDomains(): Promise<CompanyDomain[]> {
+    const response = await api.get<CompanyDomain[]>('/admin/company/domains')
+    return response.data
+  },
+
+  /**
+   * Replace all domains (atomic operation)
+   *
+   * Endpoint: PUT /admin/company/domains
+   *
+   * Removes all existing domains and creates new ones
+   */
+  async updateDomains(domains: string[]): Promise<CompanyDomain[]> {
+    const response = await api.put<CompanyDomain[]>('/admin/company/domains', { domains })
+    return response.data
+  },
+
+  /**
+   * Add a single domain
+   *
+   * Endpoint: POST /admin/company/domains
+   *
+   * Returns 409 if domain already exists
+   */
+  async addDomain(domain: string): Promise<CompanyDomain> {
+    const response = await api.post<CompanyDomain>('/admin/company/domains', { domain })
+    return response.data
+  },
+
+  /**
+   * Remove a specific domain
+   *
+   * Endpoint: DELETE /admin/company/domains/{id}
+   *
+   * Returns 400 if trying to remove last domain
+   */
+  async removeDomain(id: string): Promise<void> {
+    await api.delete(`/admin/company/domains/${id}`)
+  },
+
+  // ==================== Coin Economy ====================
+
+  /**
+   * Get coin economy settings
+   *
+   * Endpoint: GET /admin/company/coin-economy
+   */
+  async getCoinEconomy(): Promise<CoinEconomy> {
+    const response = await api.get<CoinEconomy>('/admin/company/coin-economy')
+    return response.data
+  },
+
+  /**
+   * Update coin economy settings
+   *
+   * Endpoint: PATCH /admin/company/coin-economy
+   */
+  async updateCoinEconomy(data: {
+    weekly_renewal_amount?: number
+    renewal_day?: number
+  }): Promise<CoinEconomy> {
+    const response = await api.patch<CoinEconomy>('/admin/company/coin-economy', data)
+    return response.data
+  },
+
+  // ==================== Legacy Methods (Deprecated) ====================
+
+  /**
+   * @deprecated Use getCompanyInfo(), getDomains(), and getCoinEconomy() instead
    */
   async getCompanySettings(): Promise<Company> {
     const response = await api.get<Company>('/admin/company/settings')
@@ -22,11 +124,7 @@ export const companyService = {
   },
 
   /**
-   * Update company settings
-   *
-   * Endpoint: PUT /admin/company/settings
-   *
-   * Updates company configuration with new values
+   * @deprecated Use updateCompanyInfo(), updateDomains(), and updateCoinEconomy() instead
    */
   async updateCompanySettings(settings: CompanySettings): Promise<Company> {
     const response = await api.put<Company>('/admin/company/settings', settings)
@@ -34,60 +132,10 @@ export const companyService = {
   },
 
   /**
-   * Update only basic info (name and logo)
-   *
-   * Endpoint: PATCH /admin/company/settings/basic-info
-   *
-   * Partial update for basic information
+   * @deprecated Use updateCompanyInfo() instead
    */
   async updateBasicInfo(data: { name: string; logo_url?: string }): Promise<Company> {
     const response = await api.patch<Company>('/admin/company/settings/basic-info', data)
-    return response.data
-  },
-
-  /**
-   * Update allowed domains for SSO
-   *
-   * Endpoint: PATCH /admin/company/settings/domains
-   *
-   * Updates the list of allowed domains for Google SSO
-   */
-  async updateDomains(domains: string[]): Promise<Company> {
-    const response = await api.patch<Company>('/admin/company/settings/domains', { domains })
-    return response.data
-  },
-
-  /**
-   * Update coin economy settings
-   *
-   * Endpoint: PATCH /admin/company/settings/coin-economy
-   *
-   * Updates weekly renewal amount and day
-   */
-  async updateCoinEconomy(data: { weekly_renewal_amount: number; renewal_day: number }): Promise<Company> {
-    const response = await api.patch<Company>('/admin/company/settings/coin-economy', data)
-    return response.data
-  },
-
-  /**
-   * Upload company logo
-   *
-   * Endpoint: POST /admin/company/logo
-   *
-   * Uploads logo file and returns the URL
-   * Accepts: PNG, JPG, SVG
-   * Max size: 1MB
-   */
-  async uploadLogo(file: File): Promise<{ logo_url: string }> {
-    const formData = new FormData()
-    formData.append('logo', file)
-
-    const response = await api.post<{ logo_url: string }>('/admin/company/logo', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-
     return response.data
   },
 }

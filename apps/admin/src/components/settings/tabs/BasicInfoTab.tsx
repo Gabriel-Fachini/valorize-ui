@@ -6,20 +6,17 @@ import { Button } from '@/components/ui/button'
 import { SimpleInput } from '@/components/ui/simple-input'
 import { Label } from '@/components/ui/label'
 import { LogoUpload } from '../LogoUpload'
-import { basicInfoSchema, type BasicInfoFormData, type Company } from '@/types/company'
+import { basicInfoSchema, type BasicInfoFormData, type CompanyInfo } from '@/types/company'
 import { companyService } from '@/services/company'
 
 import { ErrorModal } from '@/components/ui/ErrorModal'
 
-interface BasicInfoTabProps {
-  company?: Company
-  onUpdate: (updatedCompany: Company) => void
-}
-
-export const BasicInfoTab: FC<BasicInfoTabProps> = ({ company, onUpdate }) => {
+export const BasicInfoTab: FC = () => {
+  const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null)
+  const [isFetching, setIsFetching] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [isUploadingLogo, setIsUploadingLogo] = useState(false)
-  const [logoFile, setLogoFile] = useState<File | null>(null)
+  const [logoUrl, setLogoUrl] = useState<string>('')
   const [successMessage, setSuccessMessage] = useState<string | undefined>()
   const [error, setError] = useState<string | undefined>()
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
@@ -37,15 +34,40 @@ export const BasicInfoTab: FC<BasicInfoTabProps> = ({ company, onUpdate }) => {
     },
   })
 
-  // Reset form when company data arrives
+  // Load company info on mount
   useEffect(() => {
-    if (company) {
+    loadCompanyInfo()
+  }, [])
+
+  const loadCompanyInfo = async () => {
+    setIsFetching(true)
+    setError(undefined)
+
+    try {
+      const data = await companyService.getCompanyInfo()
+      setCompanyInfo(data)
       reset({
-        name: company.name,
-        logo_url: company.logo_url || '',
+        name: data.name,
+        logo_url: data.logo_url || '',
+      })
+    } catch (err) {
+      console.error('Error loading company info:', err)
+      setError('Erro ao carregar informações da empresa.')
+      setIsErrorModalOpen(true)
+    } finally {
+      setIsFetching(false)
+    }
+  }
+
+  // Update form when companyInfo changes
+  useEffect(() => {
+    if (companyInfo) {
+      reset({
+        name: companyInfo.name,
+        logo_url: companyInfo.logo_url || '',
       })
     }
-  }, [company, reset])
+  }, [companyInfo, reset])
 
   const onSubmit = async (data: BasicInfoFormData) => {
     setIsLoading(true)
@@ -53,23 +75,23 @@ export const BasicInfoTab: FC<BasicInfoTabProps> = ({ company, onUpdate }) => {
     setError(undefined)
 
     try {
-      let logoUrl = data.logo_url
+      let finalLogoUrl = data.logo_url
 
-      // Upload logo if a new file was selected
-      if (logoFile) {
+      // Upload logo if a new URL was provided (mock upload)
+      if (logoUrl && logoUrl !== companyInfo?.logo_url) {
         setIsUploadingLogo(true)
-        const uploadResult = await companyService.uploadLogo(logoFile)
-        logoUrl = uploadResult.logo_url
+        const uploadResult = await companyService.uploadLogo({ logo_url: logoUrl })
+        finalLogoUrl = uploadResult.logo_url
         setIsUploadingLogo(false)
       }
 
       // Update basic info
-      const updatedCompany = await companyService.updateBasicInfo({
+      const updatedInfo = await companyService.updateCompanyInfo({
         name: data.name,
-        logo_url: logoUrl,
+        logo_url: finalLogoUrl,
       })
 
-      onUpdate(updatedCompany)
+      setCompanyInfo(updatedInfo)
       setSuccessMessage('Informações básicas atualizadas com sucesso!')
 
       // Clear success message after 3 seconds
@@ -84,13 +106,34 @@ export const BasicInfoTab: FC<BasicInfoTabProps> = ({ company, onUpdate }) => {
     }
   }
 
-  const handleLogoChange = (file: File) => {
-    setLogoFile(file)
+  const handleLogoChange = (url: string) => {
+    setLogoUrl(url)
   }
 
   const handleCloseModal = () => {
     setIsErrorModalOpen(false)
     setError(undefined)
+  }
+
+  if (isFetching) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <i className="ph ph-info text-xl" />
+            Informações Básicas
+          </CardTitle>
+          <CardDescription>
+            Configure o nome e a logo da sua empresa. Essas informações serão exibidas em toda a plataforma.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center py-8">
+            <i className="ph ph-circle-notch animate-spin text-4xl text-primary" />
+          </div>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
@@ -129,7 +172,7 @@ export const BasicInfoTab: FC<BasicInfoTabProps> = ({ company, onUpdate }) => {
 
             {/* Logo Upload */}
             <LogoUpload
-              currentLogoUrl={company?.logo_url}
+              currentLogoUrl={companyInfo?.logo_url}
               onLogoChange={handleLogoChange}
               isUploading={isUploadingLogo}
             />
