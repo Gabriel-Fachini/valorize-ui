@@ -14,8 +14,7 @@ import {
 import { ValueForm } from './ValueForm'
 import { useSprings, useTransition, a } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import clamp from 'lodash.clamp'
-import swap from 'lodash-move'
+import { move, clamp } from '@/lib/utils'
 import { SkeletonText, SkeletonBase } from '@/components/ui/Skeleton'
 
 // Função pura para calcular os estilos dos itens durante drag
@@ -208,7 +207,7 @@ export const ValuesTab: FC = () => {
       0,
       activeValues.length - 1
     )
-    const newOrder = swap(order.current, curIndex, curRow)
+    const newOrder = move(order.current, curIndex, curRow)
 
     // Atualiza as animações (igual ao exemplo)
     api.start(fn(newOrder, active, originalIndex, curIndex, y, ITEM_HEIGHT))
