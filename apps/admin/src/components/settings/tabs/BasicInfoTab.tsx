@@ -40,7 +40,6 @@ export const BasicInfoTab: FC<BasicInfoTabProps> = ({ company, onUpdate }) => {
   // Reset form when company data arrives
   useEffect(() => {
     if (company) {
-      console.log('✅ BasicInfoTab: Resetting form with company data:', company)
       reset({
         name: company.name,
         logo_url: company.logo_url || '',

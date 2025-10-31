@@ -33,7 +33,6 @@ export const SettingsPage: FC = () => {
 
     try {
       const data = await companyService.getCompanySettings()
-      console.log('📦 Company data loaded:', data)
       setCompany(data)
     } catch (err) {
       console.error('Error loading company settings:', err)

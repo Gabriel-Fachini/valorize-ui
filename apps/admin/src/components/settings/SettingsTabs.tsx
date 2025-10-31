@@ -3,6 +3,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { BasicInfoTab } from './tabs/BasicInfoTab'
 import { DomainsTab } from './tabs/DomainsTab'
 import { CoinEconomyTab } from './tabs/CoinEconomyTab'
+import { ValuesTab } from './tabs/ValuesTab'
+import { TestTab } from './tabs/TestTab'
 import type { Company } from '@/types/company'
 import { SettingsTabsSkeleton } from './SettingsTabsSkeleton'
 
@@ -17,7 +19,6 @@ export const SettingsTabs: FC<SettingsTabsProps> = ({ company, isLoading = false
   // Sync currentCompany with company prop when it changes (after API fetch)
   useEffect(() => {
     if (company) {
-      console.log('🔄 SettingsTabs: company prop updated:', company)
       setCurrentCompany(company)
     }
   }, [company])
@@ -33,11 +34,17 @@ export const SettingsTabs: FC<SettingsTabsProps> = ({ company, isLoading = false
 
   return (
     <Tabs defaultValue="basic-info" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 mb-8">
+      <TabsList className="grid w-full grid-cols-5 mb-8">
         <TabsTrigger value="basic-info" className="flex items-center gap-2">
           <i className="ph ph-info text-lg" />
           <span className="hidden sm:inline">Informações Básicas</span>
           <span className="sm:hidden">Info</span>
+        </TabsTrigger>
+        {/* Values second */}
+        <TabsTrigger value="values" className="flex items-center gap-2">
+          <i className="ph ph-star text-lg" />
+          <span className="hidden sm:inline">Valores</span>
+          <span className="sm:hidden">Valores</span>
         </TabsTrigger>
         <TabsTrigger value="domains" className="flex items-center gap-2">
           <i className="ph ph-shield-check text-lg" />
@@ -49,10 +56,20 @@ export const SettingsTabs: FC<SettingsTabsProps> = ({ company, isLoading = false
           <span className="hidden sm:inline">Economia</span>
           <span className="sm:hidden">Moedas</span>
         </TabsTrigger>
+        <TabsTrigger value="test" className="flex items-center gap-2">
+          <i className="ph ph-flask text-lg" />
+          <span className="hidden sm:inline">Teste</span>
+          <span className="sm:hidden">Teste</span>
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="basic-info">
         <BasicInfoTab company={currentCompany} onUpdate={handleCompanyUpdate} />
+      </TabsContent>
+
+      {/* Values second */}
+      <TabsContent value="values">
+        <ValuesTab />
       </TabsContent>
 
       <TabsContent value="domains">
@@ -61,6 +78,10 @@ export const SettingsTabs: FC<SettingsTabsProps> = ({ company, isLoading = false
 
       <TabsContent value="coin-economy">
         <CoinEconomyTab company={currentCompany} onUpdate={handleCompanyUpdate} />
+      </TabsContent>
+
+      <TabsContent value="test">
+        <TestTab />
       </TabsContent>
     </Tabs>
   )
