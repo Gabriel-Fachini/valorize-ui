@@ -25,7 +25,9 @@ export const BottomActions = ({
       {/* Configurações com indicador verde */}
       <div className="relative">
         {BOTTOM_NAV_LINKS.map((link) => {
-          const isActive = currentPath === link.path
+          // Check for exact match or any sub-route pattern (e.g., /settings, /settings/*)
+          // This allows the settings item to be active for /settings and any sub-route like /settings/basic-info
+          const isActive = currentPath === link.path || currentPath.startsWith(link.path + '/')
           const iconClass = isActive ? `ph-fill ph-${link.icon}` : `ph ph-${link.icon}`
           
           return (
