@@ -4,6 +4,7 @@ import { BasicInfoTab } from './tabs/BasicInfoTab'
 import { DomainsTab } from './tabs/DomainsTab'
 import { CoinEconomyTab } from './tabs/CoinEconomyTab'
 import type { Company } from '@/types/company'
+import { SettingsTabsSkeleton } from './SettingsTabsSkeleton'
 
 interface SettingsTabsProps {
   company?: Company
@@ -27,12 +28,7 @@ export const SettingsTabs: FC<SettingsTabsProps> = ({ company, isLoading = false
   }
 
   if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="h-12 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />
-        <div className="h-96 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />
-      </div>
-    )
+    return <SettingsTabsSkeleton />
   }
 
   return (
