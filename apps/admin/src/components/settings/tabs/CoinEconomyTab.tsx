@@ -12,17 +12,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { coinEconomySchema, type CoinEconomyFormData, type Company, WEEKDAY_OPTIONS } from '@/types/company'
+import { coinEconomySchema, type CoinEconomyFormData, type CoinEconomy, WEEKDAY_OPTIONS } from '@/types/company'
 import { companyService } from '@/services/company'
+import { SkeletonText, SkeletonBase } from '@/components/ui/Skeleton'
 
 import { ErrorModal } from '@/components/ui/ErrorModal'
 
-interface CoinEconomyTabProps {
-  company?: Company
-  onUpdate: (updatedCompany: Company) => void
-}
-
-export const CoinEconomyTab: FC<CoinEconomyTabProps> = ({ company, onUpdate }) => {
+export const CoinEconomyTab: FC = () => {
+  const [coinEconomy, setCoinEconomy] = useState<CoinEconomy | null>(null)
+  const [isFetching, setIsFetching] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | undefined>()
   const [error, setError] = useState<string | undefined>()
@@ -46,19 +44,40 @@ export const CoinEconomyTab: FC<CoinEconomyTabProps> = ({ company, onUpdate }) =
   const weeklyRenewalAmount = watch('weekly_renewal_amount')
   const renewalDay = watch('renewal_day')
 
-  // Reset form when company data arrives
+  // Load coin economy on mount
   useEffect(() => {
-    if (company) {
-      console.log('✅ CoinEconomyTab: Resetting form with company data:', {
-        weekly_renewal_amount: company.weekly_renewal_amount,
-        renewal_day: company.renewal_day,
-      })
+    loadCoinEconomy()
+  }, [])
+
+  const loadCoinEconomy = async () => {
+    setIsFetching(true)
+    setError(undefined)
+
+    try {
+      const data = await companyService.getCoinEconomy()
+      setCoinEconomy(data)
       reset({
-        weekly_renewal_amount: company.weekly_renewal_amount,
-        renewal_day: company.renewal_day,
+        weekly_renewal_amount: data.weekly_renewal_amount,
+        renewal_day: data.renewal_day,
+      })
+    } catch (err) {
+      console.error('Error loading coin economy:', err)
+      setError('Erro ao carregar configurações de economia.')
+      setIsErrorModalOpen(true)
+    } finally {
+      setIsFetching(false)
+    }
+  }
+
+  // Update form when coinEconomy changes
+  useEffect(() => {
+    if (coinEconomy) {
+      reset({
+        weekly_renewal_amount: coinEconomy.weekly_renewal_amount,
+        renewal_day: coinEconomy.renewal_day,
       })
     }
-  }, [company, reset])
+  }, [coinEconomy, reset])
 
   const onSubmit = async (data: CoinEconomyFormData) => {
     setIsLoading(true)
@@ -66,12 +85,12 @@ export const CoinEconomyTab: FC<CoinEconomyTabProps> = ({ company, onUpdate }) =
     setError(undefined)
 
     try {
-      const updatedCompany = await companyService.updateCoinEconomy({
+      const updatedEconomy = await companyService.updateCoinEconomy({
         weekly_renewal_amount: data.weekly_renewal_amount,
         renewal_day: data.renewal_day,
       })
 
-      onUpdate(updatedCompany)
+      setCoinEconomy(updatedEconomy)
       setSuccessMessage('Configurações de economia atualizadas com sucesso!')
 
       // Clear success message after 3 seconds
@@ -91,6 +110,68 @@ export const CoinEconomyTab: FC<CoinEconomyTabProps> = ({ company, onUpdate }) =
   }
 
   const selectedWeekday = WEEKDAY_OPTIONS.find((day) => day.value === renewalDay)
+
+  if (isFetching) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <i className="ph ph-coin text-xl" />
+            Economia de Moedas
+          </CardTitle>
+          <CardDescription>
+            Configure a quantidade de moedas que cada colaborador recebe semanalmente para enviar elogios.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            {/* Info Box Skeleton */}
+            <SkeletonBase>
+              <div className="p-4 bg-neutral-200 dark:bg-neutral-700 rounded-lg">
+                <div className="space-y-2">
+                  <SkeletonText width="md" height="sm" />
+                  <SkeletonText width="full" height="sm" />
+                  <SkeletonText width="xl" height="sm" />
+                </div>
+              </div>
+            </SkeletonBase>
+
+            {/* Quantidade de Renovação Skeleton */}
+            <div className="space-y-2">
+              <SkeletonText width="xl" height="sm" />
+              <div className="flex items-center gap-4">
+                <SkeletonText width="full" height="md" className="h-10" />
+                <SkeletonText width="md" height="sm" />
+              </div>
+              <SkeletonText width="lg" height="sm" />
+            </div>
+
+            {/* Dia da Renovação Skeleton */}
+            <div className="space-y-2">
+              <SkeletonText width="lg" height="sm" />
+              <SkeletonText width="full" height="md" className="h-10" />
+              <SkeletonText width="xl" height="sm" />
+            </div>
+
+            {/* Resumo Skeleton */}
+            <SkeletonBase>
+              <div className="p-4 bg-neutral-200 dark:bg-neutral-700 rounded-lg">
+                <div className="space-y-2">
+                  <SkeletonText width="md" height="sm" />
+                  <SkeletonText width="full" height="sm" />
+                </div>
+              </div>
+            </SkeletonBase>
+
+            {/* Botão Skeleton */}
+            <div className="flex justify-end pt-4 border-t">
+              <SkeletonText width="xl" height="md" className="h-10" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <>

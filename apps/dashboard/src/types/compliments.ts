@@ -20,6 +20,9 @@ export interface CompanyValue {
   title: string
   description: string
   icon: string
+  iconName?: string
+  iconColor?: string
+  example?: string
   isActive: boolean
   createdAt: string
   updatedAt: string

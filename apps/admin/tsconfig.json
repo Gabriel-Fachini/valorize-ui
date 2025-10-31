@@ -64,7 +64,9 @@
   },
   "include": [
     "src/**/*", // Include all files in src directory and subdirectories
-    "vite.config.ts" // Include Vite configuration file
+    "vite.config.ts", // Include Vite configuration file
+    "eslint.config.ts",
+    "tailwind.config.ts"
   ],
   "exclude": [
     "node_modules", // Exclude node_modules directory

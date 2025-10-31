@@ -19,6 +19,9 @@ export interface PraiseCompanyValue {
   description: string
   color: string
   icon: string
+  iconName?: string
+  iconColor?: string
+  example?: string
 }
 
 export interface PraiseData {
@@ -138,8 +141,11 @@ export const usePraisesData = () => {
         id: apiValue.id.toString(),
         name: apiValue.title,
         description: apiValue.description,
-        color: defaultColors[index % defaultColors.length],
+        color: apiValue.iconColor ?? defaultColors[index % defaultColors.length],
         icon: apiValue.icon,
+        iconName: apiValue.iconName,
+        iconColor: apiValue.iconColor,
+        example: apiValue.example,
       }))
       
       return uiValues

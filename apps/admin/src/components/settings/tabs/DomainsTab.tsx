@@ -5,16 +5,13 @@ import { SimpleInput } from '@/components/ui/simple-input'
 import { Label } from '@/components/ui/label'
 import { DomainList } from '../DomainList'
 import { ErrorModal } from '@/components/ui/ErrorModal'
-import { domainSchema, type Company } from '@/types/company'
+import { domainSchema, type CompanyDomain } from '@/types/company'
 import { companyService } from '@/services/company'
+import { SkeletonText, SkeletonBase } from '@/components/ui/Skeleton'
 
-interface DomainsTabProps {
-  company?: Company
-  onUpdate: (updatedCompany: Company) => void
-}
-
-export const DomainsTab: FC<DomainsTabProps> = ({ company, onUpdate }) => {
-  const [domains, setDomains] = useState<string[]>([])
+export const DomainsTab: FC = () => {
+  const [domains, setDomains] = useState<CompanyDomain[]>([])
+  const [isFetching, setIsFetching] = useState(true)
   const [newDomain, setNewDomain] = useState('')
   const [domainError, setDomainError] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState(false)
@@ -22,16 +19,77 @@ export const DomainsTab: FC<DomainsTabProps> = ({ company, onUpdate }) => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
   const [errorModalMessage, setErrorModalMessage] = useState<string | undefined>()
 
-  // Update domains when company data arrives
-  useEffect(() => {
-    if (company?.domains) {
-      console.log('✅ DomainsTab: Setting domains:', company.domains)
-      setDomains(company.domains)
-    }
-  }, [company])
+  // Validação em tempo real do domínio
+  const validateDomainInput = (value: string): string | undefined => {
+    const trimmed = value.trim()
+    if (!trimmed) return undefined
 
-  const handleAddDomain = () => {
+    // Verifica se contém caracteres inválidos
+    if (/[^a-z0-9.-]/i.test(trimmed)) {
+      return 'Domínio não pode conter espaços ou caracteres especiais'
+    }
+
+    // Verifica se começa ou termina com ponto ou hífen
+    if (trimmed.startsWith('.') || trimmed.endsWith('.') || 
+        trimmed.startsWith('-') || trimmed.endsWith('-')) {
+      return 'Domínio não pode começar ou terminar com ponto ou hífen'
+    }
+
+    // Verifica pontos consecutivos
+    if (trimmed.includes('..')) {
+      return 'Domínio não pode ter pontos consecutivos'
+    }
+
+    // Verifica se tem pelo menos um ponto
+    if (!trimmed.includes('.')) {
+      return 'Domínio deve conter pelo menos um ponto (ex: empresa.com)'
+    }
+
+    // Verifica TLD válido
+    const parts = trimmed.split('.')
+    if (parts.length < 2) {
+      return 'Domínio deve ter pelo menos um ponto (ex: empresa.com)'
+    }
+    const tld = parts[parts.length - 1]
+    if (tld.length < 2) {
+      return 'TLD deve ter pelo menos 2 caracteres'
+    }
+    if (!/^[a-z]+$/i.test(tld)) {
+      return 'TLD deve conter apenas letras'
+    }
+
+    // Verifica se não é apenas números
+    if (/^\d+$/.test(parts[0])) {
+      return 'Domínio não pode ser apenas números'
+    }
+
+    return undefined
+  }
+
+  // Load domains on mount
+  useEffect(() => {
+    loadDomains()
+  }, [])
+
+  const loadDomains = async () => {
+    setIsFetching(true)
+    setErrorModalMessage(undefined)
+
+    try {
+      const data = await companyService.getDomains()
+      setDomains(data)
+    } catch (err) {
+      console.error('Error loading domains:', err)
+      setErrorModalMessage('Erro ao carregar domínios.')
+      setIsErrorModalOpen(true)
+    } finally {
+      setIsFetching(false)
+    }
+  }
+
+  const handleAddDomain = async () => {
     setDomainError(undefined)
+    setSuccessMessage(undefined)
 
     // Validate domain
     const result = domainSchema.safeParse(newDomain.trim())
@@ -42,45 +100,57 @@ export const DomainsTab: FC<DomainsTabProps> = ({ company, onUpdate }) => {
 
     const domainToAdd = result.data
 
-    // Check for duplicates
-    if (domains.includes(domainToAdd)) {
+    // Check for duplicates locally
+    if (domains.some((d) => d.domain === domainToAdd)) {
       setDomainError('Este domínio já está cadastrado')
       return
     }
 
-    // Add domain to list
-    setDomains([...domains, domainToAdd])
-    setNewDomain('')
-  }
-
-  const handleRemoveDomain = (domainToRemove: string) => {
-    setDomains(domains.filter((d) => d !== domainToRemove))
-    setSuccessMessage(undefined)
-  }
-
-  const handleSave = async () => {
     setIsLoading(true)
-    setSuccessMessage(undefined)
-    setErrorModalMessage(undefined)
-    setIsErrorModalOpen(false)
 
-    // Validate at least one domain
-    if (domains.length === 0) {
-      setDomainError('Pelo menos um domínio é obrigatório')
+    try {
+      const newDomainObj = await companyService.addDomain(domainToAdd)
+      setDomains([...domains, newDomainObj])
+      setNewDomain('')
+      setDomainError(undefined)
+      setSuccessMessage('Domínio adicionado com sucesso!')
+      setTimeout(() => setSuccessMessage(undefined), 3000)
+    } catch (error: any) {
+      console.error('Error adding domain:', error)
+      if (error.response?.status === 409) {
+        setDomainError('Este domínio já existe')
+      } else {
+        setErrorModalMessage('Erro ao adicionar domínio. Tente novamente.')
+        setIsErrorModalOpen(true)
+      }
+    } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleRemoveDomain = async (domainId: string) => {
+    // Check if it's the last domain
+    if (domains.length === 1) {
+      setErrorModalMessage('Não é possível remover o último domínio. Pelo menos um domínio é obrigatório.')
+      setIsErrorModalOpen(true)
       return
     }
 
-    try {
-      const updatedCompany = await companyService.updateDomains(domains)
-      onUpdate(updatedCompany)
-      setSuccessMessage('Domínios atualizados com sucesso!')
+    setIsLoading(true)
+    setSuccessMessage(undefined)
 
-      // Clear success message after 3 seconds
+    try {
+      await companyService.removeDomain(domainId)
+      setDomains(domains.filter((d) => d.id !== domainId))
+      setSuccessMessage('Domínio removido com sucesso!')
       setTimeout(() => setSuccessMessage(undefined), 3000)
-    } catch (error) {
-      console.error('Error updating domains:', error)
-      setErrorModalMessage('Erro ao atualizar domínios. Tente novamente.')
+    } catch (error: any) {
+      console.error('Error removing domain:', error)
+      if (error.response?.status === 400) {
+        setErrorModalMessage('Não é possível remover o último domínio.')
+      } else {
+        setErrorModalMessage('Erro ao remover domínio. Tente novamente.')
+      }
       setIsErrorModalOpen(true)
     } finally {
       setIsLoading(false)
@@ -90,6 +160,73 @@ export const DomainsTab: FC<DomainsTabProps> = ({ company, onUpdate }) => {
   const handleCloseModal = () => {
     setIsErrorModalOpen(false)
     setErrorModalMessage(undefined)
+  }
+
+  if (isFetching) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <i className="ph ph-shield-check text-xl" />
+            Domínios Permitidos (SSO)
+          </CardTitle>
+          <CardDescription>
+            Configure os domínios de email permitidos para login via Google SSO.
+            Apenas emails desses domínios poderão acessar a plataforma.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            {/* Info Box Skeleton */}
+            <SkeletonBase>
+              <div className="p-4 bg-neutral-200 dark:bg-neutral-700 rounded-lg">
+                <div className="space-y-2">
+                  <SkeletonText width="md" height="sm" />
+                  <SkeletonText width="full" height="sm" />
+                  <SkeletonText width="xl" height="sm" />
+                </div>
+              </div>
+            </SkeletonBase>
+
+            {/* Add Domain Input Skeleton */}
+            <div className="space-y-2">
+              <SkeletonText width="lg" height="sm" />
+              <div className="flex gap-2">
+                <SkeletonText width="full" height="md" className="h-10" />
+                <SkeletonText width="xl" height="md" className="h-10" />
+              </div>
+            </div>
+
+            {/* Domain List Skeleton */}
+            <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-900/50">
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                    <div className="flex items-center gap-3">
+                      <SkeletonBase>
+                        <div className="h-5 w-5 bg-neutral-300 dark:bg-neutral-600 rounded" />
+                      </SkeletonBase>
+                      <SkeletonText width="xl" height="sm" />
+                    </div>
+                    <SkeletonText width="md" height="md" className="h-8 w-8" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Info Card Skeleton */}
+            <SkeletonBase>
+              <div className="p-4 bg-neutral-200 dark:bg-neutral-700 rounded-lg">
+                <div className="space-y-2">
+                  <SkeletonText width="lg" height="sm" />
+                  <SkeletonText width="full" height="sm" />
+                </div>
+              </div>
+            </SkeletonBase>
+          </div>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
@@ -135,8 +272,22 @@ export const DomainsTab: FC<DomainsTabProps> = ({ company, onUpdate }) => {
                   placeholder="empresa.com.br"
                   value={newDomain}
                   onChange={(e) => {
-                    setNewDomain(e.target.value)
-                    setDomainError(undefined)
+                    const value = e.target.value
+                    // Remove caracteres inválidos automaticamente
+                    const sanitized = value.replace(/[^a-z0-9.-]/gi, '')
+                    setNewDomain(sanitized)
+                    
+                    // Validação em tempo real
+                    if (sanitized.trim()) {
+                      const validationError = validateDomainInput(sanitized)
+                      if (validationError) {
+                        setDomainError(validationError)
+                      } else {
+                        setDomainError(undefined)
+                      }
+                    } else {
+                      setDomainError(undefined)
+                    }
                   }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
@@ -144,13 +295,14 @@ export const DomainsTab: FC<DomainsTabProps> = ({ company, onUpdate }) => {
                       handleAddDomain()
                     }
                   }}
+                  className={domainError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
                   aria-invalid={domainError ? 'true' : 'false'}
                 />
               </div>
               <Button
                 type="button"
                 onClick={handleAddDomain}
-                disabled={!newDomain.trim()}
+                disabled={!newDomain.trim() || !!domainError || isLoading}
               >
                 <i className="ph ph-plus mr-2" />
                 Adicionar
@@ -160,6 +312,12 @@ export const DomainsTab: FC<DomainsTabProps> = ({ company, onUpdate }) => {
               <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
                 <i className="ph ph-warning-circle" />
                 {domainError}
+              </p>
+            )}
+            {!domainError && newDomain.trim() && (
+              <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-1">
+                <i className="ph ph-check-circle" />
+                Formato válido
               </p>
             )}
           </div>
@@ -191,25 +349,17 @@ export const DomainsTab: FC<DomainsTabProps> = ({ company, onUpdate }) => {
             </div>
           )}
 
-          {/* Submit Button */}
-          <div className="flex justify-end pt-4 border-t">
-            <Button
-              type="button"
-              onClick={handleSave}
-              disabled={isLoading || domains.length === 0}
-            >
-              {isLoading ? (
-                <>
-                  <i className="ph ph-circle-notch animate-spin mr-2" />
-                  Salvando...
-                </>
-              ) : (
-                <>
-                  <i className="ph ph-check mr-2" />
-                  Salvar Domínios
-                </>
-              )}
-            </Button>
+          {/* Info about auto-save */}
+          <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
+            <div className="flex items-start gap-3">
+              <i className="ph ph-lightning text-primary text-xl mt-0.5" />
+              <div className="text-sm">
+                <p className="font-semibold text-foreground mb-1">Salvamento Automático</p>
+                <p className="text-muted-foreground">
+                  As alterações são salvas automaticamente ao adicionar ou remover domínios.
+                </p>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -217,7 +367,7 @@ export const DomainsTab: FC<DomainsTabProps> = ({ company, onUpdate }) => {
       <ErrorModal
         isOpen={isErrorModalOpen}
         onClose={handleCloseModal}
-        onRetry={handleSave}
+        onRetry={loadDomains}
         title="Ocorreu um Erro"
         message={
           errorModalMessage ||

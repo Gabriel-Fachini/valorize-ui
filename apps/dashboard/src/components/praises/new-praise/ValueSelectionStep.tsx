@@ -43,11 +43,35 @@ export const ValueSelectionStep = ({
                   : 'border-[#e5e5e5] dark:border-[#404040] bg-white dark:bg-[#262626] hover:border-pink-300 hover:scale-[1.01]'
               }`}
             >
-              <div className={`w-16 h-16 bg-gradient-to-r ${value.color} rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
-                <span className="text-3xl">{value.icon}</span>
+              {/* Ícone com suporte a Phosphor Icons ou emoji */}
+              <div
+                className={`w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg ${
+                  value.iconColor
+                    ? ''
+                    : `bg-gradient-to-r ${value.color}`
+                }`}
+                style={value.iconColor ? { backgroundColor: value.iconColor } : undefined}
+              >
+                {value.iconName ? (
+                  <i className={`ph-bold ph-${value.iconName} text-3xl text-white`}></i>
+                ) : (
+                  <span className="text-3xl">{value.icon}</span>
+                )}
               </div>
+
+              {/* Título */}
               <h5 className="font-bold text-[#171717] dark:text-[#f5f5f5] mb-2 text-lg">{value.name}</h5>
-              <p className="text-sm text-[#525252] dark:text-[#a3a3a3] text-center leading-relaxed">{value.description}</p>
+
+              {/* Descrição */}
+              <p className="text-sm text-[#525252] dark:text-[#a3a3a3] text-center leading-relaxed mb-3">{value.description}</p>
+
+              {/* Exemplo de elogio */}
+              {value.example && (
+                <div className="mt-4 pt-4 border-t border-[#e5e5e5] dark:border-[#404040]">
+                  <p className="text-xs text-[#737373] dark:text-[#a3a3a3] text-center mb-1 font-medium">Exemplo de elogio:</p>
+                  <p className="text-xs text-[#525252] dark:text-[#d4d4d4] text-center italic leading-relaxed">"{value.example}"</p>
+                </div>
+              )}
             </button>
           </animated.div>
         ))}

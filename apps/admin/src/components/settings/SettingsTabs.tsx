@@ -1,43 +1,83 @@
-import { type FC, useState, useEffect } from 'react'
+import { type FC, useEffect } from 'react'
+import { useNavigate, useLocation } from '@tanstack/react-router'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { BasicInfoTab } from './tabs/BasicInfoTab'
 import { DomainsTab } from './tabs/DomainsTab'
 import { CoinEconomyTab } from './tabs/CoinEconomyTab'
-import type { Company } from '@/types/company'
-import { SettingsTabsSkeleton } from './SettingsTabsSkeleton'
+import { ValuesTab } from './tabs/ValuesTab'
 
-interface SettingsTabsProps {
-  company?: Company
-  isLoading?: boolean
-}
+/**
+ * Settings Tabs Component
+ *
+ * Each tab loads and manages its own data independently.
+ * This provides better modularity and performance.
+ * 
+ * Tabs are now synced with the URL route for persistence across page reloads.
+ */
+export const SettingsTabs: FC = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
 
-export const SettingsTabs: FC<SettingsTabsProps> = ({ company, isLoading = false }) => {
-  const [currentCompany, setCurrentCompany] = useState<Company | undefined>(company)
-
-  // Sync currentCompany with company prop when it changes (after API fetch)
-  useEffect(() => {
-    if (company) {
-      console.log('🔄 SettingsTabs: company prop updated:', company)
-      setCurrentCompany(company)
+  // Map URL path to tab value
+  const getTabValueFromPath = (pathname: string): string => {
+    if (pathname === '/settings' || pathname === '/settings/basic-info') {
+      return 'basic-info'
     }
-  }, [company])
-
-  // Update company state when a tab saves changes
-  const handleCompanyUpdate = (updatedCompany: Company) => {
-    setCurrentCompany(updatedCompany)
+    if (pathname === '/settings/values') {
+      return 'values'
+    }
+    if (pathname === '/settings/domains') {
+      return 'domains'
+    }
+    if (pathname === '/settings/coin-economy') {
+      return 'coin-economy'
+    }
+    return 'basic-info'
   }
 
-  if (isLoading) {
-    return <SettingsTabsSkeleton />
+  // Map tab value to URL path
+  const getPathFromTabValue = (value: string): string => {
+    switch (value) {
+      case 'basic-info':
+        return '/settings/basic-info'
+      case 'values':
+        return '/settings/values'
+      case 'domains':
+        return '/settings/domains'
+      case 'coin-economy':
+        return '/settings/coin-economy'
+      default:
+        return '/settings/basic-info'
+    }
   }
+
+  const currentTab = getTabValueFromPath(location.pathname)
+
+  const handleTabChange = (value: string) => {
+    const path = getPathFromTabValue(value)
+    navigate({ to: path })
+  }
+
+  // Ensure URL is correct when component mounts
+  useEffect(() => {
+    if (location.pathname === '/settings') {
+      navigate({ to: '/settings/basic-info', replace: true })
+    }
+  }, [location.pathname, navigate])
 
   return (
-    <Tabs defaultValue="basic-info" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 mb-8">
+    <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full">
+      <TabsList className="grid w-full grid-cols-4 mb-8">
         <TabsTrigger value="basic-info" className="flex items-center gap-2">
           <i className="ph ph-info text-lg" />
           <span className="hidden sm:inline">Informações Básicas</span>
           <span className="sm:hidden">Info</span>
+        </TabsTrigger>
+        {/* Values second */}
+        <TabsTrigger value="values" className="flex items-center gap-2">
+          <i className="ph ph-star text-lg" />
+          <span className="hidden sm:inline">Valores</span>
+          <span className="sm:hidden">Valores</span>
         </TabsTrigger>
         <TabsTrigger value="domains" className="flex items-center gap-2">
           <i className="ph ph-shield-check text-lg" />
@@ -52,15 +92,20 @@ export const SettingsTabs: FC<SettingsTabsProps> = ({ company, isLoading = false
       </TabsList>
 
       <TabsContent value="basic-info">
-        <BasicInfoTab company={currentCompany} onUpdate={handleCompanyUpdate} />
+        <BasicInfoTab />
+      </TabsContent>
+
+      {/* Values second */}
+      <TabsContent value="values">
+        <ValuesTab />
       </TabsContent>
 
       <TabsContent value="domains">
-        <DomainsTab company={currentCompany} onUpdate={handleCompanyUpdate} />
+        <DomainsTab />
       </TabsContent>
 
       <TabsContent value="coin-economy">
-        <CoinEconomyTab company={currentCompany} onUpdate={handleCompanyUpdate} />
+        <CoinEconomyTab />
       </TabsContent>
     </Tabs>
   )

@@ -405,7 +405,9 @@ export const NewPraisePage = () => {
           userName={selectedUser?.name}
           valueName={selectedValue?.name}
           valueIcon={selectedValue?.icon}
+          valueIconName={selectedValue?.iconName}
           valueColor={selectedValue?.color}
+          valueIconColor={selectedValue?.iconColor}
           onNewPraise={handleNewPraise}
           onGoHome={handleGoHome}
         />

@@ -26,8 +26,11 @@ export const Navigation = ({
   )
 
   // Verifica se a rota atual é uma das rotas do bottom (configurações)
+  // Inclui verificação para sub-rotas (e.g., /settings/basic-info)
   const isBottomRoute = useMemo(
-    () => BOTTOM_NAV_LINKS.some(link => link.path === currentPath),
+    () => BOTTOM_NAV_LINKS.some(link => 
+      currentPath === link.path || currentPath.startsWith(link.path + '/')
+    ),
     [currentPath],
   )
 
@@ -56,7 +59,10 @@ export const Navigation = ({
         
         {NAV_LINKS.map((link) => {
           // Check if current path is the link or a sub-route
-          const isActive = currentPath === link.path || currentPath.startsWith(link.path + '/')
+          // But only if we're NOT in a bottom route (settings)
+          const isActive = !isBottomRoute && (
+            currentPath === link.path || currentPath.startsWith(link.path + '/')
+          )
           
           return (
             <NavigationItem
