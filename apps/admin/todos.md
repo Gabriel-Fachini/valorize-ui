@@ -1,0 +1,7 @@
+- Adicionar 'X' no campo de busca para limpar o campo. 
+- Detalhar mais funcionalidade de import csv com cargos
+- Atualizar alguém sem cargo ou departamento está dando erro, o campo de departmentId e jobTitleId vão nulos e retorna um erro de invalid department. Deve ser possível editar usuários mesmo que não tenham departamento ou cargo.
+- Adicionar skeleton loading na tabela.
+- Na hora de criar um novo usuário, ao selecionar o departamento, o dropdown de cargo deve mostrar apenas os cargos daquele departamento. (API)
+- Decidir se usuários devem preencher cargo e departamento.
+- Ao editar um usuário e dar algum erro, nenhum feedback é mostrado para o usuário. Adicione um feedback de erro.

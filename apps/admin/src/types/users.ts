@@ -52,6 +52,7 @@ export interface UsersQueryParams {
   search?: string
   status?: 'active' | 'inactive'
   departmentId?: string
+  jobTitleId?: string
   sortBy?: 'name' | 'email' | 'createdAt' | 'lastLogin'
   sortOrder?: 'asc' | 'desc'
 }
@@ -68,15 +69,12 @@ export const userFormSchema = z.object({
   email: z.string().email('Email inválido'),
   departmentId: z.string().optional(),
   jobTitleId: z.string().optional(),
+  isActive: z.boolean().optional(),
 })
 
 export type UserFormData = z.infer<typeof userFormSchema>
 
-export const userUpdateSchema = userFormSchema
-  .extend({
-    isActive: z.boolean().optional(),
-  })
-  .partial()
+export const userUpdateSchema = userFormSchema.partial()
 
 export type UserUpdateData = z.infer<typeof userUpdateSchema>
 
@@ -160,4 +158,5 @@ export interface UserFilters {
   search: string
   status: 'all' | 'active' | 'inactive'
   departmentId: string
+  jobTitleId: string
 }

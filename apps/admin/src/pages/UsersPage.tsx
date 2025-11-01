@@ -10,6 +10,7 @@ import {
 import { useUsers } from '@/hooks/useUsers'
 import { useUserMutations } from '@/hooks/useUserMutations'
 import { useUserBulkActions } from '@/hooks/useUserBulkActions'
+import { useDebounce } from '@/hooks/useDebounce'
 import type { User, UserFormData, UserFilters, UsersQueryParams } from '@/types/users'
 
 export const UsersPage: FC = () => {
@@ -19,20 +20,25 @@ export const UsersPage: FC = () => {
     search: '',
     status: 'all',
     departmentId: '',
+    jobTitleId: '',
   })
+
+  // Debounce search to prevent excessive API calls
+  const debouncedSearch = useDebounce(filters.search, 500)
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | undefined>()
 
-  // Build query params
+  // Build query params (using debounced search)
   const queryParams: UsersQueryParams = {
     page,
     limit: pageSize,
-    search: filters.search || undefined,
+    search: debouncedSearch || undefined,
     status: filters.status !== 'all' ? filters.status : undefined,
     departmentId: filters.departmentId || undefined,
+    jobTitleId: filters.jobTitleId || undefined,
     sortBy: 'createdAt',
     sortOrder: 'desc',
   }
@@ -45,7 +51,7 @@ export const UsersPage: FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setPage(1)
-  }, [filters.search, filters.status, filters.departmentId])
+  }, [debouncedSearch, filters.status, filters.departmentId, filters.jobTitleId])
 
   const handleCreate = async (data: UserFormData) => {
     await createUser(data)

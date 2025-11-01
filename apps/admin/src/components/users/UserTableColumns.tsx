@@ -126,7 +126,7 @@ export const createUserTableColumns = ({
     cell: ({ row }) => {
       const isActive = row.getValue('isActive') as boolean
       return (
-        <Badge variant={isActive ? 'default' : 'secondary'}>
+        <Badge variant={isActive ? 'default' : 'destructive'}>
           {isActive ? 'Ativo' : 'Inativo'}
         </Badge>
       )
