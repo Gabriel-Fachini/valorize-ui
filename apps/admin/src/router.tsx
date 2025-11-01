@@ -6,6 +6,8 @@ import { LoginPage } from '@pages/LoginPage'
 import { HomePage } from '@pages/HomePage'
 import { ComplimentsAnalyticsPage } from '@pages/ComplimentsAnalyticsPage'
 import { SettingsPage } from '@pages/SettingsPage'
+import { UsersPage } from '@pages/UsersPage'
+import { UserDetailPage } from '@pages/UserDetailPage'
 
 // Create a root route
 const rootRoute = createRootRoute({
@@ -49,6 +51,19 @@ const complimentsRoute = createRoute({
   component: ComplimentsAnalyticsPage,
 })
 
+// Users routes - protected
+const usersRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/users',
+  component: UsersPage,
+})
+
+const userDetailRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/users/$userId',
+  component: UserDetailPage,
+})
+
 // Settings layout route - protected
 const settingsLayoutRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
@@ -89,6 +104,8 @@ const routeTree = rootRoute.addChildren([
     defaultRoute,
     homeRoute,
     complimentsRoute,
+    usersRoute,
+    userDetailRoute,
     settingsLayoutRoute.addChildren([
       settingsBasicInfoRoute,
       settingsValuesRoute,
