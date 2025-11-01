@@ -1,4 +1,5 @@
 import type { FC } from 'react'
+import { animated, useSpring } from '@react-spring/web'
 
 interface Alert {
   id: string
@@ -115,20 +116,32 @@ const LoadingSkeleton: FC = () => (
 )
 
 export const AlertsSection: FC<AlertsSectionProps> = ({ alerts = [], isLoading = false }) => {
+  const alertsAnimation = useSpring({
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    to: { opacity: 1, transform: 'translateY(0px)' },
+    delay: 600,
+  })
+
   if (isLoading) {
     return (
-      <div className="rounded-lg border bg-card p-6 shadow-sm">
+      <animated.div
+        style={alertsAnimation as any}
+        className="rounded-lg border bg-card p-6 shadow-sm"
+      >
         <div className="mb-6">
           <div className="h-5 w-32 bg-muted animate-pulse rounded mb-2" />
           <div className="h-4 w-48 bg-muted animate-pulse rounded" />
         </div>
         <LoadingSkeleton />
-      </div>
+      </animated.div>
     )
   }
 
   return (
-    <div className="rounded-3xl border bg-card p-6 shadow-sm">
+    <animated.div
+      style={alertsAnimation as any}
+      className="rounded-3xl border bg-card p-6 shadow-sm"
+    >
       <div className="mb-6">
         <div className="flex items-center gap-2">
           <i className="ph ph-bell text-xl" />
@@ -148,6 +161,6 @@ export const AlertsSection: FC<AlertsSectionProps> = ({ alerts = [], isLoading =
           ))}
         </div>
       )}
-    </div>
+    </animated.div>
   )
 }

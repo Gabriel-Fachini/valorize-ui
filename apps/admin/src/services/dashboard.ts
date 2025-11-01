@@ -4,11 +4,13 @@ import type { DashboardData, DashboardFilters } from '../types/dashboard'
 export interface DepartmentOption {
   id: string
   name: string
+  userCount: number
 }
 
-export interface RoleOption {
+export interface JobTitleOption {
   id: string
   name: string
+  userCount: number
 }
 
 /**
@@ -21,21 +23,23 @@ export const dashboardService = {
   /**
    * Fetch all dashboard data in a single request
    *
-   * Endpoint: GET /admin/dashboard
+   * Endpoint: GET /admin/dashboard/stats
+   *
+   * Query Parameters:
+   * - startDate (optional): ISO 8601 date (YYYY-MM-DD)
+   * - endDate (optional): ISO 8601 date (YYYY-MM-DD)
+   * - departmentId (optional): Department UUID
+   * - jobTitleId (optional): Job Title UUID
    *
    * Returns:
-   * - Metrics (last 30 days)
-   * - Compliments by week (last 8 weeks)
+   * - Period information
+   * - Metrics (total compliments, coins, active users, prizes, engagement)
+   * - Weekly compliments trend
    * - Top 5 values ranking
    *
-   * This approach is better than multiple endpoints because:
-   * - 1 HTTP request instead of 3+
-   * - Consistent data (same timestamp)
-   * - Lower latency
-   * - Better UX (single loading state)
+   * Default behavior: Last 30 days if no date range provided
    */
   async getDashboardData(filters?: DashboardFilters): Promise<DashboardData> {
-    // Pass filters as query params. Backend should accept startDate, endDate, departmentId, role
     const response = (
       await api.get<DashboardData>('/admin/dashboard/stats', {
         params: filters,
@@ -45,15 +49,27 @@ export const dashboardService = {
     return response
   },
 
+  /**
+   * Fetch all departments in the company
+   *
+   * Endpoint: GET /admin/dashboard/departments
+   *
+   * Returns: Array of departments with id, name, and user count
+   */
   async getDepartments(): Promise<DepartmentOption[]> {
-    // Assumption: backend exposes /admin/departments returning array of { id, name }
-    const response = (await api.get<DepartmentOption[]>('/admin/departments')).data
+    const response = (await api.get<DepartmentOption[]>('/admin/dashboard/departments')).data
     return response
   },
 
-  async getRoles(): Promise<RoleOption[]> {
-    // Assumption: backend exposes /admin/roles returning array of { id, name }
-    const response = (await api.get<RoleOption[]>('/admin/roles')).data
+  /**
+   * Fetch all job titles in the company
+   *
+   * Endpoint: GET /admin/dashboard/job-titles
+   *
+   * Returns: Array of job titles with id, name, and user count
+   */
+  async getJobTitles(): Promise<JobTitleOption[]> {
+    const response = (await api.get<JobTitleOption[]>('/admin/dashboard/job-titles')).data
     return response
   },
 }

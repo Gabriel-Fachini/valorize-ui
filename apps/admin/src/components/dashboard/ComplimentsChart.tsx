@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import type { ComplimentsByWeek } from '../../types/dashboard'
+import { animated, useSpring } from '@react-spring/web'
 
 interface ComplimentsChartProps {
   data: ComplimentsByWeek[]
@@ -78,9 +79,18 @@ export const ComplimentsChart: FC<ComplimentsChartProps> = ({ data, isLoading = 
   // Get theme-aware colors for the chart
   const colors = useMemo(() => getChartColors(), [])
 
+  const chartAnimation = useSpring({
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    to: { opacity: 1, transform: 'translateY(0px)' },
+    delay: 400,
+  })
+
   if (isLoading) {
     return (
-      <div className="rounded-3xl border bg-card p-6 shadow-sm">
+      <animated.div
+        style={chartAnimation as any}
+        className="rounded-3xl border bg-card p-6 shadow-sm"
+      >
         <div className="space-y-6">
           {/* Header skeleton */}
           <div className="space-y-2">
@@ -111,7 +121,7 @@ export const ComplimentsChart: FC<ComplimentsChartProps> = ({ data, isLoading = 
             </div>
           </div>
         </div>
-      </div>
+      </animated.div>
     )
   }
 
@@ -131,7 +141,10 @@ export const ComplimentsChart: FC<ComplimentsChartProps> = ({ data, isLoading = 
   }
 
   return (
-    <div className="rounded-3xl border bg-card p-6 shadow-sm">
+    <animated.div
+      style={chartAnimation as any}
+      className="rounded-3xl border bg-card p-6 shadow-sm"
+    >
       <div className="mb-6">
         <h3 className="text-lg font-semibold">Evolução de Elogios</h3>
         <p className="text-sm text-muted-foreground">
@@ -181,6 +194,6 @@ export const ComplimentsChart: FC<ComplimentsChartProps> = ({ data, isLoading = 
           />
         </LineChart>
       </ResponsiveContainer>
-    </div>
+    </animated.div>
   )
 }

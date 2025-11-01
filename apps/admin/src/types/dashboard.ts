@@ -17,7 +17,7 @@ export interface ComplimentsByWeek {
 }
 
 export interface ValueRanking {
-  valueId: string
+  valueId: number
   valueName: string
   count: number
   percentage: number
@@ -41,7 +41,7 @@ export interface DashboardFilters {
   startDate?: string // ISO string
   endDate?: string // ISO string
   departmentId?: string
-  role?: string
+  jobTitleId?: string
 }
 
 // API Response types

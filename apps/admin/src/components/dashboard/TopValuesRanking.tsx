@@ -1,5 +1,6 @@
 import type { FC } from 'react'
 import type { ValueRanking } from '../../types/dashboard'
+import { animated, useSpring } from '@react-spring/web'
 
 interface TopValuesRankingProps {
   values: ValueRanking[]
@@ -100,20 +101,32 @@ const LoadingSkeleton: FC = () => (
 )
 
 export const TopValuesRanking: FC<TopValuesRankingProps> = ({ values, isLoading = false }) => {
+  const rankingAnimation = useSpring({
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    to: { opacity: 1, transform: 'translateY(0px)' },
+    delay: 500,
+  })
+
   if (isLoading) {
     return (
-      <div className="rounded-3xl border bg-card p-6 shadow-sm">
+      <animated.div
+        style={rankingAnimation as any}
+        className="rounded-3xl border bg-card p-6 shadow-sm"
+      >
         <div className="mb-6">
           <div className="h-5 w-48 bg-muted animate-pulse rounded mb-2" />
           <div className="h-4 w-64 bg-muted animate-pulse rounded" />
         </div>
         <LoadingSkeleton />
-      </div>
+      </animated.div>
     )
   }
 
   return (
-    <div className="rounded-3xl border bg-card p-6 shadow-sm">
+    <animated.div
+      style={rankingAnimation as any}
+      className="rounded-3xl border bg-card p-6 shadow-sm"
+    >
       <div className="mb-6">
         <h3 className="text-lg font-semibold">Top 5 Valores Mais Praticados</h3>
         <p className="text-sm text-muted-foreground">
@@ -135,6 +148,6 @@ export const TopValuesRanking: FC<TopValuesRankingProps> = ({ values, isLoading 
           ))}
         </div>
       )}
-    </div>
+    </animated.div>
   )
 }

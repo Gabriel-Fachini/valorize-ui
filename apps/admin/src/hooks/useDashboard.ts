@@ -15,7 +15,7 @@ export const useDashboardData = (filters?: DashboardFilters) => {
     filters?.startDate ?? null,
     filters?.endDate ?? null,
     filters?.departmentId ?? null,
-    filters?.role ?? null,
+    filters?.jobTitleId ?? null,
   ]
 
   return useQuery({

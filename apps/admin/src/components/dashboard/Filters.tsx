@@ -11,9 +11,10 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import type { DashboardFilters } from '@/types/dashboard'
-import { useDepartments, useRoles } from '@/hooks/useFilters'
+import { useDepartments, useJobTitles } from '@/hooks/useFilters'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { animated, useSpring } from '@react-spring/web'
 
 interface FiltersProps {
   filters: DashboardFilters
@@ -33,14 +34,20 @@ export const Filters: FC<FiltersProps> = ({
   })
 
   const { data: departments, isLoading: isLoadingDepartments } = useDepartments()
-  const { data: roles, isLoading: isLoadingRoles } = useRoles()
+  const { data: jobTitles, isLoading: isLoadingJobTitles } = useJobTitles()
+
+  const filtersAnimation = useSpring({
+    from: { opacity: 0, transform: 'translateY(-20px)' },
+    to: { opacity: 1, transform: 'translateY(0px)' },
+    delay: 200,
+  })
 
   const handleDateSelect = (range: { from: Date | undefined; to: Date | undefined }) => {
     setDateRange(range)
     onFiltersChange({
       ...filters,
-      startDate: range.from ? range.from.toISOString() : undefined,
-      endDate: range.to ? range.to.toISOString() : undefined,
+      startDate: range.from ? format(range.from, 'yyyy-MM-dd') : undefined,
+      endDate: range.to ? format(range.to, 'yyyy-MM-dd') : undefined,
     })
   }
 
@@ -51,10 +58,10 @@ export const Filters: FC<FiltersProps> = ({
     })
   }
 
-  const handleRoleChange = (role: string) => {
+  const handleJobTitleChange = (jobTitleId: string) => {
     onFiltersChange({
       ...filters,
-      role: role === 'all' ? undefined : role,
+      jobTitleId: jobTitleId === 'all' ? undefined : jobTitleId,
     })
   }
 
@@ -70,10 +77,13 @@ export const Filters: FC<FiltersProps> = ({
   }
 
   const hasActiveFilters =
-    filters.startDate || filters.endDate || filters.departmentId || filters.role
+    filters.startDate || filters.endDate || filters.departmentId || filters.jobTitleId
 
   return (
-    <div className="flex flex-wrap w-fit items-center gap-3 rounded-lg border bg-card p-4">
+    <animated.div
+      style={filtersAnimation as any}
+      className="flex flex-wrap w-fit items-center gap-3 rounded-lg border bg-card p-4"
+    >
       {/* Date Range Filter */}
       <Popover>
         <PopoverTrigger asChild>
@@ -131,11 +141,11 @@ export const Filters: FC<FiltersProps> = ({
         </SelectContent>
       </Select>
 
-      {/* Role Filter */}
+      {/* Job Title Filter */}
       <Select
-        value={filters.role ?? 'all'}
-        onValueChange={handleRoleChange}
-        disabled={isLoadingRoles}
+        value={filters.jobTitleId ?? 'all'}
+        onValueChange={handleJobTitleChange}
+        disabled={isLoadingJobTitles}
       >
         <SelectTrigger className="w-[200px]">
           <i className="ph ph-user-circle mr-2 h-4 w-4" />
@@ -143,9 +153,9 @@ export const Filters: FC<FiltersProps> = ({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Todos os cargos</SelectItem>
-          {roles?.map((role) => (
-            <SelectItem key={role.id} value={role.id}>
-              {role.name}
+          {jobTitles?.map((jobTitle) => (
+            <SelectItem key={jobTitle.id} value={jobTitle.id}>
+              {jobTitle.name}
             </SelectItem>
           ))}
         </SelectContent>
@@ -163,6 +173,6 @@ export const Filters: FC<FiltersProps> = ({
           Limpar filtros
         </Button>
       )}
-    </div>
+    </animated.div>
   )
 }

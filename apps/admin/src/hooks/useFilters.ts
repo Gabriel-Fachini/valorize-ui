@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { dashboardService } from '@/services/dashboard'
-import type { DepartmentOption, RoleOption } from '@/services/dashboard'
+import type { DepartmentOption, JobTitleOption } from '@/services/dashboard'
 
 /**
  * Hook to fetch departments for filter dropdown
@@ -15,13 +15,13 @@ export const useDepartments = () => {
 }
 
 /**
- * Hook to fetch roles for filter dropdown
+ * Hook to fetch job titles for filter dropdown
  */
-export const useRoles = () => {
-  return useQuery<RoleOption[]>({
-    queryKey: ['roles'],
-    queryFn: async () => await dashboardService.getRoles(),
-    staleTime: 10 * 60 * 1000, // 10 minutes - roles don't change often
+export const useJobTitles = () => {
+  return useQuery<JobTitleOption[]>({
+    queryKey: ['jobTitles'],
+    queryFn: async () => await dashboardService.getJobTitles(),
+    staleTime: 10 * 60 * 1000, // 10 minutes - job titles don't change often
     gcTime: 30 * 60 * 1000, // 30 minutes cache
   })
 }
