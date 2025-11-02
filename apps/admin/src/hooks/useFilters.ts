@@ -25,3 +25,20 @@ export const useJobTitles = () => {
     gcTime: 30 * 60 * 1000, // 30 minutes cache
   })
 }
+
+/**
+ * Hook to fetch job titles filtered by department
+ * Use this when creating/editing a user and a department has been selected
+ */
+export const useJobTitlesByDepartment = (departmentId?: string) => {
+  return useQuery<JobTitleOption[]>({
+    queryKey: ['jobTitles', 'byDepartment', departmentId],
+    queryFn: async () => {
+      if (!departmentId) return []
+      return await dashboardService.getJobTitlesByDepartment(departmentId)
+    },
+    enabled: !!departmentId, // Only fetch if departmentId is provided
+    staleTime: 10 * 60 * 1000, // 10 minutes - job titles don't change often
+    gcTime: 30 * 60 * 1000, // 30 minutes cache
+  })
+}

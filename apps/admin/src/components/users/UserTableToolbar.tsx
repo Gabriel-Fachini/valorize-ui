@@ -36,8 +36,17 @@ export const UserTableToolbar: FC<UserTableToolbarProps> = ({
             placeholder="Buscar por nome ou email..."
             value={filters.search}
             onChange={(e) => onFiltersChange({ ...filters, search: e.target.value })}
-            className="pl-10"
+            className="pl-10 pr-10"
           />
+          {filters.search && (
+            <button
+              onClick={() => onFiltersChange({ ...filters, search: '' })}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Limpar busca"
+            >
+              <i className="ph ph-x" />
+            </button>
+          )}
         </div>
 
         <Select

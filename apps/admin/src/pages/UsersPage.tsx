@@ -6,6 +6,8 @@ import {
   UserFormDialog,
   UserDeleteDialog,
   UserImportCSVDialog,
+  PasswordResetConfirmModal,
+  PasswordResetModal,
 } from '@/components/users'
 import { useUsers } from '@/hooks/useUsers'
 import { useUserMutations } from '@/hooks/useUserMutations'
@@ -29,6 +31,9 @@ export const UsersPage: FC = () => {
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isPasswordResetConfirmOpen, setIsPasswordResetConfirmOpen] = useState(false)
+  const [isPasswordResetModalOpen, setIsPasswordResetModalOpen] = useState(false)
+  const [passwordResetLink, setPasswordResetLink] = useState<string>('')
   const [selectedUser, setSelectedUser] = useState<User | undefined>()
 
   // Build query params (using debounced search)
@@ -44,7 +49,7 @@ export const UsersPage: FC = () => {
   }
 
   const { users, totalCount, pageCount, currentPage, isLoading, isFetching } = useUsers(queryParams)
-  const { createUser, updateUser, deleteUser, isCreating, isUpdating, isDeleting } =
+  const { createUser, updateUser, deleteUser, resetPassword, isCreating, isUpdating, isDeleting } =
     useUserMutations()
   const { performBulkAction } = useUserBulkActions()
 
@@ -79,8 +84,29 @@ export const UsersPage: FC = () => {
     setSelectedUser(undefined)
   }
 
+  const handleResetPassword = useCallback(async (user: User) => {
+    setSelectedUser(user)
+    setIsPasswordResetConfirmOpen(true)
+  }, [])
+
+  const handleConfirmResetPassword = useCallback(async () => {
+    if (!selectedUser) return
+    try {
+      console.log(`Resetting password for user: ${selectedUser.id}`)
+      const response = await resetPassword(selectedUser.id)
+      console.log('Password reset response:', response)
+      setPasswordResetLink(response.ticketUrl)
+      setIsPasswordResetConfirmOpen(false)
+      setIsPasswordResetModalOpen(true)
+    } catch (error) {
+      console.error('Erro ao gerar link de reset de senha:', error)
+      setIsPasswordResetConfirmOpen(false)
+      alert(`Erro ao gerar link de reset: ${error instanceof Error ? error.message : 'Erro desconhecido'}`)
+    }
+  }, [selectedUser, resetPassword])
+
   const handleBulkAction = async (userIds: string[], action: string) => {
-    await performBulkAction({ userIds, action: action as any })
+    await performBulkAction({ userIds, action: action as 'activate' | 'deactivate' | 'export' })
   }
 
   return (
@@ -118,6 +144,7 @@ export const UsersPage: FC = () => {
           pageSize={pageSize}
           onEdit={handleEdit}
           onDelete={handleDeleteClick}
+          onResetPassword={handleResetPassword}
           onBulkAction={handleBulkAction}
           onImportCSV={() => setIsImportDialogOpen(true)}
         />
@@ -144,6 +171,19 @@ export const UsersPage: FC = () => {
           isDeleting={isDeleting}
         />
         <UserImportCSVDialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen} />
+        <PasswordResetConfirmModal
+          open={isPasswordResetConfirmOpen}
+          onOpenChange={setIsPasswordResetConfirmOpen}
+          user={selectedUser}
+          onConfirm={handleConfirmResetPassword}
+          isLoading={false}
+        />
+        <PasswordResetModal
+          open={isPasswordResetModalOpen}
+          onOpenChange={setIsPasswordResetModalOpen}
+          ticketUrl={passwordResetLink}
+          expiresIn="24 horas"
+        />
       </div>
     </PageLayout>
   )

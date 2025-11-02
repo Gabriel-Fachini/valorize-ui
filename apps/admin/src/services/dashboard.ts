@@ -72,4 +72,23 @@ export const dashboardService = {
     const response = (await api.get<JobTitleOption[]>('/admin/dashboard/job-titles')).data
     return response
   },
+
+  /**
+   * Fetch job titles filtered by department
+   *
+   * Endpoint: GET /job-titles/by-department
+   *
+   * Query Parameters:
+   * - departmentId (required): Department UUID
+   *
+   * Returns: Array of job titles with id, name, and user count for the specified department
+   */
+  async getJobTitlesByDepartment(departmentId: string): Promise<JobTitleOption[]> {
+    const response = (
+      await api.get<JobTitleOption[]>('/job-titles/by-department', {
+        params: { departmentId },
+      })
+    ).data
+    return response
+  },
 }

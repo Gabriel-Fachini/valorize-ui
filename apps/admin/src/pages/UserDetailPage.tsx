@@ -3,7 +3,7 @@ import { Link, useParams } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { SkeletonBase as Skeleton } from '@/components/ui/Skeleton'
 import { PageLayout } from '@/components/layout/PageLayout'
-import { UserDetailCard, UserStatisticsCard, UserFormDialog, UserDeleteDialog } from '@/components/users'
+import { UserDetailCard, UserStatisticsCard, UserFormDialog, UserDeleteDialog, PasswordResetConfirmModal, PasswordResetModal } from '@/components/users'
 import { useUserDetail } from '@/hooks/useUserDetail'
 import { useUserMutations } from '@/hooks/useUserMutations'
 import type { UserFormData } from '@/types/users'
@@ -11,9 +11,13 @@ import type { UserFormData } from '@/types/users'
 export const UserDetailPage: FC = () => {
   const { userId } = useParams({ strict: false })
   const { user, isLoading } = useUserDetail(userId as string)
-  const { updateUser, deleteUser, isUpdating, isDeleting } = useUserMutations()
+  const { updateUser, deleteUser, resetPassword, isUpdating, isDeleting, isResettingPassword } =
+    useUserMutations()
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isPasswordResetConfirmOpen, setIsPasswordResetConfirmOpen] = useState(false)
+  const [isPasswordResetModalOpen, setIsPasswordResetModalOpen] = useState(false)
+  const [resetPasswordLink, setResetPasswordLink] = useState<string>('')
 
   const handleUpdate = async (data: UserFormData) => {
     if (!userId) return
@@ -24,6 +28,22 @@ export const UserDetailPage: FC = () => {
     if (!userId) return
     await deleteUser(userId)
     window.history.back()
+  }
+
+  const handleResetPassword = async () => {
+    if (!userId) return
+    try {
+      console.log(`Resetting password for user: ${userId}`)
+      const response = await resetPassword(userId)
+      console.log('Password reset response:', response)
+      setResetPasswordLink(response.ticketUrl)
+      setIsPasswordResetConfirmOpen(false)
+      setIsPasswordResetModalOpen(true)
+    } catch (error) {
+      console.error('Erro ao gerar link de reset de senha:', error)
+      setIsPasswordResetConfirmOpen(false)
+      alert(`Erro ao gerar link de reset: ${error instanceof Error ? error.message : 'Erro desconhecido'}`)
+    }
   }
 
   if (isLoading) {
@@ -80,6 +100,10 @@ export const UserDetailPage: FC = () => {
               <i className="ph ph-pencil-simple mr-2" />
               Editar
             </Button>
+            <Button variant="outline" onClick={() => setIsPasswordResetConfirmOpen(true)} disabled={isResettingPassword}>
+              <i className="ph ph-key mr-2" />
+              {isResettingPassword ? 'Gerando link...' : 'Redefinir Senha'}
+            </Button>
             <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
               <i className="ph ph-trash mr-2" />
               Deletar
@@ -107,6 +131,19 @@ export const UserDetailPage: FC = () => {
           user={user}
           onConfirm={handleDelete}
           isDeleting={isDeleting}
+        />
+        <PasswordResetConfirmModal
+          open={isPasswordResetConfirmOpen}
+          onOpenChange={setIsPasswordResetConfirmOpen}
+          user={user}
+          onConfirm={handleResetPassword}
+          isLoading={isResettingPassword}
+        />
+        <PasswordResetModal
+          open={isPasswordResetModalOpen}
+          onOpenChange={setIsPasswordResetModalOpen}
+          ticketUrl={resetPasswordLink}
+          expiresIn="24 horas"
         />
       </div>
     </PageLayout>

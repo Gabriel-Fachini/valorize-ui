@@ -16,11 +16,13 @@ import { Link } from '@tanstack/react-router'
 interface UserTableColumnsProps {
   onEdit: (user: User) => void
   onDelete: (user: User) => void
+  onResetPassword?: (user: User) => void
 }
 
 export const createUserTableColumns = ({
   onEdit,
   onDelete,
+  onResetPassword,
 }: UserTableColumnsProps): ColumnDef<User>[] => [
   {
     id: 'select',
@@ -160,6 +162,15 @@ export const createUserTableColumns = ({
               Editar
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+            {onResetPassword && (
+              <>
+                <DropdownMenuItem onClick={() => onResetPassword(user)}>
+                  <i className="ph ph-key mr-2" />
+                  Redefinir Senha
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
             <DropdownMenuItem onClick={() => onDelete(user)} className="text-destructive">
               <i className="ph ph-trash mr-2" />
               Deletar

@@ -13,6 +13,11 @@ export { UserForm } from './UserForm'
 export { UserFormDialog } from './UserFormDialog'
 export { UserDeleteDialog } from './UserDeleteDialog'
 
+// Modal components
+export { PasswordSetupModal } from './PasswordSetupModal'
+export { PasswordResetConfirmModal } from './PasswordResetConfirmModal'
+export { PasswordResetModal } from './PasswordResetModal'
+
 // Bulk actions
 export { UserBulkActionsBar } from './UserBulkActionsBar'
 

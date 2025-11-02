@@ -1,4 +1,4 @@
-import { type FC } from 'react'
+import { type FC, useState, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
@@ -13,7 +13,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { userFormSchema, type UserFormData, type User } from '@/types/users'
-import { useDepartments, useJobTitles } from '@/hooks/useFilters'
+import { useDepartments, useJobTitles, useJobTitlesByDepartment } from '@/hooks/useFilters'
+import { useAllowedDomains } from '@/hooks/useAllowedDomains'
 
 interface UserFormProps {
   user?: User
@@ -24,13 +25,17 @@ interface UserFormProps {
 
 export const UserForm: FC<UserFormProps> = ({ user, onSubmit, onCancel, isSubmitting }) => {
   const { data: departments, isLoading: isLoadingDepartments } = useDepartments()
-  const { data: jobTitles, isLoading: isLoadingJobTitles } = useJobTitles()
+  const { data: allJobTitles, isLoading: isLoadingAllJobTitles } = useJobTitles()
+  const { data: allowedDomains = [] } = useAllowedDomains()
+  const [emailDomainError, setEmailDomainError] = useState<string>('')
+  const [emailTouched, setEmailTouched] = useState(false)
 
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
+    watch,
   } = useForm<UserFormData>({
     resolver: zodResolver(userFormSchema),
     defaultValues: {
@@ -42,8 +47,61 @@ export const UserForm: FC<UserFormProps> = ({ user, onSubmit, onCancel, isSubmit
     },
   })
 
+  // Watch the departmentId field to filter job titles
+  const selectedDepartmentId = watch('departmentId')
+  const emailValue = watch('email')
+
+  // Validate email domain when field loses focus (onBlur)
+  const validateEmailDomain = () => {
+    if (!user && emailValue && allowedDomains.length > 0) {
+      if (emailValue.includes('@')) {
+        const domain = emailValue.split('@')[1]
+        const isValidDomain = allowedDomains.some((d) => d.domain === domain)
+        if (!isValidDomain) {
+          setEmailDomainError(`Domínio '${domain}' não é permitido para esta empresa`)
+        } else {
+          setEmailDomainError('')
+        }
+      }
+    }
+  }
+
+  // Clear error when typing again
+  useEffect(() => {
+    if (emailTouched && emailValue) {
+      // Only clear if user is typing a valid email format
+      if (emailValue.includes('@')) {
+        const domain = emailValue.split('@')[1]
+        const isValidDomain = allowedDomains.some((d) => d.domain === domain)
+        if (isValidDomain) {
+          setEmailDomainError('')
+        }
+      }
+    }
+  }, [emailValue, emailTouched, allowedDomains])
+
+  // Fetch job titles for the selected department, or all job titles if none selected
+  const { data: departmentJobTitles, isLoading: isLoadingDepartmentJobTitles } =
+    useJobTitlesByDepartment(selectedDepartmentId || undefined)
+
+  // Use department-specific job titles if available, otherwise use all job titles
+  const jobTitles = selectedDepartmentId ? departmentJobTitles : allJobTitles
+  const isLoadingJobTitles = selectedDepartmentId
+    ? isLoadingDepartmentJobTitles
+    : isLoadingAllJobTitles
+
+  const onSubmitHandler = async (data: UserFormData) => {
+    // Convert empty strings to undefined for optional fields
+    const cleanedData = {
+      ...data,
+      departmentId: data.departmentId ? data.departmentId : undefined,
+      jobTitleId: data.jobTitleId ? data.jobTitleId : undefined,
+    }
+    await onSubmit(cleanedData)
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="name">Nome completo *</Label>
         <SimpleInput id="name" {...register('name')} aria-invalid={errors.name ? 'true' : 'false'} />
@@ -56,9 +114,26 @@ export const UserForm: FC<UserFormProps> = ({ user, onSubmit, onCancel, isSubmit
           id="email"
           type="email"
           {...register('email')}
-          aria-invalid={errors.email ? 'true' : 'false'}
+          onBlur={() => {
+            setEmailTouched(true)
+            validateEmailDomain()
+          }}
+          aria-invalid={errors.email || emailDomainError ? 'true' : 'false'}
         />
         {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+        {emailDomainError && (
+          <div className="flex items-start gap-2 rounded-md bg-destructive/10 p-2">
+            <i className="ph ph-warning text-destructive mt-0.5 flex-shrink-0" />
+            <p className="text-sm text-destructive">{emailDomainError}</p>
+          </div>
+        )}
+        
+        {/* Show allowed domains for new users */}
+        {!user && allowedDomains.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            ✅ Domínios permitidos: {allowedDomains.map((d) => d.domain).join(', ')}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">

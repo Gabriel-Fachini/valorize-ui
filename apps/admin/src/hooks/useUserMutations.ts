@@ -1,8 +1,3 @@
-/**
- * User Mutations Hook
- * Hook for create, update, and delete user operations
- */
-
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { usersService } from '@/services/users'
 import type { UserFormData, UserUpdateData } from '@/types/users'
@@ -37,6 +32,10 @@ export const useUserMutations = () => {
     },
   })
 
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (userId: string) => await usersService.resetPassword(userId),
+  })
+
   return {
     // Create
     createUser: createMutation.mutateAsync,
@@ -53,8 +52,13 @@ export const useUserMutations = () => {
     isDeleting: deleteMutation.isPending,
     deleteError: deleteMutation.error,
 
+    // Reset Password
+    resetPassword: resetPasswordMutation.mutateAsync,
+    isResettingPassword: resetPasswordMutation.isPending,
+    resetPasswordError: resetPasswordMutation.error,
+
     // General states
-    isPending: createMutation.isPending || updateMutation.isPending || deleteMutation.isPending,
+    isPending: createMutation.isPending || updateMutation.isPending || deleteMutation.isPending || resetPasswordMutation.isPending,
   }
 }
 

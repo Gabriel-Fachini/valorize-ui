@@ -10,6 +10,9 @@ import type {
   CSVPreviewResponse,
   CSVImportPayload,
   CSVImportResponse,
+  CreateUserResponse,
+  PasswordResetResponse,
+  AllowedDomain,
 } from '@/types/users'
 
 const usersService = {
@@ -38,9 +41,9 @@ const usersService = {
    *
    * Endpoint: POST /admin/users
    */
-  create: async (user: UserFormData): Promise<User> => {
+  create: async (user: UserFormData) => {
     const { data } = await api.post('/admin/users', user)
-    return data
+    return data as CreateUserResponse
   },
 
   /**
@@ -109,6 +112,26 @@ const usersService = {
   importCSV: async (payload: CSVImportPayload): Promise<CSVImportResponse> => {
     const { data } = await api.post('/admin/users/csv/import', payload)
     return data
+  },
+
+  /**
+   * Reset password for a user
+   *
+   * Endpoint: PUT /admin/users/{userId}/reset-password
+   */
+  resetPassword: async (userId: string) => {
+    const { data } = await api.put(`/admin/users/${userId}/reset-password`)
+    return data as PasswordResetResponse
+  },
+
+  /**
+   * Get allowed domains for the company
+   *
+   * Endpoint: GET /admin/company/domains
+   */
+  getAllowedDomains: async () => {
+    const { data } = await api.get('/admin/company/domains')
+    return data as AllowedDomain[]
   },
 }
 

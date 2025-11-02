@@ -36,6 +36,7 @@ interface UsersTableProps {
   pageSize: number
   onEdit: (user: User) => void
   onDelete: (user: User) => void
+  onResetPassword?: (user: User) => Promise<void>
   onBulkAction: (userIds: string[], action: string) => Promise<void>
   onImportCSV: () => void
 }
@@ -54,14 +55,15 @@ export const UsersTable: FC<UsersTableProps> = ({
   pageSize,
   onEdit,
   onDelete,
+  onResetPassword,
   onBulkAction,
   onImportCSV,
 }) => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 
   const columns = useMemo(
-    () => createUserTableColumns({ onEdit, onDelete }),
-    [onEdit, onDelete],
+    () => createUserTableColumns({ onEdit, onDelete, onResetPassword }),
+    [onEdit, onDelete, onResetPassword],
   )
 
   const table = useReactTable({
@@ -160,29 +162,45 @@ export const UsersTable: FC<UsersTableProps> = ({
             ))}
           </TableHeader>
           <TableBody>
-            {transitions((style, row) => (
-              <animated.tr
-                key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
-                className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-                style={style}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+            {isFetching && users.length > 0 ? (
+              // Show skeleton loading when fetching (pagination)
+              Array.from({ length: pageSize }).map((_, index) => (
+                <TableRow key={`skeleton-${index}`} className="opacity-50">
+                  {columns.map((_, cellIndex) => (
+                    <TableCell key={cellIndex}>
+                      <Skeleton className="h-6 w-full rounded" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              // Show actual rows or empty state
+              <>
+                {transitions((style, row) => (
+                  <animated.tr
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                    className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                    style={style}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </animated.tr>
                 ))}
-              </animated.tr>
-            ))}
-            {users.length === 0 && !isLoading && (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                    <i className="ph ph-users text-4xl" />
-                    <p>Nenhum usuário encontrado</p>
-                  </div>
-                </TableCell>
-              </TableRow>
+                {users.length === 0 && !isLoading && (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                      <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                        <i className="ph ph-users text-4xl" />
+                        <p>Nenhum usuário encontrado</p>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </>
             )}
           </TableBody>
         </Table>

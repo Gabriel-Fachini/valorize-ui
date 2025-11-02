@@ -35,6 +35,21 @@ export interface User {
   statistics?: UserStatistics
 }
 
+export interface CreateUserResponse extends User {
+  temporaryPasswordUrl?: string
+}
+
+export interface PasswordResetResponse {
+  message: string
+  ticketUrl: string
+  expiresIn: string
+}
+
+export interface AllowedDomain {
+  id: string
+  domain: string
+}
+
 export interface UsersListResponse {
   data: User[]
   totalCount: number
