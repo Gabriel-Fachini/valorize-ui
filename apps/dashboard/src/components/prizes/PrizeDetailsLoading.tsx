@@ -9,7 +9,7 @@ export const PrizeDetailsLoading: FC = () => {
 
   return (
     <PageLayout maxWidth="6xl">
-      <animated.div style={fadeIn} className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <animated.div style={fadeIn as any} className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Back button skeleton */}
         <SkeletonBase>
           <div className="mb-8 h-8 w-32 rounded bg-white/50 dark:bg-white/10" />

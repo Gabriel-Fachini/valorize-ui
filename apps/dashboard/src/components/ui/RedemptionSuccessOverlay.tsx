@@ -121,7 +121,7 @@ export const RedemptionSuccessOverlay = memo(({
       {transition((style, item) =>
         item ? createPortal(
           <animated.div
-            style={style}
+            style={style as any}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           >
             <RedemptionSuccessContent {...contentProps} />

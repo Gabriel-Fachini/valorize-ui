@@ -90,8 +90,12 @@ export const AuthProvider = ({ children }: ProviderProps) => {
           companyId: res.data.user_info.companyId,
         })
         return { success: true as const }
+      } else {
+        if ('message' in res) {
+          return { success: false as const, message: res.message }
+        }
+        return { success: false as const, message: 'An unknown error occurred' }
       }
-      return { success: false as const, message: res.message }
     } catch (error) {
       // Propagate the specific error if it's an instance of Error
       const errorMessage = error instanceof Error ? error.message : 'Erro ao fazer login'
@@ -117,8 +121,8 @@ export const AuthProvider = ({ children }: ProviderProps) => {
   const value = useMemo(() => ({ user, isLoading, login, logout, checkAuth }), [user, isLoading, login, logout, checkAuth])
 
   return (
-    <AuthContext value={value}>
+    <AuthContext.Provider value={value}>
       {children}
-    </AuthContext>
+    </AuthContext.Provider>
   )
 }

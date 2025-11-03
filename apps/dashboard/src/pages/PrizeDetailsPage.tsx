@@ -40,7 +40,7 @@ export const PrizeDetailsPage: FC = () => {
 
   return (
     <PageLayout maxWidth="6xl">
-      <animated.div style={fadeIn} className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <animated.div style={fadeIn as any} className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <BackButton onClick={() => navigate({ to: '/prizes' })} />
         
         <div className="grid gap-8 lg:grid-cols-2">

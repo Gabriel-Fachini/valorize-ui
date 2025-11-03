@@ -20,7 +20,7 @@ export const PrizeDetailsError: FC<PrizeDetailsErrorProps> = ({
 
   return (
     <PageLayout maxWidth="6xl">
-      <animated.div style={fadeIn} className="flex min-h-[60vh] items-center justify-center p-4">
+      <animated.div style={fadeIn as any} className="flex min-h-[60vh] items-center justify-center p-4">
         <Alert variant="error" className="max-w-md">
           <AlertIcon variant="error" />
           <AlertTitle>{title}</AlertTitle>

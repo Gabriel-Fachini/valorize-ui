@@ -67,7 +67,7 @@ export const ImageViewer = memo<ImageViewerProps>(({
           className={`max-h-[70vh] max-w-full object-contain select-none ${
             isImageDragging ? 'cursor-grabbing' : zoom > 1 ? 'cursor-grab' : 'cursor-default'
           }`}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
           loading="eager"
           decoding="async"
           draggable={false}

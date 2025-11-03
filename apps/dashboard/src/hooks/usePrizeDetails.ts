@@ -84,7 +84,7 @@ export const usePrizeDetails = ({ prize }: UsePrizeDetailsProps): UsePrizeDetail
     navigate({ 
       to: '/prizes/$prizeId/confirm',
       params: { prizeId: prize.id },
-      search: selectedVariantId ? { variantId: selectedVariantId } : undefined,
+      search: { variantId: selectedVariantId },
     })
   }, [prize, canProceed, selectedVariantId, navigate])
 

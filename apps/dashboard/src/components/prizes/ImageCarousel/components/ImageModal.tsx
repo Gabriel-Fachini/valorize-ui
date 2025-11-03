@@ -44,7 +44,7 @@ export const ImageModal = memo<ImageModalProps>(({ isOpen, onClose, children }) 
       <animated.div
         style={modalSpring}
         className="relative max-w-4xl max-h-[70vh] w-full bg-white dark:bg-[#262626] rounded-2xl shadow-2xl overflow-hidden flex"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e: React.MouseEvent) => e.stopPropagation()}
       >
         {children}
       </animated.div>
