@@ -1,6 +1,5 @@
 import { type FC, useState, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -164,22 +163,17 @@ export const PermissionsDisplay: FC<PermissionsDisplayProps> = ({
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>Permissões do Cargo</span>
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary">
-              {currentPermissions.length} {currentPermissions.length === 1 ? 'permissão' : 'permissões'}
-            </Badge>
-            {editable && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleOpenAddModal}
-                disabled={availablePermissions.length === 0}
-              >
-                <i className="ph ph-plus mr-2" />
-                Adicionar Permissões
-              </Button>
-            )}
-          </div>
+          {editable && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleOpenAddModal}
+              disabled={availablePermissions.length === 0}
+            >
+              <i className="ph ph-plus mr-2" />
+              Adicionar Permissões
+            </Button>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -198,8 +192,76 @@ export const PermissionsDisplay: FC<PermissionsDisplayProps> = ({
 
           {/* Permissions List */}
           <div className="space-y-2">
-            {/* Show categories from API if provided */}
+            {/* Show categories from API */}
             {categories && categories.length > 0 ? (
+              categories
+                .map((categoryGroup: PermissionCategory) => {
+                  // Filter to show only permissions that are in the current role
+                  let categoryPermissions = categoryGroup.permissions.filter((p) =>
+                    currentPermissions.includes(p.name)
+                  )
+
+                  // Apply search filter if there's a search query
+                  if (searchQuery.trim()) {
+                    const query = searchQuery.toLowerCase()
+                    categoryPermissions = categoryPermissions.filter((p) =>
+                      p.name.toLowerCase().includes(query) || p.description?.toLowerCase().includes(query)
+                    )
+                  }
+
+                  if (categoryPermissions.length === 0) {
+                    return null
+                  }
+
+                  return (
+                    <div key={categoryGroup.category} className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className="h-1 w-6 rounded-full bg-blue-500" />
+                        <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                          {categoryGroup.category}
+                        </h4>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pl-9">
+                        {categoryPermissions.map((permission) => (
+                          <div
+                            key={permission.id}
+                            className="group flex flex-col gap-1 rounded-lg border border-blue-200 bg-blue-50/50
+dark:border-blue-900/30 dark:bg-blue-950/30 px-3 py-2 hover:bg-blue-100
+dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="h-2 w-2 rounded-full flex-shrink-0 bg-blue-500" />
+                              <div className="flex-1 min-w-0">
+                                <span className="text-sm font-medium text-blue-900 dark:text-blue-100 truncate block">
+                                  {permission.name}
+                                </span>
+                              </div>
+                              {editable && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenRemoveDialog(permission.name, permission.name)}
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 
+                                    p-1 hover:bg-red-100 dark:hover:bg-red-900/50 rounded flex-shrink-0"
+                                  title="Remover permissão"
+                                >
+                                  <i className="ph ph-trash text-red-600 dark:text-red-400 text-base" />
+                                </button>
+                              )}
+                            </div>
+                            {permission.description && (
+                              <p className="text-xs text-blue-700 dark:text-blue-300 pl-4">
+                                {permission.description}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })
+                .filter(Boolean)
+            ) : (
+              /* Fallback if categories not provided */
               filteredPermissionsInfo.map((category: PermissionInfoByCategory) => {
                 const categoryPermissions = category.permissions.filter((p) =>
                   currentPermissions.includes(p.name)
@@ -216,9 +278,6 @@ export const PermissionsDisplay: FC<PermissionsDisplayProps> = ({
                       <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                         {category.name}
                       </h4>
-                      <Badge variant="outline" className="ml-auto">
-                        {categoryPermissions.length}
-                      </Badge>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pl-9">
                       {categoryPermissions.map((permission) => (
@@ -257,62 +316,6 @@ dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
                     </div>
                   </div>
                 )
-              })
-            ) : (
-              /* Original display without categories */
-              filteredPermissionsInfo.map((category: PermissionInfoByCategory) => {
-                const categoryPermissions = category.permissions.filter((p) =>
-                  currentPermissions.includes(p.name)
-                )
-
-              if (categoryPermissions.length === 0) {
-                return null
-              }
-
-              return (
-                <div key={category.name}>
-                  <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="ml-auto">
-                      {categoryPermissions.length}
-                    </Badge>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                    {categoryPermissions.map((permission) => (
-                      <div
-                        key={permission.id}
-                        className="group flex flex-col gap-1 rounded-lg border border-blue-200 bg-blue-50/50
-dark:border-blue-900/30 dark:bg-blue-950/30 px-3 py-2 hover:bg-blue-100
-dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
-                      >
-                        <div className="flex items-center gap-2">
-                          <div className="h-2 w-2 rounded-full flex-shrink-0 bg-blue-500" />
-                          <div className="flex-1 min-w-0">
-                            <span className="text-sm font-medium text-blue-900 dark:text-blue-100 truncate block">
-                              {permission.name}
-                            </span>
-                          </div>
-                          {editable && (
-                            <button
-                              type="button"
-                              onClick={() => handleOpenRemoveDialog(permission.name, permission.name)}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 
-                                p-1 hover:bg-red-100 dark:hover:bg-red-900/50 rounded flex-shrink-0"
-                              title="Remover permissão"
-                            >
-                              <i className="ph ph-trash text-red-600 dark:text-red-400 text-base" />
-                            </button>
-                          )}
-                        </div>
-                        {permission.description && (
-                          <p className="text-xs text-blue-700 dark:text-blue-300 pl-4">
-                            {permission.description}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )
               })
             )}
 

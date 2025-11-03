@@ -55,9 +55,11 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
   useEffect(() => {
     if (open && role) {
       // Extract permission names from the current role permissions
-      const permissionNames = currentPermissions
-        .flatMap((category: PermissionCategory) => category.permissions?.map((p) => p.name) ?? [])
-        .filter((name: string | undefined): name is string => !!name)
+      const permissionNames = Array.isArray(currentPermissions)
+        ? currentPermissions
+            .flatMap((category: PermissionCategory) => category.permissions?.map((p) => p.name) ?? [])
+            .filter((name: string | undefined): name is string => !!name)
+        : []
 
       reset({
         name: role.name,

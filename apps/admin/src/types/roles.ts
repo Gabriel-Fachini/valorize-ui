@@ -39,16 +39,18 @@ export interface PermissionWithInUse extends Permission {
 }
 
 export interface PermissionCategory {
-  name: string
-  permissions: PermissionWithInUse[]
+  category: string
+  permissions: Permission[]
 }
 
-export interface PermissionInfo extends Permission {
-  inUse: boolean
+export interface PermissionInfo {
+  name: string
+  description?: string | null
+  category: string
 }
 
 export interface PermissionInfoByCategory {
-  name: string
+  category: string
   permissions: PermissionInfo[]
 }
 

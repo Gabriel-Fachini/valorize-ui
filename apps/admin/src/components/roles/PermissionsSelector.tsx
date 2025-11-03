@@ -70,10 +70,10 @@ export const PermissionsSelector: FC<PermissionsSelectorProps> = ({
         const allSelected = categoryPerms.every((p) => selectedPermissions.has(p))
 
         return (
-          <div key={category.name} className="rounded border border-gray-200 p-4">
+          <div key={category.category} className="rounded border border-gray-200 p-4">
             <div className="mb-3 flex items-center gap-2">
               <Checkbox
-                id={`category-${category.name}`}
+                id={`category-${category.category}`}
                 checked={allSelected}
                 onCheckedChange={(checked) =>
                   handleSelectAllInCategory(categoryPerms, Boolean(checked))
@@ -81,10 +81,10 @@ export const PermissionsSelector: FC<PermissionsSelectorProps> = ({
                 disabled={isLoading || isLoadingCategories}
               />
               <Label
-                htmlFor={`category-${category.name}`}
+                htmlFor={`category-${category.category}`}
                 className="cursor-pointer font-semibold"
               >
-                {category.name}
+                {category.category}
               </Label>
               <span className="ml-auto text-sm text-gray-600">
                 {categoryPerms.filter((p) => selectedPermissions.has(p)).length}/

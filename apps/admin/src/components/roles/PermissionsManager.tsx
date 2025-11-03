@@ -97,9 +97,9 @@ export const PermissionsManager: FC<PermissionsManagerProps> = ({
       <CardContent>
         <div className="space-y-6">
           {categories.map((category: PermissionCategory) => (
-            <div key={category.name}>
+            <div key={category.category}>
               <h3 className="text-sm font-semibold mb-3 text-gray-900 dark:text-gray-100">
-                {category.name}
+                {category.category}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {category.permissions.map((permission: Permission) => {
