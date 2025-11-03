@@ -8,6 +8,7 @@ import { ComplimentsAnalyticsPage } from '@pages/ComplimentsAnalyticsPage'
 import { SettingsPage } from '@pages/SettingsPage'
 import { UsersPage } from '@pages/UsersPage'
 import { UserDetailPage } from '@pages/UserDetailPage'
+import { EconomyPage } from '@pages/EconomyPage'
 
 // Create a root route
 const rootRoute = createRootRoute({
@@ -49,6 +50,13 @@ const complimentsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/compliments',
   component: ComplimentsAnalyticsPage,
+})
+
+// Economy route - protected
+const economyRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/economy',
+  component: EconomyPage,
 })
 
 // Users routes - protected
@@ -104,6 +112,7 @@ const routeTree = rootRoute.addChildren([
     defaultRoute,
     homeRoute,
     complimentsRoute,
+    economyRoute,
     usersRoute,
     userDetailRoute,
     settingsLayoutRoute.addChildren([

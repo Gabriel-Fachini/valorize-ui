@@ -32,6 +32,23 @@ export {
   passwordSchema,
 } from './forms'
 
+// Economy Types
+export type {
+  EconomyStatus,
+  DepositStatus,
+  AlertPriority,
+  WalletBalance,
+  PrizeFund,
+  RedeemableCoins,
+  ComplimentEngagement,
+  RedemptionRate,
+  EconomyAlert,
+  Deposit,
+  DepositHistory,
+  SuggestedDeposit,
+  EconomyDashboardData,
+} from './economy'
+
 // Common Types
 export interface ProviderProps {
   children: React.ReactNode
