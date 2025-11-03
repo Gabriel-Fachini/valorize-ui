@@ -6,7 +6,7 @@ export const NewPraiseSkeleton = () => {
   const cardAnimation = useCardEntrance()
 
   return (
-    <animated.div style={cardAnimation} className="space-y-6">
+    <animated.div style={cardAnimation as any} className="space-y-6">
       {/* Header Skeleton */}
       <div>
         <div className="mb-6 flex items-center space-x-2">

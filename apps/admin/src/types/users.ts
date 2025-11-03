@@ -169,7 +169,7 @@ export interface CSVImportResponse {
 // Filter State Type (for table toolbar)
 // ============================================================================
 
-export interface UserFilters {
+export interface UserFilters extends Record<string, unknown> {
   search: string
   status: 'all' | 'active' | 'inactive'
   departmentId: string

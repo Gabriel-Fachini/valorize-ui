@@ -8,7 +8,7 @@ export const NotFoundPage = () => {
 
   return (
     <animated.div
-      style={pageAnimation}
+      style={pageAnimation as any}
       className="flex min-h-screen items-center justify-center bg-gradient-to-br from-purple-50 via-white to-indigo-50 px-4 dark:from-[#262626] dark:via-[#2a2a2a] dark:to-[#262626]"
     >
       <div className="w-full max-w-2xl text-center">

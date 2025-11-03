@@ -123,7 +123,7 @@ export const ProfileForm: React.FC = () => {
         label="Nome"
         placeholder="Seu nome"
         required
-        error={errors.name?.message}
+        error={errors.name?.message as string}
         autoFocus
       />
 
@@ -133,7 +133,7 @@ export const ProfileForm: React.FC = () => {
         name="picture"
         label="URL da imagem (opcional)"
         placeholder="https://..."
-        error={errors.picture?.message}
+        error={errors.picture?.message as string}
       />
 
       {/* Company (read-only) - if available */}

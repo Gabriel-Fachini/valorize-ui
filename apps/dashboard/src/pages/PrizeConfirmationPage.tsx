@@ -45,7 +45,7 @@ export const PrizeConfirmationPage = () => {
     handleConfirmRedemption,
     handleCloseSuccessModal,
     setErrorMessage,
-  } = usePrizeConfirmation({ prizeId, variantId })
+  } = usePrizeConfirmation({ prizeId: prizeId as string, variantId })
 
   const handleDeleteWithConfirmation = (addressId: string) => {
     showAlert({
@@ -77,7 +77,7 @@ export const PrizeConfirmationPage = () => {
 
   return (
     <PageLayout maxWidth="4xl">
-      <animated.div style={fadeIn} className="relative">
+      <animated.div style={fadeIn as any} className="relative">
         <BackButton onClick={() => navigate({ to: `/prizes/${prizeId}` })} />
 
         <h1 className="mb-8 text-3xl font-bold text-gray-900 dark:text-white">

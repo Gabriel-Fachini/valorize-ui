@@ -35,7 +35,7 @@ export const TransactionsPage = () => {
 
   return (
     <PageLayout maxWidth="6xl">
-      <animated.div style={pageAnimation}>
+      <animated.div style={pageAnimation as any}>
         {/* Main Content */}
         <div className="relative z-10">
 

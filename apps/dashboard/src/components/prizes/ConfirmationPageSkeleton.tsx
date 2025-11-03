@@ -9,7 +9,7 @@ export const ConfirmationPageSkeleton = memo(() => {
 
   return (
     <PageLayout maxWidth="4xl">
-      <animated.div style={fadeIn} className="space-y-6">
+      <animated.div style={fadeIn as any} className="space-y-6">
         {/* Back button skeleton */}
         <SkeletonBase>
           <div className="h-10 w-24 rounded-lg bg-gray-200 dark:bg-[#262626]" />

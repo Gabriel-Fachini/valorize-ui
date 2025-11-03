@@ -133,7 +133,7 @@ export const RedemptionTimeline: React.FC<RedemptionTimelineProps> = ({
                 step={step}
                 index={idx}
                 isLast={isLast}
-                style={style}
+                style={style as any}
               />
             )
           })}

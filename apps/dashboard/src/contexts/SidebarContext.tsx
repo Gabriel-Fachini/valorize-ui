@@ -26,5 +26,5 @@ export const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) =>
     toggleMobileSidebar,
   }), [desktopSidebarCollapsed, mobileSidebarOpen, toggleDesktopSidebar, toggleMobileSidebar])
 
-  return <SidebarContext value={value}>{children}</SidebarContext>
+  return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
 }

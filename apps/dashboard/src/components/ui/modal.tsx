@@ -68,7 +68,7 @@ export const Modal: React.FC<ModalProps> = ({
     modalTransition((style, item) =>
       item ? (
         <animated.div
-          style={style}
+          style={style as any}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 dark:bg-black/50 p-4 backdrop-blur-sm"
           onClick={handleBackdropClick}
           role="dialog"
@@ -81,7 +81,7 @@ export const Modal: React.FC<ModalProps> = ({
               sizeClasses[size],
               className,
             )}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
           >
             {showCloseButton && (
               <button
