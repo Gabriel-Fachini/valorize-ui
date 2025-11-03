@@ -3,6 +3,7 @@ import type { NavLink } from './types'
 export const NAV_LINKS = [
   { path: '/home', label: 'Início', icon: 'house', dataTour: 'home' },
   { path: '/compliments', label: 'Elogios', icon: 'chat-circle', dataTour: 'compliments' },
+  { path: '/economy', label: 'Economia', icon: 'currency-circle-dollar', dataTour: 'economy' },
   { path: '/users', label: 'Usuários', icon: 'users', dataTour: 'users' },
 ] as const
 
