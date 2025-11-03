@@ -216,12 +216,11 @@ export const PermissionsDisplay: FC<PermissionsDisplayProps> = ({
                   return (
                     <div key={categoryGroup.category} className="space-y-3">
                       <div className="flex items-center gap-3">
-                        <div className="h-1 w-6 rounded-full bg-blue-500" />
                         <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                           {categoryGroup.category}
                         </h4>
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pl-9">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pl-2">
                         {categoryPermissions.map((permission) => (
                           <div
                             key={permission.id}
@@ -272,17 +271,16 @@ dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
                 }
 
                 return (
-                  <div key={category.name} className="space-y-3">
+                  <div key={category.category} className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <div className="h-1 w-6 rounded-full bg-blue-500" />
                       <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                        {category.name}
+                        {category.category}
                       </h4>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pl-9">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pl-2">
                       {categoryPermissions.map((permission) => (
                         <div
-                          key={permission.id}
+                          key={permission.name}
                           className="group flex flex-col gap-1 rounded-lg border border-blue-200 bg-blue-50/50
 dark:border-blue-900/30 dark:bg-blue-950/30 px-3 py-2 hover:bg-blue-100
 dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
@@ -350,26 +348,25 @@ dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
               </div>
             ) : (
               availablePermissions.map((category) => (
-                <div key={category.name} className="space-y-3">
+                <div key={category.category} className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-1 w-6 rounded-full bg-blue-500" />
                     <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                      {category.name}
+                      {category.category}
                     </h4>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-9">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-2">
                     {category.permissions.map((permission) => (
                       <div
-                        key={permission.id}
+                        key={permission.name}
                         className="flex items-start gap-3 rounded-lg border p-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                       >
                         <Checkbox
-                          id={`add-${permission.id}`}
+                          id={`add-${permission.name}`}
                           checked={selectedPermissionsToAdd.includes(permission.name)}
                           onCheckedChange={() => handleTogglePermissionToAdd(permission.name)}
                         />
                         <label
-                          htmlFor={`add-${permission.id}`}
+                          htmlFor={`add-${permission.name}`}
                           className="flex-1 cursor-pointer"
                         >
                           <div className="text-sm font-medium text-gray-900 dark:text-gray-100">

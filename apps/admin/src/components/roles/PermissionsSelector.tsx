@@ -94,9 +94,9 @@ export const PermissionsSelector: FC<PermissionsSelectorProps> = ({
 
             <div className="space-y-2 pl-6">
               {category.permissions.map((permission) => (
-                <div key={permission.id} className="flex items-start gap-2">
+                <div key={permission.name} className="flex items-start gap-2">
                   <Checkbox
-                    id={`permission-${permission.id}`}
+                    id={`permission-${permission.name}`}
                     checked={selectedPermissions.has(permission.name)}
                     onCheckedChange={() => handleTogglePermission(permission.name)}
                     disabled={isLoading || isLoadingCategories}
@@ -104,7 +104,7 @@ export const PermissionsSelector: FC<PermissionsSelectorProps> = ({
                   />
                   <div className="flex-1">
                     <Label
-                      htmlFor={`permission-${permission.id}`}
+                      htmlFor={`permission-${permission.name}`}
                       className="cursor-pointer font-medium"
                     >
                       {permission.name}

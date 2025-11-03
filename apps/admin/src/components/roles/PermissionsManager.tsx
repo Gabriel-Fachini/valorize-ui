@@ -107,7 +107,7 @@ export const PermissionsManager: FC<PermissionsManagerProps> = ({
 
                   return (
                     <button
-                      key={permission.id}
+                      key={permission.name}
                       onClick={() => {
                         if (!disabled && !isLoading && !isSaving) {
                           handleTogglePermission(permission.name)
