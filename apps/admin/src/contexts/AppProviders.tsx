@@ -3,6 +3,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { SidebarProvider } from '@/contexts/SidebarContext'
 import { ThemeWrapper } from '@/components/ThemeWrapper'
+import { Toaster } from '@/components/ui/sonner'
 
 // Create a client with cache configuration
 const queryClient = new QueryClient({
@@ -28,6 +29,7 @@ export const AppProviders = ({ children }: AppProvidersProps) => {
           <ThemeProvider>
             <ThemeWrapper>
               {children}
+              <Toaster />
             </ThemeWrapper>
           </ThemeProvider>
         </SidebarProvider>
