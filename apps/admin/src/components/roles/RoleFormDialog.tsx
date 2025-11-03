@@ -35,7 +35,7 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
   const [activeTab, setActiveTab] = useState('basic')
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([])
   const { permissions: currentPermissions, isLoading: isLoadingPermissions } = useRolePermissions(
-    role?.id ?? ''
+    role?.id || ''
   )
   
   const {
@@ -52,23 +52,14 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
     },
   })
 
+  // Reset form when dialog opens/closes or role changes
   useEffect(() => {
-    if (open && role) {
-      // Extract permission names from the current role permissions
-      const permissionNames = Array.isArray(currentPermissions)
-        ? currentPermissions
-            .flatMap((category: PermissionCategory) => category.permissions?.map((p) => p.name) ?? [])
-            .filter((name: string | undefined): name is string => !!name)
-        : []
+    if (!open) {
+      return
+    }
 
-      reset({
-        name: role.name,
-        description: role.description ?? '',
-        permissionNames,
-      })
-      setSelectedPermissions(permissionNames)
-      setActiveTab('basic')
-    } else if (open && !role) {
+    if (!role) {
+      // New role - reset form with empty values
       reset({
         name: '',
         description: '',
@@ -76,8 +67,29 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
       })
       setSelectedPermissions([])
       setActiveTab('basic')
+    } else {
+      // Existing role - populate form with basic info
+      reset({
+        name: role.name,
+        description: role.description ?? '',
+        permissionNames: [],
+      })
+      setActiveTab('basic')
     }
-  }, [open, role, currentPermissions, reset])
+  }, [open, role, reset])
+
+  // Update form with permissions when they load (only for existing roles)
+  useEffect(() => {
+    if (!open || !role || !Array.isArray(currentPermissions)) {
+      return
+    }
+
+    const permissionNames = currentPermissions
+      .flatMap((category: PermissionCategory) => category.permissions?.map((p) => p.name) ?? [])
+      .filter((name: string | undefined): name is string => !!name)
+
+    setSelectedPermissions(permissionNames)
+  }, [open, role, currentPermissions])
 
   const handleFormSubmit = async (data: { name: string; description?: string; permissionNames?: string[] }) => {
     const formData: RoleFormData = {

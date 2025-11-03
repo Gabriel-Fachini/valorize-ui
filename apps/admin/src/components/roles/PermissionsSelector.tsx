@@ -1,8 +1,8 @@
 import { type FC, useState, useEffect } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
-import { usePermissionCategories } from '@/hooks/usePermissions'
-import type { PermissionCategory } from '@/types/roles'
+import { usePermissionsInfo } from '@/hooks/usePermissionsInfo'
+import type { PermissionInfoByCategory } from '@/types/roles'
 
 interface PermissionsSelectorProps {
   value: string[]
@@ -20,7 +20,7 @@ export const PermissionsSelector: FC<PermissionsSelectorProps> = ({
   onChange,
   isLoading = false,
 }) => {
-  const { categories, isLoading: isLoadingCategories } = usePermissionCategories()
+  const { permissionsInfo, isLoading: isLoadingPermissions } = usePermissionsInfo()
   const [selectedPermissions, setSelectedPermissions] = useState<Set<string>>(
     new Set(value),
   )
@@ -53,7 +53,7 @@ export const PermissionsSelector: FC<PermissionsSelectorProps> = ({
     onChange(Array.from(newSelected))
   }
 
-  if (isLoadingCategories) {
+  if (isLoadingPermissions) {
     return (
       <div className="space-y-2">
         {Array.from({ length: 3 }).map((_, i) => (
@@ -65,7 +65,7 @@ export const PermissionsSelector: FC<PermissionsSelectorProps> = ({
 
   return (
     <div className="space-y-6">
-      {categories.map((category: PermissionCategory) => {
+      {permissionsInfo.map((category: PermissionInfoByCategory) => {
         const categoryPerms = category.permissions.map((p) => p.name)
         const allSelected = categoryPerms.every((p) => selectedPermissions.has(p))
 
@@ -78,7 +78,7 @@ export const PermissionsSelector: FC<PermissionsSelectorProps> = ({
                 onCheckedChange={(checked) =>
                   handleSelectAllInCategory(categoryPerms, Boolean(checked))
                 }
-                disabled={isLoading || isLoadingCategories}
+                disabled={isLoading || isLoadingPermissions}
               />
               <Label
                 htmlFor={`category-${category.category}`}
@@ -99,7 +99,7 @@ export const PermissionsSelector: FC<PermissionsSelectorProps> = ({
                     id={`permission-${permission.name}`}
                     checked={selectedPermissions.has(permission.name)}
                     onCheckedChange={() => handleTogglePermission(permission.name)}
-                    disabled={isLoading || isLoadingCategories}
+                    disabled={isLoading || isLoadingPermissions}
                     className="mt-1"
                   />
                   <div className="flex-1">
