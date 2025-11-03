@@ -10,7 +10,7 @@ const permissionsService = {
   /**
    * List all permissions available in the system
    *
-   * Endpoint: GET /admin/roles/system/permissions
+   * Endpoint: GET /admin/roles/system/permissions/categories
    */
   listAll: async (): Promise<PermissionsListResponse> => {
     const { data } = await api.get('/admin/roles/system/permissions')
@@ -19,6 +19,7 @@ const permissionsService = {
 
   /**
    * Get permission categories
+   * Retorna as permissões agrupadas por categoria
    *
    * Endpoint: GET /admin/roles/system/permissions/categories
    */

@@ -1,12 +1,11 @@
 import { type FC, useState, useEffect, useCallback } from 'react'
 import { useNavigate } from '@tanstack/react-router'
+import { Button } from '@/components/ui/button'
 import { PageLayout } from '@/components/layout/PageLayout'
-import {
-  RolesTable,
-  RoleTableToolbar,
-  RoleFormDialog,
-  RoleDeleteDialog,
-} from '@/components/roles'
+import { PageHeader } from '@/components/layout/PageHeader'
+import { DataTable } from '@/components/ui/data-table'
+import { rolesTableConfig } from '@/config/tables/roles.table.config'
+import { RoleFormDialog, RoleDeleteDialog } from '@/components/roles'
 import { useRoles } from '@/hooks/useRoles'
 import { useRoleMutations } from '@/hooks/useRoleMutations'
 import { useUserPermissions } from '@/hooks/useUserPermissions'
@@ -17,7 +16,7 @@ import type { RoleWithCounts, RolesFilters, RolesQueryParams } from '@/types/rol
 export const RolesPage: FC = () => {
   const navigate = useNavigate()
   const [page, setPage] = useState(1)
-  const [pageSize] = useState(20)
+  const [pageSize, setPageSize] = useState(20)
   const [filters, setFilters] = useState<RolesFilters>({
     search: '',
   })
@@ -34,8 +33,6 @@ export const RolesPage: FC = () => {
     page,
     limit: pageSize,
     search: debouncedSearch || undefined,
-    sortBy: filters.sortBy,
-    sortOrder: filters.sortOrder,
   }
 
   const { roles, totalCount, pageCount, currentPage, isLoading, isFetching } = useRoles(queryParams)
@@ -51,17 +48,65 @@ export const RolesPage: FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setPage(1)
-  }, [debouncedSearch, filters.sortBy, filters.sortOrder])
+  }, [debouncedSearch])
 
   const handleCreateRole = async (data: { name: string; description?: string }) => {
     await createRole(data)
     setIsCreateDialogOpen(false)
   }
 
-  const handleEditRole = useCallback((role: RoleWithCounts) => {
-    setSelectedRole(role)
-    setIsEditDialogOpen(true)
-  }, [])
+  const handleRowAction = useCallback(
+    (actionId: string, row: RoleWithCounts) => {
+      if (actionId === 'view') {
+        navigate({ to: '/roles/$roleId', params: { roleId: row.id } })
+      } else if (actionId === 'edit') {
+        setSelectedRole(row)
+        setIsEditDialogOpen(true)
+      } else if (actionId === 'delete') {
+        setSelectedRole(row)
+        setIsDeleteDialogOpen(true)
+      }
+    },
+    [navigate]
+  )
+
+  const handleBulkAction = useCallback(
+    async (actionId: string, roleIds: string[]) => {
+      if (actionId === 'export') {
+        // Get full role data for export
+        const selectedRoles = roles.filter((role) => roleIds.includes(role.id))
+        const csvContent = [
+          ['Nome', 'Descrição', 'Usuários', 'Permissões', 'Criado em'].join(','),
+          ...selectedRoles.map((role) =>
+            [
+              role.name,
+              role.description || '',
+              role.usersCount,
+              role.permissionsCount,
+              new Date(role.createdAt).toLocaleDateString('pt-BR'),
+            ].join(',')
+          ),
+        ].join('\n')
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+        const link = document.createElement('a')
+        const url = URL.createObjectURL(blob)
+        link.setAttribute('href', url)
+        link.setAttribute('download', `roles-${Date.now()}.csv`)
+        link.click()
+        URL.revokeObjectURL(url)
+      } else if (actionId === 'delete') {
+        if (roleIds.length > 0) {
+          const roleToDelete = roles.find((role) => role.id === roleIds[0])
+          if (roleToDelete) {
+            setSelectedRole(roleToDelete)
+            setIsDeleteDialogOpen(true)
+          }
+        }
+      }
+    },
+    [roles]
+  )
 
   const handleUpdateRole = async (data: { name: string; description?: string }) => {
     if (!selectedRole) return
@@ -70,11 +115,6 @@ export const RolesPage: FC = () => {
     setIsEditDialogOpen(false)
   }
 
-  const handleDeleteClick = useCallback((role: RoleWithCounts) => {
-    setSelectedRole(role)
-    setIsDeleteDialogOpen(true)
-  }, [])
-
   const handleDeleteRole = async () => {
     if (!selectedRole) return
     await deleteRole(selectedRole.id)
@@ -82,53 +122,46 @@ export const RolesPage: FC = () => {
     setIsDeleteDialogOpen(false)
   }
 
-  const handleViewDetails = useCallback((role: RoleWithCounts) => {
-    navigate({ to: '/roles/$roleId', params: { roleId: role.id } })
-  }, [navigate])
-
   return (
     <PageLayout maxWidth="7xl">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              Gerenciamento de Roles
-            </h1>
-            <p className="text-gray-600">
-              Crie e gerencie roles e atribua permissões aos usuários
-            </p>
-          </div>
-        </div>
-
-        {/* Toolbar */}
-        <RoleTableToolbar
-          filters={filters}
-          onFiltersChange={setFilters}
-          onCreateRole={() => {
-            setSelectedRole(undefined)
-            setIsCreateDialogOpen(true)
-          }}
-          isLoading={isLoading}
-          canCreateRole={canCreateRole}
+        <PageHeader
+          title="Gerenciamento de Cargos"
+          description="Crie e gerencie cargos e permissões aos usuários"
+          icon="ph-lock"
+          right={
+            canCreateRole && (
+              <Button
+                onClick={() => {
+                  setSelectedRole(undefined)
+                  setIsCreateDialogOpen(true)
+                }}
+              >
+                <i className="ph ph-plus mr-2" />
+                Nova Role
+              </Button>
+            )
+          }
         />
 
         {/* Table */}
-        <RolesTable
-          roles={roles}
-          isLoading={isLoading}
-          isFetching={isFetching}
+        <DataTable
+          config={rolesTableConfig}
+          data={roles}
           totalCount={totalCount}
           pageCount={pageCount}
           currentPage={currentPage}
-          filters={filters}
-          onFiltersChange={setFilters}
-          onPageChange={setPage}
           pageSize={pageSize}
-          onEdit={handleEditRole}
-          onDelete={handleDeleteClick}
-          onViewDetails={handleViewDetails}
-          userPermissions={permissions}
+          isLoading={isLoading}
+          isFetching={isFetching}
+          filters={filters as unknown as Record<string, unknown>}
+          onFiltersChange={(newFilters) => setFilters(newFilters as unknown as RolesFilters)}
+          onPageChange={setPage}
+          onPageSizeChange={setPageSize}
+          onRowAction={handleRowAction}
+          onBulkAction={handleBulkAction}
+          getRowId={(role) => role.id}
         />
 
         {/* Dialogs */}

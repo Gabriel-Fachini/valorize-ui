@@ -1,10 +1,3 @@
-import {
-  CheckCircle,
-  Info,
-  Spinner,
-  XCircle,
-  Warning,
-} from "@phosphor-icons/web"
 import { useTheme } from "next-themes"
 import { Toaster as Sonner } from "sonner"
 
@@ -18,11 +11,11 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       icons={{
-        success: <CheckCircle className="h-4 w-4" weight="fill" />,
-        info: <Info className="h-4 w-4" weight="fill" />,
-        warning: <Warning className="h-4 w-4" weight="fill" />,
-        error: <XCircle className="h-4 w-4" weight="fill" />,
-        loading: <Spinner className="h-4 w-4 animate-spin" />,
+        success: <i className="ph ph-check-circle" />,
+        info: <i className="ph ph-info" />,
+        warning: <i className="ph ph-warning" />,
+        error: <i className="ph ph-x-circle" />,
+        loading: <i className="ph ph-spinner" />,
       }}
       toastOptions={{
         classNames: {

@@ -21,12 +21,12 @@ import type { RoleWithCounts } from '@/types/roles'
 export const RoleDetailPage: FC = () => {
   const navigate = useNavigate()
   const params = useParams({ strict: false })
-  const roleId = (params as { roleId: string }).roleId
+  const roleId = String(params?.roleId || '')
 
   const { role, isLoading: isLoadingRole } = useRoleDetail(roleId)
   const { isSettingPermissions, setPermissions } = useRolePermissions(roleId)
   const { updateRole, deleteRole, isUpdating, isDeleting } = useRoleMutations()
-  const { users: roleUsers, isLoading: isLoadingUsers, isRemoving, removeUser } = useRoleUsers(roleId)
+  const { isRemoving, removeUser } = useRoleUsers(roleId)
   const { permissions: userPermissions } = useUserPermissions()
 
   const canEditRole = hasPermission(userPermissions || [], 'ROLES_UPDATE')
@@ -92,6 +92,18 @@ export const RoleDetailPage: FC = () => {
   return (
     <PageLayout maxWidth="5xl">
       <div className="space-y-6">
+        {/* Back Button */}
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            onClick={() => navigate({ to: '/roles' })}
+            className="gap-2"
+          >
+            <i className="ph ph-arrow-left" />
+            Voltar
+          </Button>
+        </div>
+
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -137,12 +149,6 @@ export const RoleDetailPage: FC = () => {
                 )}
               </Tooltip>
             </TooltipProvider>
-            <Button
-              variant="outline"
-              onClick={() => navigate({ to: '/roles' })}
-            >
-              Voltar
-            </Button>
           </div>
         </div>
 
@@ -151,7 +157,7 @@ export const RoleDetailPage: FC = () => {
 
         {/* Permissions Manager */}
         <PermissionsManager
-          currentPermissions={role.permissions || []}
+          currentPermissions={role.permissions?.map((p) => p.name) || []}
           onSave={async (perms) => {
             await setPermissions(perms)
           }}
@@ -161,8 +167,8 @@ export const RoleDetailPage: FC = () => {
 
         {/* Users Section */}
         <RoleUsersSection
-          users={roleUsers}
-          isLoading={isLoadingUsers}
+          users={role.users || []}
+          isLoading={false}
           onRemoveUser={handleRemoveUser}
           isRemoving={isRemoving}
           disabled={!hasPermission(userPermissions || [], 'USERS_MANAGE_ROLES')}

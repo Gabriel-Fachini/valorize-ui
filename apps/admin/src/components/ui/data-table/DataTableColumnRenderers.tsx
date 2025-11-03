@@ -149,7 +149,12 @@ export const LinkRenderer = <T,>({ row, config }: LinkRendererProps<T>): ReactNo
   const className = displayClasses[config.display || 'string']
 
   return (
-    <Link to={path} target={config.linkTarget} className={`${className} hover:underline`}>
+    <Link 
+      to={path}
+      target={config.linkTarget} 
+      className={`${className} hover:underline`}
+      params={{}}
+    >
       {stringValue}
     </Link>
   )
@@ -217,9 +222,34 @@ export const DateRenderer = <T,>({ row, config }: DateRendererProps<T>): ReactNo
     return <span className="text-sm text-muted-foreground">-</span>
   }
 
-  // TODO: Implementar formatação de data com date-fns
-  // Por enquanto, apenas mostra o valor
-  const dateValue = value instanceof Date ? value.toLocaleDateString('pt-BR') : String(value)
+  // Formata a data com hora usando toLocaleString pt-BR
+  let dateValue = ''
+  
+  if (value instanceof Date) {
+    dateValue = value.toLocaleString('pt-BR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })
+  } else {
+    // Se for string, tenta converter para Date primeiro
+    const date = new Date(String(value))
+    if (!isNaN(date.getTime())) {
+      dateValue = date.toLocaleString('pt-BR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      })
+    } else {
+      dateValue = String(value)
+    }
+  }
 
   return <div className="text-sm">{dateValue}</div>
 }

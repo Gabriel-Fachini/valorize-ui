@@ -69,8 +69,25 @@ export const PermissionsManager: FC<PermissionsManagerProps> = ({
         <CardContent>
           <div className="space-y-2">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-8 animate-pulse rounded bg-gray-200" />
+              <div key={i} className="h-8 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
             ))}
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (categories.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Gerenciador de Permissões</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-lg bg-gray-50 dark:bg-gray-900 p-6 text-center">
+            <p className="text-gray-600 dark:text-gray-400">
+              Nenhuma permissão disponível no sistema
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -89,7 +106,7 @@ export const PermissionsManager: FC<PermissionsManagerProps> = ({
             const allSelected = categoryPerms.every((p) => selectedPermissions.has(p))
 
             return (
-              <div key={category.name} className="rounded border border-gray-200 p-4">
+              <div key={category.name} className="rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
                 <div className="mb-3 flex items-center gap-2">
                   <Checkbox
                     id={`category-${category.name}`}
@@ -105,7 +122,7 @@ export const PermissionsManager: FC<PermissionsManagerProps> = ({
                   >
                     {category.name}
                   </Label>
-                  <span className="ml-auto text-sm text-gray-600">
+                  <span className="ml-auto text-sm text-gray-600 dark:text-gray-400">
                     {categoryPerms.filter((p) => selectedPermissions.has(p)).length}/
                     {categoryPerms.length}
                   </span>
@@ -129,7 +146,7 @@ export const PermissionsManager: FC<PermissionsManagerProps> = ({
                           {permission.name}
                         </Label>
                         {permission.description && (
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
                             {permission.description}
                           </p>
                         )}

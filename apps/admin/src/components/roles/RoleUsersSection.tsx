@@ -80,8 +80,8 @@ export const RoleUsersSection: FC<RoleUsersSectionProps> = ({
       </CardHeader>
       <CardContent>
         {users.length === 0 ? (
-          <div className="rounded-lg bg-gray-50 p-6 text-center">
-            <p className="text-gray-600">
+          <div className="rounded-lg bg-gray-50 dark:bg-gray-900 p-6 text-center">
+            <p className="text-gray-600 dark:text-gray-400">
               Nenhum usuário atribuído a este role ainda
             </p>
           </div>
@@ -90,7 +90,7 @@ export const RoleUsersSection: FC<RoleUsersSectionProps> = ({
             {users.map((user) => (
               <div
                 key={user.id}
-                className="flex items-center justify-between rounded border border-gray-200 p-3"
+                className="flex items-center justify-between rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-3"
               >
                 <div className="flex items-center gap-3 flex-1">
                   {user.avatar ? (
@@ -111,7 +111,7 @@ export const RoleUsersSection: FC<RoleUsersSectionProps> = ({
                   )}
                   <div className="flex-1">
                     <p className="font-medium text-sm">{user.name}</p>
-                    <p className="text-xs text-gray-600">{user.email}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{user.email}</p>
                   </div>
                 </div>
                 {onRemoveUser && (

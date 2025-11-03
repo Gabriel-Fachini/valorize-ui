@@ -19,7 +19,8 @@ export interface RoleWithCounts extends Role {
 }
 
 export interface RoleDetail extends RoleWithCounts {
-  permissions: string[]
+  permissions: Permission[]
+  users: RoleUser[]
 }
 
 // ============================================================================
