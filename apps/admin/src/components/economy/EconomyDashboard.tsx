@@ -17,6 +17,7 @@ import { RedeemableCoinsCard } from './RedeemableCoinsCard'
 import { ComplimentEngagementCard } from './ComplimentEngagementCard'
 import { RedemptionRateCard } from './RedemptionRateCard'
 import { DepositHistorySection } from './DepositHistorySection'
+import { EconomyMetricsGuide } from './EconomyMetricsGuide'
 
 /**
  * EconomyDashboard - Main economy dashboard page
@@ -52,6 +53,9 @@ export const EconomyDashboard: FC = () => {
       {/* Alerts Section */}
       <AlertsSection alerts={data?.alerts ?? []} isLoading={isLoading} />
 
+      {/* Metrics Guide */}
+      <EconomyMetricsGuide />
+
       {/* Main Wallet Balance Card */}
       <WalletBalanceCard data={data?.wallet_balance} isLoading={isLoading} />
 
@@ -60,9 +64,14 @@ export const EconomyDashboard: FC = () => {
 
       {/* Metrics Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {/* Financial Health */}
         <PrizeFundCard data={data?.prize_fund} isLoading={isLoading} />
         <RedeemableCoinsCard data={data?.redeemable_coins} isLoading={isLoading} />
+        
+        {/* Engagement */}
         <ComplimentEngagementCard data={data?.compliment_engagement} isLoading={isLoading} />
+        
+        {/* Results */}
         <RedemptionRateCard data={data?.redemption_rate} isLoading={isLoading} />
       </div>
 

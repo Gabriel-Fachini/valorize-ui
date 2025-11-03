@@ -88,28 +88,42 @@ export const WalletBalanceCard: FC<WalletBalanceCardProps> = ({ data, isLoading 
   const buttonConfig = getButtonConfig(data.percentage_of_ideal)
 
   return (
-    <Card className="border-2 mb-6">
+    <Card className="border-2 mb-6" role="region" aria-labelledby="wallet-title">
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-3 flex-1">
             <div className="flex items-center gap-2">
-              <i className="ph ph-wallet text-lg text-muted-foreground" />
-              <CardTitle className="text-lg">Saldo da Carteira</CardTitle>
+              <i className="ph ph-wallet text-lg text-muted-foreground" aria-hidden="true" />
+              <CardTitle className="text-lg" id="wallet-title">Saldo da Carteira</CardTitle>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button className="text-muted-foreground hover:text-foreground transition-colors">
-                      <i className="ph ph-info text-base" />
+                    <button 
+                      className="text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded p-1"
+                      aria-label="Informações sobre saldo da carteira"
+                      type="button"
+                    >
+                      <i className="ph ph-info text-base" aria-hidden="true" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="text-sm max-w-xs">Saldo disponível para aportes. Acompanhe a saúde do fundo através da barra de progresso.</p>
+                  <TooltipContent className="max-w-md">
+                    <p className="text-base font-medium mb-2">💰 Saldo pré-pago disponível para pagamento de prêmios</p>
+                    <div className="text-sm text-muted-foreground space-y-2 mt-2 pt-2 border-t">
+                      <p className="font-medium">📊 Como funciona:</p>
+                      <ul className="list-disc list-inside space-y-1 ml-2">
+                        <li>Você deposita via PIX/Boleto (modelo pré-pago)</li>
+                        <li>Colaboradores resgatam prêmios usando moedas</li>
+                        <li>Sistema deduz o custo do prêmio deste saldo automaticamente</li>
+                      </ul>
+                      <p className="font-medium mt-2">🔒 Segurança:</p>
+                      <p>Este saldo está em custódia (legalmente é seu, não da Valorize). Em caso de rescisão, o valor é estornado integralmente.</p>
+                    </div>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold text-primary">
+              <span className="text-4xl font-bold text-primary" aria-live="polite">
                 {formatCurrency(data.available_balance)}
               </span>
               <span className="text-sm text-muted-foreground">Saldo Disponível</span>
@@ -120,23 +134,37 @@ export const WalletBalanceCard: FC<WalletBalanceCardProps> = ({ data, isLoading 
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Progress Bar */}
-        <div className="space-y-2">
-          {/* Calculate progress as percentage of available to total loaded */}
-          {(() => {
-            const progressPercentage = data.total_loaded > 0 
-              ? (data.available_balance / data.total_loaded) * 100 
-              : 0
-            return (
-              <>
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Saúde do Fundo</span>
-                  <span>{Math.min(progressPercentage, 100).toFixed(1)}%</span>
-                </div>
-                <Progress value={Math.min(progressPercentage, 100)} className="h-2" />
-              </>
-            )
-          })()}
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="space-y-2">
+                {/* Calculate progress as percentage of available to total loaded */}
+                {(() => {
+                  const progressPercentage = data.total_loaded > 0 
+                    ? (data.available_balance / data.total_loaded) * 100 
+                    : 0
+                  return (
+                    <>
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>Saúde do Fundo</span>
+                        <span>{Math.min(progressPercentage, 100).toFixed(1)}%</span>
+                      </div>
+                      <Progress value={Math.min(progressPercentage, 100)} className="h-2" />
+                    </>
+                  )
+                })()}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs">
+              <p className="text-base font-medium mb-2">Percentual do saldo disponível em relação ao total carregado</p>
+              <div className="text-sm text-muted-foreground space-y-1 mt-2 pt-2 border-t">
+                <p>🟢 {'>'} 75%: Saudável - não requer ação</p>
+                <p>🟡 33-75%: Monitorar - avaliar novo aporte</p>
+                <p>🔴 {'<'} 33%: Crítico - carregar saldo urgentemente</p>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         {/* Breakdown */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/30 rounded-lg">
@@ -148,10 +176,23 @@ export const WalletBalanceCard: FC<WalletBalanceCardProps> = ({ data, isLoading 
             <p className="text-xs text-muted-foreground">Já Gasto</p>
             <p className="text-lg font-semibold text-destructive">-{formatCurrency(data.total_spent)}</p>
           </div>
-          <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">Limite Overdraft</p>
-            <p className="text-lg font-semibold">{formatCurrency(data.overdraft_limit)}</p>
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground">Limite Overdraft</p>
+                  <p className="text-lg font-semibold">{formatCurrency(data.overdraft_limit)}</p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p className="text-base font-medium mb-2">⚠️ Limite de Overdraft (120% do saldo ideal)</p>
+                <p className="text-sm text-muted-foreground mt-2 pt-2 border-t">
+                  O sistema permite resgates até 20% acima do saldo disponível.
+                  Isso evita bloqueios inesperados, mas o saldo negativo deve ser regularizado em até 7 dias.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         {/* Action Button */}

@@ -126,7 +126,6 @@ export const DepositHistorySection: FC<DepositHistorySectionProps> = ({
                     <TableHead>Valor</TableHead>
                     <TableHead>Método</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Saldo Resultante</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -140,11 +139,6 @@ export const DepositHistorySection: FC<DepositHistorySectionProps> = ({
                       </TableCell>
                       <TableCell className="text-sm capitalize">{deposit.payment_method}</TableCell>
                       <TableCell>{getStatusBadge(deposit.status)}</TableCell>
-                      <TableCell className="text-right font-medium">
-                        {deposit.resulting_balance !== null
-                          ? formatCurrency(deposit.resulting_balance)
-                          : '—'}
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -165,9 +159,6 @@ export const DepositHistorySection: FC<DepositHistorySectionProps> = ({
                   <div className="text-xs text-muted-foreground space-y-1">
                     <p>{formatDate(deposit.deposited_at)}</p>
                     <p>Método: {deposit.payment_method}</p>
-                    {deposit.resulting_balance !== null && (
-                      <p>Saldo: {formatCurrency(deposit.resulting_balance)}</p>
-                    )}
                   </div>
                 </div>
               ))}
