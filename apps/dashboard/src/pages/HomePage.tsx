@@ -181,7 +181,7 @@ export const HomePage = () => {
                           // Navigate to praise page with user pre-selected
                           navigate({ 
                             to: '/elogios/novo',
-                            search: { userId: user.id },
+                            search: { userId: user.id }
                           })
                         }}
                         className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] cursor-pointer border-b border-gray-200 dark:border-neutral-700 last:border-b-0 flex items-center gap-3"

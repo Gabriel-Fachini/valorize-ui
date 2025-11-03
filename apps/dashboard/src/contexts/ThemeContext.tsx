@@ -53,5 +53,5 @@ export const ThemeProvider = ({ children }: ProviderProps) => {
     isDark: theme === 'dark',
   }), [theme, toggleTheme])
 
-  return <ThemeContext value={value}>{children}</ThemeContext>
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }

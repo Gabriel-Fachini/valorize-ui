@@ -12,7 +12,7 @@ export const NewPraiseError = ({ error, onRetry }: NewPraiseErrorProps) => {
   const cardAnimation = useCardEntrance()
   
   return (
-    <animated.div style={cardAnimation} className="flex flex-col items-center justify-center py-16 px-4">
+    <animated.div style={cardAnimation as any} className="flex flex-col items-center justify-center py-16 px-4">
       <div className="max-w-md w-full text-center">
         <div className="w-24 h-24 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
           <i className="ph-bold ph-warning-circle text-red-500 text-6xl"></i>

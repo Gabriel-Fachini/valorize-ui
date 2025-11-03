@@ -31,7 +31,7 @@ export const RedemptionsPage: React.FC = () => {
 
   return (
     <PageLayout maxWidth="6xl">
-      <animated.div style={pageAnimation}>
+      <animated.div style={pageAnimation as any}>
         {/* Main Content */}
         <div className="relative z-10">
 
@@ -46,7 +46,7 @@ export const RedemptionsPage: React.FC = () => {
         </div>
 
         {/* Filters Section */}
-        <animated.div style={filterAnimation} data-tour="redemptions-filters" className="mb-8">
+        <animated.div style={filterAnimation as any} data-tour="redemptions-filters" className="mb-8">
           <RedemptionFilters
             search={filters.search}
             status={filters.status}
@@ -60,7 +60,7 @@ export const RedemptionsPage: React.FC = () => {
         </animated.div>
 
         {/* Redemptions Feed */}
-        <animated.div style={feedSectionAnimation} data-tour="redemptions-feed">
+        <animated.div style={feedSectionAnimation as any} data-tour="redemptions-feed">
           {isLoading ? (
             <div className="space-y-4">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -81,7 +81,7 @@ export const RedemptionsPage: React.FC = () => {
                     const redemption = redemptions[index]
                     if (!redemption) return null
                     return (
-                      <animated.div key={redemption.id} style={style}>
+                      <animated.div key={redemption.id} style={style as any}>
                         <RedemptionCard redemption={redemption} />
                       </animated.div>
                     )

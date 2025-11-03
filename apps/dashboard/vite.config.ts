@@ -13,6 +13,7 @@ export default defineConfig({
     // Using SWC instead of Babel for 3-10x faster compilation
     // SWC is written in Rust and provides much better performance
     react(),
+
     
     // TailwindCSS v4 plugin
     tailwindcss(),

@@ -44,7 +44,7 @@ export const SettingsPage = () => {
 
   return (
     <PageLayout maxWidth="7xl">
-      <animated.div style={pageAnimation}>
+      <animated.div style={pageAnimation as any}>
         {/* Header */}
         <PageHeader
           title="Configurações"

@@ -42,10 +42,17 @@ export const useRegisterForm = () => {
           })
         }
       } else {
-        setError('root', {
-          type: 'manual',
-          message: response.message ?? 'Erro ao cadastrar usuário. Tente novamente.',
-        })
+        if ('message' in response) {
+          setError('root', {
+            type: 'manual',
+            message: response.message ?? 'Erro ao cadastrar usuário. Tente novamente.',
+          })
+        } else {
+          setError('root', {
+            type: 'manual',
+            message: 'Erro ao cadastrar usuário. Tente novamente.',
+          })
+        }
       }
     } catch {
       setError('root', {

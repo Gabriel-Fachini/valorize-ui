@@ -22,6 +22,7 @@ import { TrainingPage } from '@/pages/TrainingPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useTheme } from '@hooks/useTheme'
+import { z } from 'zod'
 
 function RootComponent() {
   const { isDark } = useTheme()
@@ -80,6 +81,11 @@ const newPraiseRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/elogios/novo',
   component: NewPraisePage,
+  validateSearch: (search: Record<string, unknown>) => {
+    return z.object({
+      userId: z.string().optional(),
+    }).parse(search)
+  },
 })
 
 const prizesRoute = createRoute({
@@ -92,12 +98,23 @@ const prizeDetailsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/prizes/$prizeId',
   component: PrizeDetailsPage,
+  parseParams: (params: { prizeId: string }) => ({
+    prizeId: z.string().parse(params.prizeId),
+  }),
 })
 
 const prizeConfirmationRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/prizes/$prizeId/confirm',
   component: PrizeConfirmationPage,
+  parseParams: (params: { prizeId: string }) => ({
+    prizeId: z.string().parse(params.prizeId),
+  }),
+  validateSearch: (search: Record<string, unknown>) => {
+    return z.object({
+      variantId: z.string().optional(),
+    }).parse(search)
+  },
 })
 
 const redemptionsRoute = createRoute({
@@ -110,6 +127,9 @@ const redemptionDetailsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/resgates/$redemptionId',
   component: RedemptionDetailsPage,
+  parseParams: (params: { redemptionId: string }) => ({
+    redemptionId: z.string().parse(params.redemptionId),
+  }),
 })
 
 const settingsRoute = createRoute({
@@ -164,3 +184,9 @@ const routeTree = rootRoute.addChildren([
 ])
 
 export const router = createRouter({ routeTree })
+
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
+}

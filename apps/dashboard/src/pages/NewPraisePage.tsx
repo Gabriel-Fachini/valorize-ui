@@ -157,11 +157,7 @@ export const NewPraisePage = () => {
   const handleNewPraise = useCallback(() => {
     resetForm()
     // Navigate to clear URL params to prevent re-triggering the useEffect
-    navigate({ 
-      to: '/elogios/novo',
-      search: {},
-    })
-  }, [resetForm, navigate])
+        navigate({ to: '/elogios/novo', search: {} })  }, [resetForm, navigate])
 
   const handleGoHome = useCallback(() => {
     navigate({ to: '/' })
@@ -330,7 +326,7 @@ export const NewPraisePage = () => {
 
   return (
     <PageLayout maxWidth="5xl">
-      <animated.div style={pageAnimation} className="space-y-6">
+      <animated.div style={pageAnimation as any} className="space-y-6">
         {/* Loading state with skeleton animation */}
         {isLoadingData && <NewPraiseSkeleton />}
         
@@ -371,7 +367,7 @@ export const NewPraisePage = () => {
             {/* Form validation errors */}
             {error && (
               <animated.div 
-                style={cardAnimation}
+                style={cardAnimation as any}
                 className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50 rounded-xl"
               >
                 <div className="flex items-center space-x-2">
@@ -382,7 +378,7 @@ export const NewPraisePage = () => {
             )}
 
             {/* Current step content with smooth animations */}
-            <animated.div style={cardAnimation}>
+            <animated.div style={cardAnimation as any}>
               {renderCurrentStep}
             </animated.div>
 
