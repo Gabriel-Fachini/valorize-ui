@@ -66,3 +66,36 @@ export const useUserCSVImport = () => {
 }
 
 export type UseUserCSVImportReturn = ReturnType<typeof useUserCSVImport>
+
+[
+  {
+    name: 'Nome',
+      type: 'string',
+      display: 'string-bold'
+  },
+  {
+    name: "",
+    type: 'avatar',
+    display: 'avatar'
+  },
+  {
+    name: 'Email',
+    type: 'string',
+    display: 'string-secondary'
+  },
+  {
+    name: 'Departamento',
+    type: 'string',
+    display: 'string'
+  },
+  {
+    name: 'Cargo',
+    type: 'string',
+    display: 'string'
+  },
+  {
+    name: 'Status',
+    type: 'boolean',
+    display: 'badge'
+  }
+]

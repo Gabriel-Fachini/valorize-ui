@@ -1,0 +1,275 @@
+/**
+ * Data Table Column Renderers
+ * Renderizadores específicos para cada tipo de coluna
+ */
+
+import type { ReactNode } from 'react'
+import { Link } from '@tanstack/react-router'
+import { Badge } from '@/components/ui/badge'
+import type {
+  AvatarColumnConfig,
+  StringColumnConfig,
+  LinkColumnConfig,
+  RelationColumnConfig,
+  BadgeColumnConfig,
+  DateColumnConfig,
+  NumberColumnConfig,
+} from '@/config/tables/types'
+
+// ============================================================================
+// Helper: Get nested value from object
+// ============================================================================
+
+const getNestedValue = <T,>(obj: T, path: string | keyof T | ((row: T) => unknown)): unknown => {
+  if (typeof path === 'function') {
+    return path(obj)
+  }
+
+  if (typeof path === 'string' && path.includes('.')) {
+    return path.split('.').reduce((acc: unknown, part: string) => {
+      if (acc && typeof acc === 'object' && part in acc) {
+        return (acc as Record<string, unknown>)[part]
+      }
+      return undefined
+    }, obj)
+  }
+
+  return obj[path as keyof T]
+}
+
+// ============================================================================
+// Avatar Renderer
+// ============================================================================
+
+interface AvatarRendererProps<T> {
+  row: T
+  config: AvatarColumnConfig<T>
+}
+
+export const AvatarRenderer = <T,>({ row, config }: AvatarRendererProps<T>): ReactNode => {
+  const imageUrl = config.imageAccessor
+    ? (getNestedValue(row, config.imageAccessor) as string | undefined)
+    : undefined
+
+  const name = config.nameAccessor
+    ? (getNestedValue(row, config.nameAccessor) as string)
+    : config.accessor
+      ? (getNestedValue(row, config.accessor) as string)
+      : ''
+
+  const initials = name
+    ? name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
+    : '??'
+
+  const sizeClasses = {
+    sm: 'h-8 w-8 text-xs',
+    md: 'h-10 w-10 text-sm',
+    lg: 'h-12 w-12 text-base',
+  }
+
+  const size = config.size || 'md'
+
+  return (
+    <div className="flex items-center justify-center">
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt={name}
+          className={`${sizeClasses[size]} rounded-full object-cover`}
+        />
+      ) : (
+        <div
+          className={`${sizeClasses[size]} flex items-center justify-center rounded-full bg-primary/10 font-semibold text-primary`}
+        >
+          {initials}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ============================================================================
+// String Renderer
+// ============================================================================
+
+interface StringRendererProps<T> {
+  row: T
+  config: StringColumnConfig<T>
+}
+
+export const StringRenderer = <T,>({ row, config }: StringRendererProps<T>): ReactNode => {
+  const value = config.accessor ? getNestedValue(row, config.accessor) : ''
+  const stringValue = String(value || '')
+
+  const displayClasses = {
+    'string-bold': 'font-medium',
+    'string-secondary': 'text-sm text-muted-foreground',
+    'string-muted': 'text-sm text-muted-foreground/70',
+    string: 'text-sm',
+  }
+
+  const className = displayClasses[config.display || 'string']
+
+  let displayValue = stringValue
+
+  if (config.truncate && config.maxLength && stringValue.length > config.maxLength) {
+    displayValue = `${stringValue.slice(0, config.maxLength)}...`
+  }
+
+  return <div className={className}>{displayValue}</div>
+}
+
+// ============================================================================
+// Link Renderer
+// ============================================================================
+
+interface LinkRendererProps<T> {
+  row: T
+  config: LinkColumnConfig<T>
+}
+
+export const LinkRenderer = <T,>({ row, config }: LinkRendererProps<T>): ReactNode => {
+  const value = config.accessor ? getNestedValue(row, config.accessor) : ''
+  const stringValue = String(value || '')
+
+  const path = typeof config.linkPath === 'function' ? config.linkPath(row) : config.linkPath
+
+  const displayClasses = {
+    'string-bold': 'font-medium',
+    'string-secondary': 'text-sm text-muted-foreground',
+    'string-muted': 'text-sm text-muted-foreground/70',
+    string: 'text-sm',
+  }
+
+  const className = displayClasses[config.display || 'string']
+
+  return (
+    <Link to={path} target={config.linkTarget} className={`${className} hover:underline`}>
+      {stringValue}
+    </Link>
+  )
+}
+
+// ============================================================================
+// Relation Renderer
+// ============================================================================
+
+interface RelationRendererProps<T> {
+  row: T
+  config: RelationColumnConfig<T>
+}
+
+export const RelationRenderer = <T,>({ row, config }: RelationRendererProps<T>): ReactNode => {
+  const value = config.accessor ? getNestedValue(row, config.accessor) : undefined
+
+  const displayClasses = {
+    'string-bold': 'font-medium',
+    'string-secondary': 'text-sm text-muted-foreground',
+    'string-muted': 'text-sm text-muted-foreground/70',
+    string: 'text-sm',
+  }
+
+  const className = displayClasses[config.display || 'string']
+
+  if (!value) {
+    return <span className="text-sm text-muted-foreground">{config.fallback || '-'}</span>
+  }
+
+  return <div className={className}>{String(value)}</div>
+}
+
+// ============================================================================
+// Badge Renderer
+// ============================================================================
+
+interface BadgeRendererProps<T> {
+  row: T
+  config: BadgeColumnConfig<T>
+}
+
+export const BadgeRenderer = <T,>({ row, config }: BadgeRendererProps<T>): ReactNode => {
+  const value = config.accessor ? getNestedValue(row, config.accessor) : undefined
+
+  const variant = config.badgeVariant ? config.badgeVariant(value, row) : 'default'
+  const label = config.badgeLabel ? config.badgeLabel(value, row) : String(value)
+
+  return <Badge variant={variant}>{label}</Badge>
+}
+
+// ============================================================================
+// Date Renderer
+// ============================================================================
+
+interface DateRendererProps<T> {
+  row: T
+  config: DateColumnConfig<T>
+}
+
+export const DateRenderer = <T,>({ row, config }: DateRendererProps<T>): ReactNode => {
+  const value = config.accessor ? getNestedValue(row, config.accessor) : undefined
+
+  if (!value) {
+    return <span className="text-sm text-muted-foreground">-</span>
+  }
+
+  // TODO: Implementar formatação de data com date-fns
+  // Por enquanto, apenas mostra o valor
+  const dateValue = value instanceof Date ? value.toLocaleDateString('pt-BR') : String(value)
+
+  return <div className="text-sm">{dateValue}</div>
+}
+
+// ============================================================================
+// Number Renderer
+// ============================================================================
+
+interface NumberRendererProps<T> {
+  row: T
+  config: NumberColumnConfig<T>
+}
+
+export const NumberRenderer = <T,>({ row, config }: NumberRendererProps<T>): ReactNode => {
+  const value = config.accessor ? getNestedValue(row, config.accessor) : undefined
+
+  if (value === null || value === undefined) {
+    return <span className="text-sm text-muted-foreground">-</span>
+  }
+
+  const numValue = Number(value)
+
+  let formatted = ''
+
+  switch (config.format) {
+    case 'currency':
+      formatted = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: config.currency || 'BRL',
+        minimumFractionDigits: config.decimals ?? 2,
+        maximumFractionDigits: config.decimals ?? 2,
+      }).format(numValue)
+      break
+
+    case 'percent':
+      formatted = new Intl.NumberFormat('pt-BR', {
+        style: 'percent',
+        minimumFractionDigits: config.decimals ?? 0,
+        maximumFractionDigits: config.decimals ?? 0,
+      }).format(numValue)
+      break
+
+    case 'decimal':
+    default:
+      formatted = new Intl.NumberFormat('pt-BR', {
+        minimumFractionDigits: config.decimals ?? 0,
+        maximumFractionDigits: config.decimals ?? 2,
+      }).format(numValue)
+      break
+  }
+
+  return <div className="text-sm font-medium tabular-nums">{formatted}</div>
+}

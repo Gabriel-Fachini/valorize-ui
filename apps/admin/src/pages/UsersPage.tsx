@@ -1,8 +1,10 @@
 import { type FC, useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { PageHeader } from '@/components/layout/PageHeader'
+import { DataTable } from '@/components/ui/data-table'
+import { usersTableConfig } from '@/config/tables/users.table.config'
 import {
-  UsersTable,
   UserFormDialog,
   UserDeleteDialog,
   UserImportCSVDialog,
@@ -13,6 +15,7 @@ import { useUsers } from '@/hooks/useUsers'
 import { useUserMutations } from '@/hooks/useUserMutations'
 import { useUserBulkActions } from '@/hooks/useUserBulkActions'
 import { useDebounce } from '@/hooks/useDebounce'
+import { useDepartments, useJobTitles } from '@/hooks/useFilters'
 import type { User, UserFormData, UserFilters, UsersQueryParams } from '@/types/users'
 
 export const UsersPage: FC = () => {
@@ -52,6 +55,10 @@ export const UsersPage: FC = () => {
   const { createUser, updateUser, deleteUser, resetPassword, isCreating, isUpdating, isDeleting } =
     useUserMutations()
   const { performBulkAction } = useUserBulkActions()
+
+  // Dynamic filter options
+  const { data: departments } = useDepartments()
+  const { data: jobTitles } = useJobTitles()
 
   // Reset to page 1 when filters change
   useEffect(() => {
@@ -105,48 +112,94 @@ export const UsersPage: FC = () => {
     }
   }, [selectedUser, resetPassword])
 
-  const handleBulkAction = async (userIds: string[], action: string) => {
-    await performBulkAction({ userIds, action: action as 'activate' | 'deactivate' | 'export' })
+  const handleBulkAction = async (actionId: string, userIds: string[]) => {
+    await performBulkAction({ userIds, action: actionId as 'activate' | 'deactivate' | 'export' })
+  }
+
+  // Handler para ações por linha
+  const handleRowAction = useCallback(
+    async (actionId: string, user: User) => {
+      switch (actionId) {
+        case 'view':
+          // Navegação é tratada automaticamente pela coluna 'link'
+          break
+        case 'edit':
+          handleEdit(user)
+          break
+        case 'resetPassword':
+          await handleResetPassword(user)
+          break
+        case 'delete':
+          handleDeleteClick(user)
+          break
+      }
+    },
+    [handleEdit, handleResetPassword, handleDeleteClick],
+  )
+
+  // Preparar options dinâmicos para filtros
+  const dynamicFilterOptions = {
+    departmentId: [
+      { value: 'all', label: 'Todos departamentos' },
+      ...(departments?.map((dept) => ({
+        value: dept.id,
+        label: dept.name,
+      })) || []),
+    ],
+    jobTitleId: [
+      { value: 'all', label: 'Todos os cargos' },
+      ...(jobTitles?.map((job) => ({
+        value: job.id,
+        label: job.name,
+      })) || []),
+    ],
   }
 
   return (
     <PageLayout maxWidth="7xl">
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-              <i className="ph ph-users text-primary" />
-              Gerenciamento de Usuários
-            </h1>
-            <p className="text-muted-foreground">
-              Visualize e gerencie todos os usuários da plataforma
-            </p>
-          </div>
-          <Button onClick={() => setIsCreateDialogOpen(true)}>
-            <i className="ph ph-plus mr-2" />
-            Novo usuário
-          </Button>
-        </div>
+        {/* Header com ícone */}
+        <PageHeader
+          title="Gerenciamento de Usuários"
+          description="Visualize e gerencie todos os usuários da plataforma"
+          icon="ph-users"
+          right={
+            <Button onClick={() => setIsCreateDialogOpen(true)}>
+              <i className="ph ph-plus mr-2" />
+              Novo usuário
+            </Button>
+          }
+        />
 
-        {/* Table */}
-        <UsersTable
-          users={users}
+        {/* Tabela com DataTable e configuração */}
+        <DataTable
+          config={{
+            ...usersTableConfig,
+            actions: {
+              ...usersTableConfig.actions,
+              toolbar: (
+                <Button onClick={() => setIsImportDialogOpen(true)}>
+                  <i className="ph ph-upload-simple mr-2" />
+                  Importar CSV
+                </Button>
+              ),
+            },
+          }}
+          data={users}
           isLoading={isLoading}
           isFetching={isFetching}
           totalCount={totalCount}
           pageCount={pageCount}
           currentPage={currentPage}
-          filters={filters}
-          onFiltersChange={setFilters}
+          pageSize={pageSize}
           onPageChange={setPage}
           onPageSizeChange={setPageSize}
-          pageSize={pageSize}
-          onEdit={handleEdit}
-          onDelete={handleDeleteClick}
-          onResetPassword={handleResetPassword}
+          filters={filters}
+          onFiltersChange={(newFilters) => setFilters(newFilters as UserFilters)}
+          onRowAction={handleRowAction}
           onBulkAction={handleBulkAction}
-          onImportCSV={() => setIsImportDialogOpen(true)}
+          getRowId={(row) => row.id}
+          dynamicFilterOptions={dynamicFilterOptions}
         />
 
         {/* Dialogs */}
