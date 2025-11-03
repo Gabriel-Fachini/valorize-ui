@@ -9,6 +9,8 @@ import { SettingsPage } from '@pages/SettingsPage'
 import { UsersPage } from '@pages/UsersPage'
 import { UserDetailPage } from '@pages/UserDetailPage'
 import { EconomyPage } from '@pages/EconomyPage'
+import { RolesPage } from '@pages/RolesPage'
+import { RoleDetailPage } from '@pages/RoleDetailPage'
 
 // Create a root route
 const rootRoute = createRootRoute({
@@ -72,6 +74,19 @@ const userDetailRoute = createRoute({
   component: UserDetailPage,
 })
 
+// Roles routes - protected
+const rolesRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/roles',
+  component: RolesPage,
+})
+
+const roleDetailRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/roles/$roleId',
+  component: RoleDetailPage,
+})
+
 // Settings layout route - protected
 const settingsLayoutRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
@@ -115,6 +130,8 @@ const routeTree = rootRoute.addChildren([
     economyRoute,
     usersRoute,
     userDetailRoute,
+    rolesRoute,
+    roleDetailRoute,
     settingsLayoutRoute.addChildren([
       settingsBasicInfoRoute,
       settingsValuesRoute,
