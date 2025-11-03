@@ -13,7 +13,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { PermissionsSelector } from './PermissionsSelector'
-import type { RoleWithCounts, RoleFormData } from '@/types/roles'
+import { useRolePermissions } from '@/hooks/useRolePermissions'
+import type { RoleWithCounts, RoleFormData, PermissionCategory } from '@/types/roles'
 import { roleFormSchema } from '@/types/roles'
 
 interface RoleFormDialogProps {
@@ -33,6 +34,9 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState('basic')
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([])
+  const { permissions: currentPermissions, isLoading: isLoadingPermissions } = useRolePermissions(
+    role?.id ?? ''
+  )
   
   const {
     register,
@@ -50,12 +54,17 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
 
   useEffect(() => {
     if (open && role) {
+      // Extract permission names from the current role permissions
+      const permissionNames = currentPermissions
+        .flatMap((category: PermissionCategory) => category.permissions?.map((p) => p.name) ?? [])
+        .filter((name: string | undefined): name is string => !!name)
+
       reset({
         name: role.name,
         description: role.description ?? '',
-        permissionNames: [],
+        permissionNames,
       })
-      setSelectedPermissions([])
+      setSelectedPermissions(permissionNames)
       setActiveTab('basic')
     } else if (open && !role) {
       reset({
@@ -66,7 +75,7 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
       setSelectedPermissions([])
       setActiveTab('basic')
     }
-  }, [open, role, reset])
+  }, [open, role, currentPermissions, reset])
 
   const handleFormSubmit = async (data: { name: string; description?: string; permissionNames?: string[] }) => {
     const formData: RoleFormData = {
@@ -85,12 +94,12 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {role ? 'Editar Role' : 'Criar Novo Role'}
+            {role ? 'Editar Cargo' : 'Criar Novo Cargo'}
           </DialogTitle>
           <DialogDescription>
             {role
-              ? 'Atualize as informações do role'
-              : 'Preencha os dados para criar um novo role'}
+              ? 'Atualize as informações do cargo'
+              : 'Preencha os dados para criar um novo cargo'}
           </DialogDescription>
         </DialogHeader>
 
@@ -104,7 +113,7 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
             {/* Basic Information Tab */}
             <TabsContent value="basic" className="space-y-4">
               <div>
-                <Label htmlFor="name">Nome do Role *</Label>
+                <Label htmlFor="name">Nome do Cargo *</Label>
                 <input
                   id="name"
                   type="text"
@@ -124,7 +133,7 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
                 <Label htmlFor="description">Descrição</Label>
                 <textarea
                   id="description"
-                  placeholder="Descrição opcional do role"
+                  placeholder="Descrição opcional do cargo"
                   {...register('description')}
                   disabled={isLoading}
                   className="mt-2 w-full rounded border border-gray-300 px-3 py-2 text-sm"
@@ -142,13 +151,21 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
             <TabsContent value="permissions" className="space-y-4">
               <div>
                 <Label className="mb-2 block">Selecione as Permissões (Opcional)</Label>
-                <div className="max-h-[300px] overflow-y-auto rounded border border-gray-200 p-4">
-                  <PermissionsSelector
-                    value={selectedPermissions}
-                    onChange={setSelectedPermissions}
-                    isLoading={isLoading}
-                  />
-                </div>
+                {isLoadingPermissions && role ? (
+                  <div className="rounded border border-gray-200 p-4">
+                    <div className="flex items-center justify-center">
+                      <div className="text-sm text-gray-500">Carregando permissões...</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="max-h-[300px] overflow-y-auto rounded border border-gray-200 p-4">
+                    <PermissionsSelector
+                      value={selectedPermissions}
+                      onChange={setSelectedPermissions}
+                      isLoading={isLoading}
+                    />
+                  </div>
+                )}
               </div>
             </TabsContent>
           </Tabs>

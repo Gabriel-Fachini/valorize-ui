@@ -8,9 +8,7 @@ import { rolesTableConfig } from '@/config/tables/roles.table.config'
 import { RoleFormDialog, RoleDeleteDialog } from '@/components/roles'
 import { useRoles } from '@/hooks/useRoles'
 import { useRoleMutations } from '@/hooks/useRoleMutations'
-import { useUserPermissions } from '@/hooks/useUserPermissions'
 import { useDebounce } from '@/hooks/useDebounce'
-import { hasPermission } from '@/lib/permissions'
 import type { RoleWithCounts, RolesFilters, RolesQueryParams } from '@/types/roles'
 
 export const RolesPage: FC = () => {
@@ -20,10 +18,6 @@ export const RolesPage: FC = () => {
   const [filters, setFilters] = useState<RolesFilters>({
     search: '',
   })
-
-  // Get user permissions
-  const { permissions } = useUserPermissions()
-  const canCreateRole = hasPermission(permissions || [], 'ROLES_CREATE')
 
   // Debounce search
   const debouncedSearch = useDebounce(filters.search, 500)
@@ -60,8 +54,8 @@ export const RolesPage: FC = () => {
       if (actionId === 'view') {
         navigate({ to: '/roles/$roleId', params: { roleId: row.id } })
       } else if (actionId === 'edit') {
-        setSelectedRole(row)
-        setIsEditDialogOpen(true)
+        // Navigate to details page instead of opening edit modal
+        navigate({ to: '/roles/$roleId', params: { roleId: row.id } })
       } else if (actionId === 'delete') {
         setSelectedRole(row)
         setIsDeleteDialogOpen(true)
@@ -131,17 +125,15 @@ export const RolesPage: FC = () => {
           description="Crie e gerencie cargos e permissões aos usuários"
           icon="ph-lock"
           right={
-            canCreateRole && (
-              <Button
-                onClick={() => {
-                  setSelectedRole(undefined)
-                  setIsCreateDialogOpen(true)
-                }}
-              >
-                <i className="ph ph-plus mr-2" />
-                Nova Role
-              </Button>
-            )
+            <Button
+              onClick={() => {
+                setSelectedRole(undefined)
+                setIsCreateDialogOpen(true)
+              }}
+            >
+              <i className="ph ph-plus mr-2" />
+              Novo Cargo
+            </Button>
           }
         />
 

@@ -43,6 +43,15 @@ export interface PermissionCategory {
   permissions: PermissionWithInUse[]
 }
 
+export interface PermissionInfo extends Permission {
+  inUse: boolean
+}
+
+export interface PermissionInfoByCategory {
+  name: string
+  permissions: PermissionInfo[]
+}
+
 // ============================================================================
 // User Role Types
 // ============================================================================

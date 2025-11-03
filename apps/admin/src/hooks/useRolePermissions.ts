@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import permissionsService from '@/services/permissions'
 import { toast } from '@/lib/toast'
+import type { PermissionCategory } from '@/types/roles'
 
 const getErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {
@@ -90,8 +91,26 @@ export const useRolePermissions = (roleId: string) => {
     [removePermissionsMutation],
   )
 
+  const permissionsData = query.data?.data ?? []
+  
+  // Handle both response formats:
+  // Expected: Array (as documented in FRONTEND_IMPLEMENTATION_GUIDE)
+  // Actual (from console): Object with { roleId, categories }
+  interface RolePermissionsResponse {
+    categories?: PermissionCategory[]
+  }
+  
+  let categoriesArray: PermissionCategory[] = []
+  
+  if (Array.isArray(permissionsData)) {
+    categoriesArray = permissionsData
+  } else if (permissionsData && typeof permissionsData === 'object') {
+    const response = permissionsData as RolePermissionsResponse
+    categoriesArray = response.categories ?? []
+  }
+
   return {
-    permissions: query.data?.data ?? [],
+    permissions: categoriesArray,
     isLoading: query.isLoading,
     isError: query.isError,
     error: query.error,

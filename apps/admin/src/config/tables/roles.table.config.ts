@@ -151,7 +151,7 @@ export const rolesTableConfig: TableConfig<RoleWithCounts> = {
   // ============================================================================
   emptyState: {
     icon: 'ph-lock',
-    title: 'Nenhuma role encontrada',
-    description: 'Crie uma nova role para começar a gerenciar permissões',
+    title: 'Nenhum cargo encontrado',
+    description: 'Crie um novo cargo para começar a gerenciar permissões',
   },
 }

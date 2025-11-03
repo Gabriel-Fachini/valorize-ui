@@ -3,6 +3,7 @@ import type {
   PermissionsListResponse,
   PermissionCategoriesResponse,
   PermissionCategory,
+  PermissionInfoByCategory,
   ApiResponse,
 } from '@/types/roles'
 
@@ -25,6 +26,17 @@ const permissionsService = {
    */
   listCategories: async (): Promise<PermissionCategoriesResponse> => {
     const { data } = await api.get('/admin/roles/system/permissions/categories')
+    return data
+  },
+
+  /**
+   * Get permissions info grouped by category with detailed information
+   * Retorna as permissões com informações detalhadas agrupadas por categoria
+   *
+   * Endpoint: GET /admin/roles/system/permissions-info
+   */
+  listPermissionsInfo: async (): Promise<ApiResponse<PermissionInfoByCategory[]>> => {
+    const { data } = await api.get('/admin/roles/system/permissions-info')
     return data
   },
 
