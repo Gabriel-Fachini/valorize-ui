@@ -83,8 +83,8 @@ export const MetricsGrid: FC<MetricsGridProps> = ({ metrics, isLoading = false }
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-      {trail.map((style, index) => (
-        <animated.div key={metricsData[index].title} style={style as any}>
+      {trail.map((style: Record<string, unknown>, index: number) => (
+        <animated.div key={metricsData[index].title} style={style as Record<string, unknown>}>
           <MetricCard
             title={metricsData[index].title}
             value={metricsData[index].value}

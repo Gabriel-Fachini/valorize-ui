@@ -18,7 +18,9 @@
       "@helpers/*": ["./src/helpers/*"],
       "@assets/*": ["./src/assets/*"],
       "@translations/*": ["./src/translations/*"],
-      "@types": ["./src/types"]
+      "@types": ["./src/types"],
+      "@valorize/shared": ["../../packages/shared/src"],
+      "@valorize/shared/*": ["../../packages/shared/src/*"]
     },
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
