@@ -46,7 +46,7 @@ export const RoleTableToolbar: FC<RoleTableToolbarProps> = ({
     <div className="flex items-center gap-3">
       <input
         type="text"
-        placeholder="Buscar roles por nome..."
+        placeholder="Buscar cargos por nome..."
         value={filters.search}
         onChange={(e) => onFiltersChange({ ...filters, search: e.target.value })}
         className="flex-1 rounded border border-gray-300 px-3 py-2 text-sm"
@@ -86,9 +86,9 @@ export const RoleTableToolbar: FC<RoleTableToolbarProps> = ({
         onClick={onCreateRole}
         disabled={isLoading || !canCreateRole}
         className="whitespace-nowrap"
-        title={!canCreateRole ? 'Você não tem permissão para criar roles' : undefined}
+        title={!canCreateRole ? 'Você não tem permissão para criar cargos' : undefined}
       >
-        + Novo Role
+        + Novo Cargo
       </Button>
     </div>
   )

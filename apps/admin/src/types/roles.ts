@@ -39,8 +39,19 @@ export interface PermissionWithInUse extends Permission {
 }
 
 export interface PermissionCategory {
+  category: string
+  permissions: Permission[]
+}
+
+export interface PermissionInfo {
   name: string
-  permissions: PermissionWithInUse[]
+  description?: string | null
+  category: string
+}
+
+export interface PermissionInfoByCategory {
+  category: string
+  permissions: PermissionInfo[]
 }
 
 // ============================================================================
@@ -108,6 +119,21 @@ export interface RoleUsersResponse {
   pageCount: number
   currentPage: number
   totalCount: number
+  timestamp: string
+}
+
+export interface BulkAssignRoleResponse {
+  success: true
+  data: {
+    successCount: number
+    failedCount: number
+    totalAttempted: number
+    summary: string
+    failedAssignments?: Array<{
+      userId: string
+      reason: string
+    }>
+  }
   timestamp: string
 }
 

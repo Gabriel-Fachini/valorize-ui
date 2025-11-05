@@ -9,11 +9,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { PermissionsSelector } from './PermissionsSelector'
-import type { RoleWithCounts, RoleFormData } from '@/types/roles'
+import { useRolePermissions } from '@/hooks/useRolePermissions'
+import { toast } from '@/lib/toast'
+import type { RoleWithCounts, RoleFormData, PermissionCategory } from '@/types/roles'
 import { roleFormSchema } from '@/types/roles'
 
 interface RoleFormDialogProps {
@@ -24,6 +25,8 @@ interface RoleFormDialogProps {
   isLoading?: boolean
 }
 
+type FormStep = 'info' | 'permissions'
+
 export const RoleFormDialog: FC<RoleFormDialogProps> = ({
   open,
   onOpenChange,
@@ -31,8 +34,11 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
   onSubmit,
   isLoading = false,
 }) => {
-  const [activeTab, setActiveTab] = useState('basic')
+  const [currentStep, setCurrentStep] = useState<FormStep>('info')
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([])
+  const { permissions: currentPermissions, isLoading: isLoadingPermissions } = useRolePermissions(
+    role?.id || ''
+  )
   
   const {
     register,
@@ -48,25 +54,44 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
     },
   })
 
+  // Reset form when dialog opens/closes or role changes
   useEffect(() => {
-    if (open && role) {
-      reset({
-        name: role.name,
-        description: role.description ?? '',
-        permissionNames: [],
-      })
-      setSelectedPermissions([])
-      setActiveTab('basic')
-    } else if (open && !role) {
+    if (!open) {
+      return
+    }
+
+    if (!role) {
+      // New role - reset form with empty values
       reset({
         name: '',
         description: '',
         permissionNames: [],
       })
       setSelectedPermissions([])
-      setActiveTab('basic')
+      setCurrentStep('info')
+    } else {
+      // Existing role - populate form with basic info
+      reset({
+        name: role.name,
+        description: role.description ?? '',
+        permissionNames: [],
+      })
+      setCurrentStep('info')
     }
   }, [open, role, reset])
+
+  // Update form with permissions when they load (only for existing roles)
+  useEffect(() => {
+    if (!open || !role || !Array.isArray(currentPermissions)) {
+      return
+    }
+
+    const permissionNames = currentPermissions
+      .flatMap((category: PermissionCategory) => category.permissions?.map((p) => p.name) ?? [])
+      .filter((name: string | undefined): name is string => !!name)
+
+    setSelectedPermissions(permissionNames)
+  }, [open, role, currentPermissions])
 
   const handleFormSubmit = async (data: { name: string; description?: string; permissionNames?: string[] }) => {
     const formData: RoleFormData = {
@@ -75,43 +100,64 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
       permissionNames: selectedPermissions.length > 0 ? selectedPermissions : undefined,
     }
     await onSubmit(formData)
+    
+    // Show success toast
+    const isNewRole = !role
+    if (isNewRole) {
+      toast.success(`Cargo "${data.name}" criado com sucesso!`)
+    } else {
+      toast.success(`Cargo "${data.name}" atualizado com sucesso!`)
+    }
+    
     reset()
     setSelectedPermissions([])
     onOpenChange(false)
   }
 
+  const handleNextStep = async () => {
+    // Validate the current form before moving to next step
+    await handleSubmit(async () => {
+      setCurrentStep('permissions')
+    }, async () => {
+      // On error, don't advance
+    })()
+  }
+
+  const handlePreviousStep = () => {
+    setCurrentStep('info')
+  }
+
+  const isEditingExistingRole = !!role
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            {role ? 'Editar Role' : 'Criar Novo Role'}
+            {role ? 'Editar Cargo' : 'Criar Novo Cargo'}
           </DialogTitle>
           <DialogDescription>
-            {role
-              ? 'Atualize as informações do role'
-              : 'Preencha os dados para criar um novo role'}
+            {isEditingExistingRole
+              ? 'Atualize as informações do cargo'
+              : currentStep === 'info'
+                ? 'Etapa 1 de 2: Informações básicas'
+                : 'Etapa 2 de 2: Escolha as permissões'}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="basic">Informações Básicas</TabsTrigger>
-              <TabsTrigger value="permissions">Permissões</TabsTrigger>
-            </TabsList>
-
-            {/* Basic Information Tab */}
-            <TabsContent value="basic" className="space-y-4">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+          {/* Step 1: Basic Information */}
+          {currentStep === 'info' && (
+            <div className="space-y-4">
               <div>
-                <Label htmlFor="name">Nome do Role *</Label>
+                <Label htmlFor="name">Nome do Cargo *</Label>
                 <input
                   id="name"
                   type="text"
                   placeholder="Ex: Gerente de RH"
                   {...register('name')}
                   disabled={isLoading}
-                  className="mt-2 w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                  className="mt-2 w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 />
                 {errors.name && (
                   <span className="text-sm text-red-600">
@@ -124,11 +170,11 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
                 <Label htmlFor="description">Descrição</Label>
                 <textarea
                   id="description"
-                  placeholder="Descrição opcional do role"
+                  placeholder="Descrição opcional do cargo"
                   {...register('description')}
                   disabled={isLoading}
-                  className="mt-2 w-full rounded border border-gray-300 px-3 py-2 text-sm"
-                  rows={3}
+                  className="mt-2 w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  rows={4}
                 />
                 {errors.description && (
                   <span className="text-sm text-red-600">
@@ -136,35 +182,85 @@ export const RoleFormDialog: FC<RoleFormDialogProps> = ({
                   </span>
                 )}
               </div>
-            </TabsContent>
+            </div>
+          )}
 
-            {/* Permissions Tab */}
-            <TabsContent value="permissions" className="space-y-4">
+          {/* Step 2: Permissions */}
+          {currentStep === 'permissions' && (
+            <div className="space-y-4">
               <div>
-                <Label className="mb-2 block">Selecione as Permissões (Opcional)</Label>
-                <div className="max-h-[300px] overflow-y-auto rounded border border-gray-200 p-4">
-                  <PermissionsSelector
-                    value={selectedPermissions}
-                    onChange={setSelectedPermissions}
-                    isLoading={isLoading}
-                  />
-                </div>
+                <Label className="mb-3 block font-semibold">Selecione as Permissões</Label>
+                {isLoadingPermissions && role ? (
+                  <div className="rounded border border-gray-200 p-4">
+                    <div className="flex items-center justify-center">
+                      <div className="text-sm text-gray-500">Carregando permissões...</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="max-h-[400px] overflow-y-auto rounded border border-gray-200 p-4">
+                    <PermissionsSelector
+                      value={selectedPermissions}
+                      onChange={setSelectedPermissions}
+                      isLoading={isLoading}
+                    />
+                  </div>
+                )}
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          )}
 
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isLoading}
-            >
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Salvando...' : 'Salvar'}
-            </Button>
+          <DialogFooter className="flex items-center justify-between gap-2 sm:justify-between">
+            {currentStep === 'permissions' && !isEditingExistingRole ? (
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePreviousStep}
+                  disabled={isLoading}
+                >
+                  Voltar
+                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onOpenChange(false)}
+                    disabled={isLoading}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button type="submit" disabled={isLoading}>
+                    {isLoading ? 'Salvando...' : 'Criar Cargo'}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={isLoading}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleNextStep}
+                  disabled={isLoading}
+                >
+                  {isEditingExistingRole ? (
+                    isLoading ? (
+                      'Salvando...'
+                    ) : (
+                      'Salvar'
+                    )
+                  ) : (
+                    'Próxima Etapa'
+                  )}
+                </Button>
+              </>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>

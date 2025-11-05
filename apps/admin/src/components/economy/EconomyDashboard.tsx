@@ -63,7 +63,7 @@ export const EconomyDashboard: FC = () => {
       <SuggestedDepositBanner suggestion={data?.suggested_deposit ?? null} isLoading={isLoading} />
 
       {/* Metrics Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
         {/* Financial Health */}
         <PrizeFundCard data={data?.prize_fund} isLoading={isLoading} />
         <RedeemableCoinsCard data={data?.redeemable_coins} isLoading={isLoading} />

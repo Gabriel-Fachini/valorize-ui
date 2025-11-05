@@ -1,11 +1,9 @@
-### Economia
-
-- Adicionar card com conversão de moeda. Talvez adicionar alguns analytics pra explicar o que isso significa.
-- Adicionar duas linhas de analytics, em telas menores fica ruim
-- Adicionar 'X' no campo de busca para limpar o campo. 
-- Detalhar mais funcionalidade de import csv com cargos
-- Atualizar alguém sem cargo ou departamento está dando erro, o campo de departmentId e jobTitleId vão nulos e retorna um erro de invalid department. Deve ser possível editar usuários mesmo que não tenham departamento ou cargo.
-- Adicionar skeleton loading na tabela.
-- Na hora de criar um novo usuário, ao selecionar o departamento, o dropdown de cargo deve mostrar apenas os cargos daquele departamento. (API)
-- Decidir se usuários devem preencher cargo e departamento.
-- Ao editar um usuário e dar algum erro, nenhum feedback é mostrado para o usuário. Adicione um feedback de erro.
+### Página de detalhes do cargo
+- Os loadings skeletons estão sem o theme dark
+- Botões de editar e deletar devem estar à direita do layout principal
+- Adicionar cor primary bg-primary-50 ou bg-primary-100 nas permissions selecionadas
+- Sonner's com cor preta (todos). Quero eles com background preto mas com ícone de check verde ou X vermelho.
+- Adicionar (x) onde x é o número de permissões do cargo. Adicionar isso como um estado para mudar o número caso adicione ou remova. Igual está em usuário.
+- Falta campo de busca no modal de adicionar permissões, adicione filtro por categoria também.
+- No modal de usuário ele abre normalmente mas nenhum dropdown aparece e nenhuma requisição à api é feita. Para essa funcionalidade use o endpoint `/admin/roles/users/list`. Receberá um array de usuários com id, name, email e avatar direto em data.
+- No modal de novo usuário adicione um disclaimer: não encontrou o usuário, é necessário que ele seja admin primeiro.

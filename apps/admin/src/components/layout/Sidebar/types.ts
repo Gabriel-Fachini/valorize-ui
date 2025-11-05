@@ -3,6 +3,7 @@ export interface NavLink {
   label: string
   icon: string
   dataTour: string
+  subItems?: NavLink[]
 }
 
 export interface UserProfileProps {
@@ -29,6 +30,9 @@ export interface NavigationItemProps {
   isActive: boolean
   collapsed?: boolean
   onNavigate: (path: string) => void
+  subItems?: NavLink[]
+  currentPath: string
+  hasIndicator?: boolean
 }
 
 export interface BottomActionsProps {

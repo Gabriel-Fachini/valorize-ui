@@ -36,22 +36,22 @@ export const RoleDeleteDialog: FC<RoleDeleteDialogProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Deletar Role</DialogTitle>
+          <DialogTitle>Deletar Cargo</DialogTitle>
           <DialogDescription>
             {role?.usersCount && role.usersCount > 0 ? (
               <div className="space-y-2">
                 <p>
-                  ⚠️ Este role possui <strong>{role.usersCount}</strong> usuário
+                  ⚠️ Este cargo possui <strong>{role.usersCount}</strong> usuário
                   {role.usersCount !== 1 ? 's' : ''} atribuído
                   {role.usersCount !== 1 ? 's' : ''}.
                 </p>
                 <p>
-                  Você precisa remover todos os usuários antes de deletar este role.
+                  Você precisa remover todos os usuários antes de deletar este cargo.
                 </p>
               </div>
             ) : (
               <p>
-                Tem certeza que deseja deletar o role <strong>{role?.name}</strong>? Esta ação não pode ser desfeita.
+                Tem certeza que deseja deletar o cargo <strong>{role?.name}</strong>? Esta ação não pode ser desfeita.
               </p>
             )}
           </DialogDescription>
