@@ -12,21 +12,42 @@ export const Navigation = ({
   currentPath, 
   onNavigate, 
 }: NavigationProps) => {
-  const activeIndex = useMemo(
+  // Find which main nav link matches the current path
+  const mainActiveIndex = useMemo(
     () => {
-      // Check for exact match or sub-routes (e.g., /elogios/novo should activate /elogios)
       const index = NAV_LINKS.findIndex(link => {
         if (link.path === currentPath) return true
         // Check if current path is a sub-route of the nav link
+        if (link.subItems) {
+          return link.subItems.some(subItem => 
+            currentPath === subItem.path || currentPath.startsWith(subItem.path + '/')
+          )
+        }
         return currentPath.startsWith(link.path + '/')
       })
-      return index >= 0 ? index : 0
+      return index >= 0 ? index : -1
     },
     [currentPath],
   )
 
+  // Find which sub-item is active (if any)
+  const activeSubItemInfo = useMemo(
+    () => {
+      if (mainActiveIndex === -1) return null
+      
+      const mainLink = NAV_LINKS[mainActiveIndex]
+      if (!mainLink.subItems) return null
+      
+      const subIndex = mainLink.subItems.findIndex(subItem => 
+        currentPath === subItem.path || currentPath.startsWith(subItem.path + '/')
+      )
+      
+      return subIndex >= 0 ? { mainIndex: mainActiveIndex, subIndex } : null
+    },
+    [mainActiveIndex, currentPath],
+  )
+
   // Verifica se a rota atual é uma das rotas do bottom (configurações)
-  // Inclui verificação para sub-rotas (e.g., /settings/basic-info)
   const isBottomRoute = useMemo(
     () => BOTTOM_NAV_LINKS.some(link => 
       currentPath === link.path || currentPath.startsWith(link.path + '/')
@@ -34,9 +55,15 @@ export const Navigation = ({
     [currentPath],
   )
 
+  // Calculate indicator position
   const indicatorStyle = useSpring({
-    transform: `translateY(${activeIndex * (ITEM_HEIGHT + ITEM_GAP)}px)`,
-    opacity: isBottomRoute ? 0 : 1, // Esconde o indicador se estiver em rota do bottom
+    transform: activeSubItemInfo 
+      ? `translateY(${activeSubItemInfo.mainIndex * (ITEM_HEIGHT + ITEM_GAP)}px)`
+      : mainActiveIndex >= 0
+      ? `translateY(${mainActiveIndex * (ITEM_HEIGHT + ITEM_GAP)}px)`
+      : `translateY(0px)`,
+    height: ITEM_HEIGHT,
+    opacity: isBottomRoute || mainActiveIndex === -1 ? 0 : 1,
     config: { tension: 280, friction: 20 },
   })
 
@@ -57,12 +84,15 @@ export const Navigation = ({
           aria-hidden="true"
         />
         
-        {NAV_LINKS.map((link) => {
+        {NAV_LINKS.map((link, index) => {
           // Check if current path is the link or a sub-route
           // But only if we're NOT in a bottom route (settings)
           const isActive = !isBottomRoute && (
-            currentPath === link.path || currentPath.startsWith(link.path + '/')
+            currentPath === link.path || (link.path !== '#' && currentPath.startsWith(link.path + '/'))
           )
+          
+          // Check if this item has the indicator (mainActiveIndex matches this item's position)
+          const hasIndicator = mainActiveIndex === index
           
           return (
             <NavigationItem
@@ -74,6 +104,9 @@ export const Navigation = ({
               isActive={isActive}
               collapsed={collapsed}
               onNavigate={onNavigate}
+              subItems={link.subItems}
+              currentPath={currentPath}
+              hasIndicator={hasIndicator}
             />
           )
         })}
