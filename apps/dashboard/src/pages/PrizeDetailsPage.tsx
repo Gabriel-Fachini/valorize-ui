@@ -1,4 +1,4 @@
-import { type FC } from 'react'
+import { type FC, useRef } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePrizeById } from '@/hooks/usePrizes'
 import { usePrizeDetails } from '@/hooks/usePrizeDetails'
@@ -13,6 +13,7 @@ import { BackButton } from '@/components/ui/BackButton'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { usePageEntrance } from '@/hooks/useAnimations'
 import { animated } from '@react-spring/web'
+import Spline from '@splinetool/react-spline'
 
 export const PrizeDetailsPage: FC = () => {
   const { prizeId } = useParams({ strict: false })
@@ -40,12 +41,25 @@ export const PrizeDetailsPage: FC = () => {
 
   return (
     <PageLayout maxWidth="6xl">
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <animated.div style={fadeIn as any} className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <BackButton onClick={() => navigate({ to: '/prizes' })} />
+        <div 
+          className="flex items-center justify-center mb-8"
+        >
+          <div>
+            <Spline 
+              scene="/card.splinecode"
+              // onLoad={handleSplineLoad}
+            />
+          </div>
+        </div>
+        
         
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Left Column */}
           <div>
+            
             <ImageCarousel images={prize.images} title={prize.name} />
             {prize.specifications && Object.keys(prize.specifications).length > 0 && (
               <PrizeSpecifications specifications={prize.specifications} />

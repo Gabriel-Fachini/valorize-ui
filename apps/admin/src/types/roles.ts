@@ -122,6 +122,21 @@ export interface RoleUsersResponse {
   timestamp: string
 }
 
+export interface BulkAssignRoleResponse {
+  success: true
+  data: {
+    successCount: number
+    failedCount: number
+    totalAttempted: number
+    summary: string
+    failedAssignments?: Array<{
+      userId: string
+      reason: string
+    }>
+  }
+  timestamp: string
+}
+
 export interface ApiResponse<T> {
   success: true
   data: T

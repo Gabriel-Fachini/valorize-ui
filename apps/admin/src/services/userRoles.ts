@@ -1,5 +1,5 @@
 import { api } from './api'
-import type { UserRolesResponse, RoleUsersResponse, ApiResponse } from '@/types/roles'
+import type { UserRolesResponse, RoleUsersResponse, BulkAssignRoleResponse } from '@/types/roles'
 
 const userRolesService = {
   /**
@@ -13,15 +13,27 @@ const userRolesService = {
   },
 
   /**
-   * Assign a role to a user
+   * Assign a role to one or multiple users
    *
-   * Endpoint: POST /admin/roles/users/{userId}/roles
+   * Endpoint: POST /admin/roles/assign-role
+   * Unified endpoint that accepts array of user IDs
    */
-  assignRoleToUser: async (userId: string, roleId: string): Promise<ApiResponse<string>> => {
-    const { data } = await api.post(`/admin/roles/users/${userId}/roles`, {
+  assignRoleToUsers: async (roleId: string, userIds: string[]): Promise<BulkAssignRoleResponse> => {
+    const { data } = await api.post(`/admin/roles/assign-role`, {
       roleId,
+      userIds,
     })
     return data
+  },
+
+  /**
+   * Assign a role to a single user (backwards compatibility)
+   * Uses the unified endpoint with a single user ID
+   *
+   * Endpoint: POST /admin/roles/assign-role
+   */
+  assignRoleToUser: async (userId: string, roleId: string): Promise<BulkAssignRoleResponse> => {
+    return userRolesService.assignRoleToUsers(roleId, [userId])
   },
 
   /**
@@ -42,6 +54,16 @@ const userRolesService = {
     const { data } = await api.get(`/admin/roles/${roleId}/users`, {
       params: { page, limit },
     })
+    return data
+  },
+
+  /**
+   * List available users to assign to a role
+   *
+   * Endpoint: GET /admin/roles/users/list
+   */
+  listAvailableUsers: async () => {
+    const { data } = await api.get('/admin/roles/users/list')
     return data
   },
 }

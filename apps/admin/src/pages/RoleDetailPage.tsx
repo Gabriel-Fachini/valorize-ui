@@ -10,6 +10,7 @@ import {
   RoleUsersSection,
 } from '@/components/roles'
 import { Button } from '@/components/ui/button'
+import { SkeletonText, SkeletonCard } from '@/components/ui/Skeleton'
 import { useRoleDetail } from '@/hooks/useRoleDetail'
 import { useRoleMutations } from '@/hooks/useRoleMutations'
 import { useRolePermissions } from '@/hooks/useRolePermissions'
@@ -86,8 +87,43 @@ export const RoleDetailPage: FC = () => {
     return (
       <PageLayout maxWidth="5xl">
         <div className="space-y-6">
-          <div className="h-12 animate-pulse rounded bg-gray-200" />
-          <div className="h-64 animate-pulse rounded bg-gray-200" />
+          {/* Back Button Skeleton */}
+          <SkeletonText width="sm" height="md" />
+          
+          {/* Header Skeleton */}
+          <SkeletonCard>
+            <div className="space-y-3">
+              <SkeletonText width="lg" height="lg" />
+              <div className="flex gap-2">
+                <SkeletonText width="md" height="md" />
+                <SkeletonText width="md" height="md" />
+              </div>
+            </div>
+          </SkeletonCard>
+
+          {/* Detail Card Skeleton */}
+          <SkeletonCard>
+            <div className="space-y-4">
+              <SkeletonText width="md" height="lg" />
+              <div className="space-y-3">
+                <SkeletonText width="full" height="md" />
+                <SkeletonText width="full" height="md" />
+                <SkeletonText width="lg" height="md" />
+              </div>
+            </div>
+          </SkeletonCard>
+
+          {/* Permissions Skeleton */}
+          <SkeletonCard>
+            <div className="space-y-4">
+              <SkeletonText width="md" height="lg" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <SkeletonText key={i} width="full" height="md" />
+                ))}
+              </div>
+            </div>
+          </SkeletonCard>
         </div>
       </PageLayout>
     )
@@ -133,7 +169,7 @@ export const RoleDetailPage: FC = () => {
 
   return (
     <PageLayout maxWidth="5xl">
-      <div className="space-y-6">
+      <div className="space-y-6 w-full">
         {/* Back Button */}
         <div className="flex items-center">
           <Button
@@ -147,61 +183,51 @@ export const RoleDetailPage: FC = () => {
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              {role.name}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              Gerencie as informações e permissões deste cargo
-            </p>
-          </div>
-          <div className="flex gap-2">
-            {isEditing ? (
-              <>
-                <Button
-                  variant="outline"
-                  onClick={handleToggleEdit}
-                  disabled={isUpdating}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  onClick={handleSaveEdit}
-                  disabled={isUpdating || !editedName.trim()}
-                >
-                  {isUpdating ? (
-                    <>
-                      <i className="ph ph-circle-notch animate-spin mr-2" />
-                      Salvando...
-                    </>
-                  ) : (
-                    <>
-                      <i className="ph ph-check mr-2" />
-                      Salvar Alterações
-                    </>
-                  )}
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  variant="outline"
-                  onClick={handleToggleEdit}
-                >
-                  <i className="ph ph-pencil mr-2" />
-                  Editar
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => setIsDeleteDialogOpen(true)}
-                  disabled={isDeleting}
-                >
-                  Deletar
-                </Button>
-              </>
-            )}
-          </div>
+        <div className="flex w-full justify-end gap-2">
+          {isEditing ? (
+            <>
+              <Button
+                variant="outline"
+                onClick={handleToggleEdit}
+                disabled={isUpdating}
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={handleSaveEdit}
+                disabled={isUpdating || !editedName.trim()}
+              >
+                {isUpdating ? (
+                  <>
+                    <i className="ph ph-circle-notch animate-spin mr-2" />
+                    Salvando...
+                  </>
+                ) : (
+                  <>
+                    <i className="ph ph-check mr-2" />
+                    Salvar Alterações
+                  </>
+                )}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                onClick={handleToggleEdit}
+              >
+                <i className="ph ph-pencil mr-2" />
+                Editar
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => setIsDeleteDialogOpen(true)}
+                disabled={isDeleting}
+              >
+                Deletar
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Role Detail Card */}
@@ -236,8 +262,10 @@ export const RoleDetailPage: FC = () => {
           onRemoveUser={handleRemoveUser}
           onAddUser={async (userId) => {
             await userRolesService.assignRoleToUser(userId, roleId)
-            queryClient.invalidateQueries({ queryKey: ['role', roleId] })
-            toast.success('Usuário adicionado ao cargo com sucesso')
+          }}
+          onAddUserSuccess={async () => {
+            // Await the refetch to ensure data is updated before UI updates
+            await queryClient.refetchQueries({ queryKey: ['roles', roleId] })
           }}
           isRemoving={removeUserMutation.isPending}
         />

@@ -29,7 +29,11 @@ export const AppProviders = ({ children }: AppProvidersProps) => {
           <ThemeProvider>
             <ThemeWrapper>
               {children}
-              <Toaster />
+              <Toaster
+                position="top-right"
+                richColors
+                theme="dark"
+              />
             </ThemeWrapper>
           </ThemeProvider>
         </SidebarProvider>

@@ -44,6 +44,7 @@ export const PermissionsDisplay: FC<PermissionsDisplayProps> = ({
     displayName: string
   } | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all')
 
   const loading = isLoading || isLoadingInfo
 
@@ -76,12 +77,14 @@ export const PermissionsDisplay: FC<PermissionsDisplayProps> = ({
 
   const handleOpenAddModal = () => {
     setSelectedPermissionsToAdd([])
+    setSelectedCategoryFilter('all')
     setIsAddModalOpen(true)
   }
 
   const handleCloseAddModal = () => {
     setIsAddModalOpen(false)
     setSelectedPermissionsToAdd([])
+    setSelectedCategoryFilter('all')
   }
 
   const handleTogglePermissionToAdd = (permissionName: string) => {
@@ -162,7 +165,7 @@ export const PermissionsDisplay: FC<PermissionsDisplayProps> = ({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>Permissões do Cargo</span>
+          <span>Permissões do Cargo ({currentPermissions.length})</span>
           {editable && (
             <Button
               variant="outline"
@@ -340,6 +343,35 @@ dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
           </DialogHeader>
 
           <div className="space-y-6 py-4">
+            {/* Category Filter */}
+            {availablePermissions.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedCategoryFilter('all')}
+                  className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                    selectedCategoryFilter === 'all'
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  Todas
+                </button>
+                {availablePermissions.map((category) => (
+                  <button
+                    key={category.category}
+                    onClick={() => setSelectedCategoryFilter(category.category)}
+                    className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                      selectedCategoryFilter === category.category
+                        ? 'bg-primary-600 text-white'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    {category.category}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {availablePermissions.length === 0 ? (
               <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-900/50 p-4">
                 <p className="text-sm text-blue-700 dark:text-blue-300">
@@ -347,7 +379,9 @@ dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
                 </p>
               </div>
             ) : (
-              availablePermissions.map((category) => (
+              availablePermissions
+                .filter((category) => selectedCategoryFilter === 'all' || category.category === selectedCategoryFilter)
+                .map((category) => (
                 <div key={category.category} className="space-y-3">
                   <div className="flex items-center gap-3">
                     <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
@@ -358,7 +392,11 @@ dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
                     {category.permissions.map((permission) => (
                       <div
                         key={permission.name}
-                        className="flex items-start gap-3 rounded-lg border p-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                        className={`flex items-start gap-3 rounded-lg border p-3 transition-colors ${
+                          selectedPermissionsToAdd.includes(permission.name)
+                            ? 'border-primary-200 bg-primary-50 dark:border-primary-700 dark:bg-primary-900'
+                            : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'
+                        }`}
                       >
                         <Checkbox
                           id={`add-${permission.name}`}
