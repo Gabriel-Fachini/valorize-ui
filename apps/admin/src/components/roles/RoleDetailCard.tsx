@@ -92,11 +92,11 @@ export const RoleDetailCard: FC<RoleDetailCardProps> = ({
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Criado em:</span>
-                <span className="text-gray-900 dark:text-gray-100">{new Date(role.createdAt).toLocaleDateString('pt-BR')}</span>
+                <span className="text-gray-900 dark:text-gray-100">{role.createdAt ? new Date(role.createdAt).toLocaleDateString('pt-BR') : '-'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Atualizado em:</span>
-                <span className="text-gray-900 dark:text-gray-100">{new Date(role.updatedAt).toLocaleDateString('pt-BR')}</span>
+                <span className="text-gray-900 dark:text-gray-100">{role.updatedAt ? new Date(role.updatedAt).toLocaleDateString('pt-BR') : '-'}</span>
               </div>
             </div>
           </div>

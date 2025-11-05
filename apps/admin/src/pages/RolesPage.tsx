@@ -77,7 +77,7 @@ export const RolesPage: FC = () => {
               role.description || '',
               role.usersCount,
               role.permissionsCount,
-              new Date(role.createdAt).toLocaleDateString('pt-BR'),
+              role.createdAt ? new Date(role.createdAt).toLocaleDateString('pt-BR') : '-',
             ].join(',')
           ),
         ].join('\n')
