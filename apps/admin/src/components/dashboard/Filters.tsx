@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Calendar } from '@/components/ui/calendar'
 import {
   Select,
@@ -11,7 +11,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import type { DashboardFilters } from '@/types/dashboard'
-import { useDepartments, useJobTitles } from '@/hooks/useFilters'
+import { useDepartments, useJobTitles, useJobTitlesByDepartment } from '@/hooks/useFilters'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { animated, useSpring } from '@react-spring/web'
@@ -34,7 +34,14 @@ export const Filters: FC<FiltersProps> = ({
   })
 
   const { data: departments, isLoading: isLoadingDepartments } = useDepartments()
-  const { data: jobTitles, isLoading: isLoadingJobTitles } = useJobTitles()
+  const { data: allJobTitles, isLoading: isLoadingAllJobTitles } = useJobTitles()
+  const { data: filteredJobTitles, isLoading: isLoadingFilteredJobTitles } = useJobTitlesByDepartment(
+    filters.departmentId || undefined
+  )
+
+  // Use filtered job titles if department is selected, otherwise use all
+  const jobTitles = filters.departmentId ? filteredJobTitles : allJobTitles
+  const isLoadingJobTitles = filters.departmentId ? isLoadingFilteredJobTitles : isLoadingAllJobTitles
 
   const filtersAnimation = useSpring({
     from: { opacity: 0, transform: 'translateY(-20px)' },
@@ -52,11 +59,29 @@ export const Filters: FC<FiltersProps> = ({
   }
 
   const handleDepartmentChange = (departmentId: string) => {
+    const newDepartmentId = departmentId === 'all' ? undefined : departmentId
+    
+    // Clear jobTitle filter when department changes
     onFiltersChange({
       ...filters,
-      departmentId: departmentId === 'all' ? undefined : departmentId,
+      departmentId: newDepartmentId,
+      jobTitleId: newDepartmentId ? undefined : filters.jobTitleId,
     })
   }
+
+  // Clear jobTitle filter when department changes if the selected jobTitle is not in the filtered list
+  useEffect(() => {
+    if (filters.departmentId && filters.jobTitleId && filteredJobTitles) {
+      const isJobTitleAvailable = filteredJobTitles.some(jt => jt.id === filters.jobTitleId)
+      if (!isJobTitleAvailable) {
+        onFiltersChange({
+          ...filters,
+          jobTitleId: undefined,
+        })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.departmentId, filteredJobTitles])
 
   const handleJobTitleChange = (jobTitleId: string) => {
     onFiltersChange({
@@ -81,7 +106,7 @@ export const Filters: FC<FiltersProps> = ({
 
   return (
     <animated.div
-      style={filtersAnimation as any}
+      style={filtersAnimation}
       className="flex flex-wrap w-fit items-center gap-3 rounded-lg border bg-card p-4"
     >
       {/* Date Range Filter */}

@@ -45,6 +45,7 @@ export const PermissionsDisplay: FC<PermissionsDisplayProps> = ({
   } | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all')
+  const [modalSearchQuery, setModalSearchQuery] = useState('')
 
   const loading = isLoading || isLoadingInfo
 
@@ -75,6 +76,23 @@ export const PermissionsDisplay: FC<PermissionsDisplayProps> = ({
     }))
     .filter((category) => category.permissions.length > 0)
 
+  // Filter available permissions by modal search query
+  const filteredAvailablePermissions = useMemo(() => {
+    if (!modalSearchQuery.trim()) {
+      return availablePermissions
+    }
+
+    const query = modalSearchQuery.toLowerCase()
+    return availablePermissions
+      .map((category) => ({
+        ...category,
+        permissions: category.permissions.filter((p) =>
+          p.name.toLowerCase().includes(query) || p.description?.toLowerCase().includes(query)
+        ),
+      }))
+      .filter((category) => category.permissions.length > 0)
+  }, [availablePermissions, modalSearchQuery])
+
   const handleOpenAddModal = () => {
     setSelectedPermissionsToAdd([])
     setSelectedCategoryFilter('all')
@@ -85,6 +103,7 @@ export const PermissionsDisplay: FC<PermissionsDisplayProps> = ({
     setIsAddModalOpen(false)
     setSelectedPermissionsToAdd([])
     setSelectedCategoryFilter('all')
+    setModalSearchQuery('')
   }
 
   const handleTogglePermissionToAdd = (permissionName: string) => {
@@ -343,8 +362,20 @@ dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
           </DialogHeader>
 
           <div className="space-y-6 py-4">
+            {/* Search Bar */}
+            <div className="relative">
+              <i className="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Pesquisar permissões..."
+                value={modalSearchQuery}
+                onChange={(e) => setModalSearchQuery(e.currentTarget.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-sm"
+              />
+            </div>
+
             {/* Category Filter */}
-            {availablePermissions.length > 0 && (
+            {filteredAvailablePermissions.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setSelectedCategoryFilter('all')}
@@ -356,7 +387,7 @@ dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
                 >
                   Todas
                 </button>
-                {availablePermissions.map((category) => (
+                {filteredAvailablePermissions.map((category) => (
                   <button
                     key={category.category}
                     onClick={() => setSelectedCategoryFilter(category.category)}
@@ -372,14 +403,16 @@ dark:hover:bg-blue-900/50 transition-colors duration-200 w-full relative"
               </div>
             )}
 
-            {availablePermissions.length === 0 ? (
+            {filteredAvailablePermissions.length === 0 ? (
               <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-900/50 p-4">
                 <p className="text-sm text-blue-700 dark:text-blue-300">
-                  Todas as permissões disponíveis já foram atribuídas a este cargo
+                  {modalSearchQuery.trim() 
+                    ? 'Nenhuma permissão encontrada com os critérios de busca' 
+                    : 'Todas as permissões disponíveis já foram atribuídas a este cargo'}
                 </p>
               </div>
             ) : (
-              availablePermissions
+              filteredAvailablePermissions
                 .filter((category) => selectedCategoryFilter === 'all' || category.category === selectedCategoryFilter)
                 .map((category) => (
                 <div key={category.category} className="space-y-3">

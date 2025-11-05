@@ -232,6 +232,13 @@ export interface TableConfig<T = unknown> {
 // Data Table Props
 // ============================================================================
 
+export type SortOrder = 'asc' | 'desc' | null
+
+export interface SortState {
+  columnId: string
+  order: SortOrder
+}
+
 export interface DataTableProps<T = unknown> {
   config: TableConfig<T>
   data: T[]
@@ -245,6 +252,9 @@ export interface DataTableProps<T = unknown> {
   pageSize: number
   onPageChange: (page: number) => void
   onPageSizeChange: (size: number) => void
+
+  // Initial sorting (optional - for setting default sort)
+  sortState?: SortState
 
   // Filters
   filters?: Record<string, unknown>

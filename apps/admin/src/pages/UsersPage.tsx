@@ -15,7 +15,7 @@ import { useUsers } from '@/hooks/useUsers'
 import { useUserMutations } from '@/hooks/useUserMutations'
 import { useUserBulkActions } from '@/hooks/useUserBulkActions'
 import { useDebounce } from '@/hooks/useDebounce'
-import { useDepartments, useJobTitles } from '@/hooks/useFilters'
+import { useDepartments, useJobTitles, useJobTitlesByDepartment } from '@/hooks/useFilters'
 import type { User, UserFormData, UserFilters, UsersQueryParams } from '@/types/users'
 
 export const UsersPage: FC = () => {
@@ -40,6 +40,7 @@ export const UsersPage: FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | undefined>()
 
   // Build query params (using debounced search)
+  // Note: Sorting is now done locally in the DataTable component
   const queryParams: UsersQueryParams = {
     page,
     limit: pageSize,
@@ -47,8 +48,6 @@ export const UsersPage: FC = () => {
     status: filters.status !== 'all' ? filters.status : undefined,
     departmentId: filters.departmentId || undefined,
     jobTitleId: filters.jobTitleId || undefined,
-    sortBy: 'createdAt',
-    sortOrder: 'desc',
   }
 
   const { users, totalCount, pageCount, currentPage, isLoading, isFetching } = useUsers(queryParams)
@@ -58,12 +57,30 @@ export const UsersPage: FC = () => {
 
   // Dynamic filter options
   const { data: departments } = useDepartments()
-  const { data: jobTitles } = useJobTitles()
+  const { data: allJobTitles } = useJobTitles()
+  const { data: filteredJobTitles } = useJobTitlesByDepartment(
+    filters.departmentId && filters.departmentId !== 'all' ? filters.departmentId : undefined
+  )
+  
+  // Use filtered job titles if department is selected, otherwise use all
+  const jobTitles = filters.departmentId && filters.departmentId !== 'all' 
+    ? filteredJobTitles 
+    : allJobTitles
 
   // Reset to page 1 when filters change
   useEffect(() => {
     setPage(1)
   }, [debouncedSearch, filters.status, filters.departmentId, filters.jobTitleId])
+
+  // Clear jobTitle filter when department changes if the selected jobTitle is not in the filtered list
+  useEffect(() => {
+    if (filters.departmentId && filters.jobTitleId && filteredJobTitles) {
+      const isJobTitleAvailable = filteredJobTitles.some(jt => jt.id === filters.jobTitleId)
+      if (!isJobTitleAvailable) {
+        setFilters(prev => ({ ...prev, jobTitleId: '' }))
+      }
+    }
+  }, [filters.departmentId, filters.jobTitleId, filteredJobTitles])
 
   const handleCreate = async (data: UserFormData) => {
     await createUser(data)
@@ -194,6 +211,7 @@ export const UsersPage: FC = () => {
           pageSize={pageSize}
           onPageChange={setPage}
           onPageSizeChange={setPageSize}
+          sortState={{ columnId: 'name', order: 'asc' }}
           filters={filters}
           onFiltersChange={(newFilters) => setFilters(newFilters as UserFilters)}
           onRowAction={handleRowAction}

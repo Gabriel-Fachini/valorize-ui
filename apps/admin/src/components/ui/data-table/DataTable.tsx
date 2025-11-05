@@ -8,9 +8,11 @@ import {
   useReactTable,
   getCoreRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   flexRender,
   type RowSelectionState,
   type ColumnDef,
+  type SortingState,
 } from '@tanstack/react-table'
 import { animated, useTransition } from '@react-spring/web'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -49,6 +51,7 @@ export function DataTable<T>({
   pageSize,
   onPageChange,
   onPageSizeChange,
+  sortState,
   filters = {},
   onFiltersChange = () => {},
   onRowAction = () => {},
@@ -57,6 +60,20 @@ export function DataTable<T>({
   dynamicFilterOptions,
 }: DataTableProps<T>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  
+  // Local sorting state managed by TanStack Table
+  const [sorting, setSorting] = useState<SortingState>([])
+
+  // Sync external sortState with internal sorting (if provided)
+  // This allows parent components to control initial sort but we handle it locally
+  useMemo(() => {
+    if (sortState?.order && sortState?.columnId && sorting.length === 0) {
+      setSorting([{
+        id: sortState.columnId,
+        desc: sortState.order === 'desc',
+      }])
+    }
+  }, [sortState, sorting.length])
 
   // Construir colunas do TanStack Table a partir da config
   const columns = useMemo<ColumnDef<T>[]>(() => {
@@ -94,10 +111,27 @@ export function DataTable<T>({
         return // Já adicionado acima
       }
 
+      const columnDef: Partial<ColumnDef<T>> = {
+        id: colConfig.id,
+        enableSorting: colConfig.enableSorting ?? false,
+        enableHiding: colConfig.enableHiding ?? false,
+      }
+
+      // Add accessor for sorting if column has one
+      if (colConfig.accessor) {
+        if (typeof colConfig.accessor === 'string') {
+          // @ts-expect-error - TanStack Table types
+          columnDef.accessorKey = colConfig.accessor
+        } else {
+          // @ts-expect-error - TanStack Table types
+          columnDef.accessorFn = colConfig.accessor
+        }
+      }
+
       if (colConfig.type === 'actions') {
         // Coluna de ações
         cols.push({
-          id: colConfig.id,
+          ...columnDef,
           header: String(colConfig.header),
           cell: ({ row }) => {
             const rowActions = config.actions?.row || []
@@ -135,27 +169,21 @@ export function DataTable<T>({
               </DropdownMenu>
             )
           },
-          enableSorting: colConfig.enableSorting ?? false,
-          enableHiding: colConfig.enableHiding ?? false,
-        })
+        } as ColumnDef<T>)
       } else if (colConfig.type === 'custom') {
         // Coluna customizada
         cols.push({
-          id: colConfig.id,
+          ...columnDef,
           header: String(colConfig.header),
           cell: ({ row }) => colConfig.cell(row.original),
-          enableSorting: colConfig.enableSorting ?? false,
-          enableHiding: colConfig.enableHiding ?? false,
-        })
+        } as ColumnDef<T>)
       } else {
         // Colunas padrão
         cols.push({
-          id: colConfig.id,
+          ...columnDef,
           header: String(colConfig.header),
           cell: ({ row }) => renderColumn(row.original, colConfig),
-          enableSorting: colConfig.enableSorting ?? false,
-          enableHiding: colConfig.enableHiding ?? false,
-        })
+        } as ColumnDef<T>)
       }
     })
 
@@ -167,13 +195,17 @@ export function DataTable<T>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
     getRowId: (row) => getRowId(row),
     state: {
       rowSelection,
+      sorting,
     },
     pageCount,
     manualPagination: true,
+    // manualSorting: false - sorting is done locally by TanStack Table
   })
 
   const selectedRows = table.getFilteredSelectedRowModel().rows
@@ -259,13 +291,36 @@ export function DataTable<T>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  const isSortable = header.column.getCanSort()
+                  const sortDirection = header.column.getIsSorted()
+
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder ? null : (
+                        <div
+                          className={`flex items-center gap-2 ${
+                            isSortable ? 'cursor-pointer select-none hover:text-foreground transition-colors' : ''
+                          }`}
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                          {isSortable && (
+                            <span className={`transition-opacity ${sortDirection ? 'opacity-100' : 'opacity-40'}`}>
+                              {sortDirection === 'desc' ? (
+                                <i className="ph ph-fill ph-sort-descending text-base text-primary" />
+                              ) : sortDirection === 'asc' ? (
+                                <i className="ph ph-fill ph-sort-ascending text-base text-primary" />
+                              ) : (
+                                <i className="ph ph-arrows-down-up text-base text-muted-foreground" />
+                              )}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </TableHead>
+                  )
+                })}
               </TableRow>
             ))}
           </TableHeader>

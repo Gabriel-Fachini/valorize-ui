@@ -1,4 +1,5 @@
 import { useAuth } from '@/hooks/useAuth'
+import { useCurrentUserRoles } from '@/hooks/useCurrentUserRoles'
 import { useSidebar } from '@/hooks/useSidebar'
 import { useMobileSidebarScrollLock } from '@/hooks/useMobileSidebarScrollLock'
 import { useNavigation } from './hooks/useNavigation'
@@ -10,9 +11,12 @@ import { MobileContentBlur } from './MobileContentBlur'
 
 export const SidebarMobile = () => {
   const { user, isLoading } = useAuth()
+  const { roles, isLoading: rolesLoading } = useCurrentUserRoles()
   const { mobileSidebarOpen, setMobileSidebarOpen } = useSidebar()
   const { currentPath, handleNavigation } = useNavigation()
   const { handleLogout } = useSidebarActions()
+
+  const isLoadingAny = isLoading || rolesLoading
 
   // Aplicar lock de scroll quando sidebar mobile estiver aberta
   useMobileSidebarScrollLock()
@@ -57,7 +61,8 @@ export const SidebarMobile = () => {
           userName={user?.name}
           userEmail={user?.email}
           avatarUrl={user?.avatar}
-          isLoading={isLoading}
+          userRoles={roles}
+          isLoading={isLoadingAny}
         />
 
         {/* Mobile Navigation */}
@@ -89,4 +94,3 @@ export const SidebarMobile = () => {
     </>
   )
 }
-

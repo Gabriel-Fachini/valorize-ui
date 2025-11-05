@@ -32,7 +32,6 @@ export const AppProviders = ({ children }: AppProvidersProps) => {
               <Toaster
                 position="top-right"
                 richColors
-                theme="dark"
               />
             </ThemeWrapper>
           </ThemeProvider>

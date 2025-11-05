@@ -48,6 +48,7 @@ export const DashboardOverview: FC = () => {
           title="Dashboard Executivo"
           description="Visão geral das métricas dos últimos 30 dias"
           right={<ThemeToggle />}
+          icon='ph-house'
         />
       </animated.div>
 

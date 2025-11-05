@@ -10,7 +10,7 @@ import { DashboardOverview } from '@/components/dashboard/DashboardOverview'
  */
 export const HomePage: FC = () => {
   return (
-    <PageLayout maxWidth="full">
+    <PageLayout maxWidth="7xl">
       <DashboardOverview />
     </PageLayout>
   )

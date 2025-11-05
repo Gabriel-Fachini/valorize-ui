@@ -10,6 +10,7 @@ import {
   RoleUsersSection,
 } from '@/components/roles'
 import { Button } from '@/components/ui/button'
+import { BackButton } from '@/components/ui/BackButton'
 import { SkeletonText, SkeletonCard } from '@/components/ui/Skeleton'
 import { useRoleDetail } from '@/hooks/useRoleDetail'
 import { useRoleMutations } from '@/hooks/useRoleMutations'
@@ -172,14 +173,7 @@ export const RoleDetailPage: FC = () => {
       <div className="space-y-6 w-full">
         {/* Back Button */}
         <div className="flex items-center">
-          <Button
-            variant="ghost"
-            onClick={() => navigate({ to: '/roles' })}
-            className="gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
-          >
-            <i className="ph ph-arrow-left" />
-            Voltar
-          </Button>
+          <BackButton to="/roles" />
         </div>
 
         {/* Header */}

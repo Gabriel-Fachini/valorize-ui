@@ -14,7 +14,7 @@ import { EconomyDashboard } from '@/components/economy'
  */
 export const EconomyPage: FC = () => {
   return (
-    <PageLayout maxWidth="full">
+    <PageLayout maxWidth="7xl">
       <EconomyDashboard />
     </PageLayout>
   )

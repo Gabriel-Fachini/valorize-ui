@@ -309,6 +309,7 @@ const NetworkVisualization: React.FC = () => {
         title="Rede de Elogios"
         description="Exploração das conexões e interações de elogios entre pessoas"
         right={<ThemeToggle />}
+        icon='ph-network'
       />
 
       {/* Controles */}

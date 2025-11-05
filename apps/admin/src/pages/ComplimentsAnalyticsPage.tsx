@@ -9,7 +9,7 @@ import NetworkVisualization from '@/components/network/NetworkVisualization'
  */
 export const ComplimentsAnalyticsPage: FC = () => {
   return (
-    <PageLayout maxWidth="full">
+    <PageLayout maxWidth="7xl">
       <NetworkVisualization />
     </PageLayout>
   )

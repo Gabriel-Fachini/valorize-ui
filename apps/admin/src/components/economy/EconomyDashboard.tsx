@@ -47,6 +47,7 @@ export const EconomyDashboard: FC = () => {
           title="Dashboard de Economia"
           description="Visão geral da saúde financeira do sistema de moedas"
           right={<ThemeToggle />}
+          icon='ph-currency-circle-dollar'
         />
       </animated.div>
 

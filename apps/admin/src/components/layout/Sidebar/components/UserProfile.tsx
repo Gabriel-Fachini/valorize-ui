@@ -6,8 +6,7 @@ export const UserProfile = ({
   userName = 'Usuário',
   userEmail = 'email@exemplo.com',
   avatarUrl,
-  userRole = 'Admin',
-  userDepartment = 'Desenvolvimento',
+  userRoles = [],
   isLoading = false,
 }: UserProfileProps) => {
   const initials = userName.charAt(0).toUpperCase()
@@ -68,18 +67,21 @@ export const UserProfile = ({
               {userName}
             </h3>
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 truncate mb-1">
+          <p className="text-sm text-gray-500 dark:text-gray-400 truncate mb-3">
             {userEmail}
           </p>
-          {userRole && (
-            <span className="items-center w-fit px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-light whitespace-nowrap mr-1">
-              {userRole}
-            </span>
-          )}
-          {userDepartment && (
-            <span className="items-center w-fit px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-light whitespace-nowrap">
-              {userDepartment}
-            </span>
+          {userRoles && userRoles.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {userRoles.map((role) => (
+                <span 
+                  key={role.id}
+                  className="items-center w-fit px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-light whitespace-nowrap"
+                  title={role.description || role.name}
+                >
+                  {role.name}
+                </span>
+              ))}
+            </div>
           )}
         </div>
       </div>

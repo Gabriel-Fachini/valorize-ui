@@ -1,6 +1,7 @@
 import { type FC, useState } from 'react'
 import { Link, useParams } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
+import { BackButton } from '@/components/ui/BackButton'
 import { SkeletonBase as Skeleton } from '@/components/ui/Skeleton'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { UserDetailCard, UserStatisticsCard, UserFormDialog, UserDeleteDialog, PasswordResetConfirmModal, PasswordResetModal } from '@/components/users'
@@ -84,12 +85,7 @@ export const UserDetailPage: FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/users">
-                <i className="ph ph-arrow-left mr-2" />
-                Voltar
-              </Link>
-            </Button>
+            <BackButton to="/users" />
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Detalhes do Usuário</h1>
               <p className="text-muted-foreground">Visualize e gerencie informações do usuário</p>

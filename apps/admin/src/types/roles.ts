@@ -8,9 +8,9 @@ export interface Role {
   id: string
   name: string
   description?: string | null
-  companyId: string
-  createdAt: string
-  updatedAt: string
+  companyId?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface RoleWithCounts extends Role {
@@ -110,6 +110,15 @@ export interface PermissionCategoriesResponse {
 export interface UserRolesResponse {
   success: true
   data: UserRoleDetail[]
+  timestamp: string
+}
+
+export interface UserRolesAndPermissionsResponse {
+  success: true
+  data: {
+    permissions: string[]
+    roles: Role[]
+  }
   timestamp: string
 }
 

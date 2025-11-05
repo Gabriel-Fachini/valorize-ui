@@ -1,4 +1,5 @@
 import { useAuth } from '@/hooks/useAuth'
+import { useCurrentUserRoles } from '@/hooks/useCurrentUserRoles'
 import { useSidebar } from '@/hooks/useSidebar'
 import { useNavigation } from './hooks/useNavigation'
 import { useSidebarActions } from './hooks/useSidebarActions'
@@ -9,9 +10,12 @@ import { BottomActions } from './components/BottomActions'
 
 export const SidebarDesktop = () => {
   const { user, isLoading } = useAuth()
+  const { roles, isLoading: rolesLoading } = useCurrentUserRoles()
   const { desktopSidebarCollapsed, toggleDesktopSidebar } = useSidebar()
   const { currentPath, handleNavigation } = useNavigation()
   const { handleLogout } = useSidebarActions()
+
+  const isLoadingAny = isLoading || rolesLoading
 
   return (
     <aside 
@@ -37,9 +41,8 @@ export const SidebarDesktop = () => {
         userName={user?.name}
         userEmail={user?.email}
         avatarUrl={user?.avatar}
-        userRole={user?.role}
-        userDepartment={user?.department}
-        isLoading={isLoading}
+        userRoles={roles}
+        isLoading={isLoadingAny}
       />
 
       {/* Navigation */}

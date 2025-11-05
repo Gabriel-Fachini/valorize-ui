@@ -1,3 +1,5 @@
+import type { Role } from '@/types/roles'
+
 export interface NavLink {
   path: string
   label: string
@@ -11,8 +13,7 @@ export interface UserProfileProps {
   userName?: string
   userEmail?: string
   avatarUrl?: string
-  userRole?: string
-  userDepartment?: string
+  userRoles?: Role[]
   isLoading?: boolean
 }
 
