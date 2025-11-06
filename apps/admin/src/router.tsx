@@ -11,6 +11,8 @@ import { UserDetailPage } from '@pages/UserDetailPage'
 import { EconomyPage } from '@pages/EconomyPage'
 import { RolesPage } from '@pages/RolesPage'
 import { RoleDetailPage } from '@pages/RoleDetailPage'
+import { VouchersPage } from '@pages/VouchersPage'
+import { VoucherDetailPage } from '@pages/VoucherDetailPage'
 
 // Create a root route
 const rootRoute = createRootRoute({
@@ -87,6 +89,19 @@ const roleDetailRoute = createRoute({
   component: RoleDetailPage,
 })
 
+// Vouchers routes - protected
+const vouchersRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/vouchers',
+  component: VouchersPage,
+})
+
+const voucherDetailRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/vouchers/$voucherId',
+  component: VoucherDetailPage,
+})
+
 // Settings layout route - protected
 const settingsLayoutRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
@@ -132,6 +147,8 @@ const routeTree = rootRoute.addChildren([
     userDetailRoute,
     rolesRoute,
     roleDetailRoute,
+    vouchersRoute,
+    voucherDetailRoute,
     settingsLayoutRoute.addChildren([
       settingsBasicInfoRoute,
       settingsValuesRoute,

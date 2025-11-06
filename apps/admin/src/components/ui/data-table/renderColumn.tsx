@@ -5,6 +5,7 @@
 import type { ReactNode } from 'react'
 import {
   AvatarRenderer,
+  ImageRenderer,
   StringRenderer,
   LinkRenderer,
   RelationRenderer,
@@ -14,6 +15,7 @@ import {
 } from './DataTableColumnRenderers'
 import type {
   AvatarColumnConfig,
+  ImageColumnConfig,
   StringColumnConfig,
   LinkColumnConfig,
   RelationColumnConfig,
@@ -31,6 +33,8 @@ export const renderColumn = <T,>(row: T, config: unknown): ReactNode => {
   switch (col.type) {
     case 'avatar':
       return <AvatarRenderer row={row} config={config as AvatarColumnConfig<T>} />
+    case 'image':
+      return <ImageRenderer row={row} config={config as ImageColumnConfig<T>} />
     case 'string':
       return <StringRenderer row={row} config={config as StringColumnConfig<T>} />
     case 'link':

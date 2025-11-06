@@ -12,6 +12,7 @@ import type { ReactNode } from 'react'
 export type ColumnType =
   | 'selection' // Checkbox de seleção
   | 'avatar' // Avatar com imagem ou iniciais
+  | 'image' // Imagem retangular
   | 'string' // Texto simples
   | 'link' // Link clicável
   | 'relation' // Dados de relação (ex: department.name)
@@ -68,6 +69,16 @@ export interface AvatarColumnConfig<T = unknown> extends BaseColumnConfig<T> {
   nameAccessor?: keyof T | ((row: T) => string)
 }
 
+export interface ImageColumnConfig<T = unknown> extends BaseColumnConfig<T> {
+  type: 'image'
+  imageAccessor: keyof T | ((row: T) => string | undefined)
+  altAccessor?: keyof T | ((row: T) => string)
+  width?: number
+  height?: number
+  aspectRatio?: 'square' | 'video' | 'portrait' | 'custom'
+  objectFit?: 'cover' | 'contain'
+}
+
 export interface RelationColumnConfig<T = unknown> extends BaseColumnConfig<T> {
   type: 'relation'
   display?: DisplayVariant
@@ -108,6 +119,7 @@ export type ColumnConfig<T = unknown> =
   | StringColumnConfig<T>
   | LinkColumnConfig<T>
   | AvatarColumnConfig<T>
+  | ImageColumnConfig<T>
   | RelationColumnConfig<T>
   | BadgeColumnConfig<T>
   | DateColumnConfig<T>

@@ -8,6 +8,7 @@ import { Link } from '@tanstack/react-router'
 import { Badge } from '@/components/ui/badge'
 import type {
   AvatarColumnConfig,
+  ImageColumnConfig,
   StringColumnConfig,
   LinkColumnConfig,
   RelationColumnConfig,
@@ -87,6 +88,70 @@ export const AvatarRenderer = <T,>({ row, config }: AvatarRendererProps<T>): Rea
           className={`${sizeClasses[size]} flex items-center justify-center rounded-full bg-primary/10 font-semibold text-primary`}
         >
           {initials}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ============================================================================
+// Image Renderer
+// ============================================================================
+
+interface ImageRendererProps<T> {
+  row: T
+  config: ImageColumnConfig<T>
+}
+
+export const ImageRenderer = <T,>({ row, config }: ImageRendererProps<T>): ReactNode => {
+  const imageUrl = getNestedValue(row, config.imageAccessor) as string | undefined
+
+  const altText = config.altAccessor
+    ? (getNestedValue(row, config.altAccessor) as string)
+    : 'Imagem'
+
+  // Aspect ratio classes
+  const aspectRatioClasses = {
+    square: 'aspect-square',
+    video: 'aspect-video',
+    portrait: 'aspect-[3/4]',
+    custom: '',
+  }
+
+  const aspectRatio = config.aspectRatio || 'video'
+  const objectFit = config.objectFit || 'cover'
+
+  // Calculate dimensions
+  const width = config.width || 80
+  const height = config.height
+
+  const containerStyle = height
+    ? { width: `${width}px`, height: `${height}px` }
+    : { width: `${width}px` }
+
+  return (
+    <div className="flex items-center">
+      {imageUrl ? (
+        <div
+          className={`overflow-hidden rounded border bg-muted ${
+            !height ? aspectRatioClasses[aspectRatio] : ''
+          }`}
+          style={containerStyle}
+        >
+          <img
+            src={imageUrl}
+            alt={altText}
+            className={`h-full w-full object-${objectFit}`}
+          />
+        </div>
+      ) : (
+        <div
+          className={`flex items-center justify-center rounded border bg-muted/50 ${
+            !height ? aspectRatioClasses[aspectRatio] : ''
+          }`}
+          style={containerStyle}
+        >
+          <i className="ph ph-image text-2xl text-muted-foreground" />
         </div>
       )}
     </div>
