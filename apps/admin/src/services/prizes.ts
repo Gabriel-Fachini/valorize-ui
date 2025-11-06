@@ -35,10 +35,10 @@ export const prizesService = {
 
   /**
    * Create a new prize
-   * POST /prizes
+   * POST /admin/prizes
    */
   create: async (payload: CreatePrizePayload): Promise<PrizeCreateResponse> => {
-    const { data } = await api.post<PrizeCreateResponse>('/prizes', payload)
+    const { data } = await api.post<PrizeCreateResponse>('/admin/prizes', payload)
     return data
   },
 
@@ -66,6 +66,32 @@ export const prizesService = {
    */
   toggleActive: async (id: string, isActive: boolean): Promise<PrizeUpdateResponse> => {
     const { data } = await api.patch<PrizeUpdateResponse>(`/admin/prizes/${id}`, { isActive })
+    return data
+  },
+
+  /**
+   * Upload images for a prize
+   * POST /admin/prizes/:id/images
+   */
+  uploadImages: async (id: string, images: File[]): Promise<{ success: boolean; images: string[] }> => {
+    const formData = new FormData()
+    images.forEach((image) => {
+      formData.append('images', image)
+    })
+    const { data } = await api.post<{ success: boolean; images: string[] }>(`/admin/prizes/${id}/images`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    return data
+  },
+
+  /**
+   * Delete a specific image from a prize
+   * DELETE /admin/prizes/:id/images/:imageIndex
+   */
+  deleteImage: async (id: string, imageIndex: number): Promise<{ success: boolean; message: string }> => {
+    const { data } = await api.delete<{ success: boolean; message: string }>(`/admin/prizes/${id}/images/${imageIndex}`)
     return data
   },
 }

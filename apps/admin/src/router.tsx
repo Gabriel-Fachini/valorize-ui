@@ -13,6 +13,9 @@ import { RolesPage } from '@pages/RolesPage'
 import { RoleDetailPage } from '@pages/RoleDetailPage'
 import { VouchersPage } from '@pages/VouchersPage'
 import { VoucherDetailPage } from '@pages/VoucherDetailPage'
+import { PrizesPage } from '@pages/PrizesPage'
+import { PrizeNewPage } from '@pages/PrizeNewPage'
+import { PrizeDetailPage } from '@pages/PrizeDetailPage'
 
 // Create a root route
 const rootRoute = createRootRoute({
@@ -102,6 +105,25 @@ const voucherDetailRoute = createRoute({
   component: VoucherDetailPage,
 })
 
+// Prizes routes - protected
+const prizesRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/prizes',
+  component: PrizesPage,
+})
+
+const prizeNewRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/prizes/new',
+  component: PrizeNewPage,
+})
+
+const prizeDetailRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/prizes/$prizeId',
+  component: PrizeDetailPage,
+})
+
 // Settings layout route - protected
 const settingsLayoutRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
@@ -149,6 +171,9 @@ const routeTree = rootRoute.addChildren([
     roleDetailRoute,
     vouchersRoute,
     voucherDetailRoute,
+    prizesRoute,
+    prizeNewRoute,
+    prizeDetailRoute,
     settingsLayoutRoute.addChildren([
       settingsBasicInfoRoute,
       settingsValuesRoute,
