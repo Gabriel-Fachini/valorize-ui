@@ -2,20 +2,21 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import type { NavigationItemProps } from '../types'
 
-export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({ 
+export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
   path,
-  label, 
-  icon, 
-  dataTour, 
-  isActive, 
-  collapsed = false, 
+  label,
+  icon,
+  dataTour,
+  isActive,
+  collapsed = false,
   onNavigate,
   subItems,
   currentPath,
   hasIndicator = false,
+  isOpen = false,
+  onToggleOpen,
 }) => {
   const [isHovered, setIsHovered] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
   const [viewHeight, setViewHeight] = useState(0)
   const contentRef = useRef<HTMLDivElement>(null)
   const previousOpen = useRef(isOpen)
@@ -32,19 +33,12 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
     subItem => currentPath === subItem.path || currentPath.startsWith(subItem.path + '/')
   )
 
-  // Auto-open if a sub-item is active
-  useEffect(() => {
-    if (hasActiveSubItem && !collapsed) {
-      setIsOpen(true)
-    }
-  }, [hasActiveSubItem, collapsed])
-
   // Close when sidebar collapses
   useEffect(() => {
-    if (collapsed) {
-      setIsOpen(false)
+    if (collapsed && onToggleOpen) {
+      onToggleOpen(false)
     }
-  }, [collapsed])
+  }, [collapsed, onToggleOpen])
 
   const hoverStyle = useSpring({
     scale: isHovered ? 1.05 : 1,
@@ -64,7 +58,14 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
 
   const handleMainClick = () => {
     if (hasSubItems && !collapsed) {
-      setIsOpen(!isOpen)
+      // Navegar para a primeira subpágina
+      if (subItems && subItems.length > 0) {
+        onNavigate(subItems[0].path)
+      }
+      // Abrir o dropdown
+      if (onToggleOpen) {
+        onToggleOpen(!isOpen)
+      }
     } else if (path !== '#') {
       onNavigate(path)
     }
