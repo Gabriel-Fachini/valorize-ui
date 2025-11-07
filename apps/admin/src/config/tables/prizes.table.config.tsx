@@ -6,6 +6,7 @@
 import type { Prize } from '@/types/prizes'
 import type { TableConfig } from './types'
 import { PRIZE_CATEGORIES } from '@/components/prizes/PrizeForm'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export const prizesTableConfig: TableConfig<Prize> = {
   // Habilita seleção múltipla de linhas
@@ -41,27 +42,17 @@ export const prizesTableConfig: TableConfig<Prize> = {
       enableSorting: true,
     },
 
-    // Categoria
+    // Tipo de prêmio
     {
       id: 'category',
       type: 'badge',
       accessor: 'category',
-      header: 'Categoria',
+      header: 'Tipo',
       badgeVariant: () => 'secondary',
       badgeLabel: (value) => {
         const cat = PRIZE_CATEGORIES.find((c) => c.value === value)
         return cat?.label || String(value)
       },
-      enableSorting: true,
-    },
-
-    // Marca
-    {
-      id: 'brand',
-      type: 'string',
-      accessor: 'brand',
-      header: 'Marca',
-      display: 'string-secondary',
       enableSorting: true,
     },
 
@@ -127,10 +118,19 @@ export const prizesTableConfig: TableConfig<Prize> = {
       cell: (row) => {
         if (!row.companyId) {
           return (
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-              <i className="ph ph-globe" />
-              Global
-            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 cursor-help">
+                    <i className="ph ph-globe" />
+                    Global
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Prêmios globais estão disponíveis para todas as empresas</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )
         }
         return null
@@ -161,15 +161,15 @@ export const prizesTableConfig: TableConfig<Prize> = {
       clearable: true,
     },
 
-    // Filtro por categoria
+    // Filtro por tipo
     {
       id: 'category',
       type: 'select',
-      label: 'Categoria',
-      placeholder: 'Todas',
+      label: 'Tipo',
+      placeholder: 'Todos',
       icon: 'ph-funnel',
       options: [
-        { value: 'all', label: 'Todas' },
+        { value: 'all', label: 'Todos' },
         ...PRIZE_CATEGORIES.map((cat) => ({ value: cat.value, label: cat.label })),
       ],
     },

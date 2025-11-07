@@ -23,19 +23,27 @@ export const PrizesPage: FC = () => {
     search: '',
     category: undefined,
     isActive: undefined,
+    isGlobal: undefined,
   })
 
   // Build query params
   const queryParams: PrizeFilters = {
     limit: pageSize,
     offset: (page - 1) * pageSize,
+    orderBy: 'createdAt',
+    order: 'desc',
     ...(filters.search && { search: filters.search }),
     ...(filters.category && filters.category !== 'all' && { category: filters.category }),
   }
 
-  // Handle isActive filter separately to avoid type issues
-  if (filters.isActive !== undefined && String(filters.isActive) !== 'all') {
-    queryParams.isActive = String(filters.isActive) === 'true'
+  // Handle isActive filter
+  if (filters.isActive !== undefined) {
+    queryParams.isActive = filters.isActive
+  }
+
+  // Handle isGlobal filter
+  if (filters.isGlobal !== undefined) {
+    queryParams.isGlobal = filters.isGlobal
   }
 
   const { prizes, totalCount, isLoading, isFetching, refetch } = usePrizes(queryParams)
@@ -44,7 +52,7 @@ export const PrizesPage: FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setPage(1)
-  }, [filters.search, filters.category, filters.isActive])
+  }, [filters.search, filters.category, filters.isActive, filters.isGlobal])
 
   // Handler for bulk actions
   const handleBulkAction = useCallback(
@@ -107,10 +115,47 @@ export const PrizesPage: FC = () => {
     [navigate]
   )
 
+  // Check if there are active filters
+  const hasActiveFilters = useMemo(() => {
+    return !!(filters.search || filters.category || filters.isActive !== undefined || filters.isGlobal !== undefined)
+  }, [filters])
+
+  // Clear all filters
+  const handleClearFilters = useCallback(() => {
+    setFilters({
+      search: '',
+      category: undefined,
+      isActive: undefined,
+      isGlobal: undefined,
+    })
+    setPage(1)
+  }, [])
+
   // Inject customized table config with row action disabled for global prizes
   const customizedConfig = useMemo(() => {
     return {
       ...prizesTableConfig,
+      columns: prizesTableConfig.columns.map((column) => {
+        // Add onClick to image column
+        if (column.id === 'image') {
+          return {
+            ...column,
+            onClick: (prize: Prize) => {
+              navigate({ to: '/prizes/$prizeId', params: { prizeId: prize.id } })
+            },
+          }
+        }
+        // Add onClick to name column
+        if (column.id === 'name') {
+          return {
+            ...column,
+            onClick: (prize: Prize) => {
+              navigate({ to: '/prizes/$prizeId', params: { prizeId: prize.id } })
+            },
+          }
+        }
+        return column
+      }),
       actions: {
         ...prizesTableConfig.actions,
         row: prizesTableConfig.actions?.row?.map((action) => ({
@@ -124,9 +169,15 @@ export const PrizesPage: FC = () => {
             return false
           },
         })),
+        toolbar: hasActiveFilters ? (
+          <Button variant="outline" size="sm" onClick={handleClearFilters}>
+            <i className="ph ph-x mr-2" />
+            Limpar Filtros
+          </Button>
+        ) : null,
       },
     }
-  }, [])
+  }, [navigate, hasActiveFilters, handleClearFilters])
 
   return (
     <PageLayout maxWidth="7xl">
@@ -162,13 +213,15 @@ export const PrizesPage: FC = () => {
           filters={{
             search: filters.search || '',
             category: filters.category || '',
-            isActive: filters.isActive || '',
+            isActive: filters.isActive !== undefined ? String(filters.isActive) : '',
+            isGlobal: filters.isGlobal !== undefined ? String(filters.isGlobal) : '',
           }}
           onFiltersChange={(newFilters: Record<string, unknown>) => {
             setFilters({
               search: String(newFilters.search || ''),
-              category: newFilters.category ? String(newFilters.category) : undefined,
-              isActive: newFilters.isActive !== undefined ? (String(newFilters.isActive) === 'true') : undefined,
+              category: newFilters.category && String(newFilters.category) !== 'all' ? String(newFilters.category) : undefined,
+              isActive: newFilters.isActive && String(newFilters.isActive) !== 'all' ? String(newFilters.isActive) === 'true' : undefined,
+              isGlobal: newFilters.isGlobal && String(newFilters.isGlobal) !== 'all' ? String(newFilters.isGlobal) === 'true' : undefined,
             })
           }}
           onBulkAction={handleBulkAction}

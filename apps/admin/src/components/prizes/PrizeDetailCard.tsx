@@ -63,7 +63,7 @@ export const PrizeDetailCard: FC<PrizeDetailCardProps> = ({ prize }) => {
             </div>
 
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Categoria</p>
+              <p className="text-sm font-medium text-muted-foreground">Tipo</p>
               <Badge variant="secondary" className="mt-1">
                 {getCategoryLabel(prize.category)}
               </Badge>

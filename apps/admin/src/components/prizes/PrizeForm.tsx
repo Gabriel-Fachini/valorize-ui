@@ -18,21 +18,20 @@ import { MultipleImageUpload } from './MultipleImageUpload'
 import { SpecificationsInput } from './SpecificationsInput'
 import type { Prize } from '@/types/prizes'
 
-// Prize categories
+// Prize categories (types)
 export const PRIZE_CATEGORIES = [
-  { value: 'eletronicos', label: 'Eletrônicos' },
-  { value: 'viagem', label: 'Viagem' },
-  { value: 'alimentacao', label: 'Alimentação' },
-  { value: 'vestuario', label: 'Vestuário' },
-  { value: 'entretenimento', label: 'Entretenimento' },
-  { value: 'outros', label: 'Outros' },
+  { value: 'voucher', label: 'Voucher' },
+  { value: 'experience', label: 'Experiência' },
+  { value: 'product', label: 'Produto' },
 ] as const
 
 // Form schema
 const prizeFormSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(255, 'Nome muito longo'),
   description: z.string().min(1, 'Descrição é obrigatória').max(2000, 'Descrição muito longa'),
-  category: z.string().min(1, 'Categoria é obrigatória'),
+  category: z.enum(['voucher', 'experience', 'product'], {
+    errorMap: () => ({ message: 'Tipo é obrigatório' }),
+  }),
   brand: z.string().min(1, 'Marca é obrigatória').max(100, 'Marca muito longa'),
   coinPrice: z.number().min(1, 'Preço deve ser maior que 0').int('Preço deve ser um número inteiro'),
   stock: z.number().min(0, 'Estoque não pode ser negativo').int('Estoque deve ser um número inteiro'),
@@ -124,7 +123,7 @@ export const PrizeForm: FC<PrizeFormProps> = ({ prize, onSubmit, onCancel, isSub
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="category">
-              Categoria <span className="text-red-500">*</span>
+              Tipo <span className="text-red-500">*</span>
             </Label>
             <Controller
               name="category"
@@ -136,7 +135,7 @@ export const PrizeForm: FC<PrizeFormProps> = ({ prize, onSubmit, onCancel, isSub
                   disabled={isSubmitting}
                 >
                   <SelectTrigger className={errors.category ? 'border-red-500' : ''}>
-                    <SelectValue placeholder="Selecione a categoria" />
+                    <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
                   <SelectContent>
                     {PRIZE_CATEGORIES.map((cat) => (
