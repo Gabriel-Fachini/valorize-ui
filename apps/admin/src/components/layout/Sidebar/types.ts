@@ -34,6 +34,8 @@ export interface NavigationItemProps {
   subItems?: NavLink[]
   currentPath: string
   hasIndicator?: boolean
+  isOpen?: boolean
+  onToggleOpen?: (isOpen: boolean) => void
 }
 
 export interface BottomActionsProps {

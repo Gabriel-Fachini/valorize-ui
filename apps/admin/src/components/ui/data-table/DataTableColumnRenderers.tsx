@@ -129,14 +129,25 @@ export const ImageRenderer = <T,>({ row, config }: ImageRendererProps<T>): React
     ? { width: `${width}px`, height: `${height}px` }
     : { width: `${width}px` }
 
+  const handleClick = config.onClick ? () => config.onClick!(row) : undefined
+
   return (
     <div className="flex items-center">
       {imageUrl ? (
         <div
           className={`overflow-hidden rounded border bg-muted ${
             !height ? aspectRatioClasses[aspectRatio] : ''
-          }`}
+          } ${config.onClick ? 'cursor-pointer transition-opacity hover:opacity-80' : ''}`}
           style={containerStyle}
+          onClick={handleClick}
+          onKeyDown={(e) => {
+            if (config.onClick && (e.key === 'Enter' || e.key === ' ')) {
+              e.preventDefault()
+              config.onClick(row)
+            }
+          }}
+          role={config.onClick ? 'button' : undefined}
+          tabIndex={config.onClick ? 0 : undefined}
         >
           <img
             src={imageUrl}
@@ -148,8 +159,17 @@ export const ImageRenderer = <T,>({ row, config }: ImageRendererProps<T>): React
         <div
           className={`flex items-center justify-center rounded border bg-muted/50 ${
             !height ? aspectRatioClasses[aspectRatio] : ''
-          }`}
+          } ${config.onClick ? 'cursor-pointer transition-opacity hover:opacity-80' : ''}`}
           style={containerStyle}
+          onClick={handleClick}
+          onKeyDown={(e) => {
+            if (config.onClick && (e.key === 'Enter' || e.key === ' ')) {
+              e.preventDefault()
+              config.onClick(row)
+            }
+          }}
+          role={config.onClick ? 'button' : undefined}
+          tabIndex={config.onClick ? 0 : undefined}
         >
           <i className="ph ph-image text-2xl text-muted-foreground" />
         </div>
@@ -186,7 +206,24 @@ export const StringRenderer = <T,>({ row, config }: StringRendererProps<T>): Rea
     displayValue = `${stringValue.slice(0, config.maxLength)}...`
   }
 
-  return <div className={className}>{displayValue}</div>
+  const handleClick = config.onClick ? () => config.onClick!(row) : undefined
+
+  return (
+    <div
+      className={`${className} ${config.onClick ? 'cursor-pointer hover:underline' : ''}`}
+      onClick={handleClick}
+      onKeyDown={(e) => {
+        if (config.onClick && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault()
+          config.onClick(row)
+        }
+      }}
+      role={config.onClick ? 'button' : undefined}
+      tabIndex={config.onClick ? 0 : undefined}
+    >
+      {displayValue}
+    </div>
+  )
 }
 
 // ============================================================================

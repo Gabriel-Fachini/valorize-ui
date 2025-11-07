@@ -34,7 +34,10 @@ export interface Prize {
 export interface PrizeFilters {
   category?: string
   isActive?: boolean
+  isGlobal?: boolean
   search?: string
+  orderBy?: string
+  order?: 'asc' | 'desc'
   limit?: number
   offset?: number
 }

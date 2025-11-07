@@ -52,6 +52,7 @@ export interface StringColumnConfig<T = unknown> extends BaseColumnConfig<T> {
   display?: DisplayVariant
   truncate?: boolean
   maxLength?: number
+  onClick?: (row: T) => void
 }
 
 export interface LinkColumnConfig<T = unknown> extends BaseColumnConfig<T> {
@@ -77,6 +78,7 @@ export interface ImageColumnConfig<T = unknown> extends BaseColumnConfig<T> {
   height?: number
   aspectRatio?: 'square' | 'video' | 'portrait' | 'custom'
   objectFit?: 'cover' | 'contain'
+  onClick?: (row: T) => void
 }
 
 export interface RelationColumnConfig<T = unknown> extends BaseColumnConfig<T> {

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import type { NavigationProps } from '../types'
 import { NavigationItem } from './NavigationItem'
@@ -7,11 +7,31 @@ import { NAV_LINKS, BOTTOM_NAV_LINKS } from '../constants'
 const ITEM_HEIGHT = 48
 const ITEM_GAP = 8
 
-export const Navigation = ({ 
-  collapsed = false, 
-  currentPath, 
-  onNavigate, 
+export const Navigation = ({
+  collapsed = false,
+  currentPath,
+  onNavigate,
 }: NavigationProps) => {
+  // Estado para controlar qual item está aberto (accordion behavior)
+  // Usa o label como identificador único, pois múltiplos itens podem ter path: '#'
+  const [openItemLabel, setOpenItemLabel] = useState<string | null>(null)
+
+  // Fecha dropdowns quando navega para uma página sem subItems
+  useEffect(() => {
+    // Verifica se o currentPath pertence a algum item com subItems
+    const belongsToItemWithSubItems = NAV_LINKS.some(link => {
+      if (!link.subItems) return false
+      return link.subItems.some(subItem =>
+        currentPath === subItem.path || currentPath.startsWith(subItem.path + '/')
+      )
+    })
+
+    // Se não pertence a nenhum item com subItems, fecha todos os dropdowns
+    if (!belongsToItemWithSubItems) {
+      setOpenItemLabel(null)
+    }
+  }, [currentPath])
+
   // Find which main nav link matches the current path
   const mainActiveIndex = useMemo(
     () => {
@@ -90,10 +110,10 @@ export const Navigation = ({
           const isActive = !isBottomRoute && (
             currentPath === link.path || (link.path !== '#' && currentPath.startsWith(link.path + '/'))
           )
-          
+
           // Check if this item has the indicator (mainActiveIndex matches this item's position)
           const hasIndicator = mainActiveIndex === index
-          
+
           return (
             <NavigationItem
               key={link.path}
@@ -107,6 +127,8 @@ export const Navigation = ({
               subItems={link.subItems}
               currentPath={currentPath}
               hasIndicator={hasIndicator}
+              isOpen={openItemLabel === link.label}
+              onToggleOpen={(isOpen) => setOpenItemLabel(isOpen ? link.label : null)}
             />
           )
         })}
