@@ -7,7 +7,6 @@ import type { Prize } from '@/types/prizes'
 import type { TableConfig } from './types'
 import { PRIZE_CATEGORIES } from '@/components/prizes/PrizeForm'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Switch } from '@/components/ui/switch'
 
 export const prizesTableConfig: TableConfig<Prize> = {
   // Habilita seleção múltipla de linhas
@@ -105,7 +104,7 @@ export const prizesTableConfig: TableConfig<Prize> = {
       header: 'Status',
       enableSorting: true,
       width: 100,
-      cell: (row) => {
+      cell: () => {
         // Este handler será injetado via página
         return null
       },

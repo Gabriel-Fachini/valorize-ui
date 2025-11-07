@@ -51,7 +51,7 @@ export const PrizesPage: FC = () => {
     queryParams.isGlobal = filters.isGlobal
   }
 
-  const { prizes, totalCount, isLoading, isFetching, refetch } = usePrizes(queryParams)
+  const { prizes, totalCount, isLoading, isFetching } = usePrizes(queryParams)
   const { toggleActive } = usePrizeMutations()
 
   // Reset to page 1 when filters change

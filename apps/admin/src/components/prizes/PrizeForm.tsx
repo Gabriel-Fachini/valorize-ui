@@ -30,7 +30,7 @@ const prizeFormSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(255, 'Nome muito longo'),
   description: z.string().min(1, 'Descrição é obrigatória').max(2000, 'Descrição muito longa'),
   category: z.enum(['voucher', 'experience', 'product'], {
-    errorMap: () => ({ message: 'Tipo é obrigatório' }),
+    message: 'Tipo é obrigatório',
   }),
   brand: z.string().min(1, 'Marca é obrigatória').max(100, 'Marca muito longa'),
   coinPrice: z.number().min(1, 'Preço deve ser maior que 0').int('Preço deve ser um número inteiro'),
@@ -66,7 +66,7 @@ export const PrizeForm: FC<PrizeFormProps> = ({ prize, onSubmit, onCancel, isSub
     defaultValues: {
       name: prize?.name || '',
       description: prize?.description || '',
-      category: prize?.category || '',
+      category: (prize?.category as 'voucher' | 'experience' | 'product' | undefined) || undefined,
       brand: prize?.brand || '',
       coinPrice: prize?.coinPrice || 0,
       stock: prize?.stock || 0,
@@ -87,7 +87,7 @@ export const PrizeForm: FC<PrizeFormProps> = ({ prize, onSubmit, onCancel, isSub
   }
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(handleFormSubmit as any)} className="space-y-6">
       {/* Basic Information */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Informações Básicas</h3>

@@ -108,11 +108,11 @@ export const usePrizeMutations = () => {
         description: error?.response?.data?.message || error.message || 'Erro desconhecido',
       })
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       // Show success toast
       toast.success(`Prêmio ${variables.isActive ? 'ativado' : 'desativado'} com sucesso`)
     },
-    onSettled: (data, error, variables) => {
+    onSettled: (_data, error, variables) => {
       // Invalidate to ensure sync with server (only if mutation succeeded)
       if (!error) {
         queryClient.invalidateQueries({ queryKey: ['prize', variables.id] })
