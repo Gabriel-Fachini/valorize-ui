@@ -3,7 +3,6 @@ import * as d3 from 'd3'
 // Tipagens de D3 foram adicionadas ao workspace; removido o @ts-expect-error
 import { useTheme } from '@/hooks/useTheme'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { ThemeToggle } from '@/components/ThemeToggle'
 import { Input } from '@/components/ui'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 
@@ -308,7 +307,6 @@ const NetworkVisualization: React.FC = () => {
       <PageHeader
         title="Rede de Elogios"
         description="Exploração das conexões e interações de elogios entre pessoas"
-        right={<ThemeToggle />}
         icon='ph-network'
       />
 

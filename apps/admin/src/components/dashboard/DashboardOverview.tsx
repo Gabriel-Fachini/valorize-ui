@@ -1,5 +1,4 @@
 import type { FC } from 'react'
-import { ThemeToggle } from '@/components/ThemeToggle'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { useDashboardData } from '@/hooks/useDashboard'
 import { MetricsGrid } from './MetricsGrid'
@@ -47,7 +46,6 @@ export const DashboardOverview: FC = () => {
         <PageHeader
           title="Dashboard Executivo"
           description="Visão geral das métricas dos últimos 30 dias"
-          right={<ThemeToggle />}
           icon='ph-house'
         />
       </animated.div>

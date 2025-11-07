@@ -5,6 +5,7 @@ import { BasicInfoTab } from './tabs/BasicInfoTab'
 import { DomainsTab } from './tabs/DomainsTab'
 import { CoinEconomyTab } from './tabs/CoinEconomyTab'
 import { ValuesTab } from './tabs/ValuesTab'
+import { PreferencesTab } from './tabs/PreferencesTab'
 
 /**
  * Settings Tabs Component
@@ -32,6 +33,9 @@ export const SettingsTabs: FC = () => {
     if (pathname === '/settings/coin-economy') {
       return 'coin-economy'
     }
+    if (pathname === '/settings/preferences') {
+      return 'preferences'
+    }
     return 'basic-info'
   }
 
@@ -46,6 +50,8 @@ export const SettingsTabs: FC = () => {
         return '/settings/domains'
       case 'coin-economy':
         return '/settings/coin-economy'
+      case 'preferences':
+        return '/settings/preferences'
       default:
         return '/settings/basic-info'
     }
@@ -67,7 +73,7 @@ export const SettingsTabs: FC = () => {
 
   return (
     <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full">
-      <TabsList className="grid w-full grid-cols-4 mb-8">
+      <TabsList className="grid w-full grid-cols-5 mb-8">
         <TabsTrigger value="basic-info" className="flex items-center gap-2">
           <i className="ph ph-info text-lg" />
           <span className="hidden sm:inline">Informações Básicas</span>
@@ -89,6 +95,11 @@ export const SettingsTabs: FC = () => {
           <span className="hidden sm:inline">Economia</span>
           <span className="sm:hidden">Moedas</span>
         </TabsTrigger>
+        <TabsTrigger value="preferences" className="flex items-center gap-2">
+          <i className="ph ph-gear text-lg" />
+          <span className="hidden sm:inline">Preferências</span>
+          <span className="sm:hidden">Prefs</span>
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="basic-info">
@@ -106,6 +117,10 @@ export const SettingsTabs: FC = () => {
 
       <TabsContent value="coin-economy">
         <CoinEconomyTab />
+      </TabsContent>
+
+      <TabsContent value="preferences">
+        <PreferencesTab />
       </TabsContent>
     </Tabs>
   )

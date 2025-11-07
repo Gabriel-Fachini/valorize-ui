@@ -7,7 +7,6 @@ import type { FC } from 'react'
 import { animated } from '@react-spring/web'
 import { usePageEntrance, usePageHeaderEntrance } from '@valorize/shared/hooks'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { ThemeToggle } from '@/components/ThemeToggle'
 import { useEconomyDashboard } from '@/hooks/useEconomy'
 import { AlertsSection } from './AlertsSection'
 import { WalletBalanceCard } from './WalletBalanceCard'
@@ -46,7 +45,6 @@ export const EconomyDashboard: FC = () => {
         <PageHeader
           title="Dashboard de Economia"
           description="Visão geral da saúde financeira do sistema de moedas"
-          right={<ThemeToggle />}
           icon='ph-currency-circle-dollar'
         />
       </animated.div>

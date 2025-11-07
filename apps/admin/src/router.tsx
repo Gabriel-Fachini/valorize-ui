@@ -157,6 +157,12 @@ const settingsCoinEconomyRoute = createRoute({
   component: SettingsPage,
 })
 
+const settingsPreferencesRoute = createRoute({
+  getParentRoute: () => settingsLayoutRoute,
+  path: 'preferences',
+  component: SettingsPage,
+})
+
 // Create the route tree
 const routeTree = rootRoute.addChildren([
   loginRoute,
@@ -179,6 +185,7 @@ const routeTree = rootRoute.addChildren([
       settingsValuesRoute,
       settingsDomainsRoute,
       settingsCoinEconomyRoute,
+      settingsPreferencesRoute,
     ]),
   ]),
 ])
