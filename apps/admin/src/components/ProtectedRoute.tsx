@@ -3,6 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useSidebar } from '@/hooks/useSidebar'
 import { useSpring, animated, config } from '@react-spring/web'
 import { Sidebar } from '@/components/layout/Sidebar'
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay'
 import { useEffect } from 'react'
 
 interface ProtectedRouteProps {
@@ -30,11 +31,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   // Show loading while checking authentication
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#1a1a1a]">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full animate-pulse mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Carregando...</p>
-        </div>
+      <div className="min-h-screen relative bg-white dark:bg-[#1a1a1a]">
+        <LoadingOverlay />
       </div>
     )
   }

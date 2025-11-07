@@ -51,6 +51,8 @@ interface PrizeFormProps {
 
 export const PrizeForm: FC<PrizeFormProps> = ({ prize, onSubmit, onCancel, isSubmitting }) => {
   const [images, setImages] = useState<File[]>([])
+  const [existingImages, setExistingImages] = useState<string[]>(prize?.images || [])
+  const [imagesToRemove, setImagesToRemove] = useState<number[]>([])
   const [specifications, setSpecifications] = useState<Record<string, string>>(prize?.specifications || {})
 
   const {
@@ -75,7 +77,13 @@ export const PrizeForm: FC<PrizeFormProps> = ({ prize, onSubmit, onCancel, isSub
   })
 
   const handleFormSubmit = async (data: PrizeFormData) => {
-    await onSubmit({ ...data, images, specifications })
+    await onSubmit({ ...data, images, specifications, imagesToRemove } as any)
+  }
+
+  const handleRemoveExistingImage = (index: number) => {
+    const imageIndex = prize?.images?.indexOf(existingImages[index]) || 0
+    setImagesToRemove([...imagesToRemove, imageIndex])
+    setExistingImages(existingImages.filter((_, i) => i !== index))
   }
 
   return (
@@ -234,14 +242,54 @@ export const PrizeForm: FC<PrizeFormProps> = ({ prize, onSubmit, onCancel, isSub
       {/* Images */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Imagens</h3>
-        <MultipleImageUpload
-          images={images}
-          onImagesChange={(files) => {
-            setImages(files)
-            setValue('images', files)
-          }}
-          disabled={isSubmitting}
-        />
+
+        {/* Existing Images */}
+        {prize && existingImages.length > 0 && (
+          <div className="space-y-2">
+            <Label>Imagens Atuais</Label>
+            <div className="grid grid-cols-2 gap-4">
+              {existingImages.map((imageUrl, index) => (
+                <div key={`existing-${index}`} className="relative">
+                  <div className="aspect-square rounded-lg border-2 border-gray-300 dark:border-gray-600 overflow-hidden bg-gray-50 dark:bg-gray-900">
+                    <img
+                      src={imageUrl}
+                      alt={`Imagem atual ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveExistingImage(index)}
+                    disabled={isSubmitting}
+                    className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white rounded-full p-1 shadow-md transition-colors cursor-pointer flex items-center justify-center"
+                    aria-label={`Remover imagem ${index + 1}`}
+                  >
+                    <i className="ph ph-x text-lg" />
+                  </button>
+                  <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                    Atual {index + 1}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Clique no X para remover uma imagem. A remoção será efetivada ao clicar em "Atualizar Prêmio".
+            </p>
+          </div>
+        )}
+
+        {/* New Images Upload */}
+        <div className="space-y-2">
+          {prize && <Label>Adicionar Novas Imagens</Label>}
+          <MultipleImageUpload
+            images={images}
+            onImagesChange={(files) => {
+              setImages(files)
+              setValue('images', files)
+            }}
+            disabled={isSubmitting}
+          />
+        </div>
       </div>
 
       {/* Specifications */}

@@ -6,12 +6,14 @@
 import { type FC, useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { DataTable } from '@/components/ui/data-table'
 import { prizesTableConfig } from '@/config/tables/prizes.table.config.tsx'
 import { usePrizes } from '@/hooks/usePrizes'
 import { usePrizeMutations } from '@/hooks/usePrizeMutations'
+import { useDebounce } from '@/hooks/useDebounce'
 import { toast } from 'sonner'
 import type { Prize, PrizeFilters } from '@/types/prizes'
 
@@ -26,13 +28,16 @@ export const PrizesPage: FC = () => {
     isGlobal: undefined,
   })
 
+  // Debounce search to avoid excessive API calls
+  const debouncedSearch = useDebounce(filters.search, 500)
+
   // Build query params
   const queryParams: PrizeFilters = {
     limit: pageSize,
     offset: (page - 1) * pageSize,
     orderBy: 'createdAt',
     order: 'desc',
-    ...(filters.search && { search: filters.search }),
+    ...(debouncedSearch && { search: debouncedSearch }),
     ...(filters.category && filters.category !== 'all' && { category: filters.category }),
   }
 
@@ -52,7 +57,7 @@ export const PrizesPage: FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setPage(1)
-  }, [filters.search, filters.category, filters.isActive, filters.isGlobal])
+  }, [debouncedSearch, filters.category, filters.isActive, filters.isGlobal])
 
   // Handler for bulk actions
   const handleBulkAction = useCallback(
@@ -70,7 +75,6 @@ export const PrizesPage: FC = () => {
         try {
           await Promise.all(selected.map((p) => toggleActive.mutateAsync({ id: p.id, isActive: true })))
           toast.success(`${selected.length} prêmio(s) ativado(s) com sucesso`)
-          refetch()
         } catch (error) {
           toast.error('Erro ao ativar prêmios')
         }
@@ -78,13 +82,12 @@ export const PrizesPage: FC = () => {
         try {
           await Promise.all(selected.map((p) => toggleActive.mutateAsync({ id: p.id, isActive: false })))
           toast.success(`${selected.length} prêmio(s) desativado(s) com sucesso`)
-          refetch()
         } catch (error) {
           toast.error('Erro ao desativar prêmios')
         }
       }
     },
-    [prizes, toggleActive, refetch]
+    [prizes, toggleActive]
   )
 
   // Handler for row actions
@@ -93,8 +96,8 @@ export const PrizesPage: FC = () => {
       const prize = _row as Prize
 
       // Check if prize is global and action requires editing
-      if (!prize.companyId && (actionId === 'edit' || actionId === 'delete')) {
-        toast.error('Não é possível editar ou deletar prêmios globais')
+      if (!prize.companyId && actionId === 'edit') {
+        toast.error('Não é possível editar prêmios globais')
         return
       }
 
@@ -103,9 +106,6 @@ export const PrizesPage: FC = () => {
           navigate({ to: '/prizes/$prizeId', params: { prizeId: prize.id } })
           break
         case 'edit':
-          navigate({ to: '/prizes/$prizeId', params: { prizeId: prize.id } })
-          break
-        case 'delete':
           navigate({ to: '/prizes/$prizeId', params: { prizeId: prize.id } })
           break
         default:
@@ -117,8 +117,8 @@ export const PrizesPage: FC = () => {
 
   // Check if there are active filters
   const hasActiveFilters = useMemo(() => {
-    return !!(filters.search || filters.category || filters.isActive !== undefined || filters.isGlobal !== undefined)
-  }, [filters])
+    return !!(debouncedSearch || filters.category || filters.isActive !== undefined || filters.isGlobal !== undefined)
+  }, [debouncedSearch, filters.category, filters.isActive, filters.isGlobal])
 
   // Clear all filters
   const handleClearFilters = useCallback(() => {
@@ -154,6 +154,29 @@ export const PrizesPage: FC = () => {
             },
           }
         }
+        // Add switch renderer to status column
+        if (column.id === 'isActive') {
+          return {
+            ...column,
+            cell: (prize: Prize) => {
+              const isGlobal = !prize.companyId
+              return (
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={prize.isActive}
+                    disabled={isGlobal}
+                    onCheckedChange={(checked) => {
+                      toggleActive.mutate({ id: prize.id, isActive: checked })
+                    }}
+                  />
+                  <span className={`text-xs ${prize.isActive ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                    {prize.isActive ? 'Ativo' : 'Inativo'}
+                  </span>
+                </div>
+              )
+            },
+          }
+        }
         return column
       }),
       actions: {
@@ -162,8 +185,8 @@ export const PrizesPage: FC = () => {
           ...action,
           disabled: (row: unknown) => {
             const prize = row as Prize
-            // Disable edit/delete for global prizes
-            if ((action.id === 'edit' || action.id === 'delete') && !prize.companyId) {
+            // Disable edit for global prizes
+            if (action.id === 'edit' && !prize.companyId) {
               return true
             }
             return false
@@ -177,7 +200,7 @@ export const PrizesPage: FC = () => {
         ) : null,
       },
     }
-  }, [navigate, hasActiveFilters, handleClearFilters])
+  }, [navigate, hasActiveFilters, handleClearFilters, toggleActive])
 
   return (
     <PageLayout maxWidth="7xl">

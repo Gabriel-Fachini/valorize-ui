@@ -7,6 +7,7 @@ import type { Prize } from '@/types/prizes'
 import type { TableConfig } from './types'
 import { PRIZE_CATEGORIES } from '@/components/prizes/PrizeForm'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Switch } from '@/components/ui/switch'
 
 export const prizesTableConfig: TableConfig<Prize> = {
   // Habilita seleção múltipla de linhas
@@ -97,24 +98,26 @@ export const prizesTableConfig: TableConfig<Prize> = {
       },
     },
 
-    // Status (ativo/inativo)
+    // Status (ativo/inativo) - com switch interativo
     {
       id: 'isActive',
-      type: 'badge',
-      accessor: 'isActive',
+      type: 'custom',
       header: 'Status',
-      badgeVariant: (value) => (value ? 'default' : 'destructive'),
-      badgeLabel: (value) => (value ? 'Ativo' : 'Inativo'),
       enableSorting: true,
+      width: 100,
+      cell: (row) => {
+        // Este handler será injetado via página
+        return null
+      },
     },
 
-    // Badge Global (se for prêmio global)
+    // Badge Global ou Da Empresa
     {
       id: 'isGlobal',
       type: 'custom',
-      header: 'Tipo',
+      header: 'Origem',
       enableSorting: false,
-      width: 100,
+      width: 120,
       cell: (row) => {
         if (!row.companyId) {
           return (
@@ -133,7 +136,21 @@ export const prizesTableConfig: TableConfig<Prize> = {
             </TooltipProvider>
           )
         }
-        return null
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 cursor-help">
+                  <i className="ph ph-buildings" />
+                  Empresa
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Prêmio exclusivo da empresa</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )
       },
     },
 
@@ -236,13 +253,6 @@ export const prizesTableConfig: TableConfig<Prize> = {
         label: 'Editar',
         icon: 'ph-pencil-simple',
         variant: 'default',
-        // Será condicionalmente desabilitado na página se for prêmio global
-      },
-      {
-        id: 'delete',
-        label: 'Deletar',
-        icon: 'ph-trash',
-        variant: 'destructive',
         // Será condicionalmente desabilitado na página se for prêmio global
       },
     ],

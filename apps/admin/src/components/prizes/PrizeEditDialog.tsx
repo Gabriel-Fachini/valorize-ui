@@ -27,7 +27,7 @@ export const PrizeEditDialog: FC<PrizeEditDialogProps> = ({ open, onOpenChange, 
   const { updatePrize } = usePrizeMutations()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const onSubmit = async (data: PrizeFormData) => {
+  const onSubmit = async (data: PrizeFormData & { imagesToRemove?: number[] }) => {
     setIsSubmitting(true)
 
     try {
@@ -48,21 +48,30 @@ export const PrizeEditDialog: FC<PrizeEditDialogProps> = ({ open, onOpenChange, 
         payload: updatePayload,
       })
 
-      // Step 2: Handle images update if there are new images
+      // Step 2: Remove images if any are marked for removal
+      if (data.imagesToRemove && data.imagesToRemove.length > 0) {
+        try {
+          // Sort indices in descending order to delete from end to start
+          const sortedIndices = [...data.imagesToRemove].sort((a, b) => b - a)
+          for (const index of sortedIndices) {
+            await prizesService.deleteImage(prize.id, index)
+          }
+        } catch (imageError) {
+          console.error('Error removing images:', imageError)
+          toast.warning('Prêmio atualizado, mas houve erro ao remover algumas imagens', {
+            description: 'Tente novamente',
+          })
+        }
+      }
+
+      // Step 3: Upload new images if provided
       if (data.images.length > 0) {
         try {
-          // First, delete existing images
-          const deletePromises = prize.images.map((_, index) =>
-            prizesService.deleteImage(prize.id, index)
-          )
-          await Promise.all(deletePromises)
-
-          // Then upload new images
           await prizesService.uploadImages(prize.id, data.images)
-          toast.success('Prêmio atualizado e imagens enviadas com sucesso!')
+          toast.success('Prêmio atualizado com sucesso!')
         } catch (imageError) {
-          console.error('Error updating images:', imageError)
-          toast.warning('Prêmio atualizado, mas houve erro ao atualizar as imagens', {
+          console.error('Error uploading new images:', imageError)
+          toast.warning('Prêmio atualizado, mas houve erro ao enviar novas imagens', {
             description: 'Tente atualizar as imagens novamente',
           })
         }

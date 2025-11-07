@@ -96,11 +96,6 @@ export const PrizeDetailCard: FC<PrizeDetailCardProps> = ({ prize }) => {
                     Esgotado
                   </Badge>
                 )}
-                {prize.stock > 0 && prize.stock <= 5 && (
-                  <Badge variant="outline" className="ml-2 border-yellow-600 text-yellow-600">
-                    Estoque Baixo
-                  </Badge>
-                )}
               </div>
             </div>
 
@@ -140,38 +135,6 @@ export const PrizeDetailCard: FC<PrizeDetailCardProps> = ({ prize }) => {
           </CardContent>
         </Card>
       )}
-
-      {/* Metadata */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Informações de Sistema</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">ID</p>
-              <p className="mt-1 font-mono text-sm">{prize.id}</p>
-            </div>
-
-            {prize.companyId && (
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">ID da Empresa</p>
-                <p className="mt-1 font-mono text-sm">{prize.companyId}</p>
-              </div>
-            )}
-
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Criado em</p>
-              <p className="mt-1 text-sm">{new Date(prize.createdAt).toLocaleString('pt-BR')}</p>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Atualizado em</p>
-              <p className="mt-1 text-sm">{new Date(prize.updatedAt).toLocaleString('pt-BR')}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

@@ -1,10 +1,9 @@
 /**
  * Prize Delete Dialog Component
- * Confirmation dialog for deleting a prize (soft delete)
+ * Confirmation dialog for toggling prize active status
  */
 
 import { type FC, useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
 import {
   Dialog,
   DialogContent,
@@ -25,28 +24,25 @@ interface PrizeDeleteDialogProps {
 }
 
 export const PrizeDeleteDialog: FC<PrizeDeleteDialogProps> = ({ open, onOpenChange, prize }) => {
-  const navigate = useNavigate()
-  const { deletePrize } = usePrizeMutations()
-  const [isDeleting, setIsDeleting] = useState(false)
+  const { toggleActive } = usePrizeMutations()
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleDelete = async () => {
-    setIsDeleting(true)
+  const handleToggle = async () => {
+    setIsLoading(true)
 
     try {
-      await deletePrize.mutateAsync(prize.id)
-      toast.success('Prêmio deletado com sucesso', {
-        description: 'O prêmio foi marcado como inativo',
+      await toggleActive.mutateAsync({ id: prize.id, isActive: !prize.isActive })
+      toast.success(`Prêmio ${!prize.isActive ? 'ativado' : 'desativado'} com sucesso`, {
+        description: `O prêmio foi ${!prize.isActive ? 'ativado' : 'desativado'}`,
       })
       onOpenChange(false)
-      // Navigate back to prizes list
-      navigate({ to: '/prizes' })
     } catch (error: any) {
-      console.error('Error deleting prize:', error)
-      toast.error('Erro ao deletar prêmio', {
+      console.error('Error toggling prize status:', error)
+      toast.error(`Erro ao ${!prize.isActive ? 'ativar' : 'desativar'} prêmio`, {
         description: error?.response?.data?.message || 'Tente novamente',
       })
     } finally {
-      setIsDeleting(false)
+      setIsLoading(false)
     }
   }
 
@@ -58,9 +54,9 @@ export const PrizeDeleteDialog: FC<PrizeDeleteDialogProps> = ({ open, onOpenChan
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Deletar Prêmio</DialogTitle>
+          <DialogTitle>{prize.isActive ? 'Desativar' : 'Ativar'} Prêmio</DialogTitle>
           <DialogDescription>
-            Tem certeza que deseja deletar este prêmio? Esta ação irá marcar o prêmio como inativo.
+            Tem certeza que deseja {prize.isActive ? 'desativar' : 'ativar'} este prêmio?
           </DialogDescription>
         </DialogHeader>
 
@@ -83,36 +79,55 @@ export const PrizeDeleteDialog: FC<PrizeDeleteDialogProps> = ({ open, onOpenChan
           </div>
 
           {/* Warning */}
-          <div className="flex items-start gap-3 rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900 dark:bg-yellow-950">
-            <i className="ph ph-warning text-xl text-yellow-600 dark:text-yellow-400" />
-            <div className="flex-1 text-sm">
-              <p className="font-medium text-yellow-800 dark:text-yellow-200">Atenção</p>
-              <p className="mt-1 text-yellow-700 dark:text-yellow-300">
-                {prize.stock > 0 && (
-                  <>
-                    Este prêmio possui <strong>{prize.stock} unidade(s)</strong> em estoque.{' '}
-                  </>
-                )}
-                Ele será marcado como inativo e não estará mais disponível para resgate.
-              </p>
+          {prize.isActive && (
+            <div className="flex items-start gap-3 rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900 dark:bg-yellow-950">
+              <i className="ph ph-warning text-xl text-yellow-600 dark:text-yellow-400" />
+              <div className="flex-1 text-sm">
+                <p className="font-medium text-yellow-800 dark:text-yellow-200">Atenção</p>
+                <p className="mt-1 text-yellow-700 dark:text-yellow-300">
+                  {prize.stock > 0 && (
+                    <>
+                      Este prêmio possui <strong>{prize.stock} unidade(s)</strong> em estoque.{' '}
+                    </>
+                  )}
+                  Ele não estará mais disponível para resgate após ser desativado.
+                </p>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Info for activation */}
+          {!prize.isActive && (
+            <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-950">
+              <i className="ph ph-info text-xl text-blue-600 dark:text-blue-400" />
+              <div className="flex-1 text-sm">
+                <p className="font-medium text-blue-800 dark:text-blue-200">Informação</p>
+                <p className="mt-1 text-blue-700 dark:text-blue-300">
+                  O prêmio ficará disponível para resgate após ser ativado.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={handleCancel} disabled={isDeleting}>
+          <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
             Cancelar
           </Button>
-          <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
-            {isDeleting ? (
+          <Button
+            variant={prize.isActive ? "destructive" : "default"}
+            onClick={handleToggle}
+            disabled={isLoading}
+          >
+            {isLoading ? (
               <>
                 <i className="ph ph-circle-notch animate-spin mr-2" />
-                Deletando...
+                {prize.isActive ? 'Desativando...' : 'Ativando...'}
               </>
             ) : (
               <>
-                <i className="ph ph-trash mr-2" />
-                Deletar Prêmio
+                <i className={`ph ${prize.isActive ? 'ph-x-circle' : 'ph-check-circle'} mr-2`} />
+                {prize.isActive ? 'Desativar' : 'Ativar'} Prêmio
               </>
             )}
           </Button>

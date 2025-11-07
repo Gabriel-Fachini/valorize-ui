@@ -61,20 +61,63 @@ export const usePrizeMutations = () => {
   const toggleActive = useMutation({
     mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
       prizesService.toggleActive(id, isActive),
-    onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['prize', variables.id] })
-      queryClient.invalidateQueries({ queryKey: ['prizes'] })
-      toast.success(
-        variables.isActive ? 'Prêmio ativado!' : 'Prêmio desativado!',
-        {
-          description: data.prize.name,
+    onMutate: async ({ id, isActive }) => {
+      // Cancel any outgoing refetches to avoid overwriting optimistic update
+      await queryClient.cancelQueries({ queryKey: ['prizes'] })
+      await queryClient.cancelQueries({ queryKey: ['prize', id] })
+
+      // Snapshot the previous values
+      const previousPrizesQueries = queryClient.getQueriesData<any>({ queryKey: ['prizes'] })
+      const previousPrizeQuery = queryClient.getQueryData(['prize', id])
+
+      // Optimistically update ALL prizes list queries (with different params)
+      previousPrizesQueries.forEach(([queryKey]) => {
+        queryClient.setQueryData(queryKey, (old: any) => {
+          if (!old?.prizes) return old
+          return {
+            ...old,
+            prizes: old.prizes.map((prize: any) =>
+              prize.id === id ? { ...prize, isActive } : prize
+            ),
+          }
+        })
+      })
+
+      // Also update the single prize query if it exists
+      queryClient.setQueryData(['prize', id], (old: any) => {
+        if (!old?.prize) return old
+        return {
+          ...old,
+          prize: { ...old.prize, isActive },
         }
-      )
+      })
+
+      return { previousPrizesQueries, previousPrizeQuery }
     },
-    onError: (error: any) => {
+    onError: (error: any, variables, context) => {
+      // Revert to previous data on error
+      if (context?.previousPrizesQueries) {
+        context.previousPrizesQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data)
+        })
+      }
+      if (context?.previousPrizeQuery) {
+        queryClient.setQueryData(['prize', variables.id], context.previousPrizeQuery)
+      }
       toast.error('Erro ao alterar status do prêmio', {
         description: error?.response?.data?.message || error.message || 'Erro desconhecido',
       })
+    },
+    onSuccess: (data, variables) => {
+      // Show success toast
+      toast.success(`Prêmio ${variables.isActive ? 'ativado' : 'desativado'} com sucesso`)
+    },
+    onSettled: (data, error, variables) => {
+      // Invalidate to ensure sync with server (only if mutation succeeded)
+      if (!error) {
+        queryClient.invalidateQueries({ queryKey: ['prize', variables.id] })
+        queryClient.invalidateQueries({ queryKey: ['prizes'] })
+      }
     },
   })
 

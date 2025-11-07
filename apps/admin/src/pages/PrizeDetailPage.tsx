@@ -96,9 +96,12 @@ export const PrizeDetailPage: FC = () => {
                 <i className="ph ph-pencil-simple mr-2" />
                 Editar
               </Button>
-              <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
-                <i className="ph ph-trash mr-2" />
-                Deletar
+              <Button
+                variant={prize.isActive ? "destructive" : "default"}
+                onClick={() => setIsDeleteDialogOpen(true)}
+              >
+                <i className={`ph ${prize.isActive ? 'ph-x-circle' : 'ph-check-circle'} mr-2`} />
+                {prize.isActive ? 'Desativar' : 'Ativar'}
               </Button>
             </div>
           )}
