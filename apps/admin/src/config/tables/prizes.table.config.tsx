@@ -5,7 +5,7 @@
 
 import type { Prize } from '@/types/prizes'
 import type { TableConfig } from './types'
-import { PRIZE_CATEGORIES } from '@/components/prizes/PrizeForm'
+import { PRIZE_TYPES } from '@/components/prizes/PrizeForm'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export const prizesTableConfig: TableConfig<Prize> = {
@@ -42,17 +42,34 @@ export const prizesTableConfig: TableConfig<Prize> = {
       enableSorting: true,
     },
 
-    // Tipo de prêmio
+    // Tipo de prêmio (voucher, experiência, produto)
     {
-      id: 'category',
+      id: 'type',
       type: 'badge',
-      accessor: 'category',
+      accessor: 'type',
       header: 'Tipo',
       badgeVariant: () => 'secondary',
       badgeLabel: (value) => {
-        const cat = PRIZE_CATEGORIES.find((c) => c.value === value)
-        return cat?.label || String(value)
+        // Mapeamento de valores em inglês para português
+        const typeMapping: Record<string, string> = {
+          'product': 'produto',
+          'experience': 'experiencia',
+        }
+
+        const normalizedValue = typeMapping[String(value)] || String(value)
+        const type = PRIZE_TYPES.find((t) => t.value === normalizedValue)
+        return type?.label || String(value)
       },
+      enableSorting: true,
+    },
+
+    // Categoria do prêmio (campo livre)
+    {
+      id: 'category',
+      type: 'string',
+      accessor: 'category',
+      header: 'Categoria',
+      display: 'string',
       enableSorting: true,
     },
 
@@ -177,17 +194,26 @@ export const prizesTableConfig: TableConfig<Prize> = {
       clearable: true,
     },
 
-    // Filtro por tipo
+    // Filtro por tipo (voucher, experiência, produto)
     {
-      id: 'category',
+      id: 'type',
       type: 'select',
       label: 'Tipo',
       placeholder: 'Todos',
       icon: 'ph-funnel',
       options: [
         { value: 'all', label: 'Todos' },
-        ...PRIZE_CATEGORIES.map((cat) => ({ value: cat.value, label: cat.label })),
+        ...PRIZE_TYPES.map((type) => ({ value: type.value, label: type.label })),
       ],
+    },
+
+    // Filtro por categoria (campo livre)
+    {
+      id: 'category',
+      type: 'search',
+      placeholder: 'Filtrar por categoria...',
+      icon: 'ph-tag',
+      clearable: true,
     },
 
     // Filtro por status

@@ -91,6 +91,7 @@ export const VoucherEditDialog: FC<VoucherEditDialogProps> = ({
           name: data.name,
           description: data.description,
           category: 'voucher',
+          type: 'voucher',
           brand: voucher.brand || voucher.name,
           coinPrice: data.coinPrice,
           stock: data.stock,

@@ -18,18 +18,19 @@ import { MultipleImageUpload } from './MultipleImageUpload'
 import { SpecificationsInput } from './SpecificationsInput'
 import type { Prize } from '@/types/prizes'
 
-// Prize categories (types)
-export const PRIZE_CATEGORIES = [
+// Prize types
+export const PRIZE_TYPES = [
   { value: 'voucher', label: 'Voucher' },
-  { value: 'experience', label: 'Experiência' },
-  { value: 'product', label: 'Produto' },
+  { value: 'experiencia', label: 'Experiência' },
+  { value: 'produto', label: 'Produto' },
 ] as const
 
 // Form schema
 const prizeFormSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(255, 'Nome muito longo'),
   description: z.string().min(1, 'Descrição é obrigatória').max(2000, 'Descrição muito longa'),
-  category: z.enum(['voucher', 'experience', 'product'], {
+  category: z.string().min(1, 'Categoria é obrigatória').max(100, 'Categoria muito longa'),
+  type: z.enum(['voucher', 'experiencia', 'produto'], {
     message: 'Tipo é obrigatório',
   }),
   brand: z.string().min(1, 'Marca é obrigatória').max(100, 'Marca muito longa'),
@@ -66,7 +67,8 @@ export const PrizeForm: FC<PrizeFormProps> = ({ prize, onSubmit, onCancel, isSub
     defaultValues: {
       name: prize?.name || '',
       description: prize?.description || '',
-      category: (prize?.category as 'voucher' | 'experience' | 'product' | undefined) || undefined,
+      category: prize?.category || '',
+      type: (prize?.type as 'voucher' | 'experiencia' | 'produto' | undefined) || undefined,
       brand: prize?.brand || '',
       coinPrice: prize?.coinPrice || 0,
       stock: prize?.stock || 0,
@@ -127,14 +129,14 @@ export const PrizeForm: FC<PrizeFormProps> = ({ prize, onSubmit, onCancel, isSub
           )}
         </div>
 
-        {/* Category and Brand */}
+        {/* Type and Category */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="category">
+            <Label htmlFor="type">
               Tipo <span className="text-red-500">*</span>
             </Label>
             <Controller
-              name="category"
+              name="type"
               control={control}
               render={({ field }) => (
                 <Select
@@ -142,39 +144,56 @@ export const PrizeForm: FC<PrizeFormProps> = ({ prize, onSubmit, onCancel, isSub
                   onValueChange={field.onChange}
                   disabled={isSubmitting}
                 >
-                  <SelectTrigger className={errors.category ? 'border-red-500' : ''}>
+                  <SelectTrigger className={errors.type ? 'border-red-500' : ''}>
                     <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
                   <SelectContent>
-                    {PRIZE_CATEGORIES.map((cat) => (
-                      <SelectItem key={cat.value} value={cat.value}>
-                        {cat.label}
+                    {PRIZE_TYPES.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               )}
             />
-            {errors.category && (
-              <p className="text-sm text-red-600">{errors.category.message}</p>
+            {errors.type && (
+              <p className="text-sm text-red-600">{errors.type.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="brand">
-              Marca <span className="text-red-500">*</span>
+            <Label htmlFor="category">
+              Categoria <span className="text-red-500">*</span>
             </Label>
             <SimpleInput
-              id="brand"
-              {...register('brand')}
-              placeholder="Ex: Samsung"
+              id="category"
+              {...register('category')}
+              placeholder="Ex: Eletrônicos"
               disabled={isSubmitting}
-              className={errors.brand ? 'border-red-500' : ''}
+              className={errors.category ? 'border-red-500' : ''}
             />
-            {errors.brand && (
-              <p className="text-sm text-red-600">{errors.brand.message}</p>
+            {errors.category && (
+              <p className="text-sm text-red-600">{errors.category.message}</p>
             )}
           </div>
+        </div>
+
+        {/* Brand */}
+        <div className="space-y-2">
+          <Label htmlFor="brand">
+            Marca <span className="text-red-500">*</span>
+          </Label>
+          <SimpleInput
+            id="brand"
+            {...register('brand')}
+            placeholder="Ex: Samsung"
+            disabled={isSubmitting}
+            className={errors.brand ? 'border-red-500' : ''}
+          />
+          {errors.brand && (
+            <p className="text-sm text-red-600">{errors.brand.message}</p>
+          )}
         </div>
 
         {/* Price and Stock */}

@@ -27,6 +27,7 @@ export const PrizeNewPage: FC = () => {
         name: data.name,
         description: data.description,
         category: data.category,
+        type: data.type,
         brand: data.brand,
         coinPrice: data.coinPrice,
         stock: data.stock,

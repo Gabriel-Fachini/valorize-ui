@@ -7,16 +7,23 @@ import { type FC } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import type { Prize } from '@/types/prizes'
-import { PRIZE_CATEGORIES } from './PrizeForm'
+import { PRIZE_TYPES } from './PrizeForm'
 
 interface PrizeDetailCardProps {
   prize: Prize
 }
 
 export const PrizeDetailCard: FC<PrizeDetailCardProps> = ({ prize }) => {
-  const getCategoryLabel = (value: string) => {
-    const cat = PRIZE_CATEGORIES.find((c) => c.value === value)
-    return cat?.label || value
+  const getTypeLabel = (value: string) => {
+    // Mapeamento de valores em inglês para português
+    const typeMapping: Record<string, string> = {
+      'product': 'produto',
+      'experience': 'experiencia',
+    }
+
+    const normalizedValue = typeMapping[value] || value
+    const type = PRIZE_TYPES.find((t) => t.value === normalizedValue)
+    return type?.label || value
   }
 
   return (
@@ -65,8 +72,13 @@ export const PrizeDetailCard: FC<PrizeDetailCardProps> = ({ prize }) => {
             <div>
               <p className="text-sm font-medium text-muted-foreground">Tipo</p>
               <Badge variant="secondary" className="mt-1">
-                {getCategoryLabel(prize.category)}
+                {getTypeLabel(prize.type)}
               </Badge>
+            </div>
+
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Categoria</p>
+              <p className="mt-1 font-medium">{prize.category}</p>
             </div>
 
             <div>

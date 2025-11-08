@@ -29,16 +29,29 @@ export const companyService = {
   },
 
   /**
-   * Upload company logo (currently MOCK)
+   * Upload company logo as multipart/form-data
    *
    * Endpoint: POST /admin/company/info/logo
-   *
-   * Note: Currently receives URL and returns same URL
-   * Real multipart/form-data implementation coming later
    */
-  async uploadLogo(data: { logo_url: string }): Promise<{ logo_url: string }> {
-    const response = await api.post<{ logo_url: string }>('/admin/company/info/logo', data)
+  async uploadLogo(file: File): Promise<{ logo_url: string }> {
+    const formData = new FormData()
+    formData.append('logo', file)
+
+    const response = await api.post<{ logo_url: string }>('/admin/company/info/logo', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
     return response.data
+  },
+
+  /**
+   * Delete company logo
+   *
+   * Endpoint: DELETE /admin/company/info/logo
+   */
+  async deleteLogo(): Promise<void> {
+    await api.delete('/admin/company/info/logo')
   },
 
   // ==================== Company Domains ====================

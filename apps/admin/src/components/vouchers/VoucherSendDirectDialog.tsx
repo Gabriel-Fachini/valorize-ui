@@ -107,6 +107,7 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
           name: voucher.name,
           description: voucher.description || `Voucher ${voucher.name}`,
           category: voucher.category,
+          type: 'voucher',
           brand: voucher.brand || voucher.name,
           coinPrice: Math.round(voucher.minValue * 10), // Convert currency to coins (example: R$10 = 100 coins)
           images: voucher.images,

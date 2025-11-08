@@ -17,7 +17,8 @@ export const BasicInfoTab: FC = () => {
   const [isFetching, setIsFetching] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [isUploadingLogo, setIsUploadingLogo] = useState(false)
-  const [logoUrl, setLogoUrl] = useState<string>('')
+  const [logoFile, setLogoFile] = useState<File | null>(null)
+  const [logoRemoved, setLogoRemoved] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | undefined>()
   const [error, setError] = useState<string | undefined>()
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
@@ -42,8 +43,9 @@ export const BasicInfoTab: FC = () => {
     try {
       const data = await companyService.getCompanyInfo()
       setCompanyInfo(data)
-      // Reset logoUrl state when loading
-      setLogoUrl('')
+      // Reset logo file state when loading
+      setLogoFile(null)
+      setLogoRemoved(false)
       reset({
         name: data.name,
         logo_url: data.logo_url || '',
@@ -65,8 +67,9 @@ export const BasicInfoTab: FC = () => {
   // Update form when companyInfo changes
   useEffect(() => {
     if (companyInfo) {
-      // Reset logoUrl state when companyInfo changes
-      setLogoUrl('')
+      // Reset logo file state when companyInfo changes
+      setLogoFile(null)
+      setLogoRemoved(false)
       reset({
         name: companyInfo.name,
         logo_url: companyInfo.logo_url || '',
@@ -82,20 +85,19 @@ export const BasicInfoTab: FC = () => {
     try {
       let finalLogoUrl = companyInfo?.logo_url || ''
 
-      // Check if logo was changed (either new upload or removal)
-      const hasLogoChange = logoUrl !== (companyInfo?.logo_url || '')
-
-      if (hasLogoChange) {
-        if (logoUrl && logoUrl.trim() !== '') {
-          // New logo uploaded
-          setIsUploadingLogo(true)
-          const uploadResult = await companyService.uploadLogo({ logo_url: logoUrl })
-          finalLogoUrl = uploadResult.logo_url
-          setIsUploadingLogo(false)
-        } else {
-          // Logo was removed - send empty string
-          finalLogoUrl = ''
-        }
+      // Handle logo upload
+      if (logoFile) {
+        // New logo uploaded
+        setIsUploadingLogo(true)
+        const uploadResult = await companyService.uploadLogo(logoFile)
+        finalLogoUrl = uploadResult.logo_url
+        setIsUploadingLogo(false)
+      } else if (logoRemoved) {
+        // Logo was removed - call DELETE endpoint
+        setIsUploadingLogo(true)
+        await companyService.deleteLogo()
+        finalLogoUrl = ''
+        setIsUploadingLogo(false)
       }
 
       // Update basic info
@@ -105,8 +107,9 @@ export const BasicInfoTab: FC = () => {
       })
 
       setCompanyInfo(updatedInfo)
-      // Reset logoUrl state after successful save
-      setLogoUrl('')
+      // Reset logo file state after successful save
+      setLogoFile(null)
+      setLogoRemoved(false)
       setSuccessMessage('Informações básicas atualizadas com sucesso!')
 
       // Clear success message after 3 seconds
@@ -121,18 +124,11 @@ export const BasicInfoTab: FC = () => {
     }
   }
 
-  const handleLogoChange = (fileOrUrl: string | File) => {
-    if (fileOrUrl instanceof File) {
-      // If it's a File, convert to data URL (shouldn't happen with current implementation)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const dataUrl = reader.result as string
-        setLogoUrl(dataUrl)
-      }
-      reader.readAsDataURL(fileOrUrl)
-    } else {
-      // It's a string (URL or empty string for removal)
-      setLogoUrl(fileOrUrl)
+  const handleLogoChange = (file: File | null) => {
+    setLogoFile(file)
+    // Track if logo was removed
+    if (file === null && companyInfo?.logo_url) {
+      setLogoRemoved(true)
     }
   }
 

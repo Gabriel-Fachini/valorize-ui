@@ -24,6 +24,7 @@ export const PrizesPage: FC = () => {
   const [filters, setFilters] = useState<PrizeFilters>({
     search: '',
     category: undefined,
+    type: undefined,
     isActive: undefined,
     isGlobal: undefined,
   })
@@ -39,6 +40,7 @@ export const PrizesPage: FC = () => {
     order: 'desc',
     ...(debouncedSearch && { search: debouncedSearch }),
     ...(filters.category && filters.category !== 'all' && { category: filters.category }),
+    ...(filters.type && filters.type !== 'all' && { type: filters.type }),
   }
 
   // Handle isActive filter
@@ -57,7 +59,7 @@ export const PrizesPage: FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setPage(1)
-  }, [debouncedSearch, filters.category, filters.isActive, filters.isGlobal])
+  }, [debouncedSearch, filters.category, filters.type, filters.isActive, filters.isGlobal])
 
   // Handler for bulk actions
   const handleBulkAction = useCallback(
@@ -117,14 +119,15 @@ export const PrizesPage: FC = () => {
 
   // Check if there are active filters
   const hasActiveFilters = useMemo(() => {
-    return !!(debouncedSearch || filters.category || filters.isActive !== undefined || filters.isGlobal !== undefined)
-  }, [debouncedSearch, filters.category, filters.isActive, filters.isGlobal])
+    return !!(debouncedSearch || filters.category || filters.type || filters.isActive !== undefined || filters.isGlobal !== undefined)
+  }, [debouncedSearch, filters.category, filters.type, filters.isActive, filters.isGlobal])
 
   // Clear all filters
   const handleClearFilters = useCallback(() => {
     setFilters({
       search: '',
       category: undefined,
+      type: undefined,
       isActive: undefined,
       isGlobal: undefined,
     })
@@ -236,6 +239,7 @@ export const PrizesPage: FC = () => {
           filters={{
             search: filters.search || '',
             category: filters.category || '',
+            type: filters.type || '',
             isActive: filters.isActive !== undefined ? String(filters.isActive) : '',
             isGlobal: filters.isGlobal !== undefined ? String(filters.isGlobal) : '',
           }}
@@ -243,6 +247,7 @@ export const PrizesPage: FC = () => {
             setFilters({
               search: String(newFilters.search || ''),
               category: newFilters.category && String(newFilters.category) !== 'all' ? String(newFilters.category) : undefined,
+              type: newFilters.type && String(newFilters.type) !== 'all' ? String(newFilters.type) : undefined,
               isActive: newFilters.isActive && String(newFilters.isActive) !== 'all' ? String(newFilters.isActive) === 'true' : undefined,
               isGlobal: newFilters.isGlobal && String(newFilters.isGlobal) !== 'all' ? String(newFilters.isGlobal) === 'true' : undefined,
             })

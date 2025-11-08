@@ -5,7 +5,7 @@ import { LOGO_CONSTRAINTS } from '@/types/company'
 
 interface LogoUploadProps {
   currentLogoUrl?: string
-  onLogoChange: (fileOrUrl: File | string) => void
+  onLogoChange: (file: File | null) => void
   isUploading?: boolean
 }
 
@@ -52,8 +52,8 @@ export const LogoUpload: FC<LogoUploadProps> = ({
     reader.onloadend = () => {
       const dataUrl = reader.result as string
       setPreviewUrl(dataUrl)
-      // Call parent callback with data URL (for mock upload)
-      onLogoChange(dataUrl)
+      // Call parent callback with the File object
+      onLogoChange(file)
     }
     reader.readAsDataURL(file)
   }
@@ -69,7 +69,7 @@ export const LogoUpload: FC<LogoUploadProps> = ({
       fileInputRef.current.value = ''
     }
     // Notify parent component that logo was removed
-    onLogoChange('')
+    onLogoChange(null)
   }
 
   return (

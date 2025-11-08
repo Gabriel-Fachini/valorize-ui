@@ -19,6 +19,7 @@ export interface Prize {
   name: string
   description: string
   category: string
+  type: string
   brand: string
   coinPrice: number
   images: string[]
@@ -33,6 +34,7 @@ export interface Prize {
 
 export interface PrizeFilters {
   category?: string
+  type?: string
   isActive?: boolean
   isGlobal?: boolean
   search?: string
@@ -46,6 +48,7 @@ export interface CreatePrizePayload {
   name: string
   description: string
   category: string
+  type: string
   brand?: string
   coinPrice: number
   images?: string[]
@@ -60,6 +63,7 @@ export interface UpdatePrizePayload {
   name?: string
   description?: string
   category?: string
+  type?: string
   brand?: string
   coinPrice?: number
   images?: string[]
