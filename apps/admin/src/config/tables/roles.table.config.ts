@@ -58,15 +58,6 @@ export const rolesTableConfig: TableConfig<RoleWithCounts> = {
       width: 120,
     },
 
-    // Data de criação
-    {
-      id: 'createdAt',
-      type: 'date',
-      accessor: 'createdAt',
-      header: 'Criado em',
-      enableSorting: true,
-    },
-
     // Ações (dropdown menu)
     {
       id: 'actions',

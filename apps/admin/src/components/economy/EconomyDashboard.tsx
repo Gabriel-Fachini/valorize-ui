@@ -8,7 +8,6 @@ import { animated } from '@react-spring/web'
 import { usePageEntrance, usePageHeaderEntrance } from '@valorize/shared/hooks'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { useEconomyDashboard } from '@/hooks/useEconomy'
-import { AlertsSection } from './AlertsSection'
 import { WalletBalanceCard } from './WalletBalanceCard'
 import { SuggestedDepositBanner } from './SuggestedDepositBanner'
 import { PrizeFundCard } from './PrizeFundCard'
@@ -49,12 +48,6 @@ export const EconomyDashboard: FC = () => {
         />
       </animated.div>
 
-      {/* Alerts Section */}
-      <AlertsSection alerts={data?.alerts ?? []} isLoading={isLoading} />
-
-      {/* Metrics Guide */}
-      <EconomyMetricsGuide />
-
       {/* Main Wallet Balance Card */}
       <WalletBalanceCard data={data?.wallet_balance} isLoading={isLoading} />
 
@@ -76,6 +69,9 @@ export const EconomyDashboard: FC = () => {
 
       {/* Deposit History */}
       <DepositHistorySection limit={10} />
+
+      {/* Metrics Guide */}
+      <EconomyMetricsGuide />
     </animated.div>
   )
 }

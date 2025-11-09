@@ -82,14 +82,16 @@ export const UserDetailPage: FC = () => {
   return (
     <PageLayout maxWidth="7xl">
       <div className="space-y-6">
+        {/* Back Button */}
+        <div>
+          <BackButton to="/users" />
+        </div>
+
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <BackButton to="/users" />
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">Detalhes do Usuário</h1>
-              <p className="text-muted-foreground">Visualize e gerencie informações do usuário</p>
-            </div>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Detalhes do Usuário</h1>
+            <p className="text-muted-foreground">Visualize e gerencie informações do usuário</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => setIsEditDialogOpen(true)}>

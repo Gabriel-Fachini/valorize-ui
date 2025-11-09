@@ -70,14 +70,13 @@ export const RolesPage: FC = () => {
         // Get full role data for export
         const selectedRoles = roles.filter((role) => roleIds.includes(role.id))
         const csvContent = [
-          ['Nome', 'Descrição', 'Usuários', 'Permissões', 'Criado em'].join(','),
+          ['Nome', 'Descrição', 'Usuários', 'Permissões'].join(','),
           ...selectedRoles.map((role) =>
             [
               role.name,
               role.description || '',
               role.usersCount,
               role.permissionsCount,
-              role.createdAt ? new Date(role.createdAt).toLocaleDateString('pt-BR') : '-',
             ].join(',')
           ),
         ].join('\n')

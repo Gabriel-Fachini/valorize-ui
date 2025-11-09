@@ -1,1 +1,0 @@
-Loading da página de admin não é o mesmo do login
