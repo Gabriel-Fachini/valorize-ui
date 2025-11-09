@@ -59,7 +59,8 @@ export interface VouchersQueryParams {
 
 export interface BulkAssignItem {
   userId: string
-  prizeId: string
+  voucherProductId: string
+  value: number
   addressId?: string
 }
 
@@ -69,7 +70,8 @@ export interface BulkAssignPayload {
 
 export interface BulkAssignResultItem {
   userId: string
-  prizeId: string
+  voucherProductId: string
+  value: number
   success: boolean
   redemptionId: string | null
   voucherLink: string | null
@@ -93,14 +95,15 @@ export interface VoucherFilters extends Record<string, unknown> {
 
 export interface SendToUserPayload {
   userId: string
-  prizeId: string
+  voucherProductId: string
+  value: number
 }
 
 export interface SendToUserResponse {
   message: string
   redemptionId: string
   userId: string
-  prizeId: string
+  voucherProductId: string
   status: string
   notes: string
 }

@@ -18,30 +18,25 @@ import { Input } from '@/components/ui/Input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { useUsers } from '@/hooks/useUsers'
-import { usePrizeMutations } from '@/hooks/usePrizeMutations'
 import { vouchersService } from '@/services/vouchers'
 import type { VoucherProduct } from '@/types/vouchers'
-import type { Prize } from '@/types/prizes'
 
 interface VoucherSendDirectDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   voucher: VoucherProduct
-  prize: Prize | null
 }
 
 export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
   open,
   onOpenChange,
   voucher,
-  prize,
 }) => {
   const queryClient = useQueryClient()
-  const { createPrize } = usePrizeMutations()
 
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
-  const [isCreatingPrize, setIsCreatingPrize] = useState(false)
+  const [selectedValue, setSelectedValue] = useState<number>(voucher.minValue)
 
   // Fetch users
   const { users, isLoading: isLoadingUsers } = useUsers({ status: 'active', limit: 100 })
@@ -72,8 +67,12 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
 
   // Send voucher mutation
   const sendVoucherMutation = useMutation({
-    mutationFn: (prizeId: string) =>
-      vouchersService.sendToUser({ userId: selectedUserId!, prizeId }),
+    mutationFn: () =>
+      vouchersService.sendToUser({
+        userId: selectedUserId!,
+        voucherProductId: voucher.id,
+        value: selectedValue,
+      }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['redemptions'] })
       toast.success('Voucher enviado com sucesso!', {
@@ -83,6 +82,7 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
       // Reset state
       setSelectedUserId(null)
       setSearchQuery('')
+      setSelectedValue(voucher.minValue)
     },
     onError: (error: any) => {
       toast.error('Erro ao enviar voucher', {
@@ -91,46 +91,32 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
     },
   })
 
+  const handleValueChange = (newValue: string) => {
+    const numValue = Number(newValue)
+    if (!isNaN(numValue)) {
+      setSelectedValue(numValue)
+    }
+  }
+
   const handleSend = async () => {
     if (!selectedUserId) {
       toast.error('Selecione um usuário')
       return
     }
 
-    try {
-      let prizeIdToUse = prize?.id
-
-      // Se não existe prêmio vinculado, criar um automaticamente
-      if (!prize) {
-        setIsCreatingPrize(true)
-        const newPrize = await createPrize.mutateAsync({
-          name: voucher.name,
-          description: voucher.description || `Voucher ${voucher.name}`,
-          category: voucher.category,
-          type: 'voucher',
-          brand: voucher.brand || voucher.name,
-          coinPrice: Math.round(voucher.minValue * 10), // Convert currency to coins (example: R$10 = 100 coins)
-          images: voucher.images,
-          stock: 999,
-          isActive: true,
-          isGlobal: false,
-          voucherProductId: voucher.id,
-        })
-        setIsCreatingPrize(false)
-        prizeIdToUse = newPrize.prize.id
-
-        toast.success('Prêmio criado com sucesso!')
-      }
-
-      // Enviar voucher para o usuário usando o prizeId
-      await sendVoucherMutation.mutateAsync(prizeIdToUse!)
-    } catch (error) {
-      setIsCreatingPrize(false)
-      console.error('Error sending voucher:', error)
+    // Validate value is within range
+    if (selectedValue < voucher.minValue || selectedValue > voucher.maxValue) {
+      toast.error('Valor inválido', {
+        description: `O valor deve estar entre ${voucher.minValue} e ${voucher.maxValue}`,
+      })
+      return
     }
+
+    await sendVoucherMutation.mutateAsync()
   }
 
-  const isProcessing = isCreatingPrize || sendVoucherMutation.isPending
+  const isProcessing = sendVoucherMutation.isPending
+  const isVariableValue = voucher.minValue !== voucher.maxValue
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -168,6 +154,69 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Value Selection */}
+          <div className="space-y-2">
+            {isVariableValue ? (
+              <>
+                <Label htmlFor="voucher-value">Valor do Voucher</Label>
+                <div className="flex items-center gap-4">
+                  <Input
+                    name="voucher-value"
+                    label=""
+                    id="voucher-value"
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="Digite o valor..."
+                    value={String(selectedValue)}
+                    onChange={(e) => handleValueChange(e.target.value)}
+                    className="w-32"
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    {new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: voucher.currency,
+                    }).format(selectedValue)}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="value-slider">Ajustar Valor (Slider)</Label>
+                  <input
+                    id="value-slider"
+                    type="range"
+                    min={Math.ceil(voucher.minValue)}
+                    max={Math.floor(voucher.maxValue)}
+                    step={1}
+                    value={Math.round(selectedValue)}
+                    onChange={(e) => handleValueChange(e.target.value)}
+                    className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>{new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: voucher.currency,
+                    }).format(Math.ceil(voucher.minValue))}</span>
+                    <span>{new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: voucher.currency,
+                    }).format(Math.floor(voucher.maxValue))}</span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <Label>Valor do Voucher</Label>
+                <div className="rounded-lg border p-4 bg-muted/50">
+                  <p className="text-lg font-semibold">
+                    {new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: voucher.currency,
+                    }).format(voucher.minValue)}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
 
           {/* User Search */}
@@ -229,18 +278,6 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
               )}
             </div>
           </div>
-
-          {/* Info */}
-          {!prize && (
-            <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 dark:bg-blue-950 dark:border-blue-800">
-              <div className="flex gap-3">
-                <i className="ph ph-info text-blue-600 dark:text-blue-400" />
-                <p className="text-sm text-blue-800 dark:text-blue-200">
-                  Este voucher ainda não está configurado como prêmio. Um prêmio será criado automaticamente ao enviar.
-                </p>
-              </div>
-            </div>
-          )}
         </div>
 
         <DialogFooter>
@@ -255,7 +292,7 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
             {isProcessing ? (
               <>
                 <i className="ph ph-circle-notch mr-2 animate-spin" />
-                {isCreatingPrize ? 'Criando prêmio...' : 'Enviando...'}
+                Enviando...
               </>
             ) : (
               <>

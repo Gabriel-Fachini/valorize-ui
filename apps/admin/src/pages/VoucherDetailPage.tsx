@@ -10,9 +10,7 @@ import { Button } from '@/components/ui/button'
 import { BackButton } from '@/components/ui/BackButton'
 import { SkeletonText, SkeletonCard } from '@/components/ui/Skeleton'
 import { useVoucherDetail } from '@/hooks/useVoucherDetail'
-import { usePrizeMutations } from '@/hooks/usePrizeMutations'
 import { VoucherDetailCard } from '@/components/vouchers/VoucherDetailCard'
-import { VoucherEditDialog } from '@/components/vouchers/VoucherEditDialog'
 import { VoucherSendDirectDialog } from '@/components/vouchers/VoucherSendDirectDialog'
 
 export const VoucherDetailPage: FC = () => {
@@ -22,23 +20,8 @@ export const VoucherDetailPage: FC = () => {
   // Fetch voucher product (includes linked prize if exists)
   const { voucher, isLoading: isLoadingVoucher, isError } = useVoucherDetail(voucherId)
 
-  // Extract linked prize from voucher data
-  const linkedPrize = (voucher as any)?.prize || null
-
-  const { toggleActive } = usePrizeMutations()
-
   // Dialog states
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isSendDirectDialogOpen, setIsSendDirectDialogOpen] = useState(false)
-
-  // Handle toggle active status
-  const handleToggleActive = async () => {
-    if (!linkedPrize) return
-    await toggleActive.mutateAsync({
-      id: linkedPrize.id,
-      isActive: !linkedPrize.isActive,
-    })
-  }
 
   // Loading state
   if (isLoadingVoucher) {
@@ -95,55 +78,23 @@ export const VoucherDetailPage: FC = () => {
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
             <Button
-              variant="outline"
-              onClick={() => setIsEditDialogOpen(true)}
-            >
-              <i className="ph ph-pencil mr-2" />
-              {linkedPrize ? 'Editar Prêmio' : 'Criar Prêmio'}
-            </Button>
-
-            <Button
               variant="default"
               onClick={() => setIsSendDirectDialogOpen(true)}
             >
               <i className="ph ph-user mr-2" />
               Enviar Direto
             </Button>
-
-            {linkedPrize && (
-              <Button
-                variant={linkedPrize.isActive ? 'outline' : 'default'}
-                onClick={handleToggleActive}
-                disabled={toggleActive.isPending}
-              >
-                <i className={`ph ${linkedPrize.isActive ? 'ph-x-circle' : 'ph-check-circle'} mr-2`} />
-                {toggleActive.isPending
-                  ? 'Processando...'
-                  : linkedPrize.isActive
-                    ? 'Desativar'
-                    : 'Ativar'}
-              </Button>
-            )}
           </div>
         </div>
 
         {/* Detail Card */}
-        <VoucherDetailCard voucher={voucher} prize={linkedPrize} />
-
-        {/* Edit Dialog */}
-        <VoucherEditDialog
-          open={isEditDialogOpen}
-          onOpenChange={setIsEditDialogOpen}
-          voucher={voucher}
-          prize={linkedPrize}
-        />
+        <VoucherDetailCard voucher={voucher} />
 
         {/* Send Direct Dialog */}
         <VoucherSendDirectDialog
           open={isSendDirectDialogOpen}
           onOpenChange={setIsSendDirectDialogOpen}
           voucher={voucher}
-          prize={linkedPrize}
         />
       </div>
     </PageLayout>

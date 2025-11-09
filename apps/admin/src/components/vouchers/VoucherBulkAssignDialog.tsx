@@ -3,12 +3,14 @@
  * Multi-step dialog for bulk assigning vouchers to multiple users
  *
  * Steps:
- * 1. Define voucher value within allowed range
- * 2. Select users from list with checkboxes
- * 3. Confirm and send
+ * 1. Select voucher
+ * 2. Define voucher value within allowed range
+ * 3. Select users from list with checkboxes
+ * 4. Confirm and send
  */
 
 import { type FC, useState, useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import {
   Dialog,
   DialogContent,
@@ -24,50 +26,64 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
 import { useUsers } from '@/hooks/useUsers'
 import { useVoucherMutations } from '@/hooks/useVoucherMutations'
+import { vouchersService } from '@/services/vouchers'
 import type { VoucherProduct, BulkAssignResponse } from '@/types/vouchers'
 
 interface VoucherBulkAssignDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  voucher: VoucherProduct | null
   onSuccess?: (result: BulkAssignResponse) => void
 }
 
-type Step = 1 | 2 | 3
+type Step = 1 | 2 | 3 | 4
 
 export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
   open,
   onOpenChange,
-  voucher,
   onSuccess,
 }) => {
   const [step, setStep] = useState<Step>(1)
+  const [selectedVoucher, setSelectedVoucher] = useState<VoucherProduct | null>(null)
   const [value, setValue] = useState<number>(0)
   const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set())
-  const [searchQuery, setSearchQuery] = useState('')
+  const [voucherSearchQuery, setVoucherSearchQuery] = useState('')
+  const [userSearchQuery, setUserSearchQuery] = useState('')
 
   // Fetch users (we'll get all active users)
   const { users, isLoading: isLoadingUsers } = useUsers({ status: 'active', limit: 100 })
   const { bulkAssignVouchers } = useVoucherMutations()
 
-  // Initialize value when voucher changes
-  useMemo(() => {
-    if (voucher) {
-      setValue(voucher.minValue)
-    }
-  }, [voucher])
+  // Fetch vouchers
+  const { data: vouchersData, isLoading: isLoadingVouchers } = useQuery({
+    queryKey: ['vouchers', { isActive: true }],
+    queryFn: () => vouchersService.list({ isActive: true, limit: 1000 }),
+    enabled: open,
+  })
+
+  // Filter vouchers by search query
+  const filteredVouchers = useMemo(() => {
+    const vouchers = vouchersData?.items || []
+    if (!voucherSearchQuery.trim()) return vouchers
+
+    const query = voucherSearchQuery.toLowerCase()
+    return vouchers.filter(
+      (voucher) =>
+        voucher.name?.toLowerCase().includes(query) ||
+        voucher.brand?.toLowerCase().includes(query)
+    )
+  }, [vouchersData?.items, voucherSearchQuery])
 
   // Filter users by search query
   const filteredUsers = useMemo(() => {
-    if (!searchQuery.trim()) return users
+    if (!userSearchQuery.trim()) return users
 
-    const query = searchQuery.toLowerCase()
+    const query = userSearchQuery.toLowerCase()
     return users.filter(
       (user) =>
         user.name?.toLowerCase().includes(query) ||
         user.email?.toLowerCase().includes(query)
     )
-  }, [users, searchQuery])
+  }, [users, userSearchQuery])
 
   const handleValueChange = (newValue: string) => {
     const numValue = Number(newValue)
@@ -96,22 +112,30 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
 
   const handleNext = () => {
     if (step === 1) {
+      // Validate voucher selection
+      if (!selectedVoucher) {
+        toast.error('Selecione um voucher')
+        return
+      }
+      setValue(selectedVoucher.minValue)
+      setStep(2)
+    } else if (step === 2) {
       // Validate value
-      if (!voucher) return
-      if (value < voucher.minValue || value > voucher.maxValue) {
+      if (!selectedVoucher) return
+      if (value < selectedVoucher.minValue || value > selectedVoucher.maxValue) {
         toast.error('Valor inválido', {
-          description: `O valor deve estar entre ${voucher.minValue} e ${voucher.maxValue}`,
+          description: `O valor deve estar entre ${selectedVoucher.minValue} e ${selectedVoucher.maxValue}`,
         })
         return
       }
-      setStep(2)
-    } else if (step === 2) {
+      setStep(3)
+    } else if (step === 3) {
       // Validate user selection
       if (selectedUserIds.size === 0) {
         toast.error('Selecione pelo menos um usuário')
         return
       }
-      setStep(3)
+      setStep(4)
     }
   }
 
@@ -122,15 +146,13 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
   }
 
   const handleSubmit = async () => {
-    if (!voucher) return
+    if (!selectedVoucher) return
 
     try {
-      // TODO: We need to map VoucherProduct to Prize
-      // For now, we'll use the voucher.id as prizeId
-      // This will need to be adjusted based on your Prize implementation
       const items = Array.from(selectedUserIds).map((userId) => ({
         userId,
-        prizeId: voucher.id, // This should be the Prize ID, not VoucherProduct ID
+        voucherProductId: selectedVoucher.id,
+        value,
       }))
 
       const result = await bulkAssignVouchers.mutateAsync({ items })
@@ -149,16 +171,20 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
 
   const handleClose = () => {
     setStep(1)
-    setValue(voucher?.minValue || 0)
+    setSelectedVoucher(null)
+    setValue(0)
     setSelectedUserIds(new Set())
-    setSearchQuery('')
+    setVoucherSearchQuery('')
+    setUserSearchQuery('')
     onOpenChange(false)
   }
 
   const formatter = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
-    currency: voucher?.currency || 'BRL',
+    currency: selectedVoucher?.currency || 'BRL',
   })
+
+  const isVariableValue = selectedVoucher ? selectedVoucher.minValue !== selectedVoucher.maxValue : false
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -166,16 +192,17 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
         <DialogHeader>
           <DialogTitle>Enviar Vouchers em Lote</DialogTitle>
           <DialogDescription>
-            {step === 1 && 'Defina o valor do voucher dentro do range permitido'}
-            {step === 2 && 'Selecione os usuários que receberão o voucher'}
-            {step === 3 && 'Confirme o envio dos vouchers'}
+            {step === 1 && 'Selecione o voucher que deseja enviar'}
+            {step === 2 && 'Defina o valor do voucher dentro do range permitido'}
+            {step === 3 && 'Selecione os usuários que receberão o voucher'}
+            {step === 4 && 'Confirme o envio dos vouchers'}
           </DialogDescription>
         </DialogHeader>
 
         <div className="py-6">
           {/* Step Indicator */}
           <div className="mb-6 flex items-center justify-center gap-2">
-            {[1, 2, 3].map((s) => (
+            {[1, 2, 3, 4].map((s) => (
               <div
                 key={s}
                 className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors ${
@@ -191,86 +218,172 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
             ))}
           </div>
 
-          {/* Step 1: Define Value */}
-          {step === 1 && voucher && (
-            <div className="space-y-6">
-              <div className="rounded-lg border p-4">
-                <div className="flex items-center gap-3">
-                  {voucher.images?.[0] && (
-                    <img
-                      src={voucher.images[0]}
-                      alt={voucher.name}
-                      className="h-12 w-12 rounded object-cover"
-                    />
-                  )}
-                  <div>
-                    <p className="font-medium">{voucher.name}</p>
-                    <p className="text-sm text-muted-foreground">{voucher.brand}</p>
-                  </div>
+          {/* Step 1: Select Voucher */}
+          {step === 1 && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="voucher-search">Buscar Voucher</Label>
+                <div className="relative">
+                  <i className="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    name="voucher-search"
+                    label=""
+                    id="voucher-search"
+                    type="text"
+                    placeholder="Nome ou marca..."
+                    value={voucherSearchQuery}
+                    onChange={(e) => setVoucherSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="value">Valor do Voucher</Label>
-                  <div className="flex items-center gap-4">
-                    <Input
-                      name="value"
-                      label=""
-                      id="value"
-                      type="text"
-                      inputMode="decimal"
-                      value={String(value)}
-                      onChange={(e) => handleValueChange(e.target.value)}
-                      className="w-32"
-                    />
-                    <span className="text-sm text-muted-foreground">
-                      {formatter.format(value)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>Min: {formatter.format(voucher.minValue)}</span>
-                    <span>•</span>
-                    <span>Max: {formatter.format(voucher.maxValue)}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="value-slider">Ajustar Valor (Slider)</Label>
-                  <input
-                    id="value-slider"
-                    type="range"
-                    min={voucher.minValue}
-                    max={voucher.maxValue}
-                    step={1}
-                    value={value}
-                    onChange={(e) => handleValueChange(e.target.value)}
-                    className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>{formatter.format(voucher.minValue)}</span>
-                    <span>{formatter.format(voucher.maxValue)}</span>
-                  </div>
+              <div className="h-[400px] overflow-y-auto rounded-lg border">
+                <div className="p-4 space-y-2">
+                  {isLoadingVouchers ? (
+                    <p className="text-center text-sm text-muted-foreground">
+                      Carregando vouchers...
+                    </p>
+                  ) : filteredVouchers.length === 0 ? (
+                    <p className="text-center text-sm text-muted-foreground">
+                      Nenhum voucher encontrado
+                    </p>
+                  ) : (
+                    filteredVouchers.map((voucher) => (
+                      <button
+                        key={voucher.id}
+                        type="button"
+                        onClick={() => setSelectedVoucher(voucher)}
+                        className={`flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors border ${
+                          selectedVoucher?.id === voucher.id
+                            ? 'bg-primary/10 border-primary'
+                            : 'hover:bg-muted border-transparent'
+                        }`}
+                      >
+                        {voucher.images?.[0] && (
+                          <img
+                            src={voucher.images[0]}
+                            alt={voucher.name}
+                            className="h-10 w-10 rounded object-cover"
+                          />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium truncate">{voucher.name}</p>
+                          <p className="text-sm text-muted-foreground truncate">{voucher.brand}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Intl.NumberFormat('pt-BR', {
+                              style: 'currency',
+                              currency: voucher.currency,
+                            }).format(voucher.minValue)}{' '}
+                            -{' '}
+                            {new Intl.NumberFormat('pt-BR', {
+                              style: 'currency',
+                              currency: voucher.currency,
+                            }).format(voucher.maxValue)}
+                          </p>
+                        </div>
+                        {selectedVoucher?.id === voucher.id && (
+                          <i className="ph ph-check-circle text-primary" />
+                        )}
+                      </button>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
           )}
 
-          {/* Step 2: Select Users */}
-          {step === 2 && (
+          {/* Step 2: Define Value */}
+          {step === 2 && selectedVoucher && (
+            <div className="space-y-6">
+              <div className="rounded-lg border p-4">
+                <div className="flex items-center gap-3">
+                  {selectedVoucher.images?.[0] && (
+                    <img
+                      src={selectedVoucher.images[0]}
+                      alt={selectedVoucher.name}
+                      className="h-12 w-12 rounded object-cover"
+                    />
+                  )}
+                  <div>
+                    <p className="font-medium">{selectedVoucher.name}</p>
+                    <p className="text-sm text-muted-foreground">{selectedVoucher.brand}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {isVariableValue ? (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="value">Valor do Voucher</Label>
+                      <div className="flex items-center gap-4">
+                        <Input
+                          name="value"
+                          label=""
+                          id="value"
+                          type="text"
+                          inputMode="decimal"
+                          value={String(value)}
+                          onChange={(e) => handleValueChange(e.target.value)}
+                          className="w-32"
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          {formatter.format(value)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span>Min: {formatter.format(selectedVoucher.minValue)}</span>
+                        <span>•</span>
+                        <span>Max: {formatter.format(selectedVoucher.maxValue)}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="value-slider">Ajustar Valor (Slider)</Label>
+                      <input
+                        id="value-slider"
+                        type="range"
+                        min={Math.ceil(selectedVoucher.minValue)}
+                        max={Math.floor(selectedVoucher.maxValue)}
+                        step={1}
+                        value={Math.round(value)}
+                        onChange={(e) => handleValueChange(e.target.value)}
+                        className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>{formatter.format(selectedVoucher.minValue)}</span>
+                        <span>{formatter.format(selectedVoucher.maxValue)}</span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="rounded-lg border p-4 bg-muted/50">
+                    <p className="text-sm text-muted-foreground mb-2">Valor do Voucher</p>
+                    <p className="text-lg font-semibold">
+                      {formatter.format(selectedVoucher.minValue)}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Select Users */}
+          {step === 3 && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="search">Buscar Usuários</Label>
+                <Label htmlFor="user-search">Buscar Usuários</Label>
                 <div className="relative">
                   <i className="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <Input
-                    name="search"
+                    name="user-search"
                     label=""
-                    id="search"
+                    id="user-search"
                     type="text"
                     placeholder="Nome ou email..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={userSearchQuery}
+                    onChange={(e) => setUserSearchQuery(e.target.value)}
                     className="pl-10"
                   />
                 </div>
@@ -325,13 +438,13 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
             </div>
           )}
 
-          {/* Step 3: Confirm */}
-          {step === 3 && voucher && (
+          {/* Step 4: Confirm */}
+          {step === 4 && selectedVoucher && (
             <div className="space-y-4">
               <div className="rounded-lg border p-4 space-y-3">
                 <div>
                   <p className="text-sm text-muted-foreground">Voucher</p>
-                  <p className="font-medium">{voucher.name}</p>
+                  <p className="font-medium">{selectedVoucher.name}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Valor</p>
@@ -367,7 +480,7 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
               Voltar
             </Button>
           )}
-          {step < 3 ? (
+          {step < 4 ? (
             <Button onClick={handleNext}>
               Próximo
               <i className="ph ph-caret-right ml-2" />

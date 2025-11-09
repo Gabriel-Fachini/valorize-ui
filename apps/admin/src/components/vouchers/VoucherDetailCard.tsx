@@ -7,14 +7,12 @@ import { type FC } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import type { VoucherProduct } from '@/types/vouchers'
-import type { Prize } from '@/types/prizes'
 
 interface VoucherDetailCardProps {
   voucher: VoucherProduct
-  prize: Prize | null
 }
 
-export const VoucherDetailCard: FC<VoucherDetailCardProps> = ({ voucher, prize }) => {
+export const VoucherDetailCard: FC<VoucherDetailCardProps> = ({ voucher }) => {
   const formatter = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: voucher.currency || 'BRL',
@@ -132,66 +130,6 @@ export const VoucherDetailCard: FC<VoucherDetailCardProps> = ({ voucher, prize }
           </div>
         </CardContent>
       </Card>
-
-      {/* Prize Information (if linked) */}
-      {prize ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Prêmio Configurado</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Nome do Prêmio</p>
-                <p className="mt-1 font-medium">{prize.name}</p>
-              </div>
-
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Preço em Moedas</p>
-                <p className="mt-1 font-medium">{prize.coinPrice} moedas</p>
-              </div>
-
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Estoque</p>
-                <p className="mt-1 font-medium">{prize.stock}</p>
-              </div>
-
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Status do Prêmio</p>
-                <Badge variant={prize.isActive ? 'default' : 'destructive'} className="mt-1">
-                  {prize.isActive ? 'Ativo' : 'Inativo'}
-                </Badge>
-              </div>
-            </div>
-
-            {prize.description && (
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Descrição do Prêmio</p>
-                <p className="mt-1 text-sm leading-relaxed">{prize.description}</p>
-              </div>
-            )}
-
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">ID do Prêmio</p>
-              <p className="mt-1 font-mono text-xs">{prize.id}</p>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card>
-          <CardContent className="py-12">
-            <div className="flex flex-col items-center justify-center text-center">
-              <i className="ph ph-gift text-4xl text-muted-foreground" />
-              <h3 className="mt-4 font-medium">Nenhum prêmio configurado</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Este voucher ainda não foi configurado como um prêmio.
-                <br />
-                Clique em "Criar Prêmio" para adicionar ao catálogo.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   )
 }

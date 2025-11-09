@@ -15,7 +15,6 @@ import { VoucherBulkAssignDialog } from '@/components/vouchers/VoucherBulkAssign
 import { VoucherAssignResultDialog } from '@/components/vouchers/VoucherAssignResultDialog'
 import { VoucherSendDirectDialog } from '@/components/vouchers/VoucherSendDirectDialog'
 import { useVouchers } from '@/hooks/useVouchers'
-import { toast } from 'sonner'
 import type { VoucherProduct, VoucherFilters, BulkAssignResponse } from '@/types/vouchers'
 import type { TableConfig } from '@/config/tables/types'
 
@@ -26,7 +25,6 @@ export const VouchersPage: FC = () => {
   const [filters, setFilters] = useState<VoucherFilters>({
     search: '',
   })
-  const [selectedVouchers, setSelectedVouchers] = useState<VoucherProduct[]>([])
   const [isBulkAssignDialogOpen, setIsBulkAssignDialogOpen] = useState(false)
   const [isResultDialogOpen, setIsResultDialogOpen] = useState(false)
   const [assignResult, setAssignResult] = useState<BulkAssignResponse | null>(null)
@@ -70,19 +68,13 @@ export const VouchersPage: FC = () => {
 
   // Handler for bulk actions
   const handleBulkAction = useCallback(
-    async (actionId: string, rowIds: string[]) => {
+    async (actionId: string, _rowIds: string[]) => {
       if (actionId === 'bulk-assign') {
-        // Get vouchers by IDs
-        const selected = allVouchers.filter((v) => rowIds.includes(v.id))
-        if (selected.length !== 1) {
-          toast.error('Selecione exatamente um voucher para enviar em lote')
-          return
-        }
-        setSelectedVouchers(selected)
+        // Open bulk assign dialog without pre-selecting a voucher
         setIsBulkAssignDialogOpen(true)
       }
     },
-    [allVouchers]
+    []
   )
 
   // Handler for row actions
@@ -109,7 +101,6 @@ export const VouchersPage: FC = () => {
   const handleBulkAssignSuccess = (result: BulkAssignResponse) => {
     setAssignResult(result)
     setIsResultDialogOpen(true)
-    setSelectedVouchers([])
   }
 
   // Handler for send-direct button
@@ -192,21 +183,19 @@ export const VouchersPage: FC = () => {
           title="Gerenciamento de Vouchers"
           description="Gerencie o catálogo de vouchers digitais e envie para usuários"
           icon="ph-ticket"
-          right={<VoucherSyncButton />}
+          right={
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={() => setIsBulkAssignDialogOpen(true)}
+                variant="default"
+              >
+                <i className="ph ph-paper-plane-tilt mr-2" />
+                Enviar em Lote
+              </Button>
+              <VoucherSyncButton />
+            </div>
+          }
         />
-
-        {/* Bulk Action Button - Shows only when exactly 1 voucher is selected */}
-        {selectedVouchers.length === 1 && (
-          <div className="flex justify-end">
-            <Button
-              onClick={() => setIsBulkAssignDialogOpen(true)}
-              variant="default"
-            >
-              <i className="ph ph-paper-plane-tilt mr-2" />
-              Enviar em Lote
-            </Button>
-          </div>
-        )}
 
         {/* Data Table */}
         <DataTable
@@ -236,7 +225,6 @@ export const VouchersPage: FC = () => {
         <VoucherBulkAssignDialog
           open={isBulkAssignDialogOpen}
           onOpenChange={setIsBulkAssignDialogOpen}
-          voucher={selectedVouchers[0] || null}
           onSuccess={handleBulkAssignSuccess}
         />
 
@@ -253,7 +241,6 @@ export const VouchersPage: FC = () => {
             open={isSendDirectDialogOpen}
             onOpenChange={handleSendDirectDialogClose}
             voucher={selectedVoucherForSend}
-            prize={selectedVoucherForSend.prize || null}
           />
         )}
       </div>
