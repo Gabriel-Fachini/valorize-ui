@@ -44,19 +44,19 @@ export const vouchersService = {
 
   /**
    * Bulk assign vouchers to multiple users (ADMIN ONLY)
-   * POST /api/redemptions/bulk-redeem
+   * POST /admin/redemptions/bulk-redeem
    */
   bulkAssign: async (payload: BulkAssignPayload): Promise<BulkAssignResponse> => {
-    const { data} = await api.post<BulkAssignResponse>('/api/redemptions/bulk-redeem', payload)
+    const { data} = await api.post<BulkAssignResponse>('/admin/redemptions/bulk-redeem', payload)
     return data
   },
 
   /**
-   * Send voucher to a single user (ADMIN ONLY)
-   * POST /redemptions/send-to-user
+   * Send voucher to a single user or multiple users (ADMIN ONLY)
+   * POST /admin/redemptions/send-to-user
    */
   sendToUser: async (payload: SendToUserPayload): Promise<SendToUserResponse> => {
-    const { data } = await api.post<SendToUserResponse>('/redemptions/send-to-user', payload)
+    const { data } = await api.post<SendToUserResponse>('/admin/redemptions/send-to-user', payload)
     return data
   },
 }

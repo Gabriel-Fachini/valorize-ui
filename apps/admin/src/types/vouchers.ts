@@ -57,21 +57,30 @@ export interface VouchersQueryParams {
   offset?: number
 }
 
+export interface BulkAssignUser {
+  userId: string
+  email: string
+}
+
 export interface BulkAssignItem {
   userId: string
-  voucherProductId: string
-  value: number
-  addressId?: string
+  prizeId: string
+  customAmount: number
 }
 
 export interface BulkAssignPayload {
-  items: BulkAssignItem[]
+  prizeId: string
+  customAmount: number
+  campaignId?: string
+  users: BulkAssignUser[]
+  allUsersSelected?: boolean
 }
 
 export interface BulkAssignResultItem {
   userId: string
-  voucherProductId: string
-  value: number
+  email: string
+  prizeId: string
+  customAmount: number
   success: boolean
   redemptionId: string | null
   voucherLink: string | null
@@ -95,15 +104,18 @@ export interface VoucherFilters extends Record<string, unknown> {
 
 export interface SendToUserPayload {
   userId: string
-  voucherProductId: string
-  value: number
+  email: string
+  prizeId: string
+  customAmount: number
+  campaignId?: string
 }
 
 export interface SendToUserResponse {
   message: string
   redemptionId: string
   userId: string
-  voucherProductId: string
+  email: string
+  prizeId: string
   status: string
   notes: string
 }

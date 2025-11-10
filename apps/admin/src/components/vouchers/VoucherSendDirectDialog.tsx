@@ -3,7 +3,7 @@
  * Dialog for sending a voucher directly to a user
  */
 
-import { type FC, useState, useMemo } from 'react'
+import { type FC, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Dialog,
@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/Input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { useUsers } from '@/hooks/useUsers'
+import { useDebounce } from '@/hooks/useDebounce'
 import { vouchersService } from '@/services/vouchers'
 import type { VoucherProduct } from '@/types/vouchers'
 
@@ -36,24 +37,18 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
 
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
+  const [selectedUserEmail, setSelectedUserEmail] = useState<string | null>(null)
   const [selectedValue, setSelectedValue] = useState<number>(voucher.minValue)
 
-  // Fetch users
-  const { users, isLoading: isLoadingUsers } = useUsers({ status: 'active', limit: 100 })
+  // Debounce search query to avoid excessive API calls
+  const debouncedSearchQuery = useDebounce(searchQuery, 300)
 
-  // Filter users by search query
-  const filteredUsers = useMemo(() => {
-    if (!searchQuery.trim()) return users.slice(0, 5) // Show first 5 if no search
-
-    const query = searchQuery.toLowerCase()
-    return users
-      .filter(
-        (user) =>
-          user.name?.toLowerCase().includes(query) ||
-          user.email?.toLowerCase().includes(query)
-      )
-      .slice(0, 10)
-  }, [users, searchQuery])
+  // Fetch users from /admin/users endpoint with search and status filter
+  const { users, isLoading: isLoadingUsers } = useUsers({
+    status: 'active',
+    search: debouncedSearchQuery.trim() || undefined,
+    limit: 10,
+  })
 
   // Helper function to get user initials
   const getUserInitials = (name: string) => {
@@ -70,8 +65,9 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
     mutationFn: () =>
       vouchersService.sendToUser({
         userId: selectedUserId!,
-        voucherProductId: voucher.id,
-        value: selectedValue,
+        email: selectedUserEmail!,
+        prizeId: voucher.id,
+        customAmount: selectedValue,
       }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['redemptions'] })
@@ -81,6 +77,7 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
       onOpenChange(false)
       // Reset state
       setSelectedUserId(null)
+      setSelectedUserEmail(null)
       setSearchQuery('')
       setSelectedValue(voucher.minValue)
     },
@@ -99,7 +96,7 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
   }
 
   const handleSend = async () => {
-    if (!selectedUserId) {
+    if (!selectedUserId || !selectedUserEmail) {
       toast.error('Selecione um usuário')
       return
     }
@@ -241,16 +238,19 @@ export const VoucherSendDirectDialog: FC<VoucherSendDirectDialogProps> = ({
                 <p className="p-4 text-center text-sm text-muted-foreground">
                   Carregando usuários...
                 </p>
-              ) : filteredUsers.length === 0 ? (
+              ) : users.length === 0 ? (
                 <p className="p-4 text-center text-sm text-muted-foreground">
                   Nenhum usuário encontrado
                 </p>
               ) : (
-                filteredUsers.map((user) => (
+                users.map((user) => (
                   <button
                     key={user.id}
                     type="button"
-                    onClick={() => setSelectedUserId(user.id)}
+                    onClick={() => {
+                      setSelectedUserId(user.id)
+                      setSelectedUserEmail(user.email || '')
+                    }}
                     className={`flex w-full items-center gap-3 border-b p-3 text-left transition-colors hover:bg-muted ${
                       selectedUserId === user.id ? 'bg-primary/10' : ''
                     }`}

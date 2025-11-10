@@ -98,7 +98,7 @@ export const VoucherAssignResultDialog: FC<VoucherAssignResultDialogProps> = ({
                             className={`ph ${item.success ? 'ph-check-circle text-green-600' : 'ph-x-circle text-red-600'}`}
                           />
                           <span className="font-medium text-sm">
-                            User ID: {item.userId}
+                            {item.email}
                           </span>
                           <Badge
                             variant={item.success ? 'default' : 'destructive'}
@@ -107,14 +107,6 @@ export const VoucherAssignResultDialog: FC<VoucherAssignResultDialogProps> = ({
                             {item.success ? 'Sucesso' : 'Falha'}
                           </Badge>
                         </div>
-
-                        {item.success && item.voucherCode && (
-                          <div className="text-sm text-muted-foreground">
-                            <span className="font-mono">
-                              Código: {item.voucherCode}
-                            </span>
-                          </div>
-                        )}
 
                         {item.success && item.voucherLink && (
                           <div className="text-sm">

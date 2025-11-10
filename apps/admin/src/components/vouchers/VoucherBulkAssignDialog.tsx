@@ -25,6 +25,7 @@ import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
 import { useUsers } from '@/hooks/useUsers'
+import { useDebounce } from '@/hooks/useDebounce'
 import { useVoucherMutations } from '@/hooks/useVoucherMutations'
 import { vouchersService } from '@/services/vouchers'
 import type { VoucherProduct, BulkAssignResponse } from '@/types/vouchers'
@@ -48,9 +49,17 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
   const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set())
   const [voucherSearchQuery, setVoucherSearchQuery] = useState('')
   const [userSearchQuery, setUserSearchQuery] = useState('')
+  const [allUsersSelected, setAllUsersSelected] = useState(false)
 
-  // Fetch users (we'll get all active users)
-  const { users, isLoading: isLoadingUsers } = useUsers({ status: 'active', limit: 100 })
+  // Debounce user search query to avoid excessive API calls
+  const debouncedUserSearchQuery = useDebounce(userSearchQuery, 300)
+
+  // Fetch users from /admin/users endpoint with search and status filter
+  const { users, isLoading: isLoadingUsers } = useUsers({
+    status: 'active',
+    search: debouncedUserSearchQuery.trim() || undefined,
+    limit: 100,
+  })
   const { bulkAssignVouchers } = useVoucherMutations()
 
   // Fetch vouchers
@@ -73,18 +82,6 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
     )
   }, [vouchersData?.items, voucherSearchQuery])
 
-  // Filter users by search query
-  const filteredUsers = useMemo(() => {
-    if (!userSearchQuery.trim()) return users
-
-    const query = userSearchQuery.toLowerCase()
-    return users.filter(
-      (user) =>
-        user.name?.toLowerCase().includes(query) ||
-        user.email?.toLowerCase().includes(query)
-    )
-  }, [users, userSearchQuery])
-
   const handleValueChange = (newValue: string) => {
     const numValue = Number(newValue)
     if (!isNaN(numValue)) {
@@ -103,10 +100,10 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
   }
 
   const handleToggleAll = () => {
-    if (selectedUserIds.size === filteredUsers.length) {
+    if (selectedUserIds.size === users.length) {
       setSelectedUserIds(new Set())
     } else {
-      setSelectedUserIds(new Set(filteredUsers.map((u) => u.id)))
+      setSelectedUserIds(new Set(users.map((u) => u.id)))
     }
   }
 
@@ -131,7 +128,7 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
       setStep(3)
     } else if (step === 3) {
       // Validate user selection
-      if (selectedUserIds.size === 0) {
+      if (!allUsersSelected && selectedUserIds.size === 0) {
         toast.error('Selecione pelo menos um usuário')
         return
       }
@@ -149,13 +146,22 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
     if (!selectedVoucher) return
 
     try {
-      const items = Array.from(selectedUserIds).map((userId) => ({
-        userId,
-        voucherProductId: selectedVoucher.id,
-        value,
-      }))
+      const selectedUsers = allUsersSelected
+        ? []
+        : Array.from(selectedUserIds).map((userId) => {
+            const user = users.find((u) => u.id === userId)
+            return {
+              userId,
+              email: user?.email || '',
+            }
+          })
 
-      const result = await bulkAssignVouchers.mutateAsync({ items })
+      const result = await bulkAssignVouchers.mutateAsync({
+        prizeId: selectedVoucher.id,
+        customAmount: value,
+        users: selectedUsers,
+        allUsersSelected,
+      })
 
       toast.success('Vouchers enviados!', {
         description: `${result.summary.successful} de ${result.summary.total} enviados com sucesso`,
@@ -176,6 +182,7 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
     setSelectedUserIds(new Set())
     setVoucherSearchQuery('')
     setUserSearchQuery('')
+    setAllUsersSelected(false)
     onOpenChange(false)
   }
 
@@ -372,69 +379,87 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
           {/* Step 3: Select Users */}
           {step === 3 && (
             <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="user-search">Buscar Usuários</Label>
-                <div className="relative">
-                  <i className="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    name="user-search"
-                    label=""
-                    id="user-search"
-                    type="text"
-                    placeholder="Nome ou email..."
-                    value={userSearchQuery}
-                    onChange={(e) => setUserSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
+              <div className="flex items-center gap-3 rounded-lg border p-4 bg-muted/50">
+                <Checkbox
+                  id="all-users"
+                  checked={allUsersSelected}
+                  onCheckedChange={(checked) => setAllUsersSelected(checked as boolean)}
+                />
+                <Label htmlFor="all-users" className="flex-1 cursor-pointer">
+                  <p className="font-medium">Enviar para todos os usuários</p>
+                  <p className="text-sm text-muted-foreground">
+                    Todos os usuários ativos receberão o voucher
+                  </p>
+                </Label>
               </div>
 
-              <div className="flex items-center justify-between rounded-lg border bg-muted/50 p-3">
-                <span className="text-sm font-medium">
-                  {selectedUserIds.size} usuários selecionados
-                </span>
-                <Button variant="ghost" size="sm" onClick={handleToggleAll}>
-                  {selectedUserIds.size === filteredUsers.length
-                    ? 'Desmarcar todos'
-                    : 'Selecionar todos'}
-                </Button>
-              </div>
+              {!allUsersSelected && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="user-search">Buscar Usuários</Label>
+                    <div className="relative">
+                      <i className="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        name="user-search"
+                        label=""
+                        id="user-search"
+                        type="text"
+                        placeholder="Nome ou email..."
+                        value={userSearchQuery}
+                        onChange={(e) => setUserSearchQuery(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+                  </div>
 
-              <div className="h-[300px] overflow-y-auto rounded-lg border">
-                <div className="p-4 space-y-2">
-                  {isLoadingUsers ? (
-                    <p className="text-center text-sm text-muted-foreground">
-                      Carregando usuários...
-                    </p>
-                  ) : filteredUsers.length === 0 ? (
-                    <p className="text-center text-sm text-muted-foreground">
-                      Nenhum usuário encontrado
-                    </p>
-                  ) : (
-                    filteredUsers.map((user) => (
-                      <div
-                        key={user.id}
-                        className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted/50 transition-colors"
-                      >
-                        <Checkbox
-                          id={`user-${user.id}`}
-                          checked={selectedUserIds.has(user.id)}
-                          onCheckedChange={() => handleToggleUser(user.id)}
-                        />
-                        <Label
-                          htmlFor={`user-${user.id}`}
-                          className="flex-1 cursor-pointer"
-                        >
-                          <div>
-                            <p className="font-medium">{user.name}</p>
-                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                  <div className="flex items-center justify-between rounded-lg border bg-muted/50 p-3">
+                    <span className="text-sm font-medium">
+                      {selectedUserIds.size} usuários selecionados
+                    </span>
+                    <Button variant="ghost" size="sm" onClick={handleToggleAll}>
+                      {selectedUserIds.size === users.length
+                        ? 'Desmarcar todos'
+                        : 'Selecionar todos'}
+                    </Button>
+                  </div>
+
+                  <div className="h-[300px] overflow-y-auto rounded-lg border">
+                    <div className="p-4 space-y-2">
+                      {isLoadingUsers ? (
+                        <p className="text-center text-sm text-muted-foreground">
+                          Carregando usuários...
+                        </p>
+                      ) : users.length === 0 ? (
+                        <p className="text-center text-sm text-muted-foreground">
+                          Nenhum usuário encontrado
+                        </p>
+                      ) : (
+                        users.map((user) => (
+                          <div
+                            key={user.id}
+                            className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted/50 transition-colors"
+                          >
+                            <Checkbox
+                              id={`user-${user.id}`}
+                              checked={selectedUserIds.has(user.id)}
+                              onCheckedChange={() => handleToggleUser(user.id)}
+                            />
+                            <Label
+                              htmlFor={`user-${user.id}`}
+                              className="flex-1 cursor-pointer"
+                            >
+                              <div>
+                                <p className="font-medium">{user.name}</p>
+                                <p className="text-sm text-muted-foreground">{user.email}</p>
+                              </div>
+                            </Label>
                           </div>
-                        </Label>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
@@ -452,14 +477,18 @@ export const VoucherBulkAssignDialog: FC<VoucherBulkAssignDialogProps> = ({
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Usuários</p>
-                  <p className="font-medium">{selectedUserIds.size} selecionados</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Total</p>
-                  <p className="text-lg font-bold">
-                    {formatter.format(value * selectedUserIds.size)}
+                  <p className="font-medium">
+                    {allUsersSelected ? 'Todos os usuários ativos' : `${selectedUserIds.size} selecionados`}
                   </p>
                 </div>
+                {!allUsersSelected && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">Total</p>
+                    <p className="text-lg font-bold">
+                      {formatter.format(value * selectedUserIds.size)}
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="rounded-lg bg-muted p-4">
