@@ -140,8 +140,8 @@ Baseado no consumo dos últimos 30 dias.`
             </TooltipTrigger>
             <TooltipContent className="max-w-xs">
               <p className="text-sm">
-                Saldo disponível na carteira de prêmios para resgates. 
-                Este valor é deduzido quando colaboradores resgatam vouchers ou experiências.
+                Saldo disponível na carteira de prêmios para resgates.
+                Este valor é deduzido quando colaboradores resgatam vouchers ou produtos.
               </p>
             </TooltipContent>
           </Tooltip>

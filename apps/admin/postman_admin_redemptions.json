@@ -1,0 +1,916 @@
+{
+  "info": {
+    "name": "Valorize API - Admin Redemptions Management",
+    "description": "Complete collection for testing admin redemption management endpoints (CRUD operations)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Get Auth Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_id\": \"{{auth0_client_id}}\",\n  \"client_secret\": \"{{auth0_client_secret}}\",\n  \"audience\": \"{{auth0_audience}}\",\n  \"grant_type\": \"client_credentials\"\n}"
+            },
+            "url": {
+              "raw": "https://{{auth0_domain}}/oauth/token",
+              "protocol": "https",
+              "host": [
+                "{{auth0_domain}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            },
+            "description": "Get access token from Auth0 for API testing"
+          }
+        }
+      ]
+    },
+    {
+      "name": "List Redemptions (READ)",
+      "item": [
+        {
+          "name": "List all redemptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions?limit=20&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Get paginated list of all company redemptions"
+          }
+        },
+        {
+          "name": "List by status (pending)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions?status=pending&limit=20&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Filter redemptions by status: pending, processing, completed, sent, failed, cancelled, shipped, delivered"
+          }
+        },
+        {
+          "name": "List by status (completed)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions?status=completed&limit=20&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "completed"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List by user ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions?userId={{user_id}}&limit=20&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Filter by specific user - replace {{user_id}} with actual user ID"
+          }
+        },
+        {
+          "name": "List by prize ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions?prizeId={{prize_id}}&limit=20&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions"
+              ],
+              "query": [
+                {
+                  "key": "prizeId",
+                  "value": "{{prize_id}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Filter by specific prize - replace {{prize_id}} with actual prize ID"
+          }
+        },
+        {
+          "name": "List by type (voucher)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions?type=voucher&limit=20&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "voucher"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Filter by prize type: voucher, physical"
+          }
+        },
+        {
+          "name": "List by type (physical)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions?type=physical&limit=20&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "physical"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List with pagination (next page)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions?limit=10&offset=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Pagination: limit=10 items, skip first 10 (offset=10)"
+          }
+        }
+      ],
+      "description": "GET endpoints for listing and filtering redemptions"
+    },
+    {
+      "name": "Get Redemption Details (READ)",
+      "item": [
+        {
+          "name": "Get redemption by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}"
+              ]
+            },
+            "description": "Get complete details of a specific redemption including user, prize, variant, voucher data, and tracking history. Replace {{redemption_id}} with actual redemption ID"
+          }
+        }
+      ],
+      "description": "GET endpoint for redemption details"
+    },
+    {
+      "name": "Update Status (UPDATE)",
+      "item": [
+        {
+          "name": "Update to processing",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"processing\",\n  \"notes\": \"Iniciando processamento do resgate\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}",
+                "status"
+              ]
+            },
+            "description": "Update redemption status to 'processing' with notes"
+          }
+        },
+        {
+          "name": "Update to shipped",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"shipped\",\n  \"notes\": \"Produto enviado para o endereço\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update to delivered",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"delivered\",\n  \"notes\": \"Recebido com sucesso pelo usuário\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update status without notes",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}",
+                "status"
+              ]
+            },
+            "description": "Update status without adding notes"
+          }
+        }
+      ],
+      "description": "PATCH endpoints for updating redemption status"
+    },
+    {
+      "name": "Add Tracking (UPDATE)",
+      "item": [
+        {
+          "name": "Add tracking code (Sedex)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trackingCode\": \"SS123456789BR\",\n  \"carrier\": \"Sedex\",\n  \"notes\": \"Entrega estimada para 5 dias úteis\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}/tracking",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}",
+                "tracking"
+              ]
+            },
+            "description": "Add Sedex tracking code to redemption"
+          }
+        },
+        {
+          "name": "Add tracking code (Correios)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trackingCode\": \"XY987654321BR\",\n  \"carrier\": \"Correios\",\n  \"notes\": \"PAC - Entrega em até 15 dias\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}/tracking",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}",
+                "tracking"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add tracking code (no carrier)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trackingCode\": \"TRACK001234567\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}/tracking",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}",
+                "tracking"
+              ]
+            },
+            "description": "Add tracking code without carrier information"
+          }
+        }
+      ],
+      "description": "PATCH endpoints for adding tracking information"
+    },
+    {
+      "name": "Add Admin Notes (UPDATE)",
+      "item": [
+        {
+          "name": "Add admin note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Cliente entrou em contato via email solicitando rastreamento. Informação enviada no mesmo dia.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}/notes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}",
+                "notes"
+              ]
+            },
+            "description": "Add an admin note to the redemption tracking history"
+          }
+        },
+        {
+          "name": "Add another note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Confirmado recebimento. Qualidade do produto verificada - perfeito estado.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}/notes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}",
+                "notes"
+              ]
+            }
+          }
+        }
+      ],
+      "description": "POST endpoints for adding admin notes to redemption audit trail"
+    },
+    {
+      "name": "Cancel Redemption (DELETE)",
+      "item": [
+        {
+          "name": "Cancel with reason",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Usuário solicitou cancelamento - preferiu outro prêmio\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}",
+                "cancel"
+              ]
+            },
+            "description": "Cancel a redemption and automatically refund coins to user + budget to company. This is an atomic transaction."
+          }
+        },
+        {
+          "name": "Cancel without reason",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/{{redemption_id}}/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "{{redemption_id}}",
+                "cancel"
+              ]
+            },
+            "description": "Cancel redemption without providing a reason"
+          }
+        }
+      ],
+      "description": "DELETE endpoints for cancelling redemptions with automatic refunds"
+    },
+    {
+      "name": "Send Voucher to User",
+      "item": [
+        {
+          "name": "Send single voucher",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"email\": \"{{user_email}}\",\n  \"prizeId\": \"{{prize_id}}\",\n  \"customAmount\": 50.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/send-to-user",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "send-to-user"
+              ]
+            },
+            "description": "Send a single voucher to a user. Company budget will be debited."
+          }
+        }
+      ],
+      "description": "Existing endpoint for sending vouchers (company pays)"
+    },
+    {
+      "name": "Bulk Send Vouchers",
+      "item": [
+        {
+          "name": "Send to specific users",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prizeId\": \"{{prize_id}}\",\n  \"customAmount\": 50.00,\n  \"users\": [\n    {\n      \"userId\": \"user_id_1\",\n      \"email\": \"user1@company.com\"\n    },\n    {\n      \"userId\": \"user_id_2\",\n      \"email\": \"user2@company.com\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/bulk-redeem",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "bulk-redeem"
+              ]
+            },
+            "description": "Send vouchers to specific users (1-100 users per request)"
+          }
+        },
+        {
+          "name": "Send to all company users",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prizeId\": \"{{prize_id}}\",\n  \"customAmount\": 50.00,\n  \"allUsersSelected\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/redemptions/bulk-redeem",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "redemptions",
+                "bulk-redeem"
+              ]
+            },
+            "description": "Send vouchers to all active users in the company"
+          }
+        }
+      ],
+      "description": "Existing endpoint for bulk sending vouchers"
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string",
+      "description": "Your JWT token from Auth0"
+    },
+    {
+      "key": "redemption_id",
+      "value": "",
+      "type": "string",
+      "description": "The ID of the redemption to test (e.g., clu1234abcd)"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string",
+      "description": "The ID of a user in your company"
+    },
+    {
+      "key": "user_email",
+      "value": "",
+      "type": "string",
+      "description": "The email of the user (must match database)"
+    },
+    {
+      "key": "prize_id",
+      "value": "",
+      "type": "string",
+      "description": "The ID of a prize/voucher"
+    },
+    {
+      "key": "auth0_domain",
+      "value": "",
+      "type": "string",
+      "description": "Your Auth0 domain (e.g., yourcompany.auth0.com)"
+    },
+    {
+      "key": "auth0_client_id",
+      "value": "",
+      "type": "string",
+      "description": "Auth0 client ID for testing"
+    },
+    {
+      "key": "auth0_client_secret",
+      "value": "",
+      "type": "string",
+      "description": "Auth0 client secret"
+    },
+    {
+      "key": "auth0_audience",
+      "value": "",
+      "type": "string",
+      "description": "Auth0 API audience"
+    }
+  ]
+}

@@ -49,6 +49,29 @@ export type {
   EconomyDashboardData,
 } from './economy'
 
+// Redemption Types
+export type {
+  Redemption,
+  RedemptionFilters,
+  VoucherRedemption,
+  TrackingInfo,
+  TrackingHistoryItem,
+  AdminNote,
+  UpdateStatusPayload,
+  AddTrackingPayload,
+  AddNotePayload,
+  CancelRedemptionPayload,
+  PaginationInfo,
+  RedemptionsListResponse,
+  RedemptionDetailResponse,
+  StatusUpdateResponse,
+  TrackingUpdateResponse,
+  AddNoteResponse,
+  CancelRedemptionResponse,
+} from './redemptions'
+
+export { RedemptionStatus, RedemptionType } from './redemptions'
+
 // Common Types
 export interface ProviderProps {
   children: React.ReactNode

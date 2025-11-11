@@ -22,12 +22,16 @@ import type {
   BadgeColumnConfig,
   DateColumnConfig,
   NumberColumnConfig,
+  CustomColumnConfig,
 } from '@/config/tables/types'
+import { UserCardCell } from '@/components/redemptions/UserCardCell'
+import { PrizeImageCell } from '@/components/redemptions/PrizeImageCell'
+import type { Redemption } from '@/types/redemptions'
 
 /**
  * Renderiza uma coluna com base no tipo
  */
-export const renderColumn = <T,>(row: T, config: unknown): ReactNode => {
+export const renderColumn = <T extends object>(row: T, config: unknown, columnId?: string): ReactNode => {
   const col = config as { type: string }
 
   switch (col.type) {
@@ -47,6 +51,16 @@ export const renderColumn = <T,>(row: T, config: unknown): ReactNode => {
       return <DateRenderer row={row} config={config as DateColumnConfig<T>} />
     case 'number':
       return <NumberRenderer row={row} config={config as NumberColumnConfig<T>} />
+    case 'custom': {
+      // Handle custom columns with special renderers
+      if (columnId === 'userId' && 'userId' in row) {
+        return <UserCardCell row={row as unknown as Redemption} />
+      }
+      if (columnId === 'prizeId' && 'prizeId' in row) {
+        return <PrizeImageCell row={row as unknown as Redemption} />
+      }
+      return (config as CustomColumnConfig<T>).cell(row)
+    }
     default:
       return null
   }

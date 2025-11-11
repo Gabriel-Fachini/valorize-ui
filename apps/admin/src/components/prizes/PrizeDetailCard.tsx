@@ -18,7 +18,6 @@ export const PrizeDetailCard: FC<PrizeDetailCardProps> = ({ prize }) => {
     // Mapeamento de valores em inglês para português
     const typeMapping: Record<string, string> = {
       'product': 'produto',
-      'experience': 'experiencia',
     }
 
     const normalizedValue = typeMapping[value] || value

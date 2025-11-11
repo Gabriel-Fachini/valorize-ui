@@ -22,6 +22,7 @@ export const NAV_LINKS: NavLink[] = [
     subItems: [
       { path: '/prizes', label: 'Prêmios', icon: 'gift', dataTour: 'prizes' },
       { path: '/vouchers', label: 'Vouchers', icon: 'ticket', dataTour: 'vouchers' },
+      { path: '/redemptions', label: 'Resgates', icon: 'receipt', dataTour: 'redemptions' },
     ]
   },
 ]

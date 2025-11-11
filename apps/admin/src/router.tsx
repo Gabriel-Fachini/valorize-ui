@@ -1,5 +1,6 @@
 import { createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router'
 // import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { DevErrorBoundary } from '@components/DevErrorBoundary'
 import { RootComponent } from '@components/RootComponent'
 import { ProtectedRoute } from '@components/ProtectedRoute'
 import { LoginPage } from '@pages/LoginPage'
@@ -16,6 +17,8 @@ import { VoucherDetailPage } from '@pages/VoucherDetailPage'
 import { PrizesPage } from '@pages/PrizesPage'
 import { PrizeNewPage } from '@pages/PrizeNewPage'
 import { PrizeDetailPage } from '@pages/PrizeDetailPage'
+import { RedemptionsPage } from '@pages/RedemptionsPage'
+import { RedemptionDetailPage } from '@pages/RedemptionDetailPage'
 
 // Create a root route
 const rootRoute = createRootRoute({
@@ -105,6 +108,19 @@ const voucherDetailRoute = createRoute({
   component: VoucherDetailPage,
 })
 
+// Redemptions routes - protected
+const redemptionsRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/redemptions',
+  component: RedemptionsPage,
+})
+
+const redemptionDetailRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/redemptions/$redemptionId',
+  component: RedemptionDetailPage,
+})
+
 // Prizes routes - protected
 const prizesRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
@@ -177,6 +193,8 @@ const routeTree = rootRoute.addChildren([
     roleDetailRoute,
     vouchersRoute,
     voucherDetailRoute,
+    redemptionsRoute,
+    redemptionDetailRoute,
     prizesRoute,
     prizeNewRoute,
     prizeDetailRoute,
@@ -191,7 +209,11 @@ const routeTree = rootRoute.addChildren([
 ])
 
 // Create the router
-export const router = createRouter({ routeTree })
+export const router = createRouter({
+  routeTree,
+  // Show detailed error component in development for easier debugging
+  defaultErrorComponent: import.meta.env.DEV ? DevErrorBoundary : undefined,
+})
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {

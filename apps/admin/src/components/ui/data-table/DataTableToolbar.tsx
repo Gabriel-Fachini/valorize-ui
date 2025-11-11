@@ -65,23 +65,41 @@ export const DataTableToolbar: FC<DataTableToolbarProps> = ({
         )
 
       case 'select': {
-        const selectFilter = filter
+        const selectFilter = filter as any
         const options = selectFilter.dynamic
           ? dynamicFilterOptions[filter.id] || []
           : selectFilter.options
 
+        // Se allowEmpty está habilitado, adicionar opção vazia no início
+        const displayOptions = selectFilter.allowEmpty
+          ? [
+              { value: '_EMPTY_', label: selectFilter.emptyLabel || 'Selecione...' },
+              ...options,
+            ]
+          : options
+
+        // Determinar valor a exibir
+        const currentValue = filterValues[filter.id]
+        const displayValue =
+          selectFilter.allowEmpty && currentValue === ''
+            ? '_EMPTY_'
+            : String(currentValue || (selectFilter.allowEmpty ? '_EMPTY_' : 'all'))
+
         return (
           <Select
             key={filter.id}
-            value={String(filterValues[filter.id] || 'all')}
-            onValueChange={(value) => handleFilterChange(filter.id, value === 'all' ? '' : value)}
+            value={displayValue}
+            onValueChange={(value) => {
+              const actualValue = value === '_EMPTY_' ? '' : value
+              handleFilterChange(filter.id, actualValue)
+            }}
           >
             <SelectTrigger className={filter.width || 'w-[180px]'}>
               {filter.icon && <i className={`ph ${filter.icon} mr-2 h-4 w-4`} />}
               <SelectValue placeholder={filter.placeholder} />
             </SelectTrigger>
             <SelectContent>
-              {options.map((option) => (
+              {displayOptions.map((option: SelectOption) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.icon && <i className={`ph ${option.icon} mr-2`} />}
                   {option.label}

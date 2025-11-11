@@ -21,7 +21,6 @@ import type { Prize } from '@/types/prizes'
 // Prize types
 export const PRIZE_TYPES = [
   { value: 'voucher', label: 'Voucher' },
-  { value: 'experiencia', label: 'Experiência' },
   { value: 'produto', label: 'Produto' },
 ] as const
 
@@ -30,7 +29,7 @@ const prizeFormSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(255, 'Nome muito longo'),
   description: z.string().min(1, 'Descrição é obrigatória').max(2000, 'Descrição muito longa'),
   category: z.string().min(1, 'Categoria é obrigatória').max(100, 'Categoria muito longa'),
-  type: z.enum(['voucher', 'experiencia', 'produto'], {
+  type: z.enum(['voucher', 'produto'], {
     message: 'Tipo é obrigatório',
   }),
   brand: z.string().min(1, 'Marca é obrigatória').max(100, 'Marca muito longa'),
@@ -68,7 +67,7 @@ export const PrizeForm: FC<PrizeFormProps> = ({ prize, onSubmit, onCancel, isSub
       name: prize?.name || '',
       description: prize?.description || '',
       category: prize?.category || '',
-      type: (prize?.type as 'voucher' | 'experiencia' | 'produto' | undefined) || undefined,
+      type: (prize?.type as 'voucher' | 'produto' | undefined) || undefined,
       brand: prize?.brand || '',
       coinPrice: prize?.coinPrice || 0,
       stock: prize?.stock || 0,
