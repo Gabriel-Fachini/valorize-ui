@@ -40,7 +40,7 @@ import { DataTablePagination } from './DataTablePagination'
 import { renderColumn } from './renderColumn'
 import type { DataTableProps, ColumnConfig, ActionConfig } from '@/config/tables/types'
 
-export function DataTable<T>({
+export function DataTable<T extends object>({
   config,
   data,
   isLoading = false,
@@ -175,14 +175,14 @@ export function DataTable<T>({
         cols.push({
           ...columnDef,
           header: String(colConfig.header),
-          cell: ({ row }) => colConfig.cell(row.original),
+          cell: ({ row }) => renderColumn(row.original, colConfig, colConfig.id),
         } as ColumnDef<T>)
       } else {
         // Colunas padrão
         cols.push({
           ...columnDef,
           header: String(colConfig.header),
-          cell: ({ row }) => renderColumn(row.original, colConfig),
+          cell: ({ row }) => renderColumn(row.original, colConfig, colConfig.id),
         } as ColumnDef<T>)
       }
     })

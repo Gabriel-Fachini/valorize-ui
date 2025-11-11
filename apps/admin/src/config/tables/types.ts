@@ -161,6 +161,8 @@ export interface SelectFilterConfig extends BaseFilterConfig {
   options: SelectOption[]
   dynamic?: boolean // Se true, options são carregadas via hook
   hook?: string // Nome do hook para carregar options dinamicamente
+  allowEmpty?: boolean // Permite valor vazio/nulo como opção válida
+  emptyLabel?: string // Label para a opção de valor vazio (ex: "Selecione...")
 }
 
 export interface DateRangeFilterConfig extends BaseFilterConfig {

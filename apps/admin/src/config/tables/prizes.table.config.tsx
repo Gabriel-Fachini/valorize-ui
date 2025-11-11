@@ -42,7 +42,7 @@ export const prizesTableConfig: TableConfig<Prize> = {
       enableSorting: true,
     },
 
-    // Tipo de prêmio (voucher, experiência, produto)
+    // Tipo de prêmio (voucher, produto)
     {
       id: 'type',
       type: 'badge',
@@ -53,7 +53,6 @@ export const prizesTableConfig: TableConfig<Prize> = {
         // Mapeamento de valores em inglês para português
         const typeMapping: Record<string, string> = {
           'product': 'produto',
-          'experience': 'experiencia',
         }
 
         const normalizedValue = typeMapping[String(value)] || String(value)
@@ -194,7 +193,7 @@ export const prizesTableConfig: TableConfig<Prize> = {
       clearable: true,
     },
 
-    // Filtro por tipo (voucher, experiência, produto)
+    // Filtro por tipo (voucher, produto)
     {
       id: 'type',
       type: 'select',

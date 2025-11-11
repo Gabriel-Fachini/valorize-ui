@@ -358,7 +358,7 @@ curl -X PATCH http://localhost:3000/prizes/prize_voucher_amazon_100 \
 - `id`: ID único do prêmio
 - `name`: Nome exibido no catálogo
 - `description`: Descrição e instruções de uso
-- `category`: "voucher", "experience", ou "product"
+- `category`: "voucher" ou "product"
 - `coinPrice`: Preço em moedas virtuais
 - `stock`: Quantidade disponível (sempre 999 para vouchers)
 - **`isActive`**: `true` = visível no catálogo, `false` = oculto

@@ -140,7 +140,7 @@ Se > 60%: Verificar se há promoções ativas ou comportamento atípico`
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p className="text-base">
-                    Moedas já convertidas em vouchers ou experiências neste mês.
+                    Moedas já convertidas em vouchers ou produtos neste mês.
                     Cada moeda equivale a R$ 0,06 de custo operacional.
                   </p>
                 </TooltipContent>
