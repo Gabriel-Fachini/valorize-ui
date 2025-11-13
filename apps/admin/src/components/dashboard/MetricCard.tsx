@@ -30,7 +30,7 @@ export const MetricCard: FC<MetricCardProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className="min-h-[180px] rounded-lg border bg-card p-6 shadow-sm flex flex-col">
+      <div className="h-full rounded-lg border bg-card p-6 shadow-sm flex flex-col overflow-hidden">
         <div className="flex items-start justify-between flex-1">
           <div className="space-y-3 flex-1">
             {/* Title skeleton */}
@@ -50,7 +50,7 @@ export const MetricCard: FC<MetricCardProps> = ({
   }
 
   return (
-    <div className="min-h-[180px] rounded-3xl border bg-card p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+    <div className="h-full rounded-3xl border bg-card p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden">
       <div className="flex items-start justify-between flex-1">
         <div className="space-y-1 flex-1">
           <div className="flex items-center gap-2">

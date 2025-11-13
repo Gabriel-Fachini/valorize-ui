@@ -22,15 +22,9 @@ import { Label } from '@/components/ui/label'
 import { redemptionsTableConfig } from '@/config/tables/redemptions.table.config'
 import { useRedemptions } from '@/hooks/useRedemptions'
 import { useRedemptionMutations } from '@/hooks/useRedemptionMutations'
-import { useRedemptionMetrics } from '@/hooks/useRedemptionMetrics'
 import { useDebounce } from '@/hooks/useDebounce'
 import { toast } from 'sonner'
 import { RedemptionUpdateStatusDialog } from '@/components/redemptions/RedemptionUpdateStatusDialog'
-import { RedemptionMetricsGrid } from '@/components/redemptions/metrics/RedemptionMetricsGrid'
-import { RedemptionStatusChart } from '@/components/redemptions/metrics/RedemptionStatusChart'
-import { RedemptionTypeBreakdown } from '@/components/redemptions/metrics/RedemptionTypeBreakdown'
-import { TopRedeemedPrizes } from '@/components/redemptions/metrics/TopRedeemedPrizes'
-import { FinancialSummary } from '@/components/redemptions/metrics/FinancialSummary'
 import type { Redemption, RedemptionFilters } from '@/types/redemptions'
 
 export const RedemptionsPage: FC = () => {
@@ -65,7 +59,6 @@ export const RedemptionsPage: FC = () => {
 
   const { redemptions, totalCount, isLoading, isFetching } = useRedemptions(queryParams)
   const { updateStatus, cancel } = useRedemptionMutations()
-  const { metrics, isLoading: metricsLoading } = useRedemptionMetrics()
 
   // Reset to page 1 when filters change
   useEffect(() => {
@@ -180,37 +173,6 @@ export const RedemptionsPage: FC = () => {
           title="Resgates"
           description="Gerencie os resgates de prêmios dos usuários"
         />
-
-        {/* Metrics Grid */}
-        <RedemptionMetricsGrid
-          metrics={metrics}
-          isLoading={metricsLoading}
-        />
-
-        {/* Charts and Breakdown Grid */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          <RedemptionStatusChart
-            statusBreakdown={metrics?.statusBreakdown}
-            isLoading={metricsLoading}
-          />
-          <RedemptionTypeBreakdown
-            typeBreakdown={metrics?.typeBreakdown}
-            isLoading={metricsLoading}
-          />
-        </div>
-
-        {/* Bottom Row: Top Prizes and Financial Summary */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          <TopRedeemedPrizes
-            topPrizes={metrics?.topPrizes}
-            isLoading={metricsLoading}
-          />
-          <FinancialSummary
-            financialImpact={metrics?.financialImpact}
-            totalRedemptions={metrics?.volume.totalRedemptions}
-            isLoading={metricsLoading}
-          />
-        </div>
 
         {/* Data Table */}
         <DataTable

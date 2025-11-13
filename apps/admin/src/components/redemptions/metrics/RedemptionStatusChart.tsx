@@ -62,9 +62,11 @@ interface CustomTooltipProps {
 const CustomTooltip: FC<CustomTooltipProps> = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const { status, count, percentage } = payload[0].payload
+    const lowerStatus = status.toLowerCase()
+    const capitalizedStatus = lowerStatus.charAt(0).toUpperCase() + lowerStatus.slice(1)
     return (
       <div className="rounded-lg border bg-background p-3 shadow-lg">
-        <p className="text-sm font-medium capitalize">{status}</p>
+        <p className="text-sm font-medium">{capitalizedStatus}</p>
         <p className="text-sm text-muted-foreground">
           <span className="font-semibold text-primary">{count}</span> resgate
           {count > 1 ? 's' : ''}
@@ -110,10 +112,15 @@ export const RedemptionStatusChart: FC<RedemptionStatusChartProps> = ({
     )
   }
 
-  const chartData = statusBreakdown.map(item => ({
-    ...item,
-    value: item.count,
-  }))
+  const chartData = statusBreakdown.map(item => {
+    const lowerStatus = item.status.toLowerCase()
+    return {
+      ...item,
+      status: lowerStatus,
+      name: lowerStatus.charAt(0).toUpperCase() + lowerStatus.slice(1),
+      value: item.count,
+    }
+  })
 
   return (
     <animated.div
@@ -136,8 +143,8 @@ export const RedemptionStatusChart: FC<RedemptionStatusChartProps> = ({
             labelLine={false}
             label={({ name, percentage }) => `${name} ${(percentage as number).toFixed(0)}%`}
             outerRadius={80}
-            fill="#8884d8"
             dataKey="value"
+            nameKey="name"
           >
             {chartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={STATUS_COLORS[entry.status] || '#8b5cf6'} />
@@ -151,7 +158,6 @@ export const RedemptionStatusChart: FC<RedemptionStatusChartProps> = ({
               paddingTop: '20px',
               fontSize: '12px',
             }}
-            formatter={(value) => <span className="capitalize text-muted-foreground">{value}</span>}
           />
         </PieChart>
       </ResponsiveContainer>

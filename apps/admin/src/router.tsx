@@ -19,6 +19,7 @@ import { PrizeNewPage } from '@pages/PrizeNewPage'
 import { PrizeDetailPage } from '@pages/PrizeDetailPage'
 import { RedemptionsPage } from '@pages/RedemptionsPage'
 import { RedemptionDetailPage } from '@pages/RedemptionDetailPage'
+import { RedemptionsDashboardPage } from '@pages/RedemptionsDashboardPage'
 
 // Create a root route
 const rootRoute = createRootRoute({
@@ -121,6 +122,12 @@ const redemptionDetailRoute = createRoute({
   component: RedemptionDetailPage,
 })
 
+const redemptionsDashboardRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/prizes/dashboard',
+  component: RedemptionsDashboardPage,
+})
+
 // Prizes routes - protected
 const prizesRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
@@ -195,6 +202,7 @@ const routeTree = rootRoute.addChildren([
     voucherDetailRoute,
     redemptionsRoute,
     redemptionDetailRoute,
+    redemptionsDashboardRoute,
     prizesRoute,
     prizeNewRoute,
     prizeDetailRoute,

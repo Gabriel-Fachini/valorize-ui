@@ -29,9 +29,17 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
   }, [subItems, isOpen])
 
   // Check if any sub-item is active
-  const hasActiveSubItem = subItems?.some(
-    subItem => currentPath === subItem.path || currentPath.startsWith(subItem.path + '/')
-  )
+  const hasActiveSubItem = subItems?.some((subItem) => {
+    // Exact match
+    if (currentPath === subItem.path) return true
+    // Check if it's a true sub-path (has /$ after the path)
+    if (currentPath.startsWith(subItem.path + '/')) {
+      // But exclude paths like /prizes/dashboard when checking /prizes
+      if (subItem.path === '/prizes' && currentPath === '/prizes/dashboard') return false
+      return true
+    }
+    return false
+  })
 
   // Close when sidebar collapses
   useEffect(() => {
@@ -127,7 +135,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
         >
           <div ref={contentRef} className="py-1">
             {subItems.map((subItem) => {
-              const isSubItemActive = currentPath === subItem.path || currentPath.startsWith(subItem.path + '/')
+              const isSubItemActive = currentPath === subItem.path || (currentPath.startsWith(subItem.path + '/') && !(subItem.path === '/prizes' && currentPath === '/prizes/dashboard'))
               const subIconClass = isSubItemActive ? `ph-fill ph-${subItem.icon}` : `ph ph-${subItem.icon}`
               
               return (
