@@ -72,6 +72,41 @@ export type {
 
 export { RedemptionStatus, RedemptionType } from './redemptions'
 
+// Compliments Types
+export type {
+  CompanyValue,
+  Department,
+  ComplimentsDashboardFilters,
+  PeriodInfo,
+  ComparisonMetrics,
+  ComplimentsOverview,
+  ValueDistributionItem,
+  TopSenderUser,
+  TopReceiverUser,
+  BalancedUser,
+  TopUsers,
+  DepartmentAnalyticsItem,
+  CrossDepartmentFlowItem,
+  DepartmentAnalytics,
+  WeeklyTrendPoint,
+  DayOfWeekDistribution,
+  HourlyDistribution,
+  MonthlyGrowth,
+  TemporalPatterns,
+  RecentActivityItem,
+  InsightItem,
+  EngagementMetrics,
+  DashboardMetadata,
+  ComplimentsDashboardResponse,
+  NetworkNode,
+  NetworkLink,
+  NetworkGraphData,
+  NetworkFilters,
+  ExportDashboardPayload,
+} from './compliments'
+
+export { ExportFormat } from './compliments'
+
 // Common Types
 export interface ProviderProps {
   children: React.ReactNode

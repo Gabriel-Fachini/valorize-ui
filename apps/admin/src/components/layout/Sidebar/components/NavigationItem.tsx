@@ -135,7 +135,29 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
         >
           <div ref={contentRef} className="py-1">
             {subItems.map((subItem) => {
-              const isSubItemActive = currentPath === subItem.path || (currentPath.startsWith(subItem.path + '/') && !(subItem.path === '/prizes' && currentPath === '/prizes/dashboard'))
+              // Check if this specific sub-item is active
+              // For sub-items, we want exact match OR a true deeper route (with additional path segments)
+              let isSubItemActive = currentPath === subItem.path
+
+              // Check for sub-routes (like /compliments/network/details would match /compliments/network)
+              if (!isSubItemActive && currentPath.startsWith(subItem.path + '/')) {
+                // Make sure it's not just a sibling route that shares a prefix
+                // Check if any other sibling has an exact match or is a better match
+                const hasExactMatchSibling = subItems.some(other => currentPath === other.path)
+                const hasBetterMatchSibling = subItems.some(other =>
+                  other.path !== subItem.path &&
+                  currentPath.startsWith(other.path + '/') &&
+                  other.path.length > subItem.path.length
+                )
+
+                if (!hasExactMatchSibling && !hasBetterMatchSibling) {
+                  // Special case: exclude /prizes from matching /prizes/dashboard
+                  if (!(subItem.path === '/prizes' && currentPath === '/prizes/dashboard')) {
+                    isSubItemActive = true
+                  }
+                }
+              }
+
               const subIconClass = isSubItemActive ? `ph-fill ph-${subItem.icon}` : `ph ph-${subItem.icon}`
               
               return (

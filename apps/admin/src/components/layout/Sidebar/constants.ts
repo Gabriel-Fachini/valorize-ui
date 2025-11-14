@@ -2,7 +2,16 @@ import type { NavLink } from './types'
 
 export const NAV_LINKS: NavLink[] = [
   { path: '/home', label: 'Início', icon: 'house', dataTour: 'home' },
-  { path: '/compliments', label: 'Elogios', icon: 'chat-circle', dataTour: 'compliments' },
+  {
+    path: '#',
+    label: 'Elogios',
+    icon: 'chat-circle',
+    dataTour: 'compliments',
+    subItems: [
+      { path: '/compliments', label: 'Dashboard', icon: 'chart-bar', dataTour: 'compliments-dashboard' },
+      { path: '/compliments/network', label: 'Network', icon: 'graph', dataTour: 'compliments-network' },
+    ]
+  },
   { path: '/economy', label: 'Economia', icon: 'currency-circle-dollar', dataTour: 'economy' },
   {
     path: '#',
