@@ -5,7 +5,8 @@ import { RootComponent } from '@components/RootComponent'
 import { ProtectedRoute } from '@components/ProtectedRoute'
 import { LoginPage } from '@pages/LoginPage'
 import { HomePage } from '@pages/HomePage'
-import { ComplimentsAnalyticsPage } from '@pages/ComplimentsAnalyticsPage'
+import { ComplimentsDashboardPage } from '@pages/ComplimentsDashboardPage'
+import { ComplimentsNetworkPage } from '@pages/ComplimentsNetworkPage'
 import { SettingsPage } from '@pages/SettingsPage'
 import { UsersPage } from '@pages/UsersPage'
 import { UserDetailPage } from '@pages/UserDetailPage'
@@ -56,11 +57,18 @@ const defaultRoute = createRoute({
   component: HomePage,
 })
 
-// Compliments analytics route - protected
+// Compliments dashboard route - protected
 const complimentsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/compliments',
-  component: ComplimentsAnalyticsPage,
+  component: ComplimentsDashboardPage,
+})
+
+// Compliments network route - protected
+const complimentsNetworkRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/compliments/network',
+  component: ComplimentsNetworkPage,
 })
 
 // Economy route - protected
@@ -193,6 +201,7 @@ const routeTree = rootRoute.addChildren([
     defaultRoute,
     homeRoute,
     complimentsRoute,
+    complimentsNetworkRoute,
     economyRoute,
     usersRoute,
     userDetailRoute,

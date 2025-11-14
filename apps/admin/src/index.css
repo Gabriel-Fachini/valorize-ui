@@ -74,7 +74,7 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.66 0.24 149);
   --primary-foreground: oklch(1 0 0);
-  --secondary: #82002f;
+  --secondary: #d9004f;
   --secondary-foreground: oklch(1 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -202,7 +202,7 @@ html[data-font="xl"] { font-size: 20px; }
   --popover-foreground: oklch(0.98 0 0);
   --primary: oklch(0.66 0.24 149);
   --primary-foreground: oklch(1 0 0);
-  --secondary: #82002f;
+  --secondary: #d9004f;
   --secondary-foreground: oklch(1 0 0);
   --muted: oklch(0.2 0 0);
   --muted-foreground: oklch(0.7 0 0);
