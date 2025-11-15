@@ -1,3 +1,5 @@
+export type PrizeType = 'voucher' | 'product'
+
 export interface PrizeVariant {
   id: string
   prizeId: string
@@ -14,6 +16,7 @@ export interface Prize {
   name: string
   description: string
   category: string
+  type: PrizeType
   brand: string
   coinPrice: number
   images: string[]
@@ -28,7 +31,7 @@ export interface PrizeFilters {
   category?: string
   minPrice?: number
   maxPrice?: number
-  sortBy?: 'popular' | 'price_asc' | 'price_desc' | 'newest'
+  sortBy?: 'popular' | 'most_redeemed' | 'price_asc' | 'price_desc' | 'newest'
   priceRange?: { min: number; max: number }
   search?: string
 }

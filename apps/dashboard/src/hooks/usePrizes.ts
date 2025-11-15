@@ -26,7 +26,7 @@ export const useRedeemPrize = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ prizeId, variantId, addressId }: { prizeId: string; variantId?: string; addressId: string }) =>
+    mutationFn: ({ prizeId, variantId, addressId }: { prizeId: string; variantId?: string; addressId?: string }) =>
       redemptionsService.redeemPrize({ prizeId, variantId, addressId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['prizes'] })

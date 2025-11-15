@@ -22,15 +22,33 @@ export const prizeService = {
       page,
       pageSize,
     }
-    
+
     if (filters?.category) {
       params.category = filters.category
     }
-    if (filters?.minPrice !== undefined) {
-      params.minPrice = filters.minPrice
+
+    // Handle priceRange - convert to minPrice/maxPrice
+    if (filters?.priceRange) {
+      params.minPrice = filters.priceRange.min
+      params.maxPrice = filters.priceRange.max
+    } else {
+      // Fallback to direct minPrice/maxPrice if provided
+      if (filters?.minPrice !== undefined) {
+        params.minPrice = filters.minPrice
+      }
+      if (filters?.maxPrice !== undefined) {
+        params.maxPrice = filters.maxPrice
+      }
     }
-    if (filters?.maxPrice !== undefined) {
-      params.maxPrice = filters.maxPrice
+
+    // Add search parameter
+    if (filters?.search) {
+      params.search = filters.search
+    }
+
+    // Add sortBy parameter
+    if (filters?.sortBy) {
+      params.sortBy = filters.sortBy
     }
 
     const response = await api.get<GetPrizesResponse>('/prizes/catalog', { params })

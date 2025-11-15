@@ -14,34 +14,18 @@ export const PrizesPage = () => {
   const [allPrizes, setAllPrizes] = useState<Prize[]>([])
   const [isPending, startTransition] = useTransition()
   
-  const { data, isLoading, error, isFetching } = usePrizes({ 
-    ...filters, 
-    search: undefined,
-  }, page, 12)
+  const { data, isLoading, error, isFetching } = usePrizes(filters, page, 12)
 
   // Memoized calculations - React 19 optimization
-  const totalPages = useMemo(() => 
-    data ? Math.ceil(data.total / data.pageSize) : 0, 
+  const totalPages = useMemo(() =>
+    data ? Math.ceil(data.total / data.pageSize) : 0,
     [data],
   )
-  
+
   const hasMore = useMemo(() => page < totalPages, [page, totalPages])
 
-  // Client-side filtering for search only
-  const filteredPrizes = useMemo(() => {
-    if (!filters.search || filters.search.trim() === '') {
-      return allPrizes
-    }
-    
-    const searchTerm = filters.search.toLowerCase().trim()
-    return allPrizes.filter(prize => 
-      prize.name.toLowerCase().includes(searchTerm) ||
-      prize.description.toLowerCase().includes(searchTerm),
-    )
-  }, [allPrizes, filters.search])
-
-  // Show filtered prizes or all prizes based on search
-  const displayPrizes = filteredPrizes
+  // Display prizes from API (search is now handled server-side)
+  const displayPrizes = allPrizes
 
   // Optimized effects with React 19 patterns
   useEffect(() => {
@@ -60,12 +44,9 @@ export const PrizesPage = () => {
   }, [data?.prizes, page])
 
   useEffect(() => {
-    // Reset prizes when filters change (except search)
-    const { search: _search, ...otherFilters } = filters
-    if (Object.keys(otherFilters).length > 0) {
-      setAllPrizes([])
-      setPage(1)
-    }
+    // Reset prizes and page when filters change (now includes search)
+    setAllPrizes([])
+    setPage(1)
   }, [filters])
 
   // Memoized spring animation
@@ -156,8 +137,8 @@ export const PrizesPage = () => {
               ))}
             </div>
 
-              {/* Mostrar botão "Carregar mais" apenas se não estiver fazendo busca */}
-              {!filters.search && hasMore && (
+              {/* Load more button */}
+              {hasMore && (
                 <div className="mt-8 flex justify-center">
                   <Button
                     onClick={handleLoadMore}
@@ -181,8 +162,8 @@ export const PrizesPage = () => {
                 </div>
               )}
 
-              {/* Mostrar indicador de loading apenas se não estiver fazendo busca */}
-              {!filters.search && (isFetching || isPending) && allPrizes.length > 0 && (
+              {/* Loading indicator */}
+              {(isFetching || isPending) && allPrizes.length > 0 && (
                 <div className="mt-4 flex justify-center">
                   <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                     <i className="ph-bold ph-spinner text-sm animate-spin" />

@@ -4,7 +4,7 @@ import { api } from './api'
 interface RedeemPrizeRequest {
   prizeId: string
   variantId?: string
-  addressId: string
+  addressId?: string
 }
 
 interface RedeemPrizeResponse {

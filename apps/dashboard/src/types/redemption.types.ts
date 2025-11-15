@@ -6,7 +6,7 @@ export interface Redemption {
   prizeId: string
   variantId?: string
   companyId: string
-  addressId: string
+  addressId?: string
   coinsSpent: number
   status: string // API returns lowercase: "pending", "processing", etc.
   trackingCode?: string | null
@@ -36,7 +36,7 @@ export interface RedemptionDetails {
   prizeId: string
   variantId?: string
   companyId: string
-  addressId: string
+  addressId?: string
   coinsSpent: number
   status: string
   trackingCode?: string | null

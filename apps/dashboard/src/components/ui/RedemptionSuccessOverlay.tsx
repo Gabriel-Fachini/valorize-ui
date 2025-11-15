@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { animated } from '@react-spring/web'
 import { useSuccessTransition } from '@/hooks/useAnimations'
 import { LottieAnimation } from './LottieAnimation'
+import type { PrizeType } from '@/types/prize.types'
 
 interface RedemptionSuccessOverlayProps {
   isVisible: boolean
@@ -10,6 +11,7 @@ interface RedemptionSuccessOverlayProps {
   description?: string
   prizeName?: string
   prizeImage?: string
+  prizeType?: PrizeType
   onGoToPrizes?: () => void
   onGoToRedemptions?: () => void
 }
@@ -102,6 +104,7 @@ export const RedemptionSuccessOverlay = memo(({
   description,
   prizeName,
   prizeImage,
+  prizeType: _prizeType, // Available for future use
   onGoToPrizes,
   onGoToRedemptions,
 }: RedemptionSuccessOverlayProps) => {

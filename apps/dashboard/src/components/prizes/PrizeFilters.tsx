@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { SearchInput } from '@/components/ui'
+import { useCategories } from '@/hooks/usePrizes'
 
 interface PrizeFiltersProps {
   filters: Filters
@@ -17,8 +18,17 @@ interface PrizeFiltersProps {
   totalResults?: number
 }
 
+// Helper function to format category labels
+const formatCategoryLabel = (category: string): string => {
+  return category
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
 export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersChange, totalResults }) => {
   const [isMoreFiltersOpen, setIsMoreFiltersOpen] = React.useState(false)
+  const { data: categories = [], isLoading: categoriesLoading } = useCategories()
 
   const springProps = useSpring({
     maxHeight: isMoreFiltersOpen ? '400px' : '0px',
@@ -27,17 +37,9 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
     config: { tension: 260, friction: 30 },
   })
 
-  const categories: Array<{ value: Prize['category'], label: string, icon: string }> = [
-    { value: 'eletronicos', label: 'Eletrônicos', icon: 'ph-device-mobile' },
-    { value: 'casa', label: 'Casa', icon: 'ph-house' },
-    { value: 'esporte', label: 'Esporte', icon: 'ph-soccer-ball' },
-    { value: 'livros', label: 'Livros', icon: 'ph-book' },
-    { value: 'vale-compras', label: 'Vale Compras', icon: 'ph-shopping-bag' },
-    { value: 'experiencias', label: 'Experiências', icon: 'ph-star' },
-  ]
-
   const sortOptions = [
     { value: 'popular', label: 'Mais populares' },
+    { value: 'most_redeemed', label: 'Mais resgatados' },
     { value: 'price_asc', label: 'Menor preço' },
     { value: 'price_desc', label: 'Maior preço' },
     { value: 'newest', label: 'Mais recentes' },
@@ -51,10 +53,10 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
     { label: 'Acima de 3000', min: 3000, max: 999999 },
   ]
 
-  const handleCategoryChange = (category: Prize['category']) => {
+  const handleCategoryChange = (category: string) => {
     onFiltersChange({
       ...filters,
-      category: filters.category === category ? undefined : category,
+      category: category === 'all' ? undefined : category,
     })
   }
 
@@ -97,13 +99,7 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
   const activeFilterCount = Object.keys(filters).filter(k => filters[k as keyof Filters] && k !== 'sortBy').length
 
   const getActiveCategoryLabel = () => {
-    const cat = categories.find(c => c.value === filters.category)
-    return cat ? cat.label : filters.category
-  }
-
-  const getActiveCategoryIcon = () => {
-    const cat = categories.find(c => c.value === filters.category)
-    return cat?.icon
+    return filters.category ? formatCategoryLabel(filters.category) : ''
   }
 
   const getActivePriceRangeLabel = () => {
@@ -157,12 +153,11 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Filtros ativos:</span>
           
           {filters.category && (
-            <Badge 
-              variant="secondary" 
+            <Badge
+              variant="secondary"
               className="gap-1.5 bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/20 hover:bg-green-100 dark:hover:bg-green-500/20 cursor-pointer"
               onClick={() => removeFilter('category')}
             >
-              {getActiveCategoryIcon() && <i className={`ph ${getActiveCategoryIcon()} text-sm`}></i>}
               {getActiveCategoryLabel()}
               <i className="ph ph-x text-sm"></i>
             </Badge>
@@ -205,22 +200,24 @@ export const PrizeFilters: React.FC<PrizeFiltersProps> = ({ filters, onFiltersCh
           <i className="ph ph-squares-four text-base"></i>
           Categorias
         </h3>
-        <div className="flex flex-wrap gap-2">
-          {categories.map(cat => (
-            <button
-              key={cat.value}
-              onClick={() => handleCategoryChange(cat.value)}
-              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
-                filters.category === cat.value
-                  ? 'border-green-500 bg-green-50 dark:bg-green-500/20 text-green-700 dark:text-green-300 shadow-sm'
-                  : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/10'
-              }`}
-            >
-              <i className={`ph ${cat.icon} text-base`}></i>
-              <span>{cat.label}</span>
-            </button>
-          ))}
-        </div>
+        <Select
+          value={filters.category ?? 'all'}
+          onValueChange={handleCategoryChange}
+          disabled={categoriesLoading}
+        >
+          <SelectTrigger className="w-full max-w-xs rounded-xl border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl focus:border-green-500 focus:ring-green-500/20">
+            <i className="ph ph-squares-four mr-2 text-base"></i>
+            <SelectValue placeholder={categoriesLoading ? "Carregando categorias..." : "Todas as categorias"} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas as categorias</SelectItem>
+            {categories.map(category => (
+              <SelectItem key={category} value={category}>
+                {formatCategoryLabel(category)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* More Filters Toggle */}

@@ -8,6 +8,7 @@ import { Modal, ModalHeader, ModalTitle, ModalContent } from '@/components/ui/mo
 import { useAlertDialog } from '@/components/ui/alert-dialog'
 import { ErrorState } from '@/components/ui/ErrorState'
 import { PrizeSummaryCard } from '@/components/prizes/PrizeSummaryCard'
+import { VoucherConfirmationCard } from '@/components/prizes/VoucherConfirmationCard'
 import { AddressSelector } from '@/components/prizes/AddressSelector'
 import { ConfirmationPageSkeleton } from '@/components/prizes/ConfirmationPageSkeleton'
 import { AddressForm } from '@/components/ui/AddressForm'
@@ -28,6 +29,7 @@ export const PrizeConfirmationPage = () => {
     selectedVariant,
     addresses,
     selectedAddressId,
+    isVoucher,
     isLoading,
     isRedeeming,
     isCreatingAddress,
@@ -103,23 +105,32 @@ export const PrizeConfirmationPage = () => {
         )}
 
         <div className="space-y-6">
-          <PrizeSummaryCard 
-            prize={prize} 
-            selectedVariant={selectedVariant} 
-          />
+          {isVoucher ? (
+            <VoucherConfirmationCard
+              prize={prize}
+              selectedVariant={selectedVariant}
+            />
+          ) : (
+            <>
+              <PrizeSummaryCard
+                prize={prize}
+                selectedVariant={selectedVariant}
+              />
 
-          <AddressSelector
-            addresses={addresses}
-            selectedAddressId={selectedAddressId}
-            onSelectAddress={setSelectedAddressId}
-            onAddAddress={() => handleOpenAddressModal()}
-            onEditAddress={handleOpenAddressModal}
-            onDeleteAddress={handleDeleteWithConfirmation}
-          />
+              <AddressSelector
+                addresses={addresses}
+                selectedAddressId={selectedAddressId}
+                onSelectAddress={setSelectedAddressId}
+                onAddAddress={() => handleOpenAddressModal()}
+                onEditAddress={handleOpenAddressModal}
+                onDeleteAddress={handleDeleteWithConfirmation}
+              />
+            </>
+          )}
 
           <Button
             onClick={handleConfirmRedemption}
-            disabled={!selectedAddressId || isRedeeming}
+            disabled={(!isVoucher && !selectedAddressId) || isRedeeming}
             size="lg"
             className="w-full bg-green-600 hover:bg-green-700 text-white text-lg font-semibold"
           >
@@ -179,8 +190,13 @@ export const PrizeConfirmationPage = () => {
       <RedemptionSuccessOverlay
         isVisible={showSuccessModal}
         title="Prêmio Resgatado!"
-        description="Seu prêmio foi resgatado com sucesso. Acompanhe o status na página de resgates."
+        description={
+          isVoucher
+            ? "Voucher enviado para seu email com sucesso"
+            : "Seu prêmio foi resgatado com sucesso. Acompanhe o status na página de resgates."
+        }
         prizeName={prize?.name}
+        prizeType={prize?.type}
         onGoToPrizes={() => navigate({ to: '/prizes' })}
         onGoToRedemptions={() => {
           handleCloseSuccessModal()

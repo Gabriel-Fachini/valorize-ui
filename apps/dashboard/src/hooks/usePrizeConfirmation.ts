@@ -16,22 +16,23 @@ interface UsePrizeConfirmationReturn {
   selectedVariant: PrizeVariant | undefined
   addresses: Address[]
   selectedAddressId: string | undefined
-  
+  isVoucher: boolean
+
   // Loading states
   isLoading: boolean
   isRedeeming: boolean
   isCreatingAddress: boolean
   isUpdatingAddress: boolean
   isDeletingAddress: boolean
-  
+
   // Error states
   errorMessage: string | null
-  
+
   // Modal states
   showAddressModal: boolean
   showSuccessModal: boolean
   editingAddress: string | null
-  
+
   // Actions
   setSelectedAddressId: (id: string) => void
   handleOpenAddressModal: (addressId?: string) => void
@@ -69,11 +70,17 @@ export const usePrizeConfirmation = ({
   const selectedVariant = useMemo(() => {
     return prize?.variants?.find(v => v.id === variantId)
   }, [prize?.variants, variantId])
-  
+
+  const isVoucher = useMemo(() => {
+    return prize?.type === 'voucher'
+  }, [prize?.type])
+
   const isLoading = prizeLoading || addressesLoading
-  
-  // Auto-select default address (fixed bug)
+
+  // Auto-select default address (fixed bug) - Skip for vouchers
   useEffect(() => {
+    if (isVoucher) return // Vouchers don't need address selection
+
     if (addresses.length > 0 && !selectedAddressId) {
       const defaultAddress = addresses.find(addr => addr.isDefault)
       const addressToSelect = defaultAddress?.id ?? addresses[0]?.id
@@ -82,7 +89,7 @@ export const usePrizeConfirmation = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addresses.length, selectedAddressId]) // Only depend on length to avoid infinite loops
+  }, [addresses.length, selectedAddressId, isVoucher]) // Only depend on length to avoid infinite loops
   
   // Address modal handlers
   const handleOpenAddressModal = useCallback((addressId?: string) => {
@@ -126,7 +133,8 @@ export const usePrizeConfirmation = ({
   }, [deleteAddressMutation, selectedAddressId])
   
   const handleConfirmRedemption = useCallback(async () => {
-    if (!selectedAddressId) {
+    // Only require address for physical products
+    if (!isVoucher && !selectedAddressId) {
       setErrorMessage('Por favor, selecione um endereço para entrega')
       return
     }
@@ -137,9 +145,9 @@ export const usePrizeConfirmation = ({
       await redeemMutation.mutateAsync({
         prizeId: prize.id,
         variantId: variantId,
-        addressId: selectedAddressId,
+        addressId: isVoucher ? undefined : selectedAddressId,
       })
-      
+
       onBalanceMovement()
       setShowSuccessModal(true)
     } catch (error: unknown) {
@@ -148,7 +156,7 @@ export const usePrizeConfirmation = ({
       const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message
       setErrorMessage(errorMessage ?? 'Erro ao resgatar prêmio. Verifique seu saldo e tente novamente.')
     }
-  }, [selectedAddressId, prize, variantId, redeemMutation, onBalanceMovement])
+  }, [isVoucher, selectedAddressId, prize, variantId, redeemMutation, onBalanceMovement])
   
   const handleCloseSuccessModal = useCallback(() => {
     setShowSuccessModal(false)
@@ -160,22 +168,23 @@ export const usePrizeConfirmation = ({
     selectedVariant,
     addresses,
     selectedAddressId,
-    
+    isVoucher,
+
     // Loading states
     isLoading,
     isRedeeming: redeemMutation.isPending,
     isCreatingAddress: createAddressMutation.isPending,
     isUpdatingAddress: updateAddressMutation.isPending,
     isDeletingAddress: deleteAddressMutation.isPending,
-    
+
     // Error states
     errorMessage,
-    
+
     // Modal states
     showAddressModal,
     showSuccessModal,
     editingAddress,
-    
+
     // Actions
     setSelectedAddressId,
     handleOpenAddressModal,
