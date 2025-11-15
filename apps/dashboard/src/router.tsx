@@ -21,6 +21,7 @@ import { EventsPage } from '@/pages/EventsPage'
 import { TrainingPage } from '@/pages/TrainingPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { DevErrorBoundary } from '@/components/DevErrorBoundary'
 import { useTheme } from '@hooks/useTheme'
 import { z } from 'zod'
 
@@ -40,6 +41,7 @@ function RootComponent() {
 const rootRoute = createRootRoute({
   component: RootComponent,
   notFoundComponent: NotFoundPage,
+  defaultErrorComponent: import.meta.env.DEV ? DevErrorBoundary : undefined,
 })
 
 // Protected layout route that persists across protected pages

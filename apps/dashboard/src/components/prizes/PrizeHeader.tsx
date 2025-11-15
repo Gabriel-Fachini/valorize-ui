@@ -1,5 +1,6 @@
 import { type FC } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { MarkdownContent } from '@/components/ui/MarkdownContent'
 
 interface PrizeHeaderProps {
   name: string
@@ -32,7 +33,10 @@ export const PrizeHeader: FC<PrizeHeaderProps> = ({
         )}
       </div>
 
-      <p className="text-gray-700 dark:text-gray-300">{description}</p>
+      <MarkdownContent
+        content={description}
+        className="text-gray-700 dark:text-gray-300"
+      />
     </div>
   )
 }

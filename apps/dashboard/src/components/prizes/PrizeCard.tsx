@@ -2,6 +2,7 @@ import React from 'react'
 import { Prize } from '@/types/prize.types'
 import { useSpring, animated, config } from '@react-spring/web'
 import { useNavigate } from '@tanstack/react-router'
+import { MarkdownContent } from '@/components/ui/MarkdownContent'
 
 interface PrizeCardProps {
   prize: Prize
@@ -11,6 +12,13 @@ interface PrizeCardProps {
 export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
   const navigate = useNavigate()
   const [isHovered, setIsHovered] = React.useState(false)
+
+  const capitalizeCategory = (category: string) => {
+    return category
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join('-')
+  }
 
   const springProps = useSpring({
     from: { opacity: 0, transform: 'translateY(20px)' },
@@ -76,7 +84,7 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
         <div className="relative p-5 flex flex-col flex-grow">
           <div className="mb-3 flex items-center justify-between gap-2">
             <span className="rounded-full bg-white/80 dark:bg-white/10 border border-white/40 dark:border-white/20 px-3 py-1 text-xs font-medium text-gray-800 dark:text-white backdrop-blur-sm group-hover:bg-white dark:group-hover:bg-white/15">
-              {prize.category}
+              {capitalizeCategory(prize.category)}
             </span>
             {prize.stock <= 5 && (
               <span className="flex items-center gap-1 rounded-full bg-orange-50 dark:bg-orange-500/10 px-2 py-1 text-xs font-medium text-orange-600 dark:text-orange-400">
@@ -90,9 +98,11 @@ export const PrizeCard: React.FC<PrizeCardProps> = ({ prize, index = 0 }) => {
             {prize.name}
           </h3>
 
-          <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-            {prize.description}
-          </p>
+          <MarkdownContent
+            content={prize.description}
+            className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-gray-400 leading-relaxed"
+            renderMarkdown={false}
+          />
 
           <div className="flex items-baseline gap-1.5 mt-auto pt-3 border-t border-gray-100 dark:border-white/5">
             <span className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
