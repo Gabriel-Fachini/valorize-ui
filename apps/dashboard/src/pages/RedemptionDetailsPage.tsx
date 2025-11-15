@@ -9,8 +9,10 @@ import { ErrorState } from '@/components/ui'
 import { useRedemptionCancellation } from '@/hooks/useRedemptionCancellation'
 import { RedemptionDetailsHero } from '@/components/redemptions/RedemptionDetailsHero'
 import { RedemptionTimeline } from '@/components/redemptions/RedemptionTimeline'
+import { VoucherRedemptionInfo } from '@/components/redemptions/VoucherRedemptionInfo'
 import { CancelRedemptionModal } from '@/components/redemptions/CancelRedemptionModal'
 import { RedemptionDetailsSkeleton } from '@/components/redemptions/RedemptionDetailsSkeleton'
+import { isVoucherRedemption } from '@/lib/redemptionUtils'
 
 
 export const RedemptionDetailsPage: React.FC = () => {
@@ -29,6 +31,8 @@ export const RedemptionDetailsPage: React.FC = () => {
     handleGoToRedemptions,
     updateReason,
   } = useRedemptionCancellation(redemption ?? null)
+
+  const isVoucher = isVoucherRedemption(redemption ?? null)
 
   // React 19: Simplified animation with automatic optimization
   const fadeIn = useSpring({ 
@@ -109,13 +113,16 @@ export const RedemptionDetailsPage: React.FC = () => {
           {/* Hero Card - Prize Information */}
           <RedemptionDetailsHero redemption={redemption} />
 
-          {/* Timeline Section - Full Width */}
-          <RedemptionTimeline 
-            redemption={redemption} 
-          />
+          {/* Voucher Info or Timeline Section */}
+          {isVoucher ? (
+            <VoucherRedemptionInfo redemption={redemption} />
+          ) : (
+            <RedemptionTimeline redemption={redemption} />
+          )}
 
-          {/* Cancellation Section */}
-          <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-xl p-6">
+          {/* Cancellation Section - Only for Physical Products */}
+          {!isVoucher && (
+            <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-xl p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-3 bg-red-100 dark:bg-red-950 rounded-xl">
                 <i className="ph-bold ph-clock text-2xl text-red-600 dark:text-red-400" />
@@ -141,7 +148,7 @@ export const RedemptionDetailsPage: React.FC = () => {
                 <div className="flex items-center gap-2 px-4 py-3 bg-gray-100 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg">
                   <i className="ph-bold ph-lock text-gray-500 dark:text-gray-400" />
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {redemption.status === 'completed' || redemption.status === 'delivered' || redemption.status === 'cancelled'
+                    {redemption.status === 'delivered' || redemption.status === 'cancelled' || redemption.status === 'refunded' || redemption.status === 'completed'
                       ? 'Cancelamento indisponível - resgate finalizado'
                       : 'Prazo de cancelamento expirado (24h)'}
                   </p>
@@ -165,6 +172,7 @@ export const RedemptionDetailsPage: React.FC = () => {
               </Button>
             </div>
           </div>
+          )}
         </animated.div>
 
         {/* Cancel Modal */}

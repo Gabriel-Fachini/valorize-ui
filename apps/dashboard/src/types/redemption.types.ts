@@ -1,4 +1,26 @@
-export type RedemptionStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'COMPLETED' | 'CANCELLED'
+export type RedemptionStatus =
+  | 'PENDING'
+  | 'PROCESSING'
+  | 'SHIPPED'
+  | 'DELIVERED'
+  | 'CANCELLED'
+  | 'REFUNDED'
+  | 'SENT'
+  | 'FAILED'
+
+export const VOUCHER_STATUS = {
+  SENT: 'SENT',
+  FAILED: 'FAILED',
+} as const
+
+export const PRODUCT_STATUS = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  SHIPPED: 'SHIPPED',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED',
+} as const
 
 export interface Redemption {
   id: string
@@ -16,6 +38,8 @@ export interface Redemption {
     name: string
     images: string[]
     category: string
+    type: 'voucher' | 'product'
+    description?: string
   }
   variant?: {
     id: string
@@ -46,6 +70,8 @@ export interface RedemptionDetails {
     name: string
     images: string[]
     category: string
+    type: 'voucher' | 'product'
+    description?: string
   }
   variant?: {
     id: string

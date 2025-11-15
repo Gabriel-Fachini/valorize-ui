@@ -64,5 +64,20 @@ export const statusColors = {
     text: 'text-gray-700 dark:text-gray-300',
     border: 'border-gray-300 dark:border-gray-600',
   },
+  sent: {
+    bg: 'bg-green-50 dark:bg-green-950',
+    text: 'text-green-700 dark:text-green-300',
+    border: 'border-green-200 dark:border-green-800',
+  },
+  failed: {
+    bg: 'bg-red-50 dark:bg-red-950',
+    text: 'text-red-700 dark:text-red-300',
+    border: 'border-red-200 dark:border-red-800',
+  },
+  refunded: {
+    bg: 'bg-purple-50 dark:bg-purple-950',
+    text: 'text-purple-700 dark:text-purple-300',
+    border: 'border-purple-200 dark:border-purple-800',
+  },
 } as const
 

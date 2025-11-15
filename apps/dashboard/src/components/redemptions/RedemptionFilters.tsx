@@ -10,8 +10,11 @@ const STATUS_OPTIONS: Array<{ label: string; value: string }> = [
   { label: 'Pendente', value: 'pending' },
   { label: 'Processando', value: 'processing' },
   { label: 'Enviado', value: 'shipped' },
-  { label: 'Concluído', value: 'completed' },
+  { label: 'Entregue', value: 'delivered' },
   { label: 'Cancelado', value: 'cancelled' },
+  { label: 'Reembolsado', value: 'refunded' },
+  { label: 'Voucher Enviado', value: 'sent' },
+  { label: 'Falha no Envio', value: 'failed' },
 ]
 
 const PERIOD_OPTIONS: Array<{ label: string; value: string; days?: number }> = [

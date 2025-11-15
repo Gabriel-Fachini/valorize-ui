@@ -37,6 +37,21 @@ export const redemptionStatusConfig: Record<string, StatusInfo> = {
     icon: 'ph-bold ph-x-circle',
     label: 'Cancelado',
   },
+  sent: {
+    badge: `${statusColors.sent.bg} ${statusColors.sent.text} ${statusColors.sent.border}`,
+    icon: 'ph-bold ph-check-circle',
+    label: 'Enviado',
+  },
+  failed: {
+    badge: `${statusColors.failed.bg} ${statusColors.failed.text} ${statusColors.failed.border}`,
+    icon: 'ph-bold ph-warning-circle',
+    label: 'Falha no envio',
+  },
+  refunded: {
+    badge: `${statusColors.refunded.bg} ${statusColors.refunded.text} ${statusColors.refunded.border}`,
+    icon: 'ph-bold ph-arrow-counter-clockwise',
+    label: 'Reembolsado',
+  },
 }
 
 export const getStatusInfo = (status: string): StatusInfo => {

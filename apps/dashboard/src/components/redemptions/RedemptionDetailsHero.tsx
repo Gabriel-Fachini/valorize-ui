@@ -3,13 +3,14 @@ import { useNavigate } from '@tanstack/react-router'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { RedemptionStatusBadge } from './RedemptionStatusBadge'
-import { 
-  getPrizeImage, 
-  getPrizeName, 
-  getPrizeCategory, 
+import {
+  getPrizeImage,
+  getPrizeName,
+  getPrizeCategory,
   getVariantInfo,
   formatRedemptionDate,
   formatCoinsAmount,
+  isVoucherRedemption,
 } from '@/lib/redemptionUtils'
 import type { Redemption } from '@/types/redemption.types'
 
@@ -24,7 +25,8 @@ export const RedemptionDetailsHero: React.FC<RedemptionDetailsHeroProps> = ({
 }) => {
   const navigate = useNavigate()
   const [imageError, setImageError] = useState(false)
-  
+
+  const isVoucher = isVoucherRedemption(redemption)
   const prizeImage = getPrizeImage(redemption)
   const prizeName = getPrizeName(redemption)
   const prizeCategory = getPrizeCategory(redemption)
@@ -133,8 +135,8 @@ export const RedemptionDetailsHero: React.FC<RedemptionDetailsHeroProps> = ({
                 Ver detalhes do prêmio
                 <i className="ph-bold ph-arrow-up-right text-base" />
               </Button>
-              
-              {redemption.trackingCode && (
+
+              {!isVoucher && redemption.trackingCode && (
                 <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
                   <i className="ph-bold ph-barcode text-lg text-green-700 dark:text-green-400" />
                   <code className="text-sm font-mono font-semibold text-green-700 dark:text-green-300">
@@ -144,19 +146,6 @@ export const RedemptionDetailsHero: React.FC<RedemptionDetailsHeroProps> = ({
               )}
             </div>
           </div>
-        </div>
-      </div>
-      
-      {/* Redemption ID Footer */}
-      <div className="bg-gray-50 dark:bg-neutral-900 px-6 sm:px-8 py-4 border-t border-gray-200 dark:border-neutral-700">
-        <div className="flex items-center justify-between gap-4 text-sm">
-          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-            <i className="ph-bold ph-hash text-base" />
-            <span className="font-medium">ID do Resgate:</span>
-          </div>
-          <code className="px-3 py-1.5 bg-gray-200 dark:bg-neutral-800 rounded-lg font-mono text-gray-900 dark:text-white font-semibold">
-            {redemption.id}
-          </code>
         </div>
       </div>
     </Card>

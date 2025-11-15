@@ -6,14 +6,26 @@ export const COUNTDOWN_SECONDS = 3
 export const FALLBACK_PRIZE_IMAGE = '/valorize_logo.png'
 
 // Utility functions
+export const isVoucherRedemption = (redemption: Redemption | null): boolean => {
+  if (!redemption) return false
+  // Check if prize type exists and is voucher (case-insensitive)
+  const prizeType = redemption.prize?.type
+  if (!prizeType) return false
+  return prizeType.toLowerCase() === 'voucher'
+}
+
 export const canCancelRedemption = (redemption: Redemption | null): boolean => {
   if (!redemption) return false
-  
+
+  // Vouchers cannot be cancelled
+  if (isVoucherRedemption(redemption)) return false
+
   const status = redemption.status.toLowerCase()
-  if (status === 'cancelled' || status === 'completed' || status === 'delivered') {
+  // Final states that cannot be cancelled
+  if (status === 'cancelled' || status === 'delivered' || status === 'refunded' || status === 'completed') {
     return false
   }
-  
+
   const created = new Date(redemption.redeemedAt).getTime()
   const now = Date.now()
   return now - created <= CANCEL_WINDOW_MS
