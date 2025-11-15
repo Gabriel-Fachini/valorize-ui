@@ -41,11 +41,10 @@ export const PrizesPage = () => {
         })
       }
     }
-  }, [data?.prizes, page])
+  }, [data, page])
 
   useEffect(() => {
-    // Reset prizes and page when filters change (now includes search)
-    setAllPrizes([])
+    // Reset page when filters change (prizes will be reset by the effect above)
     setPage(1)
   }, [filters])
 
