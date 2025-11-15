@@ -1,0 +1,122 @@
+import { createRouter, createRoute, createRootRoute, redirect } from '@tanstack/react-router'
+import { LoginPage } from '@/pages/LoginPage'
+import { HomePage } from '@/pages/HomePage'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+
+// Root route
+const rootRoute = createRootRoute()
+
+// Login route
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/login',
+  component: LoginPage,
+})
+
+// Home route (protected)
+const homeRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/home',
+  component: () => (
+    <ProtectedRoute>
+      <HomePage />
+    </ProtectedRoute>
+  ),
+})
+
+// Index route (redirect to home)
+const indexRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/',
+  beforeLoad: () => {
+    throw redirect({ to: '/home' })
+  },
+})
+
+// Placeholder routes for future pages
+const clientsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/clients',
+  component: () => (
+    <ProtectedRoute>
+      <div className="p-8">
+        <h1 className="text-2xl font-bold">Clientes</h1>
+        <p className="mt-2 text-muted-foreground">Página em desenvolvimento</p>
+      </div>
+    </ProtectedRoute>
+  ),
+})
+
+const contractsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/contracts',
+  component: () => (
+    <ProtectedRoute>
+      <div className="p-8">
+        <h1 className="text-2xl font-bold">Contratos</h1>
+        <p className="mt-2 text-muted-foreground">Página em desenvolvimento</p>
+      </div>
+    </ProtectedRoute>
+  ),
+})
+
+const vouchersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/vouchers',
+  component: () => (
+    <ProtectedRoute>
+      <div className="p-8">
+        <h1 className="text-2xl font-bold">Vouchers</h1>
+        <p className="mt-2 text-muted-foreground">Página em desenvolvimento</p>
+      </div>
+    </ProtectedRoute>
+  ),
+})
+
+const metricsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/metrics',
+  component: () => (
+    <ProtectedRoute>
+      <div className="p-8">
+        <h1 className="text-2xl font-bold">Métricas</h1>
+        <p className="mt-2 text-muted-foreground">Página em desenvolvimento</p>
+      </div>
+    </ProtectedRoute>
+  ),
+})
+
+const settingsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/settings',
+  component: () => (
+    <ProtectedRoute>
+      <div className="p-8">
+        <h1 className="text-2xl font-bold">Configurações</h1>
+        <p className="mt-2 text-muted-foreground">Página em desenvolvimento</p>
+      </div>
+    </ProtectedRoute>
+  ),
+})
+
+// Create route tree
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  loginRoute,
+  homeRoute,
+  clientsRoute,
+  contractsRoute,
+  vouchersRoute,
+  metricsRoute,
+  settingsRoute,
+])
+
+// Create and export router
+export const router = createRouter({ routeTree })
+
+// Register router for type safety
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
+}
