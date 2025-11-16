@@ -41,7 +41,7 @@ function RootComponent() {
 const rootRoute = createRootRoute({
   component: RootComponent,
   notFoundComponent: NotFoundPage,
-  defaultErrorComponent: import.meta.env.DEV ? DevErrorBoundary : undefined,
+  errorComponent: import.meta.env.DEV ? DevErrorBoundary : undefined,
 })
 
 // Protected layout route that persists across protected pages

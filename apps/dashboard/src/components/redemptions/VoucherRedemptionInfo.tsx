@@ -89,7 +89,7 @@ export const VoucherRedemptionInfo: React.FC<VoucherRedemptionInfoProps> = ({
                   Instruções de Uso
                 </h4>
                 <div className="text-sm text-blue-900 dark:text-blue-100">
-                  <MarkdownContent content={redemption.prize.description} />
+                  <MarkdownContent content={redemption.prize?.description || ''} />
                 </div>
               </div>
             </div>
