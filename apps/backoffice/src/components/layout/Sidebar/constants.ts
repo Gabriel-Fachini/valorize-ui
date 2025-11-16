@@ -2,6 +2,7 @@ import type { NavLink } from './types'
 
 export const NAV_LINKS: NavLink[] = [
   { path: '/home', label: 'Início', icon: 'house', dataTour: 'home' },
+  { path: '/clients', label: 'Clientes', icon: 'buildings', dataTour: 'clients' },
   {
     path: '#',
     label: 'Elogios',

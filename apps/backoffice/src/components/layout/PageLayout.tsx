@@ -6,9 +6,10 @@ interface PageLayoutProps {
   children: React.ReactNode
   title?: string
   subtitle?: string
+  action?: React.ReactNode
 }
 
-export const PageLayout = ({ children, title, subtitle }: PageLayoutProps) => {
+export const PageLayout = ({ children, title, subtitle, action }: PageLayoutProps) => {
   const { desktopSidebarCollapsed } = useSidebar()
 
   return (
@@ -21,14 +22,17 @@ export const PageLayout = ({ children, title, subtitle }: PageLayoutProps) => {
         )}
       >
         <div className="p-8">
-          {(title || subtitle) && (
-            <div className="mb-8">
-              {title && (
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{title}</h1>
-              )}
-              {subtitle && (
-                <p className="mt-2 text-gray-600 dark:text-gray-400">{subtitle}</p>
-              )}
+          {(title || subtitle || action) && (
+            <div className="mb-8 flex items-start justify-between">
+              <div>
+                {title && (
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{title}</h1>
+                )}
+                {subtitle && (
+                  <p className="mt-2 text-gray-600 dark:text-gray-400">{subtitle}</p>
+                )}
+              </div>
+              {action && <div>{action}</div>}
             </div>
           )}
           {children}

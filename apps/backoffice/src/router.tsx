@@ -1,6 +1,8 @@
 import { createRouter, createRoute, createRootRoute, redirect } from '@tanstack/react-router'
 import { LoginPage } from '@/pages/LoginPage'
 import { HomePage } from '@/pages/HomePage'
+import { CompaniesPage } from '@/pages/CompaniesPage'
+import { CompanyDetailsPage } from '@/pages/CompanyDetailsPage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 
 // Root route
@@ -33,16 +35,23 @@ const indexRoute = createRoute({
   },
 })
 
-// Placeholder routes for future pages
+// Companies routes
 const clientsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/clients',
   component: () => (
     <ProtectedRoute>
-      <div className="p-8">
-        <h1 className="text-2xl font-bold">Clientes</h1>
-        <p className="mt-2 text-muted-foreground">Página em desenvolvimento</p>
-      </div>
+      <CompaniesPage />
+    </ProtectedRoute>
+  ),
+})
+
+const clientDetailsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/clients/$id',
+  component: () => (
+    <ProtectedRoute>
+      <CompanyDetailsPage />
     </ProtectedRoute>
   ),
 })
@@ -105,6 +114,7 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   homeRoute,
   clientsRoute,
+  clientDetailsRoute,
   contractsRoute,
   vouchersRoute,
   metricsRoute,

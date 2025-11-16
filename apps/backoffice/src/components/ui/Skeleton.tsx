@@ -111,3 +111,14 @@ export const SkeletonNavigation: React.FC<{ itemCount?: number }> = ({ itemCount
     </div>
   )
 }
+
+// Generic Skeleton component
+export const Skeleton: React.FC<{
+  className?: string
+}> = ({ className = '' }) => {
+  return (
+    <SkeletonBase>
+      <div className={`bg-neutral-300 dark:bg-neutral-600 rounded ${className}`} />
+    </SkeletonBase>
+  )
+}

@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AuthProvider } from './AuthContext'
 import { ThemeProvider } from './ThemeContext'
 import { SidebarProvider } from './SidebarContext'
+import { Toaster } from '@/components/ui/toaster'
 import type { ProviderProps } from '@types'
 
 const queryClient = new QueryClient({
@@ -23,6 +24,7 @@ export const AppProviders = ({ children }: ProviderProps) => {
         </AuthProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />
+      <Toaster />
     </QueryClientProvider>
   )
 }
