@@ -1,4 +1,4 @@
-import { useSidebar } from '@/contexts/SidebarContext'
+import { useSidebar } from '@/hooks/useSidebar'
 import { Sidebar } from './Sidebar'
 import { cn } from '@/lib/utils'
 
@@ -9,7 +9,7 @@ interface PageLayoutProps {
 }
 
 export const PageLayout = ({ children, title, subtitle }: PageLayoutProps) => {
-  const { isCollapsed } = useSidebar()
+  const { desktopSidebarCollapsed } = useSidebar()
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a]">
@@ -17,7 +17,7 @@ export const PageLayout = ({ children, title, subtitle }: PageLayoutProps) => {
       <main
         className={cn(
           'transition-all duration-300',
-          isCollapsed ? 'lg:ml-20' : 'lg:ml-72'
+          desktopSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'
         )}
       >
         <div className="p-8">

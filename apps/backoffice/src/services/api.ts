@@ -53,7 +53,7 @@ api.interceptors.response.use(
       if (refreshToken) {
         try {
           const response = await axios.post<ApiResponse<RefreshData>>(
-            `${baseUrl.replace(/\/$/, '')}/auth/refresh`,
+            `${baseUrl.replace(/\/$/, '')}/backoffice/auth/refresh`,
             { refresh_token: refreshToken },
             {
               headers: { 'Content-Type': 'application/json' },

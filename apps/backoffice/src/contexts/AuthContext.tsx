@@ -2,7 +2,7 @@ import { createContext, useCallback, useEffect, useMemo, useState, useContext } 
 import { TokenManager, checkAndRefreshToken, loginWithEmailPassword, verifyToken } from '@/services/auth'
 import type { User, ProviderProps, VerifyMinimalData, AuthContextType } from '@types'
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: ProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: ProviderProps) => {
           return
         }
 
-        // If there's user info saved, set temporarily
+        // If there's user info saved, set it immediately
         if (stored) {
           setUser({
             id: stored.sub,
@@ -39,8 +39,9 @@ export const AuthProvider = ({ children }: ProviderProps) => {
           })
         }
 
-        // Verify if tokens are valid
+        // Verify if tokens are valid (this will trigger refresh if needed)
         const valid = await checkAndRefreshToken()
+
         if (!valid) {
           TokenManager.clearTokens()
           TokenManager.clearUserInfo()

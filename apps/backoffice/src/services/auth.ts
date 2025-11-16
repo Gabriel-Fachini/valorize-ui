@@ -13,7 +13,7 @@ export { TokenManager }
 
 export async function loginWithEmailPassword(email: string, password: string): Promise<ApiResponse<LoginData>> {
   try {
-    const response = await api.post<ApiResponse<LoginData>>('/auth/login', { email, password })
+    const response = await api.post<ApiResponse<LoginData>>('/backoffice/auth/login', { email, password })
     return response.data
   } catch (error) {
     return {
@@ -28,7 +28,7 @@ export async function loginWithEmailPassword(email: string, password: string): P
 
 export async function refreshToken(refreshToken: string): Promise<ApiResponse<RefreshData>> {
   try {
-    const response = await api.post<ApiResponse<RefreshData>>('/auth/refresh', { refresh_token: refreshToken })
+    const response = await api.post<ApiResponse<RefreshData>>('/backoffice/auth/refresh', { refresh_token: refreshToken })
     return response.data
   } catch (error) {
     return {
@@ -44,7 +44,7 @@ export async function refreshToken(refreshToken: string): Promise<ApiResponse<Re
 export async function verifyToken(minimal = true): Promise<ApiResponse<VerifyMinimalData | VerifyFullData>> {
   try {
     const response = await api.get<ApiResponse<VerifyMinimalData | VerifyFullData>>(
-      `/auth/verify${minimal ? '?minimal=true' : ''}`,
+      `/backoffice/auth/verify${minimal ? '?minimal=true' : ''}`,
     )
     return response.data
   } catch (error) {
@@ -60,7 +60,10 @@ export async function verifyToken(minimal = true): Promise<ApiResponse<VerifyMin
 
 export async function checkAndRefreshToken(): Promise<boolean> {
   const access = TokenManager.getAccessToken()
-  if (!access) return false
+
+  if (!access) {
+    return false
+  }
 
   try {
     // Simply verify token - interceptor will handle refresh if needed
@@ -68,7 +71,12 @@ export async function checkAndRefreshToken(): Promise<boolean> {
 
     if (verifyRes.success) {
       const data = verifyRes.data as VerifyMinimalData
-      return data.isValid
+
+      // If the API returned success: true, the token is valid
+      // Some backends might not return data.isValid explicitly
+      const isValid = data.isValid !== undefined ? data.isValid : true
+
+      return isValid
     }
 
     return false

@@ -1,24 +1,28 @@
-import { createContext, useState, useContext, useMemo } from 'react'
-import type { SidebarContextType, ProviderProps } from '@types'
+import { createContext, useState, useCallback, useMemo } from 'react'
+import type { SidebarContextType, ProviderProps } from '@/types'
 
-const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
+export const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
 
 export const SidebarProvider = ({ children }: ProviderProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [desktopSidebarCollapsed, setDesktopSidebarCollapsed] = useState(false)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
 
-  const toggleSidebar = () => {
-    setIsCollapsed((prev) => !prev)
-  }
+  const toggleDesktopSidebar = useCallback(() => {
+    setDesktopSidebarCollapsed(prev => !prev)
+  }, [])
 
-  const value = useMemo(() => ({ isCollapsed, toggleSidebar }), [isCollapsed])
+  const toggleMobileSidebar = useCallback(() => {
+    setMobileSidebarOpen(prev => !prev)
+  }, [])
+
+  const value = useMemo(() => ({
+    desktopSidebarCollapsed,
+    setDesktopSidebarCollapsed,
+    toggleDesktopSidebar,
+    mobileSidebarOpen,
+    setMobileSidebarOpen,
+    toggleMobileSidebar,
+  }), [desktopSidebarCollapsed, mobileSidebarOpen, toggleDesktopSidebar, toggleMobileSidebar])
 
   return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
-}
-
-export const useSidebar = () => {
-  const context = useContext(SidebarContext)
-  if (context === undefined) {
-    throw new Error('useSidebar must be used within a SidebarProvider')
-  }
-  return context
 }

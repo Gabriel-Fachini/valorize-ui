@@ -65,6 +65,19 @@ export interface ThemeContextType {
 }
 
 export interface SidebarContextType {
-  isCollapsed: boolean
-  toggleSidebar: () => void
+  desktopSidebarCollapsed: boolean
+  setDesktopSidebarCollapsed: (collapsed: boolean) => void
+  toggleDesktopSidebar: () => void
+  mobileSidebarOpen: boolean
+  setMobileSidebarOpen: (open: boolean) => void
+  toggleMobileSidebar: () => void
+}
+
+export interface Role {
+  id: string
+  name: string
+  description?: string | null
+  companyId?: string
+  createdAt?: string
+  updatedAt?: string
 }
