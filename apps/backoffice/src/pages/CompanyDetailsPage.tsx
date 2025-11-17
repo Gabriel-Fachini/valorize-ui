@@ -1,4 +1,4 @@
-import { useParams } from '@tanstack/react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,6 +10,7 @@ import { useCompany } from '@/hooks/useCompanies'
 
 export function CompanyDetailsPage() {
   const { id } = useParams({ from: '/clients/$id' })
+  const navigate = useNavigate()
   const { data: company, isLoading, error } = useCompany(id)
 
   if (isLoading) {
@@ -34,7 +35,7 @@ export function CompanyDetailsPage() {
               <p className="mb-6 text-sm text-muted-foreground">
                 A empresa que você está procurando não existe ou foi removida.
               </p>
-              <Button onClick={() => (window.location.href = '/clients')}>
+              <Button onClick={() => navigate({ to: '/clients' })}>
                 <i className="ph ph-arrow-left mr-2" style={{ fontSize: '1rem' }} />
                 Voltar para Lista
               </Button>
@@ -57,7 +58,7 @@ export function CompanyDetailsPage() {
       title={company.name}
       subtitle={company.domain}
       action={
-        <Button variant="outline" onClick={() => (window.location.href = '/clients')}>
+        <Button variant="outline" onClick={() => navigate({ to: '/clients' })}>
           <i className="ph ph-arrow-left mr-2" style={{ fontSize: '1rem' }} />
           Voltar
         </Button>
@@ -82,7 +83,7 @@ export function CompanyDetailsPage() {
             <div className="mb-2 flex items-center gap-3">
               <h2 className="text-2xl font-bold">{company.name}</h2>
               <CompanyStatusBadge status={company.isActive} />
-              <CompanyPlanBadge planType={company.currentPlan.planType} />
+              {company.currentPlan && <CompanyPlanBadge planType={company.currentPlan.planType} />}
             </div>
 
             <div className="grid gap-4 text-sm md:grid-cols-3">
@@ -181,27 +182,33 @@ export function CompanyDetailsPage() {
               <CardTitle>Valores da Empresa</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {company.values.map((value) => (
-                  <div
-                    key={value.id}
-                    className="flex items-start gap-3 rounded-lg border p-4"
-                  >
+              {company.values && company.values.length > 0 ? (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {company.values.map((value) => (
                     <div
-                      className="flex h-10 w-10 items-center justify-center rounded-full"
-                      style={{ backgroundColor: value.iconColor || '#3B82F6' }}
+                      key={value.id}
+                      className="flex items-start gap-3 rounded-lg border p-4"
                     >
-                      <span className="text-lg text-white">{value.iconName || '⭐'}</span>
+                      <div
+                        className="flex h-10 w-10 items-center justify-center rounded-full"
+                        style={{ backgroundColor: value.iconColor || '#3B82F6' }}
+                      >
+                        <span className="text-lg text-white">{value.iconName || '⭐'}</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold">{value.title}</h4>
+                        {value.description && (
+                          <p className="text-sm text-muted-foreground">{value.description}</p>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold">{value.title}</h4>
-                      {value.description && (
-                        <p className="text-sm text-muted-foreground">{value.description}</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-muted-foreground py-4">
+                  Nenhum valor cadastrado.
+                </p>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -213,29 +220,39 @@ export function CompanyDetailsPage() {
               <CardTitle>Carteira Digital</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
-                <div>
-                  <span className="text-sm text-muted-foreground">Saldo Atual:</span>
-                  <p className="text-2xl font-bold">{formatCurrency(company.wallet.balance)}</p>
+              {company.wallet ? (
+                <>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div>
+                      <span className="text-sm text-muted-foreground">Saldo Atual:</span>
+                      <p className="text-2xl font-bold">{formatCurrency(company.wallet.balance)}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm text-muted-foreground">Total Depositado:</span>
+                      <p className="text-2xl font-bold">
+                        {formatCurrency(company.wallet.totalDeposited)}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-sm text-muted-foreground">Total Gasto:</span>
+                      <p className="text-2xl font-bold">{formatCurrency(company.wallet.totalSpent)}</p>
+                    </div>
+                  </div>
+                  <div className="mt-6 flex gap-2">
+                    <Button>Adicionar Créditos</Button>
+                    <Button variant="outline">Remover Créditos</Button>
+                    <Button variant="outline">
+                      {company.wallet.isFrozen ? 'Descongelar' : 'Congelar'}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <i className="ph ph-wallet mx-auto mb-4 text-muted-foreground" style={{ fontSize: '3rem' }} />
+                  <p className="text-muted-foreground mb-4">Carteira não configurada.</p>
+                  <Button>Configurar Carteira</Button>
                 </div>
-                <div>
-                  <span className="text-sm text-muted-foreground">Total Depositado:</span>
-                  <p className="text-2xl font-bold">
-                    {formatCurrency(company.wallet.totalDeposited)}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-sm text-muted-foreground">Total Gasto:</span>
-                  <p className="text-2xl font-bold">{formatCurrency(company.wallet.totalSpent)}</p>
-                </div>
-              </div>
-              <div className="mt-6 flex gap-2">
-                <Button>Adicionar Créditos</Button>
-                <Button variant="outline">Remover Créditos</Button>
-                <Button variant="outline">
-                  {company.wallet.isFrozen ? 'Descongelar' : 'Congelar'}
-                </Button>
-              </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -247,25 +264,35 @@ export function CompanyDetailsPage() {
               <CardTitle>Plano e Cobrança</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="mb-6 grid gap-4 md:grid-cols-3">
-                <div>
-                  <span className="text-sm text-muted-foreground">Plano Atual:</span>
-                  <p className="text-xl font-bold">{company.currentPlan.planType}</p>
+              {company.currentPlan ? (
+                <>
+                  <div className="mb-6 grid gap-4 md:grid-cols-3">
+                    <div>
+                      <span className="text-sm text-muted-foreground">Plano Atual:</span>
+                      <p className="text-xl font-bold">{company.currentPlan.planType}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm text-muted-foreground">Preço por Usuário:</span>
+                      <p className="text-xl font-bold">
+                        {formatCurrency(Number(company.currentPlan.pricePerUser))}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-sm text-muted-foreground">Data de Início:</span>
+                      <p className="text-xl font-bold">
+                        {new Date(company.currentPlan.startDate).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
+                  </div>
+                  <Button>Alterar Plano</Button>
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <i className="ph ph-file-dashed mx-auto mb-4 text-muted-foreground" style={{ fontSize: '3rem' }} />
+                  <p className="text-muted-foreground mb-4">Nenhum plano ativo configurado.</p>
+                  <Button>Configurar Plano</Button>
                 </div>
-                <div>
-                  <span className="text-sm text-muted-foreground">Preço por Usuário:</span>
-                  <p className="text-xl font-bold">
-                    {formatCurrency(Number(company.currentPlan.pricePerUser))}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-sm text-muted-foreground">Data de Início:</span>
-                  <p className="text-xl font-bold">
-                    {new Date(company.currentPlan.startDate).toLocaleDateString('pt-BR')}
-                  </p>
-                </div>
-              </div>
-              <Button>Alterar Plano</Button>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -291,9 +318,7 @@ export function CompanyDetailsPage() {
               <CardTitle>Contatos da Empresa</CardTitle>
             </CardHeader>
             <CardContent>
-              {company.contacts.length === 0 ? (
-                <p className="text-muted-foreground">Nenhum contato cadastrado.</p>
-              ) : (
+              {company.contacts && company.contacts.length > 0 ? (
                 <div className="space-y-3">
                   {company.contacts.map((contact) => (
                     <div key={contact.id} className="flex items-center justify-between border-b pb-3">
@@ -312,6 +337,8 @@ export function CompanyDetailsPage() {
                     </div>
                   ))}
                 </div>
+              ) : (
+                <p className="text-muted-foreground">Nenhum contato cadastrado.</p>
               )}
               <div className="mt-6">
                 <Button>Adicionar Contato</Button>
@@ -327,9 +354,7 @@ export function CompanyDetailsPage() {
               <CardTitle>Domínios SSO Permitidos</CardTitle>
             </CardHeader>
             <CardContent>
-              {company.allowedDomains.length === 0 ? (
-                <p className="text-muted-foreground">Nenhum domínio adicional configurado.</p>
-              ) : (
+              {company.allowedDomains && company.allowedDomains.length > 0 ? (
                 <div className="space-y-2">
                   {company.allowedDomains.map((domain) => (
                     <div key={domain.id} className="flex items-center justify-between border-b pb-2">
@@ -340,6 +365,8 @@ export function CompanyDetailsPage() {
                     </div>
                   ))}
                 </div>
+              ) : (
+                <p className="text-muted-foreground">Nenhum domínio adicional configurado.</p>
               )}
               <div className="mt-6">
                 <Button>Adicionar Domínio</Button>

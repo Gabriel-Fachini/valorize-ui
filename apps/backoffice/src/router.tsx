@@ -2,8 +2,10 @@ import { createRouter, createRoute, createRootRoute, redirect } from '@tanstack/
 import { LoginPage } from '@/pages/LoginPage'
 import { HomePage } from '@/pages/HomePage'
 import { CompaniesPage } from '@/pages/CompaniesPage'
+import { CreateCompanyPage } from '@/pages/CreateCompanyPage'
 import { CompanyDetailsPage } from '@/pages/CompanyDetailsPage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { DevErrorBoundary } from '@/components/DevErrorBoundary'
 
 // Root route
 const rootRoute = createRootRoute()
@@ -42,6 +44,16 @@ const clientsRoute = createRoute({
   component: () => (
     <ProtectedRoute>
       <CompaniesPage />
+    </ProtectedRoute>
+  ),
+})
+
+const createClientRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/clients/new',
+  component: () => (
+    <ProtectedRoute>
+      <CreateCompanyPage />
     </ProtectedRoute>
   ),
 })
@@ -114,6 +126,7 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   homeRoute,
   clientsRoute,
+  createClientRoute,
   clientDetailsRoute,
   contractsRoute,
   vouchersRoute,
@@ -122,7 +135,11 @@ const routeTree = rootRoute.addChildren([
 ])
 
 // Create and export router
-export const router = createRouter({ routeTree })
+export const router = createRouter({
+  routeTree,
+  // Show detailed error component in development for easier debugging
+  defaultErrorComponent: import.meta.env.DEV ? DevErrorBoundary : undefined,
+})
 
 // Register router for type safety
 declare module '@tanstack/react-router' {

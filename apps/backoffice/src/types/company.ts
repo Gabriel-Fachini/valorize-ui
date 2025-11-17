@@ -178,7 +178,7 @@ export interface CompanyListItem {
   domain: string
   logoUrl?: string
   country: string
-  planType: PlanType
+  planType: PlanType | null
   isActive: boolean
   totalUsers: number
   activeUsers: number
@@ -189,11 +189,11 @@ export interface CompanyListItem {
 
 export interface CompanyDetails extends Company {
   companyBrazil?: CompanyBrazil
-  currentPlan: CompanyPlan
-  wallet: CompanyWallet
-  contacts: CompanyContact[]
-  allowedDomains: AllowedDomain[]
-  values: CompanyValue[]
+  currentPlan?: CompanyPlan
+  wallet?: CompanyWallet
+  contacts?: CompanyContact[]
+  allowedDomains?: AllowedDomain[]
+  values?: CompanyValue[]
   settings?: {
     id: string
     companyId: string
@@ -327,6 +327,25 @@ export interface AddAllowedDomainInput {
 export interface ApiResponse<T> {
   success: boolean
   data: T
+  message?: string
+  error?: string
+  statusCode?: number
+}
+
+export interface PaginatedApiResponse<T> {
+  success: boolean
+  data: T[]
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+  }
+  aggregations?: {
+    totalMRR: number
+    activeCompanies: number
+    inactiveCompanies: number
+  }
   message?: string
   error?: string
   statusCode?: number

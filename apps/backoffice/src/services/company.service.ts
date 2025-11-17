@@ -7,6 +7,7 @@
 import { api } from './api'
 import type {
   ApiResponse,
+  PaginatedApiResponse,
   PaginatedResult,
   CompanyListItem,
   CompanyDetails,
@@ -40,7 +41,7 @@ export async function listCompanies(
   filters?: CompanyFilters,
   pagination?: PaginationParams,
   sorting?: SortingParams
-): Promise<ApiResponse<PaginatedResult<CompanyListItem>>> {
+): Promise<PaginatedApiResponse<CompanyListItem>> {
   const params = new URLSearchParams()
 
   // Pagination
@@ -65,7 +66,7 @@ export async function listCompanies(
     if (filters.createdBefore) params.append('createdBefore', filters.createdBefore)
   }
 
-  const response = await api.get<ApiResponse<PaginatedResult<CompanyListItem>>>(
+  const response = await api.get<PaginatedApiResponse<CompanyListItem>>(
     `/backoffice/companies?${params.toString()}`
   )
   return response.data

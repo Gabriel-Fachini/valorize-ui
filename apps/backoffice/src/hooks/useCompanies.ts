@@ -41,7 +41,12 @@ export function useCompanies(
       if (!response.success) {
         throw new Error(response.error || 'Erro ao buscar empresas')
       }
-      return response.data
+      // Transform PaginatedApiResponse to PaginatedResult
+      return {
+        data: response.data,
+        pagination: response.pagination,
+        aggregations: response.aggregations,
+      }
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
   })

@@ -12,7 +12,10 @@ export const basicInfoSchema = z.object({
   domain: z
     .string()
     .min(3, 'Domínio deve ter pelo menos 3 caracteres')
-    .regex(/^[a-zA-Z0-9][a-zA-Z0-9-]*\.[a-zA-Z]{2,}$/, 'Formato de domínio inválido (ex: empresa.com.br)'),
+    .regex(
+      /^([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/,
+      'Formato de domínio inválido (ex: empresa.com.br ou acme.com)'
+    ),
   country: z.string().length(2, 'Código do país deve ter 2 caracteres').default('BR'),
   timezone: z.string().min(1, 'Timezone é obrigatório').default('America/Sao_Paulo'),
   logoUrl: z.string().url('URL inválida').optional().or(z.literal('')),
