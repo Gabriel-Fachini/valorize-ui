@@ -24,6 +24,7 @@ export const companyKeys = {
   metrics: (id: string, params?: MetricsQueryParams) =>
     [...companyKeys.all, 'metrics', id, params] as const,
   billing: (id: string) => [...companyKeys.all, 'billing', id] as const,
+  plan: (id: string) => [...companyKeys.all, 'plan', id] as const,
 }
 
 /**
@@ -116,6 +117,24 @@ export function useCompanyBilling(companyId: string | undefined) {
       const response = await companyService.getBillingInfo(companyId!)
       if (!response.success) {
         throw new Error(response.error || 'Erro ao buscar informações de cobrança')
+      }
+      return response.data
+    },
+    enabled: !!companyId,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  })
+}
+
+/**
+ * Hook to fetch company plan
+ */
+export function useCompanyPlan(companyId: string | undefined) {
+  return useQuery({
+    queryKey: companyKeys.plan(companyId!),
+    queryFn: async () => {
+      const response = await companyService.getCompanyPlan(companyId!)
+      if (!response.success) {
+        throw new Error(response.error || 'Erro ao buscar plano da empresa')
       }
       return response.data
     },

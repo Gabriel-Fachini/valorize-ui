@@ -159,6 +159,7 @@ export function useUpdateCompanyPlan(companyId: string) {
       companyService.updateCompanyPlan(companyId, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: companyKeys.detail(companyId) })
+      queryClient.invalidateQueries({ queryKey: companyKeys.plan(companyId) })
       queryClient.invalidateQueries({ queryKey: companyKeys.billing(companyId) })
       queryClient.invalidateQueries({ queryKey: companyKeys.lists() })
     },

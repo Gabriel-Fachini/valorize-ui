@@ -4,6 +4,7 @@ import { HomePage } from '@/pages/HomePage'
 import { CompaniesPage } from '@/pages/CompaniesPage'
 import { CreateCompanyPage } from '@/pages/CreateCompanyPage'
 import { CompanyDetailsPage } from '@/pages/CompanyDetailsPage'
+import { AuditLogsPage } from '@/pages/AuditLogsPage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { DevErrorBoundary } from '@/components/DevErrorBoundary'
 
@@ -120,6 +121,16 @@ const settingsRoute = createRoute({
   ),
 })
 
+const auditLogsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/audit-logs',
+  component: () => (
+    <ProtectedRoute>
+      <AuditLogsPage />
+    </ProtectedRoute>
+  ),
+})
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -132,6 +143,7 @@ const routeTree = rootRoute.addChildren([
   vouchersRoute,
   metricsRoute,
   settingsRoute,
+  auditLogsRoute,
 ])
 
 // Create and export router

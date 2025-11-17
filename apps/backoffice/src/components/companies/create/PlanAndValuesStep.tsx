@@ -36,8 +36,8 @@ export function PlanAndValuesStep({ form }: PlanAndValuesStepProps) {
   }
 
   const defaultPrices = {
-    [PlanType.ESSENTIAL]: 18,
-    [PlanType.PROFESSIONAL]: 14,
+    [PlanType.ESSENTIAL]: 14,
+    [PlanType.PROFESSIONAL]: 18,
   }
 
   const handlePlanChange = (planType: string) => {

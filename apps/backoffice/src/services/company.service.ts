@@ -8,9 +8,9 @@ import { api } from './api'
 import type {
   ApiResponse,
   PaginatedApiResponse,
-  PaginatedResult,
   CompanyListItem,
   CompanyDetails,
+  CompanyPlan,
   CompanyWalletStatus,
   CompanyMetrics,
   BillingInfo,
@@ -123,6 +123,17 @@ export async function getCompanyMetrics(
 export async function getBillingInfo(companyId: string): Promise<ApiResponse<BillingInfo>> {
   const response = await api.get<ApiResponse<BillingInfo>>(
     `/backoffice/companies/${companyId}/billing`
+  )
+  return response.data
+}
+
+/**
+ * Get company plan
+ * GET /backoffice/companies/:id/plan
+ */
+export async function getCompanyPlan(companyId: string): Promise<ApiResponse<CompanyPlan>> {
+  const response = await api.get<ApiResponse<CompanyPlan>>(
+    `/backoffice/companies/${companyId}/plan`
   )
   return response.data
 }

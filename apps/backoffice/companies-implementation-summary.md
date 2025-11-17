@@ -938,8 +938,8 @@ Content-Type: application/json
 - ✅ Audit logged
 
 ### 2. Plan Management
-- ✅ Essential: R$18/user/month (50-200 employees)
-- ✅ Professional: R$14/user/month (200-1000 employees)
+- ✅ Essential: R$14/user/month (50-200 employees)
+- ✅ Professional: R$18/user/month (200-1000 employees)
 - ✅ Custom pricing: Optional pricePerUser override
 - ✅ Plan history: All changes tracked in CompanyPlan
 - ✅ Current plan: Filter by isActive = true
