@@ -1,8 +1,9 @@
 import { animated, useSpring } from '@react-spring/web'
-import { 
+import {
   TransactionFeed,
+  ExpiringCoinsAlert,
 } from '@/components/transactions'
-import { 
+import {
   usePageEntrance,
   useCardEntrance,
 } from '@/hooks/useAnimations'
@@ -14,6 +15,7 @@ export const TransactionsPage = () => {
   // Data management
   const {
     transactions,
+    balance,
     uiFilters,
     loading,
     loadingMore,
@@ -33,6 +35,13 @@ export const TransactionsPage = () => {
     config: { tension: 280, friction: 60 },
   })
 
+  const alertSpring = useSpring({
+    from: { opacity: 0, transform: 'translateY(-10px)' },
+    to: { opacity: 1, transform: 'translateY(0px)' },
+    config: { tension: 280, friction: 60 },
+    delay: 100,
+  })
+
   return (
     <PageLayout maxWidth="6xl">
       <animated.div style={pageAnimation as any}>
@@ -49,6 +58,11 @@ export const TransactionsPage = () => {
         </animated.div>
 
         <div className="space-y-6 sm:space-y-8">
+
+          {/* Expiring Coins Alert */}
+          <animated.div style={alertSpring}>
+            <ExpiringCoinsAlert expiringCoins={balance?.expiringCoins} />
+          </animated.div>
 
           {/* Transaction Feed */}
           <div data-tour="transactions-feed">

@@ -12,6 +12,7 @@ import type {
   CompanyValue,
   Compliment,
   ComplimentsHistoryResponse,
+  ComplimentFeedItem,
 } from '@/types'
 
 /**
@@ -74,7 +75,16 @@ export const getComplimentsHistory = async (type: 'sent' | 'received'): Promise<
   const response = await api.get<ComplimentsHistoryResponse>('/compliments/history', {
     params: { type },
   })
-  
+
   // Extract the compliments array from the response
   return response.data.compliments
+}
+
+/**
+ * Get public compliments feed
+ * Returns the latest 10 public compliments from the company
+ */
+export const getComplimentsFeed = async (): Promise<ComplimentFeedItem[]> => {
+  const response = await api.get<ComplimentFeedItem[]>('/compliments/feed')
+  return response.data
 }

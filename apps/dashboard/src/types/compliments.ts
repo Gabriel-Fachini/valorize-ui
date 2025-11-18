@@ -57,9 +57,23 @@ export interface ListReceivableUsersResponse {
   users: ComplimentUser[]
 }
 
+export interface ExpiringCoinDetail {
+  amount: number
+  expirationDate: string
+  source?: string
+}
+
+export interface ExpiringCoins {
+  next30Days: number
+  next90Days: number
+  urgentExpiration: boolean
+  details: ExpiringCoinDetail[]
+}
+
 export interface UserBalance {
   complimentBalance: number
   redeemableBalance: number
+  expiringCoins?: ExpiringCoins
 }
 
 export interface ComplimentsHistoryResponse {
@@ -70,6 +84,33 @@ export interface ComplimentsHistoryResponse {
     [key: string]: unknown
   }
   compliments: Compliment[]
+}
+
+// Public feed types
+export interface ComplimentFeedItem {
+  id: string
+  sender: {
+    id: string
+    name: string
+    avatar: string | null
+    department: string
+  }
+  receiver: {
+    id: string
+    name: string
+    avatar: string | null
+    department: string
+  }
+  companyValue: {
+    id: number
+    title: string
+    iconName: string
+    iconColor: string
+  }
+  coins: number
+  message: string
+  createdAt: string
+  timeAgo: string
 }
 
 // UI specific types (for backward compatibility with existing components)

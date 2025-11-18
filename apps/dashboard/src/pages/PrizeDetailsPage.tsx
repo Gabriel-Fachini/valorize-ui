@@ -1,4 +1,4 @@
-import { type FC, useRef } from 'react'
+import { type FC } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePrizeById } from '@/hooks/usePrizes'
 import { usePrizeDetails } from '@/hooks/usePrizeDetails'

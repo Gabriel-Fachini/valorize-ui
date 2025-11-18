@@ -5,6 +5,7 @@ import { CompaniesPage } from '@/pages/CompaniesPage'
 import { CreateCompanyPage } from '@/pages/CreateCompanyPage'
 import { CompanyDetailsPage } from '@/pages/CompanyDetailsPage'
 import { AuditLogsPage } from '@/pages/AuditLogsPage'
+import { FinancialManagementPage } from '@/pages/FinancialManagementPage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { DevErrorBoundary } from '@/components/DevErrorBoundary'
 
@@ -131,6 +132,16 @@ const auditLogsRoute = createRoute({
   ),
 })
 
+const financialRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/financial',
+  component: () => (
+    <ProtectedRoute>
+      <FinancialManagementPage />
+    </ProtectedRoute>
+  ),
+})
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -139,6 +150,7 @@ const routeTree = rootRoute.addChildren([
   clientsRoute,
   createClientRoute,
   clientDetailsRoute,
+  financialRoute,
   contractsRoute,
   vouchersRoute,
   metricsRoute,
