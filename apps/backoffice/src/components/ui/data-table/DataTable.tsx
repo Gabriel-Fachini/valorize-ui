@@ -342,11 +342,12 @@ export function DataTable<T extends object>({
                 {config.animation !== false
                   ? // Com animação
                     transitions((style, row) => (
+                      // @ts-expect-error - animated component typing issue with react-spring
                       <animated.tr
                         key={getRowId(row.original)}
                         data-state={row.getIsSelected() && 'selected'}
                         className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-                        style={style}
+                        style={style as any}
                       >
                         {row.getVisibleCells().map((cell) => (
                           <TableCell key={cell.id}>

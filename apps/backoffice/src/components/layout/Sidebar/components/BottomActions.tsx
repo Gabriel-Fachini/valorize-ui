@@ -73,8 +73,9 @@ export const BottomActions = ({
       </div>
 
       {/* Sair */}
+      {/* @ts-expect-error - animated component typing issue with react-spring */}
       <animated.button
-        style={logoutHoverStyle}
+        style={logoutHoverStyle as any}
         onMouseEnter={() => setHoveredLogout(true)}
         onMouseLeave={() => setHoveredLogout(false)}
         onClick={() => {
@@ -82,8 +83,8 @@ export const BottomActions = ({
           onLogout()
         }}
         className={`flex w-full items-center ${
-          collapsed 
-            ? 'justify-center h-12 w-12 mx-auto' 
+          collapsed
+            ? 'justify-center h-12 w-12 mx-auto'
             : 'gap-4 px-4'
         } py-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors`}
         title={collapsed ? 'Sair' : undefined}

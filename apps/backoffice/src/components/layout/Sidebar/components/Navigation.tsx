@@ -95,10 +95,11 @@ export const Navigation = ({
     >
       <div className="relative space-y-2">
         <animated.div
-          style={indicatorStyle}
+          style={indicatorStyle as any}
+          // @ts-expect-error - animated component className typing issue with react-spring
           className={`absolute ${
-            collapsed 
-              ? 'left-0 right-0 mx-auto w-12 h-12' 
+            collapsed
+              ? 'left-0 right-0 mx-auto w-12 h-12'
               : 'left-0 right-0 h-12'
           } bg-primary rounded-xl`}
           aria-hidden="true"

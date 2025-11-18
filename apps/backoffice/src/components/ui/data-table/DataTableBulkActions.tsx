@@ -43,8 +43,9 @@ export const DataTableBulkActions: FC<DataTableBulkActionsProps> = ({
   }
 
   return (
+    // @ts-expect-error - animated component typing issue with react-spring
     <animated.div
-      style={animation}
+      style={animation as any}
       className="flex items-center justify-between rounded-lg border bg-muted/50 p-4"
     >
       <div className="flex items-center gap-2">

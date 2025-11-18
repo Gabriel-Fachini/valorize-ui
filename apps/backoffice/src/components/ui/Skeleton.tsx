@@ -13,7 +13,8 @@ export const SkeletonBase: React.FC<{
   })
 
   return (
-    <animated.div style={pulseAnimation} className={className}>
+    // @ts-expect-error - animated component typing issue with react-spring
+    <animated.div style={pulseAnimation as any} className={className}>
       {children}
     </animated.div>
   )

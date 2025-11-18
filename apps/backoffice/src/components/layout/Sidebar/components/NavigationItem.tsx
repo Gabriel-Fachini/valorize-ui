@@ -85,15 +85,16 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
 
   return (
     <div className="relative">
+      {/* @ts-expect-error - animated component typing issue with react-spring */}
       <animated.button
         onClick={handleMainClick}
         data-tour={dataTour}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        style={hoverStyle}
+        style={hoverStyle as any}
         className={`relative z-10 flex h-12 items-center ${
-          collapsed 
-            ? 'justify-center w-12 mx-auto' 
+          collapsed
+            ? 'justify-center w-12 mx-auto'
             : 'w-full gap-4 px-4'
         } rounded-xl text-left transition-colors ${
           (isActive && !hasActiveSubItem) || hasIndicator
@@ -106,7 +107,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
         type="button"
         aria-expanded={hasSubItems && !collapsed ? isOpen : undefined}
       >
-        <i 
+        <i
           className={iconClass}
           style={{ fontSize: '1.5rem' }}
           aria-hidden="true"
@@ -115,7 +116,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
           <>
             <span className="font-medium flex-1">{label}</span>
             {hasSubItems && (
-              <i 
+              <i
                 className={`ph ${isOpen ? 'ph-caret-up' : 'ph-caret-down'}`}
                 style={{ fontSize: '1rem' }}
                 aria-hidden="true"
@@ -127,9 +128,10 @@ export const NavigationItem: React.FC<NavigationItemProps> = React.memo(({
 
       {/* Sub-items */}
       {hasSubItems && !collapsed && (
+        // @ts-expect-error - animated component typing issue with react-spring
         <animated.div
           style={{
-            ...subItemsStyle,
+            ...(subItemsStyle as any),
             overflow: 'hidden',
           }}
         >
