@@ -5,4 +5,5 @@ export { WelcomeHeader } from './WelcomeHeader'
 export { BalanceWidget } from './BalanceWidget'
 export { DashboardPraiseFeed } from './DashboardPraiseFeed'
 export { QuickActionsWidget } from './QuickActionsWidget'
+export { PrizesWidget } from './PrizesWidget'
 

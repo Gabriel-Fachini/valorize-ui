@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useSpring, animated, useTrail } from '@react-spring/web'
 import { PageLayout } from '@/components/layout/PageLayout'
-import { WelcomeHeader } from '@/components/dashboard'
+import { WelcomeHeader, PrizesWidget } from '@/components/dashboard'
 import { OnboardingManager } from '@/components/onboarding/OnboardingManager'
 import { PublicComplimentsFeed } from '@/components/compliments'
 import { useDashboardData } from '@/hooks/useDashboardData'
@@ -35,7 +35,7 @@ export const HomePage = () => {
   })
 
   // Animação para seções com stagger
-  const sectionsTrail = useTrail(2, {
+  const sectionsTrail = useTrail(3, {
     from: { opacity: 0, transform: 'translateY(30px)' },
     to: { opacity: 1, transform: 'translateY(0px)' },
     delay: 100,
@@ -217,6 +217,11 @@ export const HomePage = () => {
 
             </div>
           </div>
+        </animated.div>
+
+        {/* Prêmios Widget */}
+        <animated.div style={sectionsTrail[2]}>
+          <PrizesWidget />
         </animated.div>
 
         </animated.div>
