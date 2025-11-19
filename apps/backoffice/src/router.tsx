@@ -6,6 +6,8 @@ import { CreateCompanyPage } from '@/pages/CreateCompanyPage'
 import { CompanyDetailsPage } from '@/pages/CompanyDetailsPage'
 import { AuditLogsPage } from '@/pages/AuditLogsPage'
 import { FinancialManagementPage } from '@/pages/FinancialManagementPage'
+import { VouchersPage } from '@/pages/VouchersPage'
+import { VoucherDetailPage } from '@/pages/VoucherDetailPage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { DevErrorBoundary } from '@/components/DevErrorBoundary'
 
@@ -88,10 +90,17 @@ const vouchersRoute = createRoute({
   path: '/vouchers',
   component: () => (
     <ProtectedRoute>
-      <div className="p-8">
-        <h1 className="text-2xl font-bold">Vouchers</h1>
-        <p className="mt-2 text-muted-foreground">Página em desenvolvimento</p>
-      </div>
+      <VouchersPage />
+    </ProtectedRoute>
+  ),
+})
+
+const voucherDetailsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/vouchers/$id',
+  component: () => (
+    <ProtectedRoute>
+      <VoucherDetailPage />
     </ProtectedRoute>
   ),
 })
@@ -153,6 +162,7 @@ const routeTree = rootRoute.addChildren([
   financialRoute,
   contractsRoute,
   vouchersRoute,
+  voucherDetailsRoute,
   metricsRoute,
   settingsRoute,
   auditLogsRoute,
