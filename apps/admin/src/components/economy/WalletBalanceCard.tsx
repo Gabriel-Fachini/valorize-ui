@@ -27,7 +27,7 @@ interface WalletBalanceCardProps {
  * Features:
  * - Large balance display
  * - Progress bar showing percentage of ideal
- * - Breakdown: Total Loaded | Total Spent | Overdraft
+ * - Breakdown: Total Loaded | Total Spent
  * - Contextual action button
  * - Status badge
  */
@@ -50,8 +50,8 @@ export const WalletBalanceCard: FC<WalletBalanceCardProps> = ({ data, isLoading 
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="h-3 w-full bg-muted animate-pulse rounded" />
-          <div className="grid grid-cols-3 gap-4">
-            {[1, 2, 3].map((i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[1, 2].map((i) => (
               <div key={i} className="space-y-2">
                 <div className="h-3 w-20 bg-muted/60 animate-pulse rounded" />
                 <div className="h-6 w-24 bg-muted animate-pulse rounded" />
@@ -167,7 +167,7 @@ export const WalletBalanceCard: FC<WalletBalanceCardProps> = ({ data, isLoading 
         </TooltipProvider>
 
         {/* Breakdown */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/30 rounded-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground">Total Carregado</p>
             <p className="text-lg font-semibold">{formatCurrency(data.total_loaded)}</p>
@@ -176,23 +176,6 @@ export const WalletBalanceCard: FC<WalletBalanceCardProps> = ({ data, isLoading 
             <p className="text-xs text-muted-foreground">Já Gasto</p>
             <p className="text-lg font-semibold text-destructive">-{formatCurrency(data.total_spent)}</p>
           </div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground">Limite Overdraft</p>
-                  <p className="text-lg font-semibold">{formatCurrency(data.overdraft_limit)}</p>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p className="text-base font-medium mb-2">⚠️ Limite de Overdraft (120% do saldo ideal)</p>
-                <p className="text-sm text-muted-foreground mt-2 pt-2 border-t">
-                  O sistema permite resgates até 20% acima do saldo disponível.
-                  Isso evita bloqueios inesperados, mas o saldo negativo deve ser regularizado em até 7 dias.
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
 
         {/* Action Button */}

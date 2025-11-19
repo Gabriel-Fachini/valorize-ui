@@ -20,7 +20,6 @@ export interface WalletBalance {
   total_loaded: number // Total já carregado na carteira (R$)
   total_spent: number // Total já gasto (R$)
   available_balance: number // Saldo disponível (R$)
-  overdraft_limit: number // Limite de saque permitido (120% do ideal)
   percentage_of_ideal: number // % do saldo ideal para funcionar
   status: EconomyStatus // Status: 'healthy' | 'warning' | 'critical' | 'excess'
 }

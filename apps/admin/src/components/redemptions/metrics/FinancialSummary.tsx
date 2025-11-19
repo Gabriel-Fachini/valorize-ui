@@ -86,6 +86,13 @@ export const FinancialSummary: FC<FinancialSummaryProps> = ({
     projectedMonthlyCost: 0,
   }
 
+  // Ensure all values are numbers with fallback to 0
+  const totalCost = data.totalCost ?? 0
+  const voucherCost = data.voucherCost ?? 0
+  const physicalCost = data.physicalCost ?? 0
+  const avgCostPerRedemption = data.avgCostPerRedemption ?? 0
+  const projectedMonthlyCost = data.projectedMonthlyCost ?? 0
+
   return (
     <animated.div
       style={animation as any}
@@ -102,7 +109,7 @@ export const FinancialSummary: FC<FinancialSummaryProps> = ({
         {/* Main metric - Total Cost */}
         <div className="p-4 rounded-xl border bg-accent/50 hover:bg-accent transition-colors">
           <p className="text-sm text-muted-foreground font-medium">Custo Total de Resgates</p>
-          <p className="text-3xl font-bold mt-2">R$ {data.totalCost.toFixed(2)}</p>
+          <p className="text-3xl font-bold mt-2">R$ {totalCost.toFixed(2)}</p>
           <p className="text-xs text-muted-foreground mt-2">
             {totalRedemptions} resgates processados no período
           </p>
@@ -113,25 +120,25 @@ export const FinancialSummary: FC<FinancialSummaryProps> = ({
           <FinancialMetricCard
             icon="ph-ticket"
             title="Custo em Vouchers"
-            value={`R$ ${data.voucherCost.toFixed(2)}`}
-            subtitle={`${data.totalCost > 0 ? ((data.voucherCost / data.totalCost) * 100).toFixed(0) : 0}% do total`}
+            value={`R$ ${voucherCost.toFixed(2)}`}
+            subtitle={`${totalCost > 0 ? ((voucherCost / totalCost) * 100).toFixed(0) : 0}% do total`}
           />
           <FinancialMetricCard
             icon="ph-package"
             title="Custo em Produtos"
-            value={`R$ ${data.physicalCost.toFixed(2)}`}
-            subtitle={`${data.totalCost > 0 ? ((data.physicalCost / data.totalCost) * 100).toFixed(0) : 0}% do total`}
+            value={`R$ ${physicalCost.toFixed(2)}`}
+            subtitle={`${totalCost > 0 ? ((physicalCost / totalCost) * 100).toFixed(0) : 0}% do total`}
           />
           <FinancialMetricCard
             icon="ph-calculator"
             title="Custo Médio/Resgate"
-            value={`R$ ${data.avgCostPerRedemption.toFixed(2)}`}
+            value={`R$ ${avgCostPerRedemption.toFixed(2)}`}
             subtitle={`Baseado em ${totalRedemptions} resgates`}
           />
           <FinancialMetricCard
             icon="ph-trend-up"
             title="Projeção Mensal"
-            value={`R$ ${data.projectedMonthlyCost.toFixed(2)}`}
+            value={`R$ ${projectedMonthlyCost.toFixed(2)}`}
             subtitle="Baseado no período atual"
           />
         </div>

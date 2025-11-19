@@ -10,7 +10,6 @@ import { PageLayout } from '@/components/layout/PageLayout'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { DataTable } from '@/components/ui/data-table'
 import { vouchersTableConfig } from '@/config/tables/vouchers.table.config'
-import { VoucherSyncButton } from '@/components/vouchers/VoucherSyncButton'
 import { VoucherBulkAssignDialog } from '@/components/vouchers/VoucherBulkAssignDialog'
 import { VoucherAssignResultDialog } from '@/components/vouchers/VoucherAssignResultDialog'
 import { VoucherSendDirectDialog } from '@/components/vouchers/VoucherSendDirectDialog'
@@ -184,16 +183,13 @@ export const VouchersPage: FC = () => {
           description="Gerencie o catálogo de vouchers digitais e envie para usuários"
           icon="ph-ticket"
           right={
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={() => setIsBulkAssignDialogOpen(true)}
-                variant="default"
-              >
-                <i className="ph ph-paper-plane-tilt mr-2" />
-                Enviar em Lote
-              </Button>
-              <VoucherSyncButton />
-            </div>
+            <Button
+              onClick={() => setIsBulkAssignDialogOpen(true)}
+              variant="default"
+            >
+              <i className="ph ph-paper-plane-tilt mr-2" />
+              Enviar em Lote
+            </Button>
           }
         />
 
