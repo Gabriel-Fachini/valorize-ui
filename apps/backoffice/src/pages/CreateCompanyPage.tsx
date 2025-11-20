@@ -12,17 +12,22 @@ import { BasicInfoStep } from '@/components/companies/create/BasicInfoStep'
 import { BrazilDataStep } from '@/components/companies/create/BrazilDataStep'
 import { PlanAndValuesStep } from '@/components/companies/create/PlanAndValuesStep'
 import { WalletStep } from '@/components/companies/create/WalletStep'
-import type { CreateCompanyInput } from '@/types/company'
+import { FirstAdminStep } from '@/components/companies/create/FirstAdminStep'
+import { CompanyCreatedSuccessDialog } from '@/components/companies/create/CompanyCreatedSuccessDialog'
+import type { CreateCompanyInput, CreateResponseNew } from '@/types/company'
 
 const STEPS = [
   { title: 'Informações Básicas', description: 'Dados gerais da empresa' },
   { title: 'Dados Fiscais', description: 'Informações específicas do Brasil' },
   { title: 'Plano e Valores', description: 'Configuração de plano e valores da empresa' },
   { title: 'Carteira', description: 'Orçamento inicial' },
+  { title: 'Primeiro Admin', description: 'Configuração do administrador inicial' },
 ]
 
 export function CreateCompanyPage() {
   const [currentStep, setCurrentStep] = useState(0)
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false)
+  const [createdCompanyData, setCreatedCompanyData] = useState<CreateResponseNew | null>(null)
   const navigate = useNavigate()
   const { toast } = useToast()
   const createCompanyMutation = useCreateCompany()
@@ -53,6 +58,10 @@ export function CreateCompanyPage() {
         },
       ],
       initialWalletBudget: 0,
+      firstAdmin: {
+        name: '',
+        email: '',
+      },
       companyBrazil: {
         cnpj: '',
         razaoSocial: '',
@@ -77,6 +86,9 @@ export function CreateCompanyPage() {
         break
       case 3:
         fieldsToValidate = ['initialWalletBudget']
+        break
+      case 4:
+        fieldsToValidate = ['firstAdmin']
         break
     }
 
@@ -114,6 +126,7 @@ export function CreateCompanyPage() {
         timezone: 'America/Sao_Paulo', // Fixed value for MVP
         logoUrl: data.logoUrl || undefined,
         billingEmail: data.billingEmail || undefined,
+        firstAdmin: data.firstAdmin,
         plan: {
           ...data.plan,
           startDate: new Date(data.plan.startDate).toISOString(),
@@ -135,16 +148,15 @@ export function CreateCompanyPage() {
         }
       }
 
-      await createCompanyMutation.mutateAsync(input)
+      const result = await createCompanyMutation.mutateAsync(input)
 
-      toast({
-        title: 'Empresa criada com sucesso!',
-        description: `${data.name} foi cadastrada no sistema.`,
-        variant: 'default',
-      })
+      // Store result and open success dialog
+      setCreatedCompanyData(result.data)
+      setSuccessDialogOpen(true)
 
-      // Navigate back to companies list
-      navigate({ to: '/clients' })
+      // Reset form and navigate back to companies list after dialog closes
+      form.reset()
+      setCurrentStep(0)
     } catch (error) {
       toast({
         title: 'Erro ao criar empresa',
@@ -164,6 +176,8 @@ export function CreateCompanyPage() {
         return <PlanAndValuesStep form={form} />
       case 3:
         return <WalletStep form={form} />
+      case 4:
+        return <FirstAdminStep form={form} />
       default:
         return null
     }
@@ -261,6 +275,14 @@ export function CreateCompanyPage() {
           </form>
         </Card>
       </div>
+
+      {createdCompanyData && (
+        <CompanyCreatedSuccessDialog
+          open={successDialogOpen}
+          onOpenChange={setSuccessDialogOpen}
+          data={createdCompanyData}
+        />
+      )}
     </PageLayout>
   )
 }

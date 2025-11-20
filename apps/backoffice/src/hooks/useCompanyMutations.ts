@@ -4,7 +4,6 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useNavigate } from '@tanstack/react-router'
 import type {
   CreateCompanyInput,
   UpdateCompanyInput,
@@ -23,18 +22,15 @@ import { companyKeys } from './useCompanies'
  */
 export function useCreateCompany() {
   const queryClient = useQueryClient()
-  const navigate = useNavigate()
 
   return useMutation({
     mutationFn: (input: CreateCompanyInput) => companyService.createCompany(input),
-    onSuccess: (response) => {
+    onSuccess: () => {
       // Invalidate companies list
       queryClient.invalidateQueries({ queryKey: companyKeys.lists() })
 
-      // Navigate to company details
-      if (response.data?.id) {
-        navigate({ to: `/clients/${response.data.id}` })
-      }
+      // Note: Navigation is handled by the CreateCompanyDialog after showing success dialog
+      // The response now includes: { company, firstAdmin, passwordResetUrl }
     },
   })
 }

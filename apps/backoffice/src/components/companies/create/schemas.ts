@@ -62,16 +62,37 @@ export const walletSchema = z.object({
   initialWalletBudget: z.number().min(0, 'Orçamento deve ser maior ou igual a zero').default(0),
 })
 
+// Step 5: First Admin
+export const firstAdminSchema = z.object({
+  firstAdmin: z.object({
+    name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
+    email: z.string().email('Email inválido'),
+  }),
+})
+
 // Complete wizard schema
 export const createCompanyWizardSchema = basicInfoSchema
   .merge(planAndValuesSchema)
   .merge(walletSchema)
+  .merge(firstAdminSchema)
   .extend({
     companyBrazil: brazilDataSchema.optional(),
   })
+  .refine(
+    (data) => {
+      // Validate that admin email domain matches company domain
+      const emailDomain = data.firstAdmin.email.split('@')[1]
+      return emailDomain === data.domain
+    },
+    {
+      message: 'O email do administrador deve pertencer ao domínio da empresa',
+      path: ['firstAdmin', 'email'],
+    }
+  )
 
 export type BasicInfoFormData = z.infer<typeof basicInfoSchema>
 export type BrazilDataFormData = z.infer<typeof brazilDataSchema>
 export type PlanAndValuesFormData = z.infer<typeof planAndValuesSchema>
 export type WalletFormData = z.infer<typeof walletSchema>
+export type FirstAdminFormData = z.infer<typeof firstAdminSchema>
 export type CreateCompanyWizardData = z.infer<typeof createCompanyWizardSchema>

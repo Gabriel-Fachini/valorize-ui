@@ -244,6 +244,11 @@ export interface MetricsQueryParams {
 
 // ==================== Input Types ====================
 
+export interface FirstAdmin {
+  name: string
+  email: string
+}
+
 export interface CreateCompanyInput {
   name: string
   domain: string
@@ -251,6 +256,7 @@ export interface CreateCompanyInput {
   timezone: string
   logoUrl?: string
   billingEmail?: string
+  firstAdmin: FirstAdmin
   companyBrazil?: {
     cnpj: string
     razaoSocial: string
@@ -356,11 +362,30 @@ export interface ActionResponse {
   message: string
 }
 
-export interface CreateResponse {
+export interface CreatedAdmin {
+  id: string
+  name: string
+  email: string
+  auth0Id: string
+  roles: string[]
+}
+
+// Response from create company endpoint
+export interface CreateResponseNew {
+  company: Company
+  firstAdmin: CreatedAdmin
+  passwordResetUrl: string
+}
+
+// Legacy - kept for backwards compatibility (deprecated)
+export interface CreateResponseOld {
   id: string
   name?: string
-  message: string
+  message?: string
 }
+
+// Current response type
+export type CreateResponse = CreateResponseNew
 
 export interface WalletActionResponse extends ActionResponse {
   newBalance?: number
