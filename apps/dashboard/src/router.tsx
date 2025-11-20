@@ -20,6 +20,7 @@ import { NewsPage } from '@/pages/NewsPage'
 import { EventsPage } from '@/pages/EventsPage'
 import { TrainingPage } from '@/pages/TrainingPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { DevErrorBoundary } from '@/components/DevErrorBoundary'
 import { useTheme } from '@hooks/useTheme'
@@ -65,6 +66,12 @@ const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
   component: LoginPage,
+})
+
+const resetPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/reset-password',
+  component: ResetPasswordPage,
 })
 
 const homeRoute = createRoute({
@@ -164,10 +171,17 @@ const trainingRoute = createRoute({
   component: TrainingPage,
 })
 
+const notFoundRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/404',
+  component: NotFoundPage,
+})
+
 // Create route tree with nested protected routes
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
+  resetPasswordRoute,
   protectedLayoutRoute.addChildren([
     homeRoute,
     praisesRoute,
