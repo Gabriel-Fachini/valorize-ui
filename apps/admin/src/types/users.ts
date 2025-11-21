@@ -33,6 +33,9 @@ export interface User {
   updatedAt?: string
   lastLogin?: string
   statistics?: UserStatistics
+  welcomeEmailSentAt?: string | null
+  lastWelcomeEmailSentAt?: string | null
+  welcomeEmailSendCount: number
 }
 
 export interface CreateUserResponse extends User {
@@ -85,6 +88,7 @@ export const userFormSchema = z.object({
   departmentId: z.string().optional(),
   jobTitleId: z.string().optional(),
   isActive: z.boolean().optional(),
+  sendEmail: z.boolean().optional(),
 })
 
 export type UserFormData = z.infer<typeof userFormSchema>
@@ -145,6 +149,7 @@ export interface CSVPreviewResponse {
 export interface CSVImportPayload {
   previewId: string
   confirmedRows?: number[]
+  sendEmails?: boolean
 }
 
 export interface CSVImportError {
@@ -158,11 +163,41 @@ export interface CSVImportReport {
   updated: number
   skipped: number
   errors: CSVImportError[]
+  emailsSent?: number
 }
 
 export interface CSVImportResponse {
   status: 'completed'
   report: CSVImportReport
+}
+
+// ============================================================================
+// Welcome Email Types
+// ============================================================================
+
+export interface SendWelcomeEmailResponse {
+  message: string
+}
+
+export interface BulkSendEmailResult {
+  userId: string
+  success: boolean
+  error?: string
+}
+
+export interface BulkSendWelcomeEmailsPayload {
+  userIds: string[]
+  requestedBy: string
+}
+
+export interface BulkSendWelcomeEmailsResponse {
+  message: string
+  results: BulkSendEmailResult[]
+  summary: {
+    total: number
+    sent: number
+    failed: number
+  }
 }
 
 // ============================================================================

@@ -54,6 +54,43 @@ export const UserDetailCard: FC<UserDetailCardProps> = ({ user }) => {
             </p>
           </div>
         </div>
+
+        {/* Seção de Histórico de Emails */}
+        <div className="border-t pt-4 mt-4">
+          <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+            <i className="ph ph-envelope-simple text-primary" />
+            Histórico de Emails
+          </h4>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Emails enviados</p>
+              <div className="flex items-center gap-2 mt-1">
+                <Badge
+                  variant={
+                    (user.welcomeEmailSendCount || 0) >= 3
+                      ? 'destructive'
+                      : (user.welcomeEmailSendCount || 0) > 0
+                        ? 'secondary'
+                        : 'outline'
+                  }
+                >
+                  {user.welcomeEmailSendCount || 0}/3
+                </Badge>
+                {(user.welcomeEmailSendCount || 0) >= 3 && (
+                  <span className="text-xs text-destructive">Limite atingido</span>
+                )}
+              </div>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Último envio</p>
+              <p className="font-medium">
+                {user.lastWelcomeEmailSentAt
+                  ? new Date(user.lastWelcomeEmailSentAt).toLocaleString('pt-BR')
+                  : 'Nenhum envio'}
+              </p>
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   )

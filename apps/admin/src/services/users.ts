@@ -13,6 +13,9 @@ import type {
   CreateUserResponse,
   PasswordResetResponse,
   AllowedDomain,
+  SendWelcomeEmailResponse,
+  BulkSendWelcomeEmailsPayload,
+  BulkSendWelcomeEmailsResponse,
 } from '@/types/users'
 
 const usersService = {
@@ -122,6 +125,33 @@ const usersService = {
   resetPassword: async (userId: string) => {
     const { data } = await api.put(`/admin/users/${userId}/reset-password`)
     return data as PasswordResetResponse
+  },
+
+  /**
+   * Send welcome email to a specific user
+   *
+   * Endpoint: POST /admin/users/{userId}/send-welcome-email
+   */
+  sendWelcomeEmail: async (
+    userId: string,
+    requestedBy: string
+  ): Promise<SendWelcomeEmailResponse> => {
+    const { data } = await api.post(`/admin/users/${userId}/send-welcome-email`, {
+      requestedBy,
+    })
+    return data
+  },
+
+  /**
+   * Send welcome emails to multiple users in bulk
+   *
+   * Endpoint: POST /admin/users/send-welcome-emails-bulk
+   */
+  bulkSendWelcomeEmails: async (
+    payload: BulkSendWelcomeEmailsPayload
+  ): Promise<BulkSendWelcomeEmailsResponse> => {
+    const { data } = await api.post('/admin/users/send-welcome-emails-bulk', payload)
+    return data
   },
 
   /**

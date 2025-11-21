@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Redefinir senha - Valorize</title>
+    <title>Você foi convidado - Valorize</title>
     <style>
         /* Reset */
         body, table, td, a {
@@ -79,6 +79,27 @@
             margin: 0 0 20px 0;
         }
 
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, #E5FFF0 0%, #CCFFE1 100%);
+            border-left: 4px solid #00D959;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box p {
+            margin: 0;
+            font-size: 15px;
+            color: #171717;
+            line-height: 1.6;
+        }
+
+        .highlight-box strong {
+            color: #00AD47;
+            font-size: 16px;
+        }
+
         /* Button */
         .button-container {
             text-align: center;
@@ -146,20 +167,39 @@
             color: #AD003F;
         }
 
-        /* Info Box */
-        .info-box {
-            background-color: #E5FFF0;
-            border-left: 4px solid #00D959;
-            padding: 15px 20px;
+        /* Benefits List */
+        .benefits {
+            background-color: #fafafa;
+            padding: 20px 25px;
             margin: 25px 0;
             border-radius: 8px;
         }
 
-        .info-box p {
+        .benefits h3 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #171717;
+            font-weight: 600;
+        }
+
+        .benefits ul {
             margin: 0;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .benefits li {
+            margin-bottom: 10px;
             font-size: 14px;
             color: #525252;
             line-height: 1.5;
+            padding-left: 0;
+        }
+
+        .benefits .checkmark {
+            color: #00D959;
+            font-weight: bold;
+            margin-right: 8px;
         }
 
         /* Footer */
@@ -222,6 +262,10 @@
             .footer {
                 padding: 25px 20px !important;
             }
+
+            .benefits {
+                padding: 15px 20px !important;
+            }
         }
     </style>
 </head>
@@ -236,7 +280,7 @@
                     <tr>
                         <td class="header">
                             <a href="{{ .SiteURL }}" style="display: inline-block;">
-                                <img src="https://lnjawwzqirnicbdvcnpy.supabase.co/storage/v1/object/public/prize-images/logo1.svg" alt="Valorize" style="max-width: 180px; height: auto; display: block;">
+                                <img src="https://lnjawwzqirnicbdvcnpy.supabase.co/storage/v1/object/public/prize-images/logo1.png" alt="Valorize" style="max-width: 180px; height: auto; display: block;">
                             </a>
                         </td>
                     </tr>
@@ -244,38 +288,49 @@
                     <!-- Content -->
                     <tr>
                         <td class="content">
-                            <h1 class="greeting">Redefinição de Senha</h1>
+                            <h1 class="greeting">Você foi convidado para o Valorize</h1>
 
                             <p class="text">
-                                Olá! Recebemos uma solicitação para redefinir a senha da sua conta no Valorize.
+                                Olá! Você recebeu um convite para fazer parte do <strong>Valorize</strong>,
+                                a plataforma que transforma reconhecimento em resultados.
                             </p>
 
+                            <!-- Highlight Box -->
+                            <div class="highlight-box">
+                                <p>
+                                    <strong>Seu convite foi enviado para:</strong><br>
+                                    {{ .Email }}
+                                </p>
+                            </div>
+
                             <p class="text">
-                                Se você fez essa solicitação, clique no botão abaixo para criar uma nova senha.
-                                Você será redirecionado para uma página segura onde poderá definir sua nova senha.
+                                Ao aceitar este convite, você terá acesso a uma plataforma completa de reconhecimento
+                                e valorização profissional. Clique no botão abaixo para criar sua conta e começar!
                             </p>
+
+                            <!-- Benefits -->
+                            <div class="benefits">
+                                <h3>O que você vai encontrar:</h3>
+                                <ul>
+                                    <li><span class="checkmark">✔</span> Sistema de reconhecimento entre colegas</li>
+                                    <li><span class="checkmark">✔</span> Carteira digital de pontos e benefícios</li>
+                                    <li><span class="checkmark">✔</span> Acompanhamento de conquistas e metas</li>
+                                    <li><span class="checkmark">✔</span> Engajamento com a cultura da empresa</li>
+                                </ul>
+                            </div>
 
                             <!-- Button -->
                             <div class="button-container">
                                 <a href="{{ .ConfirmationURL }}" class="button">
-                                    Redefinir minha senha
+                                    Aceitar convite e criar conta
                                 </a>
                             </div>
 
                             <!-- Security Notice -->
                             <div class="security-notice">
                                 <p>
-                                    <strong>Importante:</strong> Este link é válido por 1 hora.
-                                    Se você não solicitou a redefinição de senha, pode ignorar esta mensagem com segurança.
-                                    Sua senha atual permanecerá inalterada.
-                                </p>
-                            </div>
-
-                            <!-- Info Box -->
-                            <div class="info-box">
-                                <p>
-                                    <strong>Dica de Segurança:</strong> Use uma senha forte com letras maiúsculas e minúsculas,
-                                    números e caracteres especiais. Evite usar a mesma senha em múltiplos serviços.
+                                    <strong>Atenção:</strong> Este link de convite é válido por 24 horas.
+                                    Se você não esperava receber este convite, pode ignorar esta mensagem com segurança.
                                 </p>
                             </div>
 
@@ -305,10 +360,6 @@
                             <p>
                                 Precisa de ajuda? Entre em contato com nosso
                                 <a href="{{ .SiteURL }}/suporte">suporte</a>
-                            </p>
-
-                            <p style="margin-top: 15px; font-size: 12px;">
-                                Se você não solicitou esta redefinição, por favor, entre em contato conosco imediatamente.
                             </p>
 
                             <p style="margin-top: 20px; font-size: 12px; color: #a3a3a3;">

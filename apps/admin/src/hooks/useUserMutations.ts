@@ -36,6 +36,25 @@ export const useUserMutations = () => {
     mutationFn: async (userId: string) => await usersService.resetPassword(userId),
   })
 
+  const sendWelcomeEmailMutation = useMutation({
+    mutationFn: async ({ userId, requestedBy }: { userId: string; requestedBy: string }) =>
+      await usersService.sendWelcomeEmail(userId, requestedBy),
+    onSuccess: (_, variables) => {
+      // Invalidate both the specific user and the users list to reflect updated email count
+      queryClient.invalidateQueries({ queryKey: ['user', variables.userId] })
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+    },
+  })
+
+  const bulkSendWelcomeEmailsMutation = useMutation({
+    mutationFn: async ({ userIds, requestedBy }: { userIds: string[]; requestedBy: string }) =>
+      await usersService.bulkSendWelcomeEmails({ userIds, requestedBy }),
+    onSuccess: () => {
+      // Invalidate users list to refresh all affected users
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+    },
+  })
+
   return {
     // Create
     createUser: createMutation.mutateAsync,
@@ -57,8 +76,24 @@ export const useUserMutations = () => {
     isResettingPassword: resetPasswordMutation.isPending,
     resetPasswordError: resetPasswordMutation.error,
 
+    // Send Welcome Email
+    sendWelcomeEmail: sendWelcomeEmailMutation.mutateAsync,
+    isSendingWelcomeEmail: sendWelcomeEmailMutation.isPending,
+    sendWelcomeEmailError: sendWelcomeEmailMutation.error,
+
+    // Bulk Send Welcome Emails
+    bulkSendWelcomeEmails: bulkSendWelcomeEmailsMutation.mutateAsync,
+    isBulkSendingWelcomeEmails: bulkSendWelcomeEmailsMutation.isPending,
+    bulkSendWelcomeEmailsError: bulkSendWelcomeEmailsMutation.error,
+
     // General states
-    isPending: createMutation.isPending || updateMutation.isPending || deleteMutation.isPending || resetPasswordMutation.isPending,
+    isPending:
+      createMutation.isPending ||
+      updateMutation.isPending ||
+      deleteMutation.isPending ||
+      resetPasswordMutation.isPending ||
+      sendWelcomeEmailMutation.isPending ||
+      bulkSendWelcomeEmailsMutation.isPending,
   }
 }
 

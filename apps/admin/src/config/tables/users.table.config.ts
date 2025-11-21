@@ -73,6 +73,20 @@ export const usersTableConfig: TableConfig<User> = {
       enableSorting: false,
     },
 
+    // Emails Enviados (badge com contador)
+    {
+      id: 'emailCount',
+      type: 'badge',
+      accessor: 'welcomeEmailSendCount',
+      header: 'Emails Enviados',
+      enableSorting: true,
+      badgeVariant: (value) => {
+        const count = value || 0
+        return count >= 3 ? 'destructive' : count > 0 ? 'secondary' : 'outline'
+      },
+      badgeLabel: (value) => `${value || 0}/3`,
+    },
+
     // Status (badge)
     {
       id: 'isActive',
@@ -153,6 +167,12 @@ export const usersTableConfig: TableConfig<User> = {
     // Ações em lote (bulk actions)
     bulk: [
       {
+        id: 'sendWelcomeEmails',
+        label: 'Enviar Emails de Boas-Vindas',
+        icon: 'ph-envelope-simple',
+        variant: 'default',
+      },
+      {
         id: 'activate',
         label: 'Ativar',
         icon: 'ph-check-circle',
@@ -184,6 +204,12 @@ export const usersTableConfig: TableConfig<User> = {
         id: 'edit',
         label: 'Editar',
         icon: 'ph-pencil-simple',
+        variant: 'default',
+      },
+      {
+        id: 'sendWelcomeEmail',
+        label: 'Enviar Email de Boas-Vindas',
+        icon: 'ph-envelope-simple',
         variant: 'default',
       },
       {

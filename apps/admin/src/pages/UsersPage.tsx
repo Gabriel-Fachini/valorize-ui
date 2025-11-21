@@ -10,7 +10,12 @@ import {
   UserImportCSVDialog,
   PasswordResetConfirmModal,
   PasswordResetModal,
+  SendWelcomeEmailDialog,
+  BulkSendWelcomeEmailsDialog,
+  BulkEmailResultsDialog,
 } from '@/components/users'
+import { toast } from 'sonner'
+import type { BulkSendWelcomeEmailsResponse } from '@/types/users'
 import { useUsers } from '@/hooks/useUsers'
 import { useUserMutations } from '@/hooks/useUserMutations'
 import { useUserBulkActions } from '@/hooks/useUserBulkActions'
@@ -36,8 +41,13 @@ export const UsersPage: FC = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [isPasswordResetConfirmOpen, setIsPasswordResetConfirmOpen] = useState(false)
   const [isPasswordResetModalOpen, setIsPasswordResetModalOpen] = useState(false)
+  const [isSendWelcomeEmailDialogOpen, setIsSendWelcomeEmailDialogOpen] = useState(false)
+  const [isBulkSendEmailsDialogOpen, setIsBulkSendEmailsDialogOpen] = useState(false)
+  const [isBulkEmailResultsDialogOpen, setIsBulkEmailResultsDialogOpen] = useState(false)
   const [passwordResetLink, setPasswordResetLink] = useState<string>('')
   const [selectedUser, setSelectedUser] = useState<User | undefined>()
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([])
+  const [bulkEmailResults, setBulkEmailResults] = useState<BulkSendWelcomeEmailsResponse | undefined>()
 
   // Build query params (using debounced search)
   // Note: Sorting is now done locally in the DataTable component
@@ -51,8 +61,19 @@ export const UsersPage: FC = () => {
   }
 
   const { users, totalCount, pageCount, currentPage, isLoading, isFetching } = useUsers(queryParams)
-  const { createUser, updateUser, deleteUser, resetPassword, isCreating, isUpdating, isDeleting } =
-    useUserMutations()
+  const {
+    createUser,
+    updateUser,
+    deleteUser,
+    resetPassword,
+    sendWelcomeEmail,
+    bulkSendWelcomeEmails,
+    isCreating,
+    isUpdating,
+    isDeleting,
+    isSendingWelcomeEmail,
+    isBulkSendingWelcomeEmails,
+  } = useUserMutations()
   const { performBulkAction } = useUserBulkActions()
 
   // Dynamic filter options
@@ -129,9 +150,70 @@ export const UsersPage: FC = () => {
     }
   }, [selectedUser, resetPassword])
 
+  const handleSendWelcomeEmailClick = useCallback((user: User) => {
+    setSelectedUser(user)
+    setIsSendWelcomeEmailDialogOpen(true)
+  }, [])
+
+  const handleSendWelcomeEmail = useCallback(async () => {
+    if (!selectedUser) return
+    try {
+      const response = await sendWelcomeEmail({
+        userId: selectedUser.id,
+        requestedBy: 'admin', // TODO: Replace with actual current user ID from auth context
+      })
+      toast.success(response.message || 'Email de boas-vindas enviado com sucesso!', {
+        description: `Email enviado para ${selectedUser.name}`,
+      })
+      setSelectedUser(undefined)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Erro ao enviar email'
+      toast.error('Falha ao enviar email', {
+        description: message,
+      })
+      throw error // Re-throw to keep dialog open on error
+    }
+  }, [selectedUser, sendWelcomeEmail])
+
   const handleBulkAction = async (actionId: string, userIds: string[]) => {
-    await performBulkAction({ userIds, action: actionId as 'activate' | 'deactivate' | 'export' })
+    if (actionId === 'sendWelcomeEmails') {
+      setSelectedUserIds(userIds)
+      setIsBulkSendEmailsDialogOpen(true)
+    } else {
+      await performBulkAction({ userIds, action: actionId as 'activate' | 'deactivate' | 'export' })
+    }
   }
+
+  const handleBulkSendWelcomeEmails = useCallback(async () => {
+    try {
+      const response = await bulkSendWelcomeEmails({
+        userIds: selectedUserIds,
+        requestedBy: 'admin', // TODO: Replace with actual current user ID from auth context
+      })
+
+      setBulkEmailResults(response)
+      setIsBulkSendEmailsDialogOpen(false)
+      setIsBulkEmailResultsDialogOpen(true)
+
+      // Show summary toast
+      const { summary } = response
+      if (summary.failed === 0) {
+        toast.success('Todos os emails foram enviados!', {
+          description: `${summary.sent} email${summary.sent !== 1 ? 's' : ''} enviado${summary.sent !== 1 ? 's' : ''} com sucesso`,
+        })
+      } else {
+        toast.warning('Envio parcialmente concluído', {
+          description: `${summary.sent} enviados, ${summary.failed} falharam`,
+        })
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Erro ao enviar emails'
+      toast.error('Falha no envio em lote', {
+        description: message,
+      })
+      throw error // Re-throw to keep dialog open on error
+    }
+  }, [selectedUserIds, bulkSendWelcomeEmails])
 
   // Handler para ações por linha
   const handleRowAction = useCallback(
@@ -143,6 +225,9 @@ export const UsersPage: FC = () => {
         case 'edit':
           handleEdit(user)
           break
+        case 'sendWelcomeEmail':
+          handleSendWelcomeEmailClick(user)
+          break
         case 'resetPassword':
           await handleResetPassword(user)
           break
@@ -151,7 +236,7 @@ export const UsersPage: FC = () => {
           break
       }
     },
-    [handleEdit, handleResetPassword, handleDeleteClick],
+    [handleEdit, handleSendWelcomeEmailClick, handleResetPassword, handleDeleteClick],
   )
 
   // Preparar options dinâmicos para filtros
@@ -254,6 +339,25 @@ export const UsersPage: FC = () => {
           onOpenChange={setIsPasswordResetModalOpen}
           ticketUrl={passwordResetLink}
           expiresIn="24 horas"
+        />
+        <SendWelcomeEmailDialog
+          open={isSendWelcomeEmailDialogOpen}
+          onOpenChange={setIsSendWelcomeEmailDialogOpen}
+          user={selectedUser}
+          onConfirm={handleSendWelcomeEmail}
+          isSending={isSendingWelcomeEmail}
+        />
+        <BulkSendWelcomeEmailsDialog
+          open={isBulkSendEmailsDialogOpen}
+          onOpenChange={setIsBulkSendEmailsDialogOpen}
+          users={users.filter((u) => selectedUserIds.includes(u.id))}
+          onConfirm={handleBulkSendWelcomeEmails}
+          isSending={isBulkSendingWelcomeEmails}
+        />
+        <BulkEmailResultsDialog
+          open={isBulkEmailResultsDialogOpen}
+          onOpenChange={setIsBulkEmailResultsDialogOpen}
+          results={bulkEmailResults}
         />
       </div>
     </PageLayout>

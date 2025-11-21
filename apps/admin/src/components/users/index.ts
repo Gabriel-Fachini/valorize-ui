@@ -13,6 +13,11 @@ export { UserForm } from './UserForm'
 export { UserFormDialog } from './UserFormDialog'
 export { UserDeleteDialog } from './UserDeleteDialog'
 
+// Email components
+export { SendWelcomeEmailDialog } from './SendWelcomeEmailDialog'
+export { BulkSendWelcomeEmailsDialog } from './BulkSendWelcomeEmailsDialog'
+export { BulkEmailResultsDialog } from './BulkEmailResultsDialog'
+
 // Modal components
 export { PasswordSetupModal } from './PasswordSetupModal'
 export { PasswordResetConfirmModal } from './PasswordResetConfirmModal'

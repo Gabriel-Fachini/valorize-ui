@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/select'
 import { userFormSchema, type UserFormData, type User } from '@/types/users'
 import { useDepartments, useJobTitles, useJobTitlesByDepartment } from '@/hooks/useFilters'
-import { useAllowedDomains } from '@/hooks/useAllowedDomains'
 
 interface UserFormProps {
   user?: User
@@ -26,9 +25,6 @@ interface UserFormProps {
 export const UserForm: FC<UserFormProps> = ({ user, onSubmit, onCancel, isSubmitting }) => {
   const { data: departments, isLoading: isLoadingDepartments } = useDepartments()
   const { data: allJobTitles, isLoading: isLoadingAllJobTitles } = useJobTitles()
-  const { data: allowedDomains = [] } = useAllowedDomains()
-  const [emailDomainError, setEmailDomainError] = useState<string>('')
-  const [emailTouched, setEmailTouched] = useState(false)
 
   const {
     register,
@@ -44,41 +40,12 @@ export const UserForm: FC<UserFormProps> = ({ user, onSubmit, onCancel, isSubmit
       departmentId: user?.department?.id || '',
       jobTitleId: user?.position?.id || '',
       isActive: user?.isActive ?? true,
+      sendEmail: false,
     },
   })
 
   // Watch the departmentId field to filter job titles
   const selectedDepartmentId = watch('departmentId')
-  const emailValue = watch('email')
-
-  // Validate email domain when field loses focus (onBlur)
-  const validateEmailDomain = () => {
-    if (!user && emailValue && allowedDomains.length > 0) {
-      if (emailValue.includes('@')) {
-        const domain = emailValue.split('@')[1]
-        const isValidDomain = allowedDomains.some((d) => d.domain === domain)
-        if (!isValidDomain) {
-          setEmailDomainError(`Domínio '${domain}' não é permitido para esta empresa`)
-        } else {
-          setEmailDomainError('')
-        }
-      }
-    }
-  }
-
-  // Clear error when typing again
-  useEffect(() => {
-    if (emailTouched && emailValue) {
-      // Only clear if user is typing a valid email format
-      if (emailValue.includes('@')) {
-        const domain = emailValue.split('@')[1]
-        const isValidDomain = allowedDomains.some((d) => d.domain === domain)
-        if (isValidDomain) {
-          setEmailDomainError('')
-        }
-      }
-    }
-  }, [emailValue, emailTouched, allowedDomains])
 
   // Fetch job titles for the selected department, or all job titles if none selected
   const { data: departmentJobTitles, isLoading: isLoadingDepartmentJobTitles } =
@@ -114,26 +81,9 @@ export const UserForm: FC<UserFormProps> = ({ user, onSubmit, onCancel, isSubmit
           id="email"
           type="email"
           {...register('email')}
-          onBlur={() => {
-            setEmailTouched(true)
-            validateEmailDomain()
-          }}
-          aria-invalid={errors.email || emailDomainError ? 'true' : 'false'}
+          aria-invalid={errors.email ? 'true' : 'false'}
         />
         {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-        {emailDomainError && (
-          <div className="flex items-start gap-2 rounded-md bg-destructive/10 p-2">
-            <i className="ph ph-warning text-destructive mt-0.5 flex-shrink-0" />
-            <p className="text-sm text-destructive">{emailDomainError}</p>
-          </div>
-        )}
-        
-        {/* Show allowed domains for new users */}
-        {!user && allowedDomains.length > 0 && (
-          <p className="text-xs text-muted-foreground">
-            ✅ Domínios permitidos: {allowedDomains.map((d) => d.domain).join(', ')}
-          </p>
-        )}
       </div>
 
       <div className="space-y-2">
@@ -191,6 +141,32 @@ export const UserForm: FC<UserFormProps> = ({ user, onSubmit, onCancel, isSubmit
           )}
         />
       </div>
+
+      {!user && (
+        <div className="space-y-3 rounded-lg border p-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <Label htmlFor="sendEmail" className="text-base">
+                Enviar email de boas-vindas
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Envia automaticamente um email com instruções para definir a senha
+              </p>
+            </div>
+            <Controller
+              name="sendEmail"
+              control={control}
+              render={({ field }) => (
+                <Switch
+                  id="sendEmail"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              )}
+            />
+          </div>
+        </div>
+      )}
 
       {user && (
         <div className="space-y-3 rounded-lg border p-4">

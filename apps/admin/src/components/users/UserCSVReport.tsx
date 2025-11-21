@@ -7,7 +7,7 @@ interface UserCSVReportProps {
 }
 
 export const UserCSVReport: FC<UserCSVReportProps> = ({ report }) => {
-  const { created, updated, skipped, errors } = report.report
+  const { created, updated, skipped, errors, emailsSent } = report.report
 
   return (
     <div className="space-y-4">
@@ -19,11 +19,12 @@ export const UserCSVReport: FC<UserCSVReportProps> = ({ report }) => {
           </h3>
           <p className="text-sm text-green-700 dark:text-green-300">
             Os usuários foram importados com sucesso.
+            {emailsSent !== undefined && ` ${emailsSent} email${emailsSent !== 1 ? 's' : ''} enviado${emailsSent !== 1 ? 's' : ''}.`}
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className={`grid ${emailsSent !== undefined ? 'grid-cols-5' : 'grid-cols-4'} gap-4`}>
         <div className="rounded-lg border p-4">
           <p className="text-sm text-muted-foreground">Criados</p>
           <p className="text-2xl font-bold text-green-600">{created}</p>
@@ -40,6 +41,12 @@ export const UserCSVReport: FC<UserCSVReportProps> = ({ report }) => {
           <p className="text-sm text-muted-foreground">Erros</p>
           <p className="text-2xl font-bold text-destructive">{errors.length}</p>
         </div>
+        {emailsSent !== undefined && (
+          <div className="rounded-lg border p-4 bg-blue-50">
+            <p className="text-sm text-muted-foreground">Emails Enviados</p>
+            <p className="text-2xl font-bold text-blue-600">{emailsSent}</p>
+          </div>
+        )}
       </div>
 
       {errors.length > 0 && (
