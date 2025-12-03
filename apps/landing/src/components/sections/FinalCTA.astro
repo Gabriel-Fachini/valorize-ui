@@ -1,0 +1,42 @@
+---
+import { Button } from '../ui/Button'
+---
+
+<section class="py-20 bg-transparent">
+  <div class="container mx-auto px-4 md:px-6">
+    <div
+      class="rounded-3xl p-8 md:p-16 text-center shadow-2xl relative overflow-hidden"
+      style="background: linear-gradient(to right, #00AD47, #00D959); box-shadow: 0 25px 50px -12px rgba(0, 217, 89, 0.25);"
+    >
+      <div
+        class="absolute top-0 left-0 w-full h-full opacity-20 mix-blend-overlay"
+        style="background-image: url('https://grainy-gradients.vercel.app/noise.svg')"
+      ></div>
+
+      <div class="relative z-10 max-w-3xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+          Pronto para transformar sua cultura?
+        </h2>
+        <p class="text-zinc-100/90 text-lg mb-8 font-medium">
+          Agende uma demo de 30 minutos. Sem compromisso. Sem cartão de crédito.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <Button
+            client:load
+            className="bg-white text-valorize-700 hover:bg-zinc-100 hover:text-valorize-800 hover:-translate-y-1 border-none font-bold shadow-lg shadow-black/10"
+          >
+            Agendar Demonstração
+          </Button>
+
+          <Button
+            client:load
+            variant="outline"
+            className="bg-black/20 border-black/10 text-white hover:bg-black/30 hover:border-black/20 backdrop-blur-sm"
+          >
+            Falar com Especialista
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

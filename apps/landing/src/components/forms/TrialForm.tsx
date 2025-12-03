@@ -73,27 +73,27 @@ export const TrialForm: React.FC<TrialFormProps> = ({ onSuccess, onClose }) => {
   if (isSuccess) {
     return (
       <div className="text-center space-y-6">
-        <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto">
-          <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="w-16 h-16 bg-valorize-500/10 rounded-full flex items-center justify-center mx-auto">
+          <svg className="w-8 h-8 text-valorize-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
         
         <div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 className="text-xl font-semibold text-zinc-100 mb-2">
             Sucesso! 🎉
           </h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">
+          <p className="text-zinc-300 mb-4">
             Recebemos sua solicitação de teste gratuito. Nossa equipe entrará em contato em breve!
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-zinc-400">
             Você receberá um email com as próximas etapas em alguns minutos.
           </p>
         </div>
         
         <button 
           onClick={onClose}
-          className="w-full px-6 py-3 text-base font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800"
+          className="w-full px-6 py-3 text-base font-medium text-zinc-300 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-500 focus:ring-offset-zinc-900"
         >
           Fechar
         </button>

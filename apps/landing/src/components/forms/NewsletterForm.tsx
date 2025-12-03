@@ -90,13 +90,13 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
   if (isSuccess) {
     return (
       <div className={`text-center space-y-4 ${className}`}>
-        <div className="flex items-center justify-center space-x-2 text-green-600">
+        <div className="flex items-center justify-center space-x-2 text-valorize-500">
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
           <span className="font-semibold">Inscrição realizada com sucesso!</span>
         </div>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-zinc-400">
           Você receberá nossas novidades e dicas sobre cultura empresarial.
         </p>
         <Button 

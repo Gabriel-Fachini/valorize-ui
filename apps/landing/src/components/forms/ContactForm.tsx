@@ -79,20 +79,20 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
   if (isSuccess) {
     return (
       <div className="text-center space-y-6">
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-          <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="w-16 h-16 bg-valorize-500/10 rounded-full flex items-center justify-center mx-auto">
+          <svg className="w-8 h-8 text-valorize-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
         
         <div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <h3 className="text-xl font-semibold text-zinc-100 mb-2">
             Mensagem enviada! 📧
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-zinc-300 mb-4">
             Recebemos sua mensagem e entraremos em contato em até 24 horas.
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-zinc-400">
             Nossa equipe está ansiosa para ajudar sua empresa a crescer com a Valorize.
           </p>
         </div>

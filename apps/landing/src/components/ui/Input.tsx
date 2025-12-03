@@ -20,24 +20,24 @@ export const Input: React.FC<InputProps> = ({
   return (
     <div className="space-y-2">
       {label && (
-        <label htmlFor={inputId} className="text-sm font-medium text-gray-700">
+        <label htmlFor={inputId} className="text-sm font-medium text-zinc-300">
           {label}
         </label>
       )}
       <input
         id={inputId}
         className={cn(
-          'flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-brand-primary-500 focus:outline-none focus:ring-2 focus:ring-brand-primary-100 disabled:cursor-not-allowed disabled:opacity-50',
-          error && 'border-red-500 focus:border-red-500 focus:ring-red-100',
+          'flex h-10 w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 transition-all duration-200 focus:border-valorize-500 focus:outline-none focus:ring-2 focus:ring-valorize-500/20 disabled:cursor-not-allowed disabled:opacity-50',
+          error && 'border-red-500 focus:border-red-500 focus:ring-red-500/20',
           className
         )}
         {...props}
       />
       {error && (
-        <p className="text-sm text-red-600">{error}</p>
+        <p className="text-sm text-red-500">{error}</p>
       )}
       {hint && !error && (
-        <p className="text-sm text-gray-500">{hint}</p>
+        <p className="text-sm text-zinc-500">{hint}</p>
       )}
     </div>
   )

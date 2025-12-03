@@ -8,11 +8,11 @@ const { variant = 'default', className = '' } = Astro.props
 ---
 
 <div class:list={[
-  'rounded-xl border bg-white dark:bg-gray-800 shadow-sm dark:shadow-gray-900/20 transition-all duration-200',
+  'rounded-xl border bg-zinc-900 shadow-lg shadow-black/20 transition-all duration-200',
   {
-    'border-gray-200 dark:border-gray-700 hover:shadow-md dark:hover:shadow-gray-900/40': variant === 'default',
-    'border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-gray-900/40 hover:scale-105': variant === 'feature',
-    'border-2 border-gray-200 dark:border-gray-700 hover:shadow-xl dark:hover:shadow-gray-900/40': variant === 'pricing',
+    'border-zinc-800 hover:border-zinc-700 hover:shadow-xl hover:shadow-black/30': variant === 'default',
+    'border-zinc-800 hover:border-valorize-500/30 hover:shadow-xl hover:shadow-valorize-500/10 hover:scale-105': variant === 'feature',
+    'border-2 border-zinc-800 hover:border-valorize-500 hover:shadow-2xl hover:shadow-valorize-500/20': variant === 'pricing',
   },
   className
 ]}>
