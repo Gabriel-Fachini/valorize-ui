@@ -189,13 +189,17 @@ export const NewPraisePage = () => {
   // Automatically attempts to recover from failed data loading
   useEffect(() => {
     if (computed.hasAnyError && !isLoadingData) {
-      // eslint-disable-next-line no-console
-      console.warn('Data loading failed, attempting auto-recovery...')
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.warn('Data loading failed, attempting auto-recovery...')
+      }
       
       const recoveryTimeout = setTimeout(() => {
         if (computed.hasAnyError) {
-          // eslint-disable-next-line no-console
-          console.log('Auto-recovery: refreshing data...')
+          if (import.meta.env.DEV) {
+            // eslint-disable-next-line no-console
+            console.log('Auto-recovery: refreshing data...')
+          }
           actions.invalidateCache()
         }
       }, 3000)

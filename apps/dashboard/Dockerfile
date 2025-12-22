@@ -50,15 +50,15 @@ COPY tsconfig.json ./
 COPY eslint.config.ts ./
 
 # Build arguments for environment variables
+# Note: Using ARG only (not ENV) to avoid exposing in image layers
 ARG VITE_API_BASE_URL
 ARG VITE_API_URL
 
-# Set environment variables for build
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
-ENV VITE_API_URL=$VITE_API_URL
-
-# Build the dashboard
-RUN pnpm build
+# Build the dashboard with build arguments
+RUN --mount=type=cache,target=/app/.pnpm-store \
+  VITE_API_BASE_URL=${VITE_API_BASE_URL} \
+  VITE_API_URL=${VITE_API_URL} \
+  pnpm build
 
 # ============================================
 # STAGE 3: Production Runner (Nginx)
@@ -73,17 +73,6 @@ COPY apps/dashboard/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built assets from builder stage
 COPY --from=builder /app/apps/dashboard/dist /usr/share/nginx/html
-
-# Create runtime environment config script
-# This allows changing env vars without rebuilding
-RUN echo '#!/bin/sh' > /docker-entrypoint.d/40-generate-env-config.sh && \
-    echo 'cat <<EOF > /usr/share/nginx/html/env-config.js' >> /docker-entrypoint.d/40-generate-env-config.sh && \
-    echo 'window._env_ = {' >> /docker-entrypoint.d/40-generate-env-config.sh && \
-    echo '  VITE_API_BASE_URL: "${VITE_API_BASE_URL}",' >> /docker-entrypoint.d/40-generate-env-config.sh && \
-    echo '  VITE_API_URL: "${VITE_API_URL}"' >> /docker-entrypoint.d/40-generate-env-config.sh && \
-    echo '};' >> /docker-entrypoint.d/40-generate-env-config.sh && \
-    echo 'EOF' >> /docker-entrypoint.d/40-generate-env-config.sh && \
-    chmod +x /docker-entrypoint.d/40-generate-env-config.sh
 
 # Expose port (Cloud Run uses 8080 by default)
 EXPOSE 8080

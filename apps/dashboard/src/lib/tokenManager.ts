@@ -23,8 +23,10 @@ export const TokenManager = {
       const raw = localStorage.getItem('user_info')
       return raw ? (JSON.parse(raw) as UserInfo) : null
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn('Failed to parse user_info from localStorage:', error)
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.warn('Failed to parse user_info from localStorage:', error)
+      }
       return null
     }
   },

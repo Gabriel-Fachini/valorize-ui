@@ -122,8 +122,10 @@ export function ResetPasswordPage() {
       }, 3000)
 
     } catch (error: unknown) {
-      // eslint-disable-next-line no-console
-      console.error('Reset password error:', error)
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.error('Reset password error:', error)
+      }
 
       const message = error instanceof Error ? error.message : 'Erro ao redefinir senha. Tente novamente.'
 

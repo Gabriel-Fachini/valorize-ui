@@ -70,10 +70,16 @@ export const HomePage = () => {
         autoStart={false}
         showWelcomeMessage={true}
         onComplete={() => {
-          console.log('Onboarding completed!')
+          if (import.meta.env.DEV) {
+            // eslint-disable-next-line no-console
+            console.log('Onboarding completed!')
+          }
         }}
         onSkip={() => {
-          console.log('Onboarding skipped!')
+          if (import.meta.env.DEV) {
+            // eslint-disable-next-line no-console
+            console.log('Onboarding skipped!')
+          }
         }}
       />
       <PageLayout maxWidth="7xl">

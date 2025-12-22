@@ -88,8 +88,8 @@ export async function checkAndRefreshToken(): Promise<boolean> {
     
     return false
   } catch (error) {
-    // Log error for debugging but don't throw
-    if (error instanceof Error) {
+    // Log error for debugging but don't throw - only in dev
+    if (import.meta.env.DEV && error instanceof Error) {
       // eslint-disable-next-line no-console
       console.warn('Token verification failed:', error.message)
     }

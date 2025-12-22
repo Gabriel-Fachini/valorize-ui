@@ -57,8 +57,10 @@ export const JoyrideTour: React.FC<JoyrideTourProps> = ({
 
     if (type === EVENTS.TARGET_NOT_FOUND) {
       // Target não encontrado, pular para o próximo
-      // eslint-disable-next-line no-console
-      console.warn(`Target not found for step ${index}, attempting to continue`)
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.warn(`Target not found for step ${index}, attempting to continue`)
+      }
     }
 
     // Tratar ação de fechar (botão X)

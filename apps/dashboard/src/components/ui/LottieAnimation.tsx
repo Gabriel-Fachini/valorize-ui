@@ -67,7 +67,10 @@ export const LottieAnimation = ({
       }
     } catch (err) {
       setError('Erro ao carregar animação')
-      console.error('Lottie animation error:', err)
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.error('Lottie animation error:', err)
+      }
       return undefined
     }
   }, [animationData, path, loop, autoplay, speed, scale, onComplete, onLoopComplete])
