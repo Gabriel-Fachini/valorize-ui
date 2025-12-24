@@ -65,8 +65,10 @@ export const TrialForm: React.FC<TrialFormProps> = ({ onSuccess, onClose }) => {
         })
       }
     } catch (error) {
-      console.error('Trial signup failed:', error)
-      setServerError(error instanceof Error ? error.message : 'Erro interno do servidor')
+      if (import.meta.env.DEV) {
+        console.error('Trial signup failed:', error)
+      }
+      setServerError('Erro ao processar sua solicitação. Tente novamente mais tarde.')
     }
   }
 

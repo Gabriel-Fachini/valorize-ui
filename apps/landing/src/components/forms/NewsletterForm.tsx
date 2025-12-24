@@ -77,8 +77,10 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
         throw new Error(result.message || 'Erro desconhecido')
       }
     } catch (error) {
-      console.error('Newsletter signup failed:', error)
-      setServerError(error instanceof Error ? error.message : 'Erro interno do servidor')
+      if (import.meta.env.DEV) {
+        console.error('Newsletter signup failed:', error)
+      }
+      setServerError('Erro ao se inscrever. Tente novamente mais tarde.')
     }
   }
 

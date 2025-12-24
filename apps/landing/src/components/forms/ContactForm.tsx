@@ -71,8 +71,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
         throw new Error(result.message || 'Erro desconhecido')
       }
     } catch (error) {
-      console.error('Contact form submission failed:', error)
-      setServerError(error instanceof Error ? error.message : 'Erro interno do servidor')
+      if (import.meta.env.DEV) {
+        console.error('Contact form submission failed:', error)
+      }
+      setServerError('Erro ao processar sua solicitação. Tente novamente mais tarde.')
     }
   }
 
