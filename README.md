@@ -1,119 +1,283 @@
-# Valorize - Cultura e Engajamento
+# Valorize UI - Monorepo
 
-Um SaaS B2B focado em cultura e engajamento empresarial, com possibilidade de resgate de prêmios.
+> Complete platform for corporate culture and engagement with recognition, gamification, and rewards management.
 
-## 🚀 Funcionalidades
+## 🏗️ Monorepo Architecture
 
-- **Autenticação**: Sistema de login com email e senha
-- **Dashboard**: Página inicial com visão geral das funcionalidades
-- **Interface Responsiva**: Design moderno e responsivo com TailwindCSS
-- **Navegação Inteligente**: Redirecionamento automático baseado no status de autenticação
+This is a monorepo managed by **Turborepo** and **PNPM**, containing 4 independent applications:
 
-## 🛠️ Tecnologias
+```
+valorize-ui/
+├── apps/
+│   ├── dashboard/      # Main employee application
+│   ├── admin/          # Company administrative panel
+│   ├── backoffice/     # Internal management (support/operations)
+│   └── landing/        # Institutional landing page
+├── packages/
+│   └── shared/         # Shared utilities (future)
+├── docs/               # Technical documentation
+├── memory-bank/        # Project context and decisions
+└── scripts/            # Deploy and CI/CD scripts
+```
 
-- **React 19** - Biblioteca de interface
-- **TypeScript** - Tipagem estática
-- **Vite** - Bundler e servidor de desenvolvimento
-- **TailwindCSS** - Framework de estilos
-- **@tanstack/react-router** - Roteamento do lado do cliente
-- **@tanstack/react-query** - Gerenciamento de estado do servidor
+## 📱 Applications
 
-## 📦 Instalação
+### 1. **Dashboard** (Employees)
+> **Main product** - Application where employees interact daily
 
-1. Clone o repositório:
+**Stack:**
+- React 19 + TypeScript 5.8 + Vite 7 (SWC)
+- TailwindCSS v4
+- TanStack Router + TanStack Query
+- React Spring (animations)
+
+**Features:**
+- Send and receive praises/recognition
+- Gamification with coins and levels
+- Prize redemption
+- Activity feed
+- Profile and settings
+- Dashboard with personal metrics
+
+**Port:** `3000` | **Build:** `pnpm build:dashboard`
+
+---
+
+### 2. **Admin** (Managers/HR)
+> Administrative panel for company platform management
+
+**Stack:**
+- React 19 + TypeScript 5.8 + Vite 7
+- TailwindCSS v4
+- TanStack Router + TanStack Query
+- Shadcn/ui components
+
+**Features:**
+- User and department management
+- Company values configuration
+- Reports and analytics
+- Prize and inventory management
+- Transaction auditing
+- Company settings
+
+**Port:** `3001` | **Build:** `pnpm build:admin`
+
+---
+
+### 3. **Backoffice** (Internal Support)
+> Internal system for operations and support team
+
+**Stack:**
+- React 19 + TypeScript + Vite
+- TailwindCSS v4
+- TanStack Router + TanStack Query
+- Shadcn/ui components
+
+**Features:**
+- Multi-tenant management (multiple companies)
+- Technical support and tickets
+- Plan/subscription management
+- Usage monitoring
+- Logs and general auditing
+
+**Port:** `3003` | **Build:** `pnpm build:backoffice`
+
+---
+
+### 4. **Landing** (Marketing)
+> Institutional landing page for lead generation
+
+**Stack:**
+- Astro 5 (SSG)
+- React (interactive islands)
+- TailwindCSS v4
+- Framer Motion + Three.js
+
+**Features:**
+- Institutional page with optimized SEO
+- Contact and demo forms
+- Public documentation
+- Blog (future)
+
+**Port:** `3001` (dev) | **Build:** `pnpm build:landing`
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 20+ (recommended: 22+)
+- PNPM 10+ (`npm install -g pnpm`)
+- Git
+
+### Installation
 
 ```bash
-git clone <repository-url>
+# Clone the repository
+git clone https://github.com/Gabriel-Fachini/valorize-ui.git
 cd valorize-ui
+
+# Install dependencies
+pnpm install
 ```
 
-1. Instale as dependências:
+### Development
 
 ```bash
-npm install
+# Run all applications simultaneously
+pnpm dev
+
+# Run individual applications
+pnpm dev:dashboard      # Dashboard (port 3000)
+pnpm dev:admin          # Admin (port 3001)
+pnpm dev:backoffice     # Backoffice (port 3003)
+pnpm dev:landing        # Landing (port 3001)
 ```
 
-1. Inicie o servidor de desenvolvimento:
+### Production Build
+
 ```bash
-npm run dev
+# Build all applications
+pnpm build
+
+# Individual build
+pnpm build:dashboard
+pnpm build:admin
+pnpm build:backoffice
+pnpm build:landing
 ```
 
-1. Acesse a aplicação em: http://localhost:3000
+### Preview
 
-## 🔐 Como usar
-
-### Login
-1. Acesse a página inicial (será redirecionado para `/login`)
-2. Digite qualquer email e senha (autenticação simulada)
-3. Clique em "Entrar"
-4. Será redirecionado automaticamente para a página inicial
-
-### Dashboard
-- Visualize suas conquistas, recompensas e métricas de engajamento
-- Veja seus dados de usuário
-- Use o botão "Sair" para fazer logout
-
-## 📁 Estrutura do Projeto
-
-```
-src/
-├── components/     # Componentes reutilizáveis
-├── contexts/       # Contextos React (AuthContext)
-├── pages/          # Páginas da aplicação
-│   ├── LoginPage.tsx
-│   └── HomePage.tsx
-├── hooks/          # Custom hooks
-├── services/       # Serviços e APIs
-├── assets/         # Recursos estáticos
-└── router.tsx      # Configuração de rotas
+```bash
+# Preview production build
+pnpm preview:dashboard    # Port 3000
+pnpm preview:admin        # Port 3001
+pnpm preview:backoffice   # Port 3000
 ```
 
-## 🎨 Design System
+## 🛠️ Main Technologies
 
-A aplicação utiliza TailwindCSS com uma paleta de cores focada em:
-- **Primária**: Indigo (para CTAs e elementos importantes)
-- **Secundária**: Gray (para textos e elementos de suporte)
-- **Sucesso**: Green (para feedbacks positivos)
-- **Erro**: Red (para alertas e erros)
+| Technology | Version | Usage |
+|------------|--------|-----|
+| **React** | 19 | UI framework (Dashboard, Admin, Backoffice) |
+| **TypeScript** | 5.8 | Type safety |
+| **Vite** | 7 | Build tool (with SWC) |
+| **Astro** | 5 | SSG (Landing) |
+| **TailwindCSS** | 4 | Styling |
+| **TanStack Router** | 1.x | Type-safe routing |
+| **TanStack Query** | 5 | Server state management |
+| **React Spring** | 10 | Animations (Dashboard/Admin) |
+| **Turborepo** | 2.x | Monorepo orchestration |
+| **PNPM** | 10 | Package manager |
 
-## 🔧 Scripts Disponíveis
+## 📜 Available Scripts
 
-- `npm run dev` - Inicia o servidor de desenvolvimento
-- `npm run build` - Gera build de produção
-- `npm run preview` - Visualiza o build de produção
-- `npm run lint` - Executa o linter
+### Development
+```bash
+pnpm dev                  # All apps in parallel
+pnpm dev:dashboard        # Dashboard only
+pnpm dev:admin            # Admin only
+pnpm dev:backoffice       # Backoffice only
+pnpm dev:landing          # Landing only
+```
+
+### Build
+```bash
+pnpm build                # Build all apps
+pnpm build:dashboard      # Individual build
+pnpm build:admin
+pnpm build:backoffice
+pnpm build:landing
+```
+
+### Code Quality
+```bash
+pnpm lint                 # Lint all apps
+pnpm lint:fix             # Auto-fix linting errors
+pnpm type-check           # Type checking
+```
+
+### Cleanup
+```bash
+pnpm clean                # Remove dist/ and node_modules/
+```
+
+## 🎨 Code Patterns
+
+### Style
+- ✅ **No semicolons** (enforced by ESLint)
+- ✅ **Single quotes** for strings
+- ✅ **Code and comments in English**
+- ✅ **UI in Portuguese (Brazil)**
+
+### Animations (Dashboard/Admin)
+- ⚠️ **ONLY react-spring** - Never use CSS transitions
+- Available hooks: `usePageEntrance`, `useCardTrail`, `useModalTransition`
+
+### Imports (Aliases)
+```typescript
+import { Button } from '@components/Button'    // ✅
+import { useAuth } from '@hooks/useAuth'      // ✅
+import api from '@services/api'               // ✅
+```
 
 ## 🚀 Deploy
 
-Este projeto está pronto para deploy no **Google Cloud Run**.
+All projects are configured for deployment on **Google Cloud Run** with automatic CI/CD.
 
-### Deploy Rápido
+### Manual Deploy
 
 ```bash
-# Configure seu projeto GCP
-gcloud config set project SEU-PROJECT-ID
+# Configure GCP
+gcloud config set project YOUR-PROJECT-ID
 
-# Deploy dashboard
+# Individual deploy
 ./scripts/deploy-dashboard.sh
-
-# Deploy landing page
 ./scripts/deploy-landing.sh
 ```
 
-### Documentação Completa
-
-- 📖 **[Guia de Deploy Completo](docs/deployment/README.md)** - Instruções detalhadas
-- ⚡ **[Quick Start](docs/deployment/quick-start.md)** - Deploy em 5 minutos
-- 🔧 **[Troubleshooting](docs/deployment/troubleshooting.md)** - Solução de problemas
-
-### CI/CD Automático
-
-Configure deploy automático com GitHub + Cloud Build:
+### Automatic CI/CD
 
 ```bash
+# Setup automatic deploy (GitHub + Cloud Build)
 ./scripts/setup-cicd.sh
 ```
 
-## 📝 Licença
+### Deploy Documentation
+- 📖 [Complete Guide](docs/deployment/README.md)
+- ⚡ [Quick Start](docs/deployment/quick-start.md)
+- 🔧 [Troubleshooting](docs/deployment/troubleshooting.md)
 
-Este projeto está sob a licença MIT.
+## 📚 Documentation
+
+- **[Memory Bank](memory-bank/)** - Project context, architectural decisions
+  - [Product Context](memory-bank/productContext.md) - Product vision
+  - [Tech Context](memory-bank/techContext.md) - Technical stack
+  - [System Patterns](memory-bank/systemPatterns.md) - Code patterns
+- **[Docs](docs/)** - Technical documentation
+  - [API Routes](docs/API_ROUTES_DOCUMENTATION.md)
+  - [MVP Roadmap](docs/mvp_roadmap.md)
+  - [Onboarding Guide](docs/onboarding-guide.md)
+
+## 📊 Project Status
+
+- ✅ **Dashboard**: Complete MVP, in production
+- ✅ **Landing**: Complete MVP, in production
+- 🚧 **Admin**: Active development
+- 🚧 **Backoffice**: Initial planning
+
+## 📄 License
+
+This project is proprietary and confidential. All rights reserved.
+
+## 🔗 Useful Links
+
+- **Technical Documentation**: [docs/](docs/)
+- **Memory Bank**: [memory-bank/](memory-bank/)
+- **Issues**: [GitHub Issues](https://github.com/Gabriel-Fachini/valorize-ui/issues)
+
+---
+
+**Made with ❤️ by the Valorize team**
