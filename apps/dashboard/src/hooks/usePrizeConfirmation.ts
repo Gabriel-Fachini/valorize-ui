@@ -153,12 +153,12 @@ export const usePrizeConfirmation = ({
       })
 
       onBalanceMovement()
+      setShowSuccessModal(true)
+    } catch (error) {
       if (import.meta.env.DEV) {
         // eslint-disable-next-line no-console
         console.error('Error redeeming prize:', error)
       }
-      // eslint-disable-next-line no-console
-      console.error('Error redeeming prize:', error)
       const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message
       setErrorMessage(errorMessage ?? 'Erro ao resgatar prêmio. Verifique seu saldo e tente novamente.')
     }
