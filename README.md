@@ -2,13 +2,20 @@
 
 > Complete platform for corporate culture and engagement with recognition, gamification, and rewards management.
 
-## 📹 Demonstration
+## 📹 Project Demonstration
 
 See how the project works in practice and understand its features:
 
-[![Valorize - Demonstration](https://img.youtube.com/vi/9MHFR3UuPvY/maxresdefault.jpg)](https://youtu.be/9MHFR3UuPvY)
-
-[▶️ Watch on YouTube](https://youtu.be/9MHFR3UuPvY)
+<div align="center">
+  <a href="https://youtu.be/9MHFR3UuPvY" target="_blank">
+    <img src="https://img.youtube.com/vi/9MHFR3UuPvY/maxresdefault.jpg" alt="Valorize - Demonstração em Vídeo" style="width:100%;max-width:720px;border-radius:8px;">
+  </a>
+  <p>
+    <a href="https://youtu.be/9MHFR3UuPvY" target="_blank">
+      <strong>▶️ Watch full video on YouTube</strong>
+    </a>
+  </p>
+</div>
 
 ## 🏗️ Monorepo Architecture
 
