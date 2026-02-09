@@ -2,6 +2,14 @@
 
 > Complete platform for corporate culture and engagement with recognition, gamification, and rewards management.
 
+## 📹 Demonstration
+
+See how the project works in practice and understand its features:
+
+[![Valorize - Demonstration](https://img.youtube.com/vi/9MHFR3UuPvY/maxresdefault.jpg)](https://youtu.be/9MHFR3UuPvY)
+
+[▶️ Watch on YouTube](https://youtu.be/9MHFR3UuPvY)
+
 ## 🏗️ Monorepo Architecture
 
 This is a monorepo managed by **Turborepo** and **PNPM**, containing 4 independent applications:
