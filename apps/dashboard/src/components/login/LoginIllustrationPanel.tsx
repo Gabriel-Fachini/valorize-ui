@@ -18,8 +18,6 @@ export const LoginIllustrationPanel = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap');
-
         @keyframes orb-float-a {
           0%   { transform: translate(0px, 0px) scale(1); }
           33%  { transform: translate(-50px, 40px) scale(1.12); }
@@ -157,6 +155,7 @@ export const LoginIllustrationPanel = () => {
               lineHeight: 1.3,
               color: 'rgba(255, 255, 255, 0.92)',
               letterSpacing: '-0.01em',
+              userSelect: "none",
             }}
           >
             Cultura organizacional

@@ -45,7 +45,7 @@ export const LoginFormPanel = ({
         {/* Toggle between login and register */}
         <div className="text-center">
           <p className="text-gray-600 dark:text-gray-400">
-            {isRegisterMode ? 'Já tem uma conta?' : 'Não tem uma conta?'}
+            {isRegisterMode ? 'Já tem uma conta?' : 'Crie uma conta de teste.'}
             <button
               type="button"
               onClick={onToggleMode}
