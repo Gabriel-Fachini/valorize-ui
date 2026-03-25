@@ -24,7 +24,7 @@ export const LoginFormPanel = ({
   onToggleMode, 
 }: LoginFormPanelProps) => {
   return (
-    <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#1a1a1a] relative">
+    <div className="lg:w-2/5 flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#1a1a1a] relative">
       <div className="max-w-md w-full space-y-8">
         <LoginHeader isRegisterMode={isRegisterMode} />
         
