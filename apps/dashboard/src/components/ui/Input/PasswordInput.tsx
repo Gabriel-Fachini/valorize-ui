@@ -55,16 +55,21 @@ const CapsLockIcon = ({ className, title }: { className?: string; title?: string
     className={className}
     fill="none"
     stroke="currentColor"
+    strokeWidth={1.8}
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
     aria-label={title}
   >
+    {/* Rounded rectangle — the key border */}
+    <rect x="2" y="2" width="20" height="20" rx="4" ry="4" />
+    {/* Arrow head — upward pointing triangle */}
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={2}
-      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      d="M12 6l-5 5h3v3h4v-3h3z"
     />
+    {/* Horizontal bar at the bottom of the arrow stem — caps lock indicator */}
+    <line x1="9" y1="17" x2="15" y2="17" strokeLinecap="round" />
   </svg>
 )
 
@@ -135,7 +140,7 @@ export const PasswordInput = ({
         type={isVisible ? 'text' : 'password'}
         autoComplete="current-password"
         {...props}
-        className="pr-12" // Space for toggle button
+        className={showCapsLockWarning && capsLockOn ? 'pr-20' : 'pr-12'}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
       />
@@ -145,9 +150,10 @@ export const PasswordInput = ({
         <button
           type="button"
           onClick={toggleVisibility}
-          className="absolute right-3 top-[2.125rem] p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus:text-gray-700 dark:focus:text-gray-200"
+          className="absolute right-2 top-7 h-12 flex items-center px-2 z-20 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200 focus:outline-none transition-colors duration-150 hover:cursor-pointer"
           aria-label={isVisible ? 'Ocultar senha' : 'Mostrar senha'}
-          tabIndex={-1} // Remove from tab order
+          title={isVisible ? 'Ocultar senha' : 'Mostrar senha'}
+          tabIndex={-1}
         >
           {isVisible ? (
             <EyeOffIcon className="w-5 h-5" />
@@ -157,9 +163,9 @@ export const PasswordInput = ({
         </button>
       )}
       
-      {/* Caps Lock Warning */}
+      {/* Caps Lock Warning Icon - positioned to the left of toggle button */}
       {showCapsLockWarning && capsLockOn && (
-        <div className="absolute right-3 top-[2.125rem] p-1 text-amber-500 dark:text-amber-400">
+        <div className="absolute right-11 top-7 h-12 flex items-center px-1 z-20 text-amber-500 dark:text-amber-400">
           <CapsLockIcon 
             className="w-5 h-5" 
             title="Caps Lock está ativado"
@@ -169,7 +175,7 @@ export const PasswordInput = ({
       
       {/* Caps Lock Warning Message */}
       {showCapsLockWarning && capsLockOn && (
-        <div className="mt-1 text-sm text-amber-600 dark:text-amber-400 flex items-center">
+        <div className="mt-2 text-sm text-amber-600 dark:text-amber-400 flex items-center">
           <CapsLockIcon className="w-4 h-4 mr-1" />
           Caps Lock está ativado
         </div>
