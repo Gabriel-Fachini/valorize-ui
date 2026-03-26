@@ -42,10 +42,10 @@ export const LoginIllustrationPanel = () => {
         .illustration-bg {
           background: linear-gradient(
             135deg,
-            #0d1a12 0%,
-            #1a3324 25%,
-            #0e1f14 50%,
-            #162b1e 75%,
+            #0b1610 0%,
+            #14291d 25%,
+            #0d1a12 50%,
+            #12241a 75%,
             #091209 100%
           );
         }
@@ -65,8 +65,8 @@ export const LoginIllustrationPanel = () => {
           className="absolute inset-0"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+              linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
             `,
             backgroundSize: '48px 48px',
           }}
@@ -78,8 +78,8 @@ export const LoginIllustrationPanel = () => {
             className="absolute inset-0 pointer-events-none"
             style={{
               backgroundImage: `
-                linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px)
+                linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px)
               `,
               backgroundSize: '48px 48px',
               WebkitMaskImage: `radial-gradient(circle 260px at ${mouse.x}px ${mouse.y}px, black 0%, transparent 70%)`,
@@ -95,7 +95,7 @@ export const LoginIllustrationPanel = () => {
             style={{
               background: `radial-gradient(
                 circle 280px at ${mouse.x}px ${mouse.y}px,
-                rgba(255, 255, 255, 0.04) 0%,
+                rgba(255, 255, 255, 0.03) 0%,
                 transparent 65%
               )`,
             }}
@@ -106,13 +106,13 @@ export const LoginIllustrationPanel = () => {
         <div
           className="orb-a absolute"
           style={{
-            width: '520px',
-            height: '520px',
+            width: '460px',
+            height: '460px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(34, 197, 94, 0.28) 0%, transparent 65%)',
+            background: 'radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 65%)',
             top: '5%',
             right: '-5%',
-            filter: 'blur(35px)',
+            filter: 'blur(50px)',
           }}
         />
 
@@ -120,13 +120,13 @@ export const LoginIllustrationPanel = () => {
         <div
           className="orb-b absolute"
           style={{
-            width: '400px',
-            height: '400px',
+            width: '340px',
+            height: '340px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(34, 197, 94, 0.20) 0%, transparent 65%)',
+            background: 'radial-gradient(circle, rgba(34, 197, 94, 0.16) 0%, transparent 65%)',
             bottom: '5%',
             left: '-5%',
-            filter: 'blur(45px)',
+            filter: 'blur(60px)',
           }}
         />
 
@@ -134,28 +134,31 @@ export const LoginIllustrationPanel = () => {
         <div
           className="orb-c absolute"
           style={{
-            width: '300px',
-            height: '300px',
+            width: '260px',
+            height: '260px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(74, 222, 128, 0.15) 0%, transparent 65%)',
+            background: 'radial-gradient(circle, rgba(74, 222, 128, 0.1) 0%, transparent 65%)',
             top: '45%',
             left: '40%',
             transform: 'translate(-50%, -50%)',
-            filter: 'blur(55px)',
+            filter: 'blur(70px)',
           }}
         />
 
         {/* Main phrase */}
-        <div className="relative z-10 px-16 text-center">
+        <div className="relative z-10 max-w-xl px-16 text-center">
+          <p className="mb-4 text-sm font-medium uppercase tracking-[0.32em] text-white/45">
+            Valorize Platform
+          </p>
           <p
             style={{
               fontFamily: "'Rubik', sans-serif",
-              fontWeight: 400,
-              fontSize: 'clamp(1.75rem, 3vw, 2.75rem)',
-              lineHeight: 1.3,
-              color: 'rgba(255, 255, 255, 0.92)',
-              letterSpacing: '-0.01em',
-              userSelect: "none",
+              fontWeight: 350,
+              fontSize: 'clamp(1.6rem, 2.6vw, 2.5rem)',
+              lineHeight: 1.35,
+              color: 'rgba(255, 255, 255, 0.84)',
+              letterSpacing: '-0.02em',
+              userSelect: 'none',
             }}
           >
             Cultura organizacional

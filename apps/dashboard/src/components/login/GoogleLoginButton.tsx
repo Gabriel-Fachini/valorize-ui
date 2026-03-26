@@ -36,7 +36,7 @@ export const GoogleLoginButton = ({ disabled }: GoogleLoginButtonProps) => {
         type="button"
         onClick={handleGoogleLogin}
         disabled={isLoading || disabled}
-        className="w-full flex items-center justify-center gap-3 bg-white dark:bg-[#2a2a2a] text-gray-700 dark:text-gray-200 py-3 px-6 rounded-lg font-semibold text-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-[#333333] transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-950 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer shadow-sm"
+        className="auth-social-button flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-base font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-[#2a2a2a] dark:text-gray-200 dark:hover:bg-[#333333] dark:focus:ring-offset-gray-950 cursor-pointer"
       >
         {isLoading ? (
           <span className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />

@@ -1,6 +1,7 @@
 import { UseFormReturn } from 'react-hook-form'
 import { Input, EmailInput } from '@/components/ui'
 import { RegisterFormData } from '@/types'
+import { AnimatedFormError } from './AnimatedFormError'
 
 interface RegisterFormProps {
   formMethods: UseFormReturn<RegisterFormData>
@@ -12,7 +13,7 @@ export const RegisterForm = ({ formMethods, isLoading, onSubmit }: RegisterFormP
   const { register, handleSubmit, formState: { errors, isSubmitting } } = formMethods
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+    <form className="auth-form space-y-3.5 sm:space-y-4.5 xl:space-y-5" onSubmit={handleSubmit(onSubmit)}>
       <Input
         {...register('name')}
         name="name"
@@ -35,16 +36,12 @@ export const RegisterForm = ({ formMethods, isLoading, onSubmit }: RegisterFormP
         required
       />
 
-      {errors.root && (
-        <div className="rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 text-red-700 dark:text-red-300 px-4 py-3">
-          {errors.root.message}
-        </div>
-      )}
+      <AnimatedFormError message={errors.root?.message} />
 
       <button
         type="submit"
         disabled={isSubmitting || isLoading}
-        className="w-full flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-[#1a1a1a] shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/40 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="auth-primary-button flex w-full items-center justify-center rounded-lg bg-primary px-6 py-2.5 text-base font-semibold text-white transition-colors hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-gray-950 cursor-pointer"
       >
         {isSubmitting || isLoading ? 'Cadastrando...' : 'Cadastrar'}
       </button>

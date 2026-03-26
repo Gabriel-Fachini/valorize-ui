@@ -149,7 +149,7 @@ export const PasswordInput = ({
         <button
           type="button"
           onClick={toggleVisibility}
-          className="absolute right-2 top-7 h-12 flex items-center px-2 z-20 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200  transition-colors duration-150 hover:cursor-pointer"
+          className="auth-password-toggle absolute right-2 top-7 z-20 flex h-12 items-center px-2 text-gray-400 transition-colors duration-150 hover:cursor-pointer hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200"
           aria-label={isVisible ? 'Ocultar senha' : 'Mostrar senha'}
           title={isVisible ? 'Ocultar senha' : 'Mostrar senha'}
           tabIndex={0}
@@ -164,7 +164,7 @@ export const PasswordInput = ({
       
       {/* Caps Lock Warning Icon - positioned to the left of toggle button */}
       {showCapsLockWarning && capsLockOn && (
-        <div className="absolute right-11 top-7 h-12 flex items-center px-1 z-20 text-amber-500 dark:text-amber-400 pointer-events-none">
+        <div className="auth-caps-lock-indicator pointer-events-none absolute right-11 top-7 z-20 flex h-12 items-center px-1 text-amber-500 dark:text-amber-400">
           <CapsLockIcon 
             className="w-5 h-5" 
             title="Caps Lock está ativado"
