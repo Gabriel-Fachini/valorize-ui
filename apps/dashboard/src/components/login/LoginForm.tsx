@@ -1,6 +1,7 @@
 import { UseFormReturn } from 'react-hook-form'
 import { EmailInput, PasswordInput } from '@/components/ui'
 import { LoginFormData } from '@/types'
+import { GoogleLoginButton } from './GoogleLoginButton'
 
 interface LoginFormProps {
   formMethods: UseFormReturn<LoginFormData>
@@ -48,6 +49,15 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit }: LoginFormProps) 
       >
         {isSubmitting || isLoading ? 'Entrando...' : 'Entrar'}
       </button>
+
+      {/* Divider */}
+      <div className="relative flex items-center">
+        <div className="flex-grow border-t border-gray-200 dark:border-gray-700" />
+        <span className="mx-3 flex-shrink text-sm text-gray-400 dark:text-gray-500">ou</span>
+        <div className="flex-grow border-t border-gray-200 dark:border-gray-700" />
+      </div>
+
+      <GoogleLoginButton disabled={isSubmitting || isLoading} />
     </form>
   )
 }
