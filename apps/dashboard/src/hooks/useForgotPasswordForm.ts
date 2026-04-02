@@ -35,7 +35,7 @@ export const useForgotPasswordForm = () => {
       const message =
         error instanceof Error
           ? error.message
-          : 'Nao foi possivel enviar o email de redefinicao. Tente novamente.'
+          : 'Não foi possível enviar o e-mail de redefinição. Tente novamente.'
 
       setError('root', {
         type: 'manual',

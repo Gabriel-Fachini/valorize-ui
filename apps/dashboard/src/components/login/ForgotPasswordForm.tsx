@@ -37,16 +37,16 @@ export const ForgotPasswordForm = ({
         </h2>
         <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-300">
           Enviamos um link para redefinir a senha para <span className="font-semibold text-gray-900 dark:text-white">{successEmail}</span>.
-          Se nao encontrar o email, verifique sua pasta de spam ou solicite um novo envio.
+          Se não encontrar o e-mail, verifique sua pasta de spam ou solicite um novo envio.
         </p>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <button
             type="button"
             onClick={onTryAgain}
-            className="inline-flex items-center justify-center rounded-full border border-green-300 bg-white px-5 py-3 text-sm font-semibold text-green-700 transition-colors hover:bg-green-100 dark:border-green-400/30 dark:bg-transparent dark:text-green-300 dark:hover:bg-green-500/10"
+          className="inline-flex items-center justify-center rounded-full border border-green-300 bg-white px-5 py-3 text-sm font-semibold text-green-700 transition-colors hover:bg-green-100 dark:border-green-400/30 dark:bg-transparent dark:text-green-300 dark:hover:bg-green-500/10"
           >
-            Enviar para outro email
+            Enviar para outro e-mail
           </button>
           <button
             type="button"
@@ -81,7 +81,7 @@ export const ForgotPasswordForm = ({
         disabled={isSubmitting || isLoading}
         className="auth-primary-button flex w-full items-center justify-center rounded-lg bg-primary px-6 py-2.5 text-base font-semibold text-white transition-colors hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-gray-950 cursor-pointer"
       >
-        {isSubmitting || isLoading ? 'Enviando link...' : 'Enviar link de redefinicao'}
+        {isSubmitting || isLoading ? 'Enviando link...' : 'Enviar link de redefinição'}
       </button>
 
       <button

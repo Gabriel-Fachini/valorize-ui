@@ -11,9 +11,9 @@ export const LoginHeader = ({ mode = 'login' }: LoginHeaderProps) => {
       : 'bem-vindo de volta'
 
   const description = mode === 'register'
-    ? 'Crie sua conta para comecar a estruturar uma cultura de alta performance.'
+    ? 'Crie sua conta para começar a estruturar uma cultura de alta performance.'
     : mode === 'forgotPassword'
-      ? 'Informe seu email cadastrado para receber o link de redefinicao de senha.'
+      ? 'Informe seu e-mail cadastrado para receber o link de redefinição de senha.'
       : 'Entre para continuar acompanhando e fortalecendo a cultura do seu time.'
 
   return (

@@ -55,11 +55,12 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit, onForgotPasswordCl
         <button
           type="button"
           onClick={onForgotPasswordClick}
+          disabled={isSubmitting || isLoading}
           onMouseEnter={() => setIsForgotPasswordActive(true)}
           onMouseLeave={() => setIsForgotPasswordActive(false)}
           onFocus={() => setIsForgotPasswordActive(true)}
           onBlur={() => setIsForgotPasswordActive(false)}
-          className="auth-inline-link group relative inline-flex items-center pb-0.5 text-sm font-medium text-green-700 transition-colors hover:text-green-800 focus:outline-none dark:text-green-400 dark:hover:text-green-300 cursor-pointer"
+          className="auth-inline-link group relative inline-flex items-center pb-0.5 text-sm font-medium text-green-700 transition-colors hover:text-green-800 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:text-green-400 dark:hover:text-green-300 cursor-pointer"
         >
           Esqueci a senha
           <animated.span

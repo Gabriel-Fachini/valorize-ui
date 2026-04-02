@@ -1,6 +1,6 @@
 import { animated, useTransition } from '@react-spring/web'
 import { UseFormReturn } from 'react-hook-form'
-import { LoginFormData, RegisterFormData } from '@/types'
+import { ForgotPasswordFormData, LoginFormData, RegisterFormData } from '@/types'
 import { LoginHeader } from './LoginHeader'
 import { LoginForm } from './LoginForm'
 import { RegisterForm } from './RegisterForm'
@@ -11,13 +11,13 @@ type AuthMode = 'login' | 'register' | 'forgotPassword'
 interface LoginFormPanelProps {
   formMethods: UseFormReturn<LoginFormData>
   registerFormMethods: UseFormReturn<RegisterFormData>
-  forgotPasswordFormMethods: UseFormReturn<{ email: string }>
+  forgotPasswordFormMethods: UseFormReturn<ForgotPasswordFormData>
   isLoading: boolean
   forgotPasswordSuccessEmail: string | null
   mode: AuthMode
   onSubmit: (data: LoginFormData) => void
   onRegisterSubmit: (data: RegisterFormData) => void
-  onForgotPasswordSubmit: (data: { email: string }) => void
+  onForgotPasswordSubmit: (data: ForgotPasswordFormData) => void
   onToggleRegisterMode: () => void
   onShowForgotPassword: () => void
   onBackToLogin: () => void
@@ -99,7 +99,7 @@ export const LoginFormPanel = ({
                 {currentMode !== 'forgotPassword' && (
                   <div className="auth-secondary-card rounded-xl border border-gray-200 bg-gray-50/80 px-4 py-3.5 text-center sm:px-5 sm:py-4 dark:border-white/10 dark:bg-white/5">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      {isCurrentRegisterMode ? 'Ja tem uma conta ativa?' : 'Primeira vez por aqui?'}
+                      {isCurrentRegisterMode ? 'Já tem uma conta ativa?' : 'Primeira vez por aqui?'}
                     </p>
                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                       {isCurrentRegisterMode

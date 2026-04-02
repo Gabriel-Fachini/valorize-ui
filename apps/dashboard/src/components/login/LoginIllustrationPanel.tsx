@@ -1,172 +1,149 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useEffect, useRef, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react'
 
 export const LoginIllustrationPanel = () => {
-  const [mouse, setMouse] = useState<{ x: number; y: number } | null>(null)
+  const panelRef = useRef<HTMLDivElement | null>(null)
+  const frameRef = useRef<number | null>(null)
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
-    setMouse({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+
+    if (frameRef.current !== null) {
+      cancelAnimationFrame(frameRef.current)
+    }
+
+    frameRef.current = requestAnimationFrame(() => {
+      const panel = panelRef.current
+      if (!panel) return
+
+      panel.style.setProperty('--login-mouse-x', `${e.clientX - rect.left}px`)
+      panel.style.setProperty('--login-mouse-y', `${e.clientY - rect.top}px`)
+      panel.style.setProperty('--login-spotlight-opacity', '1')
+      frameRef.current = null
     })
   }, [])
 
   const handleMouseLeave = useCallback(() => {
-    setMouse(null)
+    if (frameRef.current !== null) {
+      cancelAnimationFrame(frameRef.current)
+      frameRef.current = null
+    }
+
+    panelRef.current?.style.setProperty('--login-spotlight-opacity', '0')
   }, [])
 
+  useEffect(() => {
+    return () => {
+      if (frameRef.current !== null) {
+        cancelAnimationFrame(frameRef.current)
+      }
+    }
+  }, [])
+
+  const panelStyle = {
+    '--login-mouse-x': '50%',
+    '--login-mouse-y': '50%',
+    '--login-spotlight-opacity': '0',
+  } as CSSProperties
+
   return (
-    <>
-      <style>{`
-        @keyframes orb-float-a {
-          0%   { transform: translate(0px, 0px) scale(1); }
-          33%  { transform: translate(-50px, 40px) scale(1.12); }
-          66%  { transform: translate(30px, 60px) scale(0.95); }
-          100% { transform: translate(0px, 0px) scale(1); }
-        }
-
-        @keyframes orb-float-b {
-          0%   { transform: translate(0px, 0px) scale(1); }
-          33%  { transform: translate(60px, -40px) scale(1.1); }
-          66%  { transform: translate(-20px, 30px) scale(0.92); }
-          100% { transform: translate(0px, 0px) scale(1); }
-        }
-
-        @keyframes orb-float-c {
-          0%   { transform: translate(0px, 0px) scale(1); }
-          40%  { transform: translate(-40px, -50px) scale(1.15); }
-          70%  { transform: translate(50px, -20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
-        }
-
-        .illustration-bg {
-          background: linear-gradient(
-            135deg,
-            #0b1610 0%,
-            #14291d 25%,
-            #0d1a12 50%,
-            #12241a 75%,
-            #091209 100%
-          );
-        }
-
-        .orb-a { animation: orb-float-a 5s ease-in-out infinite; }
-        .orb-b { animation: orb-float-b 6s ease-in-out infinite; }
-        .orb-c { animation: orb-float-c 7s ease-in-out infinite; }
-      `}</style>
-
+    <div
+      ref={panelRef}
+      style={panelStyle}
+      className="login-illustration-panel illustration-bg hidden lg:flex lg:w-3/5 relative overflow-hidden items-center justify-center"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Grid 1 — base, always visible */}
       <div
-        className="illustration-bg hidden lg:flex lg:w-3/5 relative overflow-hidden items-center justify-center"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        {/* Grid 1 — base, always visible */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
+          `,
+          backgroundSize: '48px 48px',
+        }}
+      />
+
+      {/* Grid 2 — bright, revealed only under mouse via mask */}
+      <div
+        className="login-illustration-grid absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `
               linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
               linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
             `,
-            backgroundSize: '48px 48px',
-          }}
-        />
+          backgroundSize: '48px 48px',
+        }}
+      />
 
-        {/* Grid 2 — bright, revealed only under mouse via mask */}
-        {mouse && (
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px)
-              `,
-              backgroundSize: '48px 48px',
-              WebkitMaskImage: `radial-gradient(circle 260px at ${mouse.x}px ${mouse.y}px, black 0%, transparent 70%)`,
-              maskImage: `radial-gradient(circle 260px at ${mouse.x}px ${mouse.y}px, black 0%, transparent 70%)`,
-            }}
-          />
-        )}
+      {/* Mouse spotlight — subtle background lightening */}
+      <div className="login-illustration-spotlight absolute inset-0 pointer-events-none" />
 
-        {/* Mouse spotlight — subtle background lightening */}
-        {mouse && (
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: `radial-gradient(
-                circle 280px at ${mouse.x}px ${mouse.y}px,
-                rgba(255, 255, 255, 0.03) 0%,
-                transparent 65%
-              )`,
-            }}
-          />
-        )}
+      {/* Orb A — top right, large */}
+      <div
+        className="login-illustration-orb orb-a absolute"
+        style={{
+          width: '460px',
+          height: '460px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 65%)',
+          top: '5%',
+          right: '-5%',
+          filter: 'blur(50px)',
+        }}
+      />
 
-        {/* Orb A — top right, large */}
-        <div
-          className="orb-a absolute"
+      {/* Orb B — bottom left, medium */}
+      <div
+        className="login-illustration-orb orb-b absolute"
+        style={{
+          width: '340px',
+          height: '340px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(34, 197, 94, 0.16) 0%, transparent 65%)',
+          bottom: '5%',
+          left: '-5%',
+          filter: 'blur(60px)',
+        }}
+      />
+
+      {/* Orb C — center, soft accent */}
+      <div
+        className="login-illustration-orb orb-c absolute"
+        style={{
+          width: '260px',
+          height: '260px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(74, 222, 128, 0.1) 0%, transparent 65%)',
+          top: '45%',
+          left: '40%',
+          transform: 'translate(-50%, -50%)',
+          filter: 'blur(70px)',
+        }}
+      />
+
+      {/* Main phrase */}
+      <div className="relative z-10 max-w-xl px-16 text-center">
+        <p className="mb-4 text-sm font-medium uppercase tracking-[0.32em] text-white/45">
+          Valorize Platform
+        </p>
+        <p
           style={{
-            width: '460px',
-            height: '460px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 65%)',
-            top: '5%',
-            right: '-5%',
-            filter: 'blur(50px)',
+            fontFamily: '\'Rubik\', sans-serif',
+            fontWeight: 350,
+            fontSize: 'clamp(1.6rem, 2.6vw, 2.5rem)',
+            lineHeight: 1.35,
+            color: 'rgba(255, 255, 255, 0.84)',
+            letterSpacing: '-0.02em',
+            userSelect: 'none',
           }}
-        />
-
-        {/* Orb B — bottom left, medium */}
-        <div
-          className="orb-b absolute"
-          style={{
-            width: '340px',
-            height: '340px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(34, 197, 94, 0.16) 0%, transparent 65%)',
-            bottom: '5%',
-            left: '-5%',
-            filter: 'blur(60px)',
-          }}
-        />
-
-        {/* Orb C — center, soft accent */}
-        <div
-          className="orb-c absolute"
-          style={{
-            width: '260px',
-            height: '260px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(74, 222, 128, 0.1) 0%, transparent 65%)',
-            top: '45%',
-            left: '40%',
-            transform: 'translate(-50%, -50%)',
-            filter: 'blur(70px)',
-          }}
-        />
-
-        {/* Main phrase */}
-        <div className="relative z-10 max-w-xl px-16 text-center">
-          <p className="mb-4 text-sm font-medium uppercase tracking-[0.32em] text-white/45">
-            Valorize Platform
-          </p>
-          <p
-            style={{
-              fontFamily: "'Rubik', sans-serif",
-              fontWeight: 350,
-              fontSize: 'clamp(1.6rem, 2.6vw, 2.5rem)',
-              lineHeight: 1.35,
-              color: 'rgba(255, 255, 255, 0.84)',
-              letterSpacing: '-0.02em',
-              userSelect: 'none',
-            }}
-          >
-            Cultura organizacional
-            <br />
-            que transforma.
-          </p>
-        </div>
+        >
+          Cultura organizacional
+          <br />
+          que transforma.
+        </p>
       </div>
-    </>
+    </div>
   )
 }

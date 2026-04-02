@@ -32,7 +32,7 @@ export const LoginPage = () => {
     if (error) {
       const message =
         OAUTH_ERROR_MESSAGES[error] ??
-        (description ? decodeURIComponent(description.replace(/\+/g, ' ')) : 'Erro ao fazer login com Google.')
+        (description ? description.replace(/\+/g, ' ') : 'Erro ao fazer login com Google.')
       
       loginForm.formMethods.setError('root', { message })
       // Clean the URL so the error doesn't persist on refresh
