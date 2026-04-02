@@ -9,6 +9,8 @@ const OAUTH_ERROR_MESSAGES: Record<string, string> = {
   access_denied: 'Acesso negado. Você recusou a permissão do Google.',
   unauthorized_client: 'Este cliente não está autorizado para login com Google.',
   server_error: 'Erro no servidor de autenticação. Tente novamente.',
+  google_not_allowed: 'Sua conta Google foi autenticada, mas não está habilitada para acessar o Valorize. Entre em contato com o administrador da sua empresa.',
+  google_login_failed: 'Não foi possível concluir o login com Google. Tente novamente.',
 }
 
 export const LoginPage = () => {
@@ -36,6 +38,14 @@ export const LoginPage = () => {
       // Clean the URL so the error doesn't persist on refresh
       window.history.replaceState(null, '', window.location.pathname)
     }
+  }, [loginForm.formMethods])
+
+  useEffect(() => {
+    const error = new URLSearchParams(window.location.search).get('error')
+    if (!error) return
+
+    const message = OAUTH_ERROR_MESSAGES[error] ?? 'Erro ao fazer login com Google.'
+    loginForm.formMethods.setError('root', { message })
   }, [loginForm.formMethods])
 
   const handleToggleMode = () => {
