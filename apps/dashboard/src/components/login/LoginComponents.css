@@ -1,0 +1,171 @@
+@layer components {
+  .login-form {
+    @apply space-y-3.5 sm:space-y-4.5 xl:space-y-5;
+  }
+
+  .login-form--compact {
+    @apply space-y-3 sm:space-y-4;
+  }
+
+  .login-inline-link {
+    @apply relative inline-flex cursor-pointer items-center text-sm font-medium text-green-700 transition-colors focus:outline-none;
+  }
+
+  .login-inline-link:hover {
+    @apply text-green-800;
+  }
+
+  .login-inline-link:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  .login-back-button {
+    @apply inline-flex h-10 w-fit cursor-pointer items-center justify-center gap-2 rounded-full border border-gray-200 bg-white/80 px-4 text-sm font-semibold leading-none text-gray-700 shadow-sm transition-all duration-200;
+  }
+
+  .login-back-button:hover {
+    @apply border-gray-300 bg-gray-50 text-gray-950;
+  }
+
+  .login-primary-button {
+    @apply flex w-full cursor-pointer items-center justify-center rounded-lg bg-primary px-6 py-2.5 text-base font-semibold text-white transition-colors focus:outline-none;
+  }
+
+  .login-primary-button:hover {
+    @apply bg-primary-600;
+  }
+
+  .login-primary-button:focus {
+    @apply ring-2 ring-primary ring-offset-2 ring-offset-white;
+  }
+
+  .login-primary-button:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  .login-social-button {
+    @apply flex w-full cursor-pointer items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-base font-semibold text-gray-700 shadow-sm transition-colors focus:outline-none;
+  }
+
+  .login-social-button:hover {
+    @apply bg-gray-50;
+  }
+
+  .login-social-button:focus {
+    @apply ring-2 ring-primary ring-offset-2 ring-offset-white;
+  }
+
+  .login-social-button:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  .login-secondary-card {
+    @apply rounded-[1.5rem] border border-white/10 bg-white/[0.045] px-4 py-3.5 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-md sm:px-5 sm:py-4;
+  }
+
+  .login-secondary-button {
+    @apply mt-4 inline-flex items-center justify-center rounded-full border border-green-400/20 bg-green-500/12 px-5 py-2.5 text-sm font-semibold text-green-200 transition-colors;
+  }
+
+  .login-secondary-button:hover {
+    @apply border-green-300/35 bg-green-500/18;
+  }
+
+  .login-panel-wrapper {
+    @apply pointer-events-none relative z-10 flex min-h-dvh w-full items-center justify-center px-4 py-5 sm:px-6 sm:py-6 lg:justify-start lg:px-3 lg:py-3 xl:px-4 xl:py-4 2xl:px-5;
+  }
+
+  .login-panel-surface {
+    @apply relative flex items-center justify-center overflow-hidden rounded-[2rem] border border-white/12 bg-[linear-gradient(180deg,rgba(16,24,19,0.82)_0%,rgba(9,15,12,0.68)_100%)] p-5 text-white shadow-[0_32px_100px_-50px_rgba(0,0,0,0.95)] backdrop-blur-[28px] sm:p-6 lg:min-h-[calc(100dvh-1.5rem)] lg:px-8 lg:py-8 xl:px-10 xl:py-9;
+  }
+
+  .login-panel-content {
+    @apply relative z-10 mx-auto flex min-h-full w-full max-w-md flex-col items-center justify-center space-y-4 sm:space-y-5 xl:space-y-6;
+  }
+
+  .login-panel-step {
+    @apply w-full space-y-4 sm:space-y-5 xl:space-y-6;
+  }
+
+  @variant dark {
+    .login-inline-link {
+      @apply text-green-400;
+    }
+
+    .login-inline-link:hover {
+      @apply text-green-300;
+    }
+
+    .login-back-button {
+      @apply border-white/10 bg-white/5 text-gray-300;
+    }
+
+    .login-back-button:hover {
+      @apply border-white/20 bg-white/10 text-white;
+    }
+
+    .login-primary-button:focus {
+      @apply ring-offset-gray-950;
+    }
+
+    .login-social-button {
+      @apply border-gray-600 bg-[#2a2a2a] text-gray-200;
+    }
+
+    .login-social-button:hover {
+      @apply bg-[#333333];
+    }
+
+    .login-social-button:focus {
+      @apply ring-offset-gray-950;
+    }
+  }
+
+  @media (width >= 64rem) and (height <= 900px) {
+    .login-panel-wrapper {
+      @apply items-center py-5;
+    }
+
+    .login-panel-wrapper h1 {
+      font-size: 2.65rem;
+    }
+
+    .login-panel-wrapper p {
+      line-height: 1.45;
+    }
+
+    .login-panel-wrapper .login-form {
+      @apply space-y-3;
+    }
+
+    .login-panel-wrapper .auth-label {
+      @apply mb-1 text-[0.8125rem];
+    }
+
+    .login-panel-wrapper .auth-input {
+      @apply py-[0.55rem] text-[0.92rem];
+    }
+
+    .login-panel-wrapper .login-inline-link:not(.login-back-button) {
+      @apply pb-0.5;
+    }
+
+    .login-panel-wrapper .login-primary-button,
+    .login-panel-wrapper .login-social-button {
+      @apply py-[0.7rem] text-[0.96rem];
+    }
+
+    .login-panel-wrapper .login-secondary-card {
+      @apply px-4 py-3;
+    }
+
+    .login-panel-wrapper .login-secondary-button {
+      @apply mt-[0.625rem] px-[0.95rem] py-[0.55rem];
+    }
+
+    .login-panel-content,
+    .login-panel-step {
+      @apply space-y-[0.875rem];
+    }
+  }
+}

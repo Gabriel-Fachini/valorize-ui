@@ -5,7 +5,6 @@ import { EmailInput, PasswordInput } from '@/components/ui'
 import { LoginFormData } from '@/types'
 import { AnimatedFormError } from './AnimatedFormError'
 import { GoogleLoginButton } from './GoogleLoginButton'
-import { loginFormVariants, loginInlineLinkClassName, loginPrimaryButtonClassName } from './loginStyles'
 
 interface LoginFormProps {
   formMethods: UseFormReturn<LoginFormData>
@@ -52,7 +51,7 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit, onForgotPasswordCl
   }, [])
 
   return (
-    <form className={loginFormVariants({ density: 'compact' })} onSubmit={handleSubmit(onSubmit)}>
+    <form className="login-form login-form--compact" onSubmit={handleSubmit(onSubmit)}>
       <EmailInput
         {...emailField}
         ref={(element) => {
@@ -89,7 +88,7 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit, onForgotPasswordCl
           onMouseLeave={() => setIsForgotPasswordActive(false)}
           onFocus={() => setIsForgotPasswordActive(true)}
           onBlur={() => setIsForgotPasswordActive(false)}
-          className={loginInlineLinkClassName}
+          className="login-inline-link"
         >
           Esqueci a senha
           <animated.span
@@ -105,7 +104,7 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit, onForgotPasswordCl
       <button
         type="submit"
         disabled={isSubmitting || isLoading}
-        className={loginPrimaryButtonClassName}
+        className="login-primary-button"
       >
         {isSubmitting || isLoading ? 'Entrando...' : 'Entrar'}
       </button>

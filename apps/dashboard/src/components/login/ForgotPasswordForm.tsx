@@ -3,7 +3,6 @@ import { ArrowLeft } from 'lucide-react'
 import { EmailInput } from '@/components/ui'
 import { ForgotPasswordFormData } from '@/types'
 import { AnimatedFormError } from './AnimatedFormError'
-import { loginBackButtonClassName, loginFormVariants, loginPrimaryButtonClassName } from './loginStyles'
 
 interface ForgotPasswordFormProps {
   formMethods: UseFormReturn<ForgotPasswordFormData>
@@ -34,7 +33,7 @@ export const ForgotPasswordForm = ({
         <button
           type="button"
           onClick={onBackToLogin}
-          className={loginBackButtonClassName}
+          className="login-back-button"
         >
           <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden="true" />
           <span className="flex items-center leading-none">Voltar para login</span>
@@ -67,11 +66,11 @@ export const ForgotPasswordForm = ({
   }
 
   return (
-    <form className={loginFormVariants()} onSubmit={handleSubmit(onSubmit)}>
+    <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
       <button
         type="button"
         onClick={onBackToLogin}
-        className={loginBackButtonClassName}
+        className="login-back-button"
       >
         <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden="true" />
         <span className="flex items-center leading-none">Voltar para login</span>
@@ -93,7 +92,7 @@ export const ForgotPasswordForm = ({
       <button
         type="submit"
         disabled={isSubmitting || isLoading}
-        className={loginPrimaryButtonClassName}
+        className="login-primary-button"
       >
         {isSubmitting || isLoading ? 'Enviando link...' : 'Enviar link de redefinição'}
       </button>

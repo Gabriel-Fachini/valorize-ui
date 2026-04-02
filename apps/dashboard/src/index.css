@@ -4,6 +4,7 @@
 @import "@phosphor-icons/web/fill";
 @import "@phosphor-icons/web/regular";
 @import "@phosphor-icons/web/duotone";
+@import "./components/login/LoginComponents.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

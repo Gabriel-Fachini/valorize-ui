@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { loginSocialButtonClassName } from './loginStyles'
 
 interface GoogleLoginButtonProps {
   disabled?: boolean
@@ -37,7 +36,7 @@ export const GoogleLoginButton = ({ disabled }: GoogleLoginButtonProps) => {
         type="button"
         onClick={handleGoogleLogin}
         disabled={isLoading || disabled}
-        className={loginSocialButtonClassName}
+        className="login-social-button"
       >
         {isLoading ? (
           <span className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />

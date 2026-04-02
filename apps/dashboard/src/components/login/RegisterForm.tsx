@@ -3,7 +3,6 @@ import { ArrowLeft } from 'lucide-react'
 import { Input, EmailInput } from '@/components/ui'
 import { RegisterFormData } from '@/types'
 import { AnimatedFormError } from './AnimatedFormError'
-import { loginBackButtonClassName, loginFormVariants, loginPrimaryButtonClassName } from './loginStyles'
 
 interface RegisterFormProps {
   formMethods: UseFormReturn<RegisterFormData>
@@ -16,11 +15,11 @@ export const RegisterForm = ({ formMethods, isLoading, onSubmit, onBackToLogin }
   const { register, handleSubmit, formState: { errors, isSubmitting } } = formMethods
 
   return (
-    <form className={loginFormVariants()} onSubmit={handleSubmit(onSubmit)}>
+    <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
       <button
         type="button"
         onClick={onBackToLogin}
-        className={loginBackButtonClassName}
+        className="login-back-button"
       >
         <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden="true" />
         <span className="flex items-center leading-none">Voltar para login</span>
@@ -52,7 +51,7 @@ export const RegisterForm = ({ formMethods, isLoading, onSubmit, onBackToLogin }
       <button
         type="submit"
         disabled={isSubmitting || isLoading}
-        className={loginPrimaryButtonClassName}
+        className="login-primary-button"
       >
         {isSubmitting || isLoading ? 'Cadastrando...' : 'Cadastrar'}
       </button>
