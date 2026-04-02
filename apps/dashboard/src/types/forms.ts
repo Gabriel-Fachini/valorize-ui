@@ -24,9 +24,14 @@ export const registerFormSchema = z.object({
   email: emailSchema,
 })
 
+export const forgotPasswordFormSchema = z.object({
+  email: emailSchema,
+})
+
 // Inferred types for TypeScript
 export type LoginFormData = z.infer<typeof loginFormSchema>
 export type RegisterFormData = z.infer<typeof registerFormSchema>
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordFormSchema>
 
 // Input validation states
 export interface InputValidationState {
@@ -64,4 +69,3 @@ export interface PasswordInputProps extends Omit<BaseInputProps, 'type'> {
   showToggleVisibility?: boolean
   showCapsLockWarning?: boolean
 }
-

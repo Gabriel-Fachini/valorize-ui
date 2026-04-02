@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
+import { CheckCircle, Loader2, XCircle } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
-import { Button } from '@/components/ui/button'
 import { PasswordInput } from '@/components/ui/Input'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay'
+import { LoginHeader, LoginIllustrationPanel } from '@/components/login'
 import { useAuth } from '@/hooks/useAuth'
 
 type TokenValidationState =
@@ -17,7 +18,6 @@ export function ResetPasswordPage() {
   const navigate = useNavigate()
   const { logout } = useAuth()
 
-  // Estados principais
   const [tokenValidation, setTokenValidation] = useState<TokenValidationState>({
     status: 'validating',
   })
@@ -29,15 +29,12 @@ export function ResetPasswordPage() {
     message: string
   } | null>(null)
 
-  // Validações de senha
   const passwordErrors = getPasswordErrors(password)
   const passwordsMatch = password === confirmPassword
   const isFormValid = password.length >= 8 && passwordsMatch && passwordErrors.length === 0
 
-  // 1. VALIDAR TOKENS NA URL (useEffect)
   useEffect(() => {
     const validateTokens = () => {
-      // Extrai hash params
       const hashParams = new URLSearchParams(window.location.hash.substring(1))
       const accessToken = hashParams.get('access_token')
       const tokenType = hashParams.get('type')
@@ -52,43 +49,36 @@ export function ResetPasswordPage() {
         return
       }
 
-      // Validação 1: Token existe?
       if (!accessToken) {
         setTokenValidation({
           status: 'invalid',
-          reason: 'Link inválido. Token não encontrado.',
+          reason: 'Link invalido. Token nao encontrado.',
         })
         return
       }
 
-      // Validação 2: É um token de recovery?
       if (tokenType !== 'recovery') {
         setTokenValidation({
           status: 'invalid',
-          reason: 'Este link não é válido para redefinição de senha.',
+          reason: 'Este link nao e valido para redefinicao de senha.',
         })
         return
       }
 
-      // Validação 3: Token expirou?
       if (expiresAt) {
-        const expirationTime = parseInt(expiresAt) * 1000 // Unix timestamp em ms
+        const expirationTime = parseInt(expiresAt) * 1000
         if (Date.now() > expirationTime) {
-          setTokenValidation({
-            status: 'expired',
-          })
+          setTokenValidation({ status: 'expired' })
           return
         }
       }
 
-      // Token válido!
       setTokenValidation({ status: 'valid' })
     }
 
     validateTokens()
   }, [])
 
-  // 2. HANDLER DE SUBMIT
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -98,244 +88,182 @@ export function ResetPasswordPage() {
     setSubmitStatus(null)
 
     try {
-      // Atualiza a senha no Supabase
       const { error } = await supabase.auth.updateUser({
-        password: password,
+        password,
       })
 
-      if (error) {
-        throw error
-      }
+      if (error) throw error
 
-      // Sucesso!
       setSubmitStatus({
         type: 'success',
-        message: 'Senha redefinida com sucesso! Redirecionando para login...',
+        message: 'Senha redefinida com sucesso. Voce sera redirecionado para o login.',
       })
 
-      // Faz logout para forçar novo login
       logout()
 
-      // Redireciona após 3 segundos
       setTimeout(() => {
         navigate({ to: '/login' })
       }, 3000)
-
     } catch (error: unknown) {
       if (import.meta.env.DEV) {
         // eslint-disable-next-line no-console
         console.error('Reset password error:', error)
       }
 
-      const message = error instanceof Error ? error.message : 'Erro ao redefinir senha. Tente novamente.'
-
       setSubmitStatus({
         type: 'error',
-        message: message,
+        message: error instanceof Error ? error.message : 'Erro ao redefinir senha. Tente novamente.',
       })
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  // 3. RENDER: Loading state
-  if (tokenValidation.status === 'validating') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600 dark:text-blue-400" />
-          <p className="text-gray-600 dark:text-gray-400">Validando link...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // 4. RENDER: Token inválido ou expirado
-  if (tokenValidation.status === 'invalid' || tokenValidation.status === 'expired') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <img
-                src="/logo.svg"
-                alt="Valorize Logo"
-                className="h-10 dark:hidden"
-              />
-              <img
-                src="/logo1.svg"
-                alt="Valorize Logo"
-                className="h-10 hidden dark:block"
-              />
-            </div>
-            <XCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              {tokenValidation.status === 'expired' ? 'Link Expirado' : 'Link Inválido'}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              {tokenValidation.status === 'expired'
-                ? 'Este link de redefinição de senha expirou. Solicite um novo link.'
-                : tokenValidation.reason}
-            </p>
-            <Button
-              onClick={() => navigate({ to: '/login' })}
-              className="w-full"
-            >
-              Voltar para Login
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // 5. RENDER: Formulário (token válido)
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-        <div className="mb-8 text-center">
-          <div className="flex justify-center mb-6">
-            <img
-              src="/logo.svg"
-              alt="Valorize Logo"
-              className="h-10 dark:hidden"
-            />
-            <img
-              src="/logo1.svg"
-              alt="Valorize Logo"
-              className="h-10 hidden dark:block"
-            />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Redefinir Senha
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Escolha uma nova senha forte para sua conta.
-          </p>
-        </div>
+    <div className="min-h-screen flex relative overflow-hidden">
+      <div className="lg:w-2/5 flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#1a1a1a] relative">
+        <div className="max-w-md w-full space-y-8">
+          <LoginHeader mode="forgotPassword" />
 
-        {/* Alert de sucesso/erro */}
-        {submitStatus && (
-          <Alert
-            variant={submitStatus.type === 'success' ? 'success' : 'error'}
-            className={`mb-6 ${submitStatus.type === 'success' ? 'border-green-500 text-green-700 bg-green-50' : ''}`}
-          >
-            {submitStatus.type === 'success' ? (
-              <CheckCircle className="h-4 w-4" />
-            ) : (
-              <XCircle className="h-4 w-4" />
-            )}
-            <AlertTitle>{submitStatus.type === 'success' ? 'Sucesso' : 'Erro'}</AlertTitle>
-            <AlertDescription>{submitStatus.message}</AlertDescription>
-          </Alert>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Campo: Nova Senha */}
-          <div>
-            <PasswordInput
-              name="password"
-              label="Nova Senha"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Digite sua nova senha"
-              required
-              disabled={isSubmitting || submitStatus?.type === 'success'}
-            />
-
-            {/* Validações de senha */}
-            {password.length > 0 && (
-              <div className="mt-2 space-y-1">
-                <PasswordRequirement
-                  met={password.length >= 8}
-                  text="Mínimo 8 caracteres"
-                />
-                <PasswordRequirement
-                  met={/[A-Z]/.test(password)}
-                  text="Uma letra maiúscula"
-                />
-                <PasswordRequirement
-                  met={/[a-z]/.test(password)}
-                  text="Uma letra minúscula"
-                />
-                <PasswordRequirement
-                  met={/[0-9]/.test(password)}
-                  text="Um número"
-                />
-                <PasswordRequirement
-                  met={/[^A-Za-z0-9]/.test(password)}
-                  text="Um caractere especial"
-                />
+          {tokenValidation.status === 'validating' ? (
+            <div className="rounded-3xl border border-gray-200 bg-gray-50/80 px-6 py-8 text-center dark:border-white/10 dark:bg-white/5">
+              <Loader2 className="mx-auto h-8 w-8 animate-spin text-green-600 dark:text-green-400" />
+              <p className="mt-4 text-base font-medium text-gray-900 dark:text-white">
+                Validando seu link
+              </p>
+              <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
+                Estamos conferindo se o link de redefinicao ainda e valido.
+              </p>
+            </div>
+          ) : tokenValidation.status === 'invalid' || tokenValidation.status === 'expired' ? (
+            <div className="rounded-3xl border border-red-200 bg-red-50/80 px-6 py-7 dark:border-red-500/20 dark:bg-red-500/10">
+              <div className="flex items-start gap-4">
+                <div className="mt-1 rounded-full bg-red-100 p-2 text-red-600 dark:bg-red-500/15 dark:text-red-300">
+                  <XCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                    {tokenValidation.status === 'expired' ? 'Link expirado' : 'Link invalido'}
+                  </h2>
+                  <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-300">
+                    {tokenValidation.status === 'expired'
+                      ? 'Este link de redefinicao expirou. Solicite um novo email para continuar.'
+                      : tokenValidation.reason}
+                  </p>
+                </div>
               </div>
-            )}
-          </div>
 
-          {/* Campo: Confirmar Senha */}
-          <div>
-            <PasswordInput
-              name="confirmPassword"
-              label="Confirmar Senha"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirme sua nova senha"
-              required
-              disabled={isSubmitting || submitStatus?.type === 'success'}
-            />
+              <button
+                type="button"
+                onClick={() => navigate({ to: '/login' })}
+                className="mt-6 inline-flex items-center justify-center rounded-full border border-red-200 bg-white px-5 py-3 text-sm font-semibold text-red-700 transition-colors hover:bg-red-100 dark:border-red-400/20 dark:bg-transparent dark:text-red-300 dark:hover:bg-red-500/10"
+              >
+                Voltar para login
+              </button>
+            </div>
+          ) : (
+            <>
+              {submitStatus && (
+                <Alert variant={submitStatus.type === 'success' ? 'success' : 'error'}>
+                  {submitStatus.type === 'success' ? (
+                    <CheckCircle className="h-4 w-4" />
+                  ) : (
+                    <XCircle className="h-4 w-4" />
+                  )}
+                  <AlertTitle>{submitStatus.type === 'success' ? 'Senha atualizada' : 'Nao foi possivel concluir'}</AlertTitle>
+                  <AlertDescription>{submitStatus.message}</AlertDescription>
+                </Alert>
+              )}
 
-            {/* Validação de match */}
-            {confirmPassword.length > 0 && (
-              <PasswordRequirement
-                met={passwordsMatch}
-                text="As senhas coincidem"
-              />
-            )}
-          </div>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <PasswordInput
+                    name="password"
+                    label="Nova senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Digite sua nova senha"
+                    required
+                    disabled={isSubmitting || submitStatus?.type === 'success'}
+                  />
 
-          {/* Botão de Submit */}
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={!isFormValid || isSubmitting || submitStatus?.type === 'success'}
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Redefinindo senha...
-              </>
-            ) : submitStatus?.type === 'success' ? (
-              <>
-                <CheckCircle className="mr-2 h-4 w-4" />
-                Senha redefinida!
-              </>
-            ) : (
-              'Redefinir Senha'
-            )}
-          </Button>
-        </form>
+                  {password.length > 0 && (
+                    <div className="mt-3 rounded-2xl border border-gray-200 bg-gray-50/80 p-4 dark:border-white/10 dark:bg-white/5">
+                      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">
+                        Requisitos da senha
+                      </p>
+                      <div className="space-y-2">
+                        <PasswordRequirement met={password.length >= 8} text="Minimo 8 caracteres" />
+                        <PasswordRequirement met={/[A-Z]/.test(password)} text="Uma letra maiuscula" />
+                        <PasswordRequirement met={/[a-z]/.test(password)} text="Uma letra minuscula" />
+                        <PasswordRequirement met={/[0-9]/.test(password)} text="Um numero" />
+                        <PasswordRequirement met={/[^A-Za-z0-9]/.test(password)} text="Um caractere especial" />
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-        {/* Link para voltar */}
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => navigate({ to: '/login' })}
-            className="text-sm text-blue-600 hover:text-blue-700"
-            disabled={isSubmitting}
-          >
-            Voltar para Login
-          </button>
+                <div>
+                  <PasswordInput
+                    name="confirmPassword"
+                    label="Confirmar senha"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirme sua nova senha"
+                    required
+                    disabled={isSubmitting || submitStatus?.type === 'success'}
+                  />
+
+                  {confirmPassword.length > 0 && (
+                    <div className="mt-3">
+                      <PasswordRequirement met={passwordsMatch} text="As senhas coincidem" />
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={!isFormValid || isSubmitting || submitStatus?.type === 'success'}
+                  className="w-full flex items-center justify-center bg-primary text-white py-3 px-6 rounded-lg font-semibold text-lg hover:bg-primary-600 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-950 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {isSubmitting ? 'Redefinindo senha...' : submitStatus?.type === 'success' ? 'Senha redefinida' : 'Redefinir senha'}
+                </button>
+
+                <div className="rounded-2xl border border-gray-200 bg-gray-50/80 px-5 py-4 text-center dark:border-white/10 dark:bg-white/5">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    Lembrou sua senha?
+                  </p>
+                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    Volte para o login e entre novamente com suas credenciais atualizadas.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: '/login' })}
+                    className="mt-4 inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-5 py-2.5 text-sm font-semibold text-green-700 transition-colors hover:border-green-300 hover:bg-green-100 dark:border-green-500/30 dark:bg-green-500/10 dark:text-green-300 dark:hover:border-green-400/40 dark:hover:bg-green-500/15"
+                  >
+                    Voltar para login
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
         </div>
       </div>
+
+      <LoginIllustrationPanel />
+
+      {(tokenValidation.status === 'validating' || isSubmitting) && <LoadingOverlay />}
     </div>
   )
 }
 
-// 6. COMPONENTE AUXILIAR: Indicador de requisito
 function PasswordRequirement({ met, text }: { met: boolean; text: string }) {
   return (
     <div className="flex items-center text-sm">
       {met ? (
-        <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+        <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
       ) : (
-        <XCircle className="h-4 w-4 text-gray-300 dark:text-gray-600 mr-2" />
+        <XCircle className="mr-2 h-4 w-4 text-gray-300 dark:text-gray-600" />
       )}
       <span className={met ? 'text-green-700 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}>
         {text}
@@ -344,25 +272,14 @@ function PasswordRequirement({ met, text }: { met: boolean; text: string }) {
   )
 }
 
-// 7. FUNÇÃO AUXILIAR: Validação de senha
 function getPasswordErrors(password: string): string[] {
   const errors: string[] = []
 
-  if (password.length < 8) {
-    errors.push('Mínimo 8 caracteres')
-  }
-  if (!/[A-Z]/.test(password)) {
-    errors.push('Pelo menos uma letra maiúscula')
-  }
-  if (!/[a-z]/.test(password)) {
-    errors.push('Pelo menos uma letra minúscula')
-  }
-  if (!/[0-9]/.test(password)) {
-    errors.push('Pelo menos um número')
-  }
-  if (!/[^A-Za-z0-9]/.test(password)) {
-    errors.push('Pelo menos um caractere especial')
-  }
+  if (password.length < 8) errors.push('Minimo 8 caracteres')
+  if (!/[A-Z]/.test(password)) errors.push('Pelo menos uma letra maiuscula')
+  if (!/[a-z]/.test(password)) errors.push('Pelo menos uma letra minuscula')
+  if (!/[0-9]/.test(password)) errors.push('Pelo menos um numero')
+  if (!/[^A-Za-z0-9]/.test(password)) errors.push('Pelo menos um caractere especial')
 
   return errors
 }

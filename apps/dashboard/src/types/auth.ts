@@ -55,6 +55,7 @@ export interface AuthContextType {
   user: User | null
   isLoading: boolean
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>
+  finishLogin: (loginData: LoginData) => void
   logout: () => void
   checkAuth: () => Promise<boolean>
 }

@@ -11,7 +11,7 @@ const inputHeight = 48
 const errorHeight = 40
 
 const labelStyles = {
-  base: 'block text-sm font-semibold mb-2',
+  base: 'auth-label block text-sm font-semibold mb-2',
   default: 'text-gray-700 dark:text-gray-200',
   error: 'text-red-600 dark:text-red-300',
   success: 'text-green-600 dark:text-green-300',
@@ -26,6 +26,7 @@ const helperStyles = {
 }
 
 const inputDiv = [
+  'auth-input',
   'absolute bg-white dark:bg-[#262626]',
   'w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600',
   'relative z-10 text-gray-900 dark:text-white',

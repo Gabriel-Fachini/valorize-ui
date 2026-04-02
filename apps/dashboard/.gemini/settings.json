@@ -1,0 +1,10 @@
+{
+  "skills": {
+    "disabled": [
+      "skill-creator",
+      "a11y-debugging",
+      "troubleshooting",
+      "debug-optimize-lcp"
+    ]
+  }
+}

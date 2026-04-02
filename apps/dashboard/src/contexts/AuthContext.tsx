@@ -1,11 +1,23 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { AuthContext } from './auth'
 import { TokenManager, checkAndRefreshToken, loginWithEmailPassword, verifyToken } from '@/services/auth'
-import type { User, VerifyFullData, VerifyMinimalData, UserInfo, ProviderProps } from '@types'
+import type { User, VerifyFullData, VerifyMinimalData, UserInfo, ProviderProps, LoginData } from '@types'
 
 export const AuthProvider = ({ children }: ProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+
+  const applyLoginData = useCallback((loginData: LoginData) => {
+    TokenManager.setTokens(loginData.access_token, loginData.refresh_token)
+    TokenManager.setUserInfo(loginData.user_info)
+    setUser({
+      id: loginData.user_info.sub,
+      avatar: loginData.user_info.avatar,
+      email: loginData.user_info.email,
+      name: loginData.user_info.name ?? '',
+      companyId: loginData.user_info.companyId,
+    })
+  }, [])
 
   // Initialize from localStorage and verify session
   useEffect(() => {
@@ -80,15 +92,7 @@ export const AuthProvider = ({ children }: ProviderProps) => {
       setIsLoading(true)
       const res = await loginWithEmailPassword(email, password)
       if (res.success) {
-        TokenManager.setTokens(res.data.access_token, res.data.refresh_token)
-        TokenManager.setUserInfo(res.data.user_info)
-        setUser({ 
-          id: res.data.user_info.sub,
-          avatar: res.data.user_info.avatar,
-          email: res.data.user_info.email, 
-          name: res.data.user_info.name ?? '',
-          companyId: res.data.user_info.companyId,
-        })
+        applyLoginData(res.data)
         return { success: true as const }
       } else {
         if ('message' in res) {
@@ -103,7 +107,11 @@ export const AuthProvider = ({ children }: ProviderProps) => {
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [applyLoginData])
+
+  const finishLogin = useCallback((loginData: LoginData) => {
+    applyLoginData(loginData)
+  }, [applyLoginData])
 
   const logout = useCallback(() => {
     TokenManager.clearTokens()
@@ -118,7 +126,10 @@ export const AuthProvider = ({ children }: ProviderProps) => {
     return data.isValid === true
   }, [])
 
-  const value = useMemo(() => ({ user, isLoading, login, logout, checkAuth }), [user, isLoading, login, logout, checkAuth])
+  const value = useMemo(
+    () => ({ user, isLoading, login, finishLogin, logout, checkAuth }),
+    [user, isLoading, login, finishLogin, logout, checkAuth],
+  )
 
   return (
     <AuthContext.Provider value={value}>

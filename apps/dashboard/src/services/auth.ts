@@ -26,6 +26,26 @@ export async function loginWithEmailPassword(email: string, password: string): P
   }
 }
 
+export async function loginWithGoogleToken(
+  accessToken: string,
+  refreshToken?: string,
+): Promise<ApiResponse<LoginData>> {
+  try {
+    const response = await api.post<ApiResponse<LoginData>>('/auth/login', {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    })
+    return response.data
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Google Login Error',
+      message: error instanceof Error ? error.message : 'Failed to login with Google',
+      statusCode: 0,
+    }
+  }
+}
+
 export async function registerUser(userData: RegisterFormData): Promise<ApiResponse<{ message: string }>> {
   try {
     const response = await api.post<ApiResponse<{ message: string }>>('/auth/signup', {

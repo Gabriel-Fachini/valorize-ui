@@ -21,6 +21,7 @@ import { EventsPage } from '@/pages/EventsPage'
 import { TrainingPage } from '@/pages/TrainingPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
+import { AuthCallbackPage } from '@/pages/AuthCallbackPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { DevErrorBoundary } from '@/components/DevErrorBoundary'
 import { useTheme } from '@hooks/useTheme'
@@ -72,6 +73,12 @@ const resetPasswordRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reset-password',
   component: ResetPasswordPage,
+})
+
+const authCallbackRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/auth/callback',
+  component: AuthCallbackPage,
 })
 
 const homeRoute = createRoute({
@@ -182,6 +189,8 @@ const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
   resetPasswordRoute,
+  authCallbackRoute,
+  notFoundRoute,
   protectedLayoutRoute.addChildren([
     homeRoute,
     praisesRoute,
