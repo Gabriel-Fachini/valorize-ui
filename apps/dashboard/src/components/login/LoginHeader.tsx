@@ -35,8 +35,8 @@ export const LoginHeader = ({ mode = 'login' }: LoginHeaderProps) => {
       </div>
 
       <div>
-        <h1 className={`leading-[1.02] font-semibold tracking-[-0.04em] text-gray-900 sm:text-[2.15rem] lg:text-[2.35rem] xl:text-[2.85rem] dark:text-white ${
-          isLoginMode ? 'max-w-none whitespace-nowrap text-[1.55rem]' : 'max-w-[12ch] text-[1.8rem]'
+        <h1 className={`leading-[1.02] font-semibold tracking-[-0.04em] text-gray-900 sm:text-[2.45rem] lg:text-[2.35rem] xl:text-[2.65rem] dark:text-white ${
+          isLoginMode ? 'max-w-none whitespace-nowrap text-[1.90rem]' : 'max-w-[12ch] text-[1.8rem]'
         }`}>
           <span className="text-gray-900 dark:text-white">Olá,</span>{' '}
           <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">

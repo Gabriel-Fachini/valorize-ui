@@ -4,6 +4,7 @@
  */
 
 import { useSpring, animated, config } from '@react-spring/web'
+import { ReactNode } from 'react'
 import { BaseInputProps } from '@types'
 
 const labelHeight = 28
@@ -45,6 +46,7 @@ export interface InputProps extends BaseInputProps {
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
   'aria-describedby'?: string
   'aria-invalid'?: boolean
+  rightAdornment?: ReactNode
 }
 
 // Base Input Component - React 19 não precisa de forwardRef
@@ -67,6 +69,7 @@ export const Input = ({
   ref,
   onChange,
   onBlur,
+  rightAdornment,
   ...rest
 }: InputProps) => {
   // Determine input state
@@ -120,6 +123,11 @@ export const Input = ({
     helperStyles.base,
     hasError ? helperStyles.error : helperStyles.default,
   ].join(' ')
+
+  const inputClassName = [
+    inputDiv,
+    rightAdornment ? 'pr-14' : '',
+  ].filter(Boolean).join(' ')
   
   return (
     <animated.div style={containerAnimation}>
@@ -146,7 +154,7 @@ export const Input = ({
           disabled={disabled}
           autoComplete={autoComplete}
           autoFocus={autoFocus}
-          className={inputDiv}
+          className={inputClassName}
           style={inputAnimation}
           onChange={onChange}
           onBlur={onBlur}
@@ -157,6 +165,12 @@ export const Input = ({
           ].filter(Boolean).join(' ') || undefined}
           {...rest}
         />
+
+        {rightAdornment && (
+          <div className="absolute inset-y-0 right-2 z-20 flex items-center gap-1">
+            {rightAdornment}
+          </div>
+        )}
         
         {/* Error Message - Always present, positioned behind input */}
         <animated.div 

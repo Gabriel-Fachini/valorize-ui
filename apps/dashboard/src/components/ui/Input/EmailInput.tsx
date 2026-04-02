@@ -102,9 +102,11 @@ export const EmailInput = ({
         break
       
       case 'Enter':
-        e.preventDefault()
         if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < suggestions.length) {
+          e.preventDefault()
           handleSuggestionClick(suggestions[selectedSuggestionIndex])
+        } else {
+          onKeyDown?.(e)
         }
         break
       

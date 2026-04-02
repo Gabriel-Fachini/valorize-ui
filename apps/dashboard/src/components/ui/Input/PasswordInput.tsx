@@ -142,35 +142,38 @@ export const PasswordInput = ({
         {...props}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
+        rightAdornment={(
+          <>
+            {/* Caps Lock Warning Icon */}
+            {showCapsLockWarning && capsLockOn && (
+              <div className="auth-caps-lock-indicator pointer-events-none inline-flex items-center text-amber-500 dark:text-amber-400">
+                <CapsLockIcon
+                  className="h-5 w-5"
+                  title="Caps Lock está ativado"
+                />
+              </div>
+            )}
+
+            {/* Toggle Visibility Button */}
+            {showToggleVisibility && (
+              <button
+                type="button"
+                onClick={toggleVisibility}
+                className="auth-password-toggle inline-flex h-9 w-9 items-center justify-center rounded-md text-gray-400 transition-colors duration-150 hover:cursor-pointer hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200"
+                aria-label={isVisible ? 'Ocultar senha' : 'Mostrar senha'}
+                title={isVisible ? 'Ocultar senha' : 'Mostrar senha'}
+                tabIndex={0}
+              >
+                {isVisible ? (
+                  <EyeOffIcon className="h-5 w-5" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" />
+                )}
+              </button>
+            )}
+          </>
+        )}
       />
-      
-      {/* Toggle Visibility Button */}
-      {showToggleVisibility && (
-        <button
-          type="button"
-          onClick={toggleVisibility}
-          className="auth-password-toggle absolute right-2 top-7 z-20 flex h-12 items-center px-2 text-gray-400 transition-colors duration-150 hover:cursor-pointer hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200"
-          aria-label={isVisible ? 'Ocultar senha' : 'Mostrar senha'}
-          title={isVisible ? 'Ocultar senha' : 'Mostrar senha'}
-          tabIndex={0}
-        >
-          {isVisible ? (
-            <EyeOffIcon className="w-5 h-5" />
-          ) : (
-            <EyeIcon className="w-5 h-5" />
-          )}
-        </button>
-      )}
-      
-      {/* Caps Lock Warning Icon - positioned to the left of toggle button */}
-      {showCapsLockWarning && capsLockOn && (
-        <div className="auth-caps-lock-indicator pointer-events-none absolute right-11 top-7 z-20 flex h-12 items-center px-1 text-amber-500 dark:text-amber-400">
-          <CapsLockIcon 
-            className="w-5 h-5" 
-            title="Caps Lock está ativado"
-          />
-        </div>
-      )}
       
       {/* Caps Lock Warning Message */}
       {showCapsLockWarning && capsLockOn && (

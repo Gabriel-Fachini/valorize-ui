@@ -1,0 +1,78 @@
+@keyframes orb-float-a {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(-50px, 40px) scale(1.12); }
+  66% { transform: translate(30px, 60px) scale(0.95); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes orb-float-b {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(60px, -40px) scale(1.1); }
+  66% { transform: translate(-20px, 30px) scale(0.92); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes orb-float-c {
+  0% { transform: translate(0px, 0px) scale(1); }
+  40% { transform: translate(-40px, -50px) scale(1.15); }
+  70% { transform: translate(50px, -20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.illustration-bg {
+  background: linear-gradient(
+    135deg,
+    #0b1610 0%,
+    #14291d 25%,
+    #0d1a12 50%,
+    #12241a 75%,
+    #091209 100%
+  );
+}
+
+.orb-a { animation: orb-float-a 5s ease-in-out infinite; }
+.orb-b { animation: orb-float-b 6s ease-in-out infinite; }
+.orb-c { animation: orb-float-c 7s ease-in-out infinite; }
+
+.login-illustration-grid {
+  opacity: var(--login-spotlight-opacity, 0);
+  background-image:
+    linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(
+    circle 260px at var(--login-mouse-x, 50%) var(--login-mouse-y, 50%),
+    black 0%,
+    transparent 70%
+  );
+  mask-image: radial-gradient(
+    circle 260px at var(--login-mouse-x, 50%) var(--login-mouse-y, 50%),
+    black 0%,
+    transparent 70%
+  );
+  transition: opacity 180ms ease;
+}
+
+.login-illustration-spotlight {
+  opacity: var(--login-spotlight-opacity, 0);
+  background: radial-gradient(
+    circle 280px at var(--login-mouse-x, 50%) var(--login-mouse-y, 50%),
+    rgba(255, 255, 255, 0.03) 0%,
+    transparent 65%
+  );
+  transition: opacity 180ms ease;
+}
+
+.reduce-motion .login-illustration-panel .login-illustration-orb {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-illustration-panel .login-illustration-orb {
+    animation: none !important;
+  }
+
+  .login-illustration-grid,
+  .login-illustration-spotlight {
+    transition: none !important;
+  }
+}

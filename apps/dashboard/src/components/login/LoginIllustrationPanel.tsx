@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react'
+import './LoginIllustration.css'
 
 export const LoginIllustrationPanel = () => {
   const panelRef = useRef<HTMLDivElement | null>(null)

@@ -56,10 +56,12 @@ export const LoginPage = () => {
   }
 
   const handleShowForgotPassword = () => {
+    const email = loginForm.formMethods.getValues('email')?.trim() ?? ''
+
     setMode('forgotPassword')
     loginForm.formMethods.clearErrors()
     registerForm.formMethods.clearErrors()
-    forgotPasswordForm.formMethods.clearErrors()
+    forgotPasswordForm.handlers.prefillEmail(email)
   }
 
   const handleBackToLogin = () => {

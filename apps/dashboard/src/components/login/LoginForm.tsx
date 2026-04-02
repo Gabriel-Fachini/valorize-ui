@@ -1,5 +1,5 @@
 import { animated, useSpring } from '@react-spring/web'
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { EmailInput, PasswordInput } from '@/components/ui'
 import { LoginFormData } from '@/types'
@@ -14,8 +14,25 @@ interface LoginFormProps {
 }
 
 export const LoginForm = ({ formMethods, isLoading, onSubmit, onForgotPasswordClick }: LoginFormProps) => {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = formMethods
+  const { register, handleSubmit, getValues, formState: { errors, isSubmitting } } = formMethods
   const [isForgotPasswordActive, setIsForgotPasswordActive] = useState(false)
+  const emailInputRef = useRef<HTMLInputElement>(null)
+  const emailField = register('email')
+
+  const handleEnterSubmit = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return
+
+    const email = getValues('email')?.trim() ?? ''
+    const password = getValues('password')?.trim() ?? ''
+
+    if (!email || !password || isSubmitting || isLoading) {
+      e.preventDefault()
+      return
+    }
+
+    e.preventDefault()
+    void handleSubmit(onSubmit)()
+  }, [getValues, handleSubmit, isLoading, isSubmitting, onSubmit])
 
   const forgotPasswordUnderlineSpring = useSpring({
     transform: isForgotPasswordActive ? 'scaleX(1)' : 'scaleX(0)',
@@ -27,17 +44,27 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit, onForgotPasswordCl
     },
   })
 
+  useEffect(() => {
+    if (document.activeElement === emailInputRef.current) {
+      emailInputRef.current?.blur()
+    }
+  }, [])
+
   return (
     <form className="auth-form space-y-3 sm:space-y-4 xl:space-y-5" onSubmit={handleSubmit(onSubmit)}>
       <EmailInput
-        {...register('email')}
+        {...emailField}
+        ref={(element) => {
+          emailField.ref(element)
+          emailInputRef.current = element
+        }}
         name="email"
         label="Email"
         placeholder="seu@email.com"
         error={errors.email?.message}
         showDomainSuggestions={true}
-        autoFocus
         disabled={isLoading}
+        onKeyDown={handleEnterSubmit}
       />
 
       <PasswordInput
@@ -49,9 +76,10 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit, onForgotPasswordCl
         showToggleVisibility={true}
         showCapsLockWarning={true}
         disabled={isLoading}
+        onKeyDown={handleEnterSubmit}
       />
 
-      <div className="-mt-2 pb-1 flex justify-end">
+      <div className="-mt-2 pt-1 flex justify-end">
         <button
           type="button"
           onClick={onForgotPasswordClick}
@@ -60,7 +88,7 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit, onForgotPasswordCl
           onMouseLeave={() => setIsForgotPasswordActive(false)}
           onFocus={() => setIsForgotPasswordActive(true)}
           onBlur={() => setIsForgotPasswordActive(false)}
-          className="auth-inline-link group relative inline-flex items-center pb-0.5 text-sm font-medium text-green-700 transition-colors hover:text-green-800 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:text-green-400 dark:hover:text-green-300 cursor-pointer"
+          className="auth-inline-link group relative inline-flex items-center text-sm font-medium text-green-700 transition-colors hover:text-green-800 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:text-green-400 dark:hover:text-green-300 cursor-pointer"
         >
           Esqueci a senha
           <animated.span

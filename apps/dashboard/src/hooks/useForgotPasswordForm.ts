@@ -52,9 +52,15 @@ export const useForgotPasswordForm = () => {
     reset({ email: '' })
   }
 
+  const prefillEmail = (email: string) => {
+    setSuccessEmail(null)
+    clearErrors()
+    reset({ email })
+  }
+
   return {
     formMethods,
     states: { isLoading, successEmail },
-    handlers: { onSubmit, resetState },
+    handlers: { onSubmit, resetState, prefillEmail },
   }
 }
