@@ -5,6 +5,7 @@ import { EmailInput, PasswordInput } from '@/components/ui'
 import { LoginFormData } from '@/types'
 import { AnimatedFormError } from './AnimatedFormError'
 import { GoogleLoginButton } from './GoogleLoginButton'
+import { loginFormVariants, loginInlineLinkClassName, loginPrimaryButtonClassName } from './loginStyles'
 
 interface LoginFormProps {
   formMethods: UseFormReturn<LoginFormData>
@@ -51,7 +52,7 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit, onForgotPasswordCl
   }, [])
 
   return (
-    <form className="auth-form space-y-3 sm:space-y-4 xl:space-y-5" onSubmit={handleSubmit(onSubmit)}>
+    <form className={loginFormVariants({ density: 'compact' })} onSubmit={handleSubmit(onSubmit)}>
       <EmailInput
         {...emailField}
         ref={(element) => {
@@ -88,7 +89,7 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit, onForgotPasswordCl
           onMouseLeave={() => setIsForgotPasswordActive(false)}
           onFocus={() => setIsForgotPasswordActive(true)}
           onBlur={() => setIsForgotPasswordActive(false)}
-          className="auth-inline-link group relative inline-flex items-center text-sm font-medium text-green-700 transition-colors hover:text-green-800 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:text-green-400 dark:hover:text-green-300 cursor-pointer"
+          className={loginInlineLinkClassName}
         >
           Esqueci a senha
           <animated.span
@@ -104,7 +105,7 @@ export const LoginForm = ({ formMethods, isLoading, onSubmit, onForgotPasswordCl
       <button
         type="submit"
         disabled={isSubmitting || isLoading}
-        className="auth-primary-button flex w-full items-center justify-center rounded-lg bg-primary px-6 py-2.5 text-base font-semibold text-white transition-colors hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-gray-950 cursor-pointer"
+        className={loginPrimaryButtonClassName}
       >
         {isSubmitting || isLoading ? 'Entrando...' : 'Entrar'}
       </button>

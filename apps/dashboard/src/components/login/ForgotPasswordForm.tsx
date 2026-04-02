@@ -3,6 +3,7 @@ import { ArrowLeft } from 'lucide-react'
 import { EmailInput } from '@/components/ui'
 import { ForgotPasswordFormData } from '@/types'
 import { AnimatedFormError } from './AnimatedFormError'
+import { loginBackButtonClassName, loginFormVariants, loginPrimaryButtonClassName } from './loginStyles'
 
 interface ForgotPasswordFormProps {
   formMethods: UseFormReturn<ForgotPasswordFormData>
@@ -33,7 +34,7 @@ export const ForgotPasswordForm = ({
         <button
           type="button"
           onClick={onBackToLogin}
-          className="auth-inline-link auth-back-link inline-flex h-10 w-fit items-center justify-center gap-2 rounded-full border border-gray-200 bg-white/80 px-4 text-sm font-semibold leading-none text-gray-700 shadow-sm transition-all duration-200 hover:cursor-pointer hover:border-gray-300 hover:bg-gray-50 hover:text-gray-950 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-white"
+          className={loginBackButtonClassName}
         >
           <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden="true" />
           <span className="flex items-center leading-none">Voltar para login</span>
@@ -66,11 +67,11 @@ export const ForgotPasswordForm = ({
   }
 
   return (
-    <form className="auth-form space-y-3.5 sm:space-y-4.5 xl:space-y-5" onSubmit={handleSubmit(onSubmit)}>
+    <form className={loginFormVariants()} onSubmit={handleSubmit(onSubmit)}>
       <button
         type="button"
         onClick={onBackToLogin}
-        className="auth-inline-link auth-back-link inline-flex h-10 w-fit items-center justify-center gap-2 rounded-full border border-gray-200 bg-white/80 px-4 text-sm font-semibold leading-none text-gray-700 shadow-sm transition-all duration-200 hover:cursor-pointer hover:border-gray-300 hover:bg-gray-50 hover:text-gray-950 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-white"
+        className={loginBackButtonClassName}
       >
         <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden="true" />
         <span className="flex items-center leading-none">Voltar para login</span>
@@ -92,7 +93,7 @@ export const ForgotPasswordForm = ({
       <button
         type="submit"
         disabled={isSubmitting || isLoading}
-        className="auth-primary-button flex w-full items-center justify-center rounded-lg bg-primary px-6 py-2.5 text-base font-semibold text-white transition-colors hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-gray-950 cursor-pointer"
+        className={loginPrimaryButtonClassName}
       >
         {isSubmitting || isLoading ? 'Enviando link...' : 'Enviar link de redefinição'}
       </button>

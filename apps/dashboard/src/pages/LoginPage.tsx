@@ -72,7 +72,9 @@ export const LoginPage = () => {
   }
 
   return (
-    <div className="flex min-h-dvh overflow-hidden relative">
+    <div className="relative min-h-dvh overflow-hidden bg-[#09120c]">
+      <LoginIllustrationPanel variant="background" />
+
       <LoginFormPanel
         formMethods={loginForm.formMethods}
         registerFormMethods={registerForm.formMethods}
@@ -88,9 +90,7 @@ export const LoginPage = () => {
         onBackToLogin={handleBackToLogin}
         onForgotPasswordTryAgain={forgotPasswordForm.handlers.resetState}
       />
-      
-      <LoginIllustrationPanel />
-      
+
       {(loginForm.states.isLoading || registerForm.states.isLoading || forgotPasswordForm.states.isLoading) && (
         <LoadingOverlay />
       )}
