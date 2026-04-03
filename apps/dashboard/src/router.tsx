@@ -1,31 +1,43 @@
 /* eslint-disable react-refresh/only-export-components */
+import { Suspense, lazy } from 'react'
 import {
   createRouter,
   createRoute,
   createRootRoute,
   Outlet,
 } from '@tanstack/react-router'
-import { LoginPage } from '@/pages/LoginPage'
-import { HomePage } from '@/pages/HomePage'
-import { PraisesPage } from '@/pages/PraisesPage'
-import { NewPraisePage } from '@/pages/NewPraisePage'
-import { PrizesPage } from '@/pages/PrizesPage'
-import { PrizeDetailsPage } from '@/pages/PrizeDetailsPage'
-import { PrizeConfirmationPage } from '@/pages/PrizeConfirmationPage'
-import { RedemptionsPage } from '@/pages/RedemptionsPage'
-import { RedemptionDetailsPage } from '@/pages/RedemptionDetailsPage'
-import { SettingsPage } from '@/pages/SettingsPage'
-import { TransactionsPage } from '@/pages/TransactionsPage'
-import { NewsPage } from '@/pages/NewsPage'
-import { EventsPage } from '@/pages/EventsPage'
-import { TrainingPage } from '@/pages/TrainingPage'
-import { NotFoundPage } from '@/pages/NotFoundPage'
-import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
-import { AuthCallbackPage } from '@/pages/AuthCallbackPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { DevErrorBoundary } from '@/components/DevErrorBoundary'
 import { useTheme } from '@hooks/useTheme'
 import { z } from 'zod'
+
+const LoginPage = lazy(() => import('@/pages/LoginPage').then((module) => ({ default: module.LoginPage })))
+const HomePage = lazy(() => import('@/pages/HomePage').then((module) => ({ default: module.HomePage })))
+const PraisesPage = lazy(() => import('@/pages/PraisesPage').then((module) => ({ default: module.PraisesPage })))
+const NewPraisePage = lazy(() => import('@/pages/NewPraisePage').then((module) => ({ default: module.NewPraisePage })))
+const PrizesPage = lazy(() => import('@/pages/PrizesPage').then((module) => ({ default: module.PrizesPage })))
+const PrizeDetailsPage = lazy(() => import('@/pages/PrizeDetailsPage').then((module) => ({ default: module.PrizeDetailsPage })))
+const PrizeConfirmationPage = lazy(() => import('@/pages/PrizeConfirmationPage').then((module) => ({ default: module.PrizeConfirmationPage })))
+const RedemptionsPage = lazy(() => import('@/pages/RedemptionsPage').then((module) => ({ default: module.RedemptionsPage })))
+const RedemptionDetailsPage = lazy(() => import('@/pages/RedemptionDetailsPage').then((module) => ({ default: module.RedemptionDetailsPage })))
+const SettingsPage = lazy(() => import('@/pages/SettingsPage').then((module) => ({ default: module.SettingsPage })))
+const TransactionsPage = lazy(() => import('@/pages/TransactionsPage').then((module) => ({ default: module.TransactionsPage })))
+const NewsPage = lazy(() => import('@/pages/NewsPage').then((module) => ({ default: module.NewsPage })))
+const EventsPage = lazy(() => import('@/pages/EventsPage').then((module) => ({ default: module.EventsPage })))
+const TrainingPage = lazy(() => import('@/pages/TrainingPage').then((module) => ({ default: module.TrainingPage })))
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })))
+const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage').then((module) => ({ default: module.ResetPasswordPage })))
+const AuthCallbackPage = lazy(() => import('@/pages/AuthCallbackPage').then((module) => ({ default: module.AuthCallbackPage })))
+
+const routeFallback = (
+  <div className="min-h-dvh bg-background" />
+)
+
+const withSuspense = (Component: React.ComponentType) => () => (
+  <Suspense fallback={routeFallback}>
+    <Component />
+  </Suspense>
+)
 
 function RootComponent() {
   const { isDark } = useTheme()
@@ -42,7 +54,7 @@ function RootComponent() {
 
 const rootRoute = createRootRoute({
   component: RootComponent,
-  notFoundComponent: NotFoundPage,
+  notFoundComponent: withSuspense(NotFoundPage),
   errorComponent: import.meta.env.DEV ? DevErrorBoundary : undefined,
 })
 
@@ -60,43 +72,43 @@ const protectedLayoutRoute = createRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: LoginPage,
+  component: withSuspense(LoginPage),
 })
 
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
-  component: LoginPage,
+  component: withSuspense(LoginPage),
 })
 
 const resetPasswordRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reset-password',
-  component: ResetPasswordPage,
+  component: withSuspense(ResetPasswordPage),
 })
 
 const authCallbackRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/auth/callback',
-  component: AuthCallbackPage,
+  component: withSuspense(AuthCallbackPage),
 })
 
 const homeRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/home',
-  component: HomePage,
+  component: withSuspense(HomePage),
 })
 
 const praisesRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/elogios',
-  component: PraisesPage,
+  component: withSuspense(PraisesPage),
 })
 
 const newPraiseRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/elogios/novo',
-  component: NewPraisePage,
+  component: withSuspense(NewPraisePage),
   validateSearch: (search: Record<string, unknown>) => {
     return z.object({
       userId: z.string().optional(),
@@ -107,13 +119,13 @@ const newPraiseRoute = createRoute({
 const prizesRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/prizes',
-  component: PrizesPage,
+  component: withSuspense(PrizesPage),
 })
 
 const prizeDetailsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/prizes/$prizeId',
-  component: PrizeDetailsPage,
+  component: withSuspense(PrizeDetailsPage),
   parseParams: (params: { prizeId: string }) => ({
     prizeId: z.string().parse(params.prizeId),
   }),
@@ -122,7 +134,7 @@ const prizeDetailsRoute = createRoute({
 const prizeConfirmationRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/prizes/$prizeId/confirm',
-  component: PrizeConfirmationPage,
+  component: withSuspense(PrizeConfirmationPage),
   parseParams: (params: { prizeId: string }) => ({
     prizeId: z.string().parse(params.prizeId),
   }),
@@ -136,13 +148,13 @@ const prizeConfirmationRoute = createRoute({
 const redemptionsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/resgates',
-  component: RedemptionsPage,
+  component: withSuspense(RedemptionsPage),
 })
 
 const redemptionDetailsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/resgates/$redemptionId',
-  component: RedemptionDetailsPage,
+  component: withSuspense(RedemptionDetailsPage),
   parseParams: (params: { redemptionId: string }) => ({
     redemptionId: z.string().parse(params.redemptionId),
   }),
@@ -151,37 +163,37 @@ const redemptionDetailsRoute = createRoute({
 const settingsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/settings',
-  component: SettingsPage,
+  component: withSuspense(SettingsPage),
 })
 
 const transactionsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/transacoes',
-  component: TransactionsPage,
+  component: withSuspense(TransactionsPage),
 })
 
 const newsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/noticias',
-  component: NewsPage,
+  component: withSuspense(NewsPage),
 })
 
 const eventsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/eventos',
-  component: EventsPage,
+  component: withSuspense(EventsPage),
 })
 
 const trainingRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: '/treinamentos',
-  component: TrainingPage,
+  component: withSuspense(TrainingPage),
 })
 
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/404',
-  component: NotFoundPage,
+  component: withSuspense(NotFoundPage),
 })
 
 // Create route tree with nested protected routes
